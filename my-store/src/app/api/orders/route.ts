@@ -163,7 +163,7 @@ async function createOrderRecord(params: {
 }) {
   const { userId, cart, subtotal, shippingFee, tax, total, paymentMethod, customerNote } = params;
 
-  return prisma.$transaction(async (tx: typeof prisma) => {
+    return prisma.$transaction(async (tx) => {
     const order = await tx.order.create({
       data: {
         userId,
@@ -182,7 +182,7 @@ async function createOrderRecord(params: {
             name: i.product.name,
             image: i.product.images?.[0] || null,
             quantity: i.quantity,
-            price: i.product.price,
+            price: Number(i.product.price),
             total: Number(i.product.price) * i.quantity,
           })),
         },
