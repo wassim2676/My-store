@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // إنشاء المستخدم، وإن كان بائعاً: إنشاء متجره في نفس العملية (transaction)
-    const user = await prisma.$transaction(async (tx: typeof prisma) => {
+    const user = await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
           email,
