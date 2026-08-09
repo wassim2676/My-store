@@ -27,10 +27,23 @@ export async function GET() {
       },
     });
 
-    if (!cart) {
+        if (!cart) {
       cart = await prisma.cart.create({
         data: { userId: session.user.id },
-        include: { items: { include: { product: true } } },
+        include: {
+          items: {
+            include: {
+              product: {
+                select: {
+                  id: true, slug: true, name: true, price: true, compareAt: true,
+                  images: true, stock: true, isActive: true,
+                  vendor: { select: { storeName: true } },
+                },
+              },
+            },
+            orderBy: { addedAt: "desc" },
+          },
+        },
       });
     }
 
