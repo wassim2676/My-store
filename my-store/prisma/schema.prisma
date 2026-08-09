@@ -1,0 +1,506 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==================== ENUMS ====================
+
+enum UserRole {
+  USER
+  SELLER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ✅ حالة اعتماد متجر البائع من طرف الأدمن
+enum VendorStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+  RETURNED
+}
+
+enum PaymentMethod {
+  STRIPE
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+  BOTH
+}
+
+enum WishlistType {
+  PRIVATE
+  PUBLIC
+}
+
+// ✅ حالة المكالمات للطلبات اليدوية
+enum CallStatus {
+  NOT_CALLED
+  CALLED_SUCCESS
+  CALL_FAILED
+  CALL_LATER
+}
+
+// ✅ حالة نشر المقال
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String?
+  firstName     String?
+  lastName      String?
+  gender        Gender?
+  dob           DateTime?
+  phone         String?
+  country       String?
+  city          String?
+  avatar        String?
+  role          UserRole       @default(USER)
+  isActive      Boolean        @default(true)
+  emailVerified DateTime?
+  
+  // العلاقات
+  orders        Order[]        @relation("UserOrders")
+  cart          Cart?          @relation("UserCart")
+  addresses     Address[]
+  wishlist      WishlistItem[]
+  reviews       Review[]
+  vendor        Vendor?
+  
+  // NextAuth relations
+  accounts      Account[]
+  sessions      Session[]
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // الفهارس
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?   @db.Text
+  shortDesc   String?   @db.VarChar(255)
+  price       Decimal   @db.Decimal(10, 2)
+  compareAt   Decimal?  @db.Decimal(10, 2)
+  costPrice   Decimal?  @db.Decimal(10, 2)
+  stock       Int       @default(0)
+  sku         String?   @unique
+  barcode     String?   @unique
+  images      String[]
+  categories  String[]
+  tags        String[]
+  brand       String?
+  weight      Float?
+  dimensions  Json?
+  isActive    Boolean   @default(true)
+  isFeatured  Boolean   @default(false)
+  rating      Float?    @default(0)
+  reviewCount Int       @default(0)
+
+  // 🏪 البائع المالك للمنتج (فارغ = منتج المنصة نفسها)
+  vendor      Vendor?     @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  vendorId    String?
+
+  // العلاقات
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  wishlistBy  WishlistItem[]
+  reviews     Review[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // الفهارس
+  @@index([isActive])
+  @@index([categories])
+  @@index([slug])
+  @@index([price])
+  @@index([createdAt])
+  @@index([rating, isActive])
+  @@index([vendorId])
+}
+
+// ==================== 🏪 Vendor Model - متجر البائع في السوق متعدد البائعين ====================
+model Vendor {
+  id              String       @id @default(cuid())
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String       @unique
+
+  storeName       String       @db.VarChar(150)
+  slug            String       @unique
+  logo            String?
+  banner          String?
+  description     String?      @db.Text
+
+  status          VendorStatus @default(PENDING)
+  rejectionReason String?      @db.Text
+
+  // 🎨 تخصيص واجهة المتجر (يتحكم بها البائع بنفسه)
+  primaryColor    String       @default("#FF9900")
+  secondaryColor  String       @default("#131921")
+  backgroundColor String       @default("#FFFFFF")
+  textColor       String       @default("#0F1111")
+  bannerTitle     String?      @db.VarChar(150)
+  bannerSubtitle  String?      @db.VarChar(255)
+
+  // 📞 معلومات التواصل
+  phone           String?
+  contactEmail    String?
+  address         String?
+  city            String?
+  country         String?      @default("Morocco")
+
+  // 📊 إحصائيات
+  commissionRate  Float        @default(10)
+  rating          Float?       @default(0)
+  reviewCount     Int          @default(0)
+  totalSales      Decimal      @default(0) @db.Decimal(12, 2)
+  totalOrders     Int          @default(0)
+
+  products        Product[]
+  orderItems      OrderItem[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  approvedAt      DateTime?
+
+  @@index([status])
+  @@index([slug])
+  @@index([userId])
+}
+
+// ==================== 📝 Post Model - نظام المقالات (المدونة) ====================
+model Post {
+  id           String     @id @default(cuid())
+  title        String     @db.VarChar(200)
+  slug         String     @unique
+  excerpt      String?    @db.VarChar(300)
+  content      String     @db.Text
+  coverImage   String?
+  category     String?    @db.VarChar(100)
+  tags         String[]
+  status       PostStatus @default(DRAFT)
+  authorName   String     @default("فريق المتجر")
+  views        Int        @default(0)
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  publishedAt  DateTime?
+
+  @@index([status])
+  @@index([slug])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  
+  user      User?      @relation("UserCart", fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?    @unique
+  
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int      @default(1)
+  addedAt   DateTime @default(now())
+
+  @@unique([cartId, productId])
+  @@index([productId])
+}
+
+// ==================== 🛒 Order Model - للطلبات العادية (العربة) ====================
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     Int           @unique @default(autoincrement())
+  
+  // 🔗 للمستخدمين المسجلين
+  user            User?         @relation("UserOrders", fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+  
+  // 📦 عناصر الطلب المتعددة (من العربة)
+  items           OrderItem[]
+  
+  // 💰 الأسعار
+  subtotal        Decimal       @db.Decimal(10, 2)
+  tax             Decimal       @db.Decimal(10, 2) @default(0)
+  taxRate         Float?        @default(0.20)
+  shippingFee     Decimal       @db.Decimal(10, 2) @default(0)
+  discount        Decimal       @db.Decimal(10, 2) @default(0)
+  discountCode    String?
+  total           Decimal       @db.Decimal(10, 2)
+  currency        String        @default("MAD")
+  
+  // 💳 الدفع
+  paymentMethod   PaymentMethod @default(COD)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentIntentId String?
+  transactionId   String?
+  
+  // 📊 الحالة والتتبع
+  status          OrderStatus   @default(PENDING)
+  trackingNumber  String?
+  trackingUrl     String?
+  shippedAt       DateTime?
+  deliveredAt     DateTime?
+  
+  // 📝 ملاحظات
+  customerNote    String?       @db.Text
+  adminNotes      String?       @db.Text
+  
+  // 🕐 الطوابع الزمنية
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  cancelledAt     DateTime?
+  refundedAt      DateTime?
+
+  // 🔍 الفهارس
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  name      String
+  image     String?
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+  total     Decimal @db.Decimal(10, 2)
+
+  // 🏪 البائع صاحب هذا المنتج وقت الطلب (لتسهيل فلترة طلبات كل بائع)
+  vendor    Vendor? @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  vendorId  String?
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([vendorId])
+}
+
+// ==================== ✍️ ManualOrder Model - جديد! للطلبات اليدوية ====================
+model ManualOrder {
+  id                  String        @id @default(cuid())
+  orderNumber         Int           @unique @default(autoincrement())
+  
+  // ==================== 👤 معلومات العميل (مطلوبة) ====================
+  customerName        String        @db.VarChar(255)   // ✅ الاسم الكامل (مطلوب)
+  phone               String        @db.VarChar(20)    // ✅ رقم الهاتف (مطلوب)
+  email               String?       @db.VarChar(255)   // ✅ البريد الإلكتروني (اختياري)
+  country             String        @db.VarChar(100)   // ✅ الدولة (مطلوب)
+  city                String        @db.VarChar(100)   // ✅ المدينة (مطلوب)
+  address             String        @db.Text           // ✅ العنوان التفصيلي (مطلوب)
+  
+  // ==================== 📦 تفاصيل المنتج (مطلوبة) ====================
+  productType         String        @db.VarChar(255)   // ✅ نوع العرض/الباقة (مطلوب)
+  quantity            Int           @default(1)        // ✅ الكمية (مطلوب، افتراضي 1)
+  unitPrice           Decimal       @db.Decimal(10, 2) // ✅ سعر الوحدة
+  totalPrice          Decimal       @db.Decimal(10, 2) // ✅ السعر الإجمالي
+  
+  // ==================== 💳 الدفع ====================
+  paymentMethod       PaymentMethod @default(COD)      // COD أو STRIPE
+  paymentStatus       PaymentStatus @default(PENDING)
+  
+  // ==================== 📊 حالة الطلب والمكالمة ====================
+  status              OrderStatus   @default(PENDING)  // حالة الطلب
+  callStatus          CallStatus    @default(NOT_CALLED) // حالة المكالمة
+  
+  // ==================== 📝 ملاحظات إضافية ====================
+  customerNote        String?       @db.Text           // ملاحظة من العميل
+  adminNotes          String?       @db.Text           // ملاحظة من الأدمن
+  sourcePage          String?       @db.VarChar(255)   // الصفحة التي أتى منها النموذج (للتحليل)
+  userAgent           String?       @db.Text           // معلومات المتصفح (للتحليل)
+  ipAddress           String?       @db.VarChar(45)    // عنوان IP (للتحليل والأمان)
+  
+  // ==================== 🕐 الطوابع الزمنية ====================
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  calledAt            DateTime?     // متى تم الاتصال بالعميل
+  cancelledAt         DateTime?
+  
+  // ==================== 🔍 الفهارس للأداء العالي ====================
+  @@index([status])
+  @@index([callStatus])
+  @@index([paymentStatus])
+  @@index([phone])              // 🔍 بحث سريع برقم الهاتف
+  @@index([customerName])       // 🔍 بحث بالاسم
+  @@index([city, country])      // 🔍 بحث جغرافي
+  @@index([createdAt])          // 🔍 ترتيب زمني
+  @@index([productType])        // 🔍 فلترة حسب نوع المنتج
+  
+  // ==================== 🔎 بحث نصي كامل (PostgreSQL) ====================
+  
+}
+
+// ==================== Address Model ====================
+model Address {
+  id          String       @id @default(cuid())
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  
+  label       String
+  type        AddressType  @default(SHIPPING)
+  
+  firstName   String
+  lastName    String
+  phone       String
+  company     String?
+  
+  street      String       @db.VarChar(255)
+  address2    String?      @db.VarChar(255)
+  city        String       @db.VarChar(100)
+  state       String?      @db.VarChar(100)
+  postalCode  String?      @db.VarChar(20)
+  country     String       @default("Morocco")
+  
+  isDefault   Boolean      @default(false)
+  isActive    Boolean      @default(true)
+  
+  latitude    Float?
+  longitude   Float?
+  
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([userId, label])
+  @@index([userId, isDefault])
+  @@index([city, country])
+}
+
+// ==================== Wishlist Model ====================
+model WishlistItem {
+  id        String         @id @default(cuid())
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  type      WishlistType   @default(PRIVATE)
+  note      String?        @db.VarChar(255)
+  addedAt   DateTime       @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId, addedAt])
+  @@index([productId])
+}
+
+// ==================== Review Model ====================
+model Review {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  
+  rating    Int
+  title     String?  @db.VarChar(100)
+  comment   String?  @db.Text
+  images    String[]
+  
+  isVerified Boolean @default(false)
+  isApproved Boolean @default(false)
+  helpful   Int      @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([productId, isApproved, rating])
+  @@index([createdAt])
+}
+
+// ==================== NextAuth Models ====================
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
