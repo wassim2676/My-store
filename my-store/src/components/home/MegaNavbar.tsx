@@ -16,6 +16,7 @@ import {
   Store,
   LogOut,
   Settings,
+  Shield,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
@@ -130,6 +131,18 @@ export default function MegaNavbar() {
             <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 flex-shrink-0">
               <LanguageSwitcher />
 
+              {/* 🛡️ زر التبديل السريع للوحة الأدمن — ظاهر دائماً في كل الأجهزة (وليس داخل القائمة فقط) */}
+              {(role === "ADMIN" || role === "SUPER_ADMIN") && (
+                <Link
+                  href="/admin/dashboard"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 text-orange-400 hover:text-orange-300 transition-all duration-200 cursor-pointer flex-shrink-0"
+                  title="الانتقال إلى لوحة تحكم الأدمن"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span className="hidden sm:block text-xs font-bold whitespace-nowrap">لوحة الأدمن</span>
+                </Link>
+              )}
+
               {/* منطقة المصادقة */}
               {session ? (
                 <div className="relative" ref={menuRef}>
@@ -170,7 +183,12 @@ export default function MegaNavbar() {
                       </Link>
                       <div className="border-t border-slate-100 my-1" />
                       <button
-                        onClick={() => signOut({ callbackUrl: "/" })}
+                        onClick={async () => {
+                          // ✅ إصلاح تسجيل الخروج: إعادة تحميل كاملة بدل تنقّل داخلي
+                          // تضمن مسح كل حالة الجلسة المخزّنة في المتصفح فعلياً (لا تبقى بقايا جلسة سابقة)
+                          await signOut({ redirect: false });
+                          window.location.href = "/";
+                        }}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" /> {t("logout")}

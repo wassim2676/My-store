@@ -376,6 +376,10 @@ model ManualOrder {
   updatedAt           DateTime      @updatedAt
   calledAt            DateTime?     // متى تم الاتصال بالعميل
   cancelledAt         DateTime?
+
+  // ==================== 🚚 معلومات الشحن (كانت مفقودة سابقاً وتسبب خطأ عند الحفظ) ====================
+  trackingNumber      String?       @db.VarChar(100)
+  trackingUrl         String?       @db.Text
   
   // ==================== 🔍 الفهارس للأداء العالي ====================
   @@index([status])
@@ -503,4 +507,35 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ==================== 👍 نظام التفاعل الحقيقي (إعجابات + تعليقات) لصفحات المنتج بأسلوب فيسبوك ====================
+// slug يحدد الصفحة (مثال: "vijara-plus") — يسمح باستخدام نفس النظام لأي صفحة منتج مستقبلاً
+
+model PageEngagement {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  likes     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model PageComment {
+  id        String   @id @default(cuid())
+  slug      String
+  name      String   @db.VarChar(60)
+  message   String   @db.VarChar(500)
+  likes     Int      @default(0)
+  approved  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  // 🧵 الردود المتداخلة (تعليق على تعليق) — نفس النموذج، علاقة ذاتية
+  parentId  String?
+  parent    PageComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   PageComment[] @relation("CommentReplies")
+
+  @@index([slug])
+  @@index([parentId])
+  @@index([createdAt])
 }

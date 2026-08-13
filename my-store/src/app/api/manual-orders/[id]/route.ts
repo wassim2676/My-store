@@ -163,11 +163,16 @@ export async function PUT(
   }
 }
 
-// ==================== 🔴 DELETE: إلغاء طلب يدوي ====================
+// ==================== 🔴 DELETE: حذف طلب يدوي نهائياً ====================
 /**
  * 🔴 DELETE /api/manual-orders/[id]
- * إلغاء طلب يدوي (Soft Delete)
+ * حذف حقيقي للطلب من قاعدة البيانات
  * - محمي: Admin/Super Admin فقط
+ * - 🛡️ الحماية الوحيدة: لا يمكن حذف طلب تم تحصيل دفعه فعلياً (paymentStatus = PAID)
+ *   لأن ذلك سيفقد سجلاً مالياً حقيقياً. بدل الحذف، يمكن للأدمن تغيير حالته إلى CANCELLED عبر PUT.
+ *   ⚠️ ملاحظة: هذا الشرط أصبح يعتمد على "حالة الدفع الفعلي" وليس "حالة سير العمل" (status)
+ *   لأن طلبات كثيرة تصل لحالة DELIVERED دون أن تُحصَّل قيمتها بعد في النظام (الدفع عند الاستلام)
+ *   وكانت تُمنع من الحذف خطأً بسبب هذا الخلط.
  */
 export async function DELETE(
   request: NextRequest,
@@ -184,54 +189,40 @@ export async function DELETE(
     // التحقق من وجود الطلب
     const existing = await prisma.manualOrder.findUnique({
       where: { id },
-      select: { id: true, status: true, paymentStatus: true, adminNotes: true },
+      select: { id: true, orderNumber: true, paymentStatus: true },
     });
 
     if (!existing) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // منع إلغاء الطلبات النهائية
-    if (["DELIVERED", "REFUNDED", "CANCELLED"].includes(existing.status)) {
+    // 🛡️ الحماية الوحيدة: طلب مدفوع فعلياً (سجل مالي حقيقي) — يُمنع حذفه، يُقترح إلغاؤه بدل ذلك
+    if (existing.paymentStatus === "PAID") {
       return NextResponse.json(
-        { error: `Cannot cancel order with status: ${existing.status}` },
+        {
+          error: "لا يمكن حذف طلب تم تحصيل دفعه فعلياً (حفاظاً على السجل المالي). يمكنك تغيير حالته إلى «ملغى» بدل حذفه.",
+        },
         { status: 400 }
       );
     }
 
-    // Soft Delete: تعيين الحالة كـ CANCELLED
-    const cancelled = await prisma.manualOrder.update({
-      where: { id },
-      data: {
-        status: "CANCELLED",
-        cancelledAt: new Date(),
-        adminNotes: `${existing.adminNotes || ""}\n[Cancelled by ${session.user.id} at ${new Date().toISOString()}]`,
-        updatedAt: new Date(),
-      },
-      select: {
-        id: true,
-        orderNumber: true,
-        status: true,
-        cancelledAt: true,
-        adminNotes: true,
-      },
-    });
+    await prisma.manualOrder.delete({ where: { id } });
 
-    console.log(`[AUDIT] Admin ${session.user.id} cancelled manual order #${cancelled.orderNumber}`);
+    console.log(`[AUDIT] Admin ${session.user.id} deleted manual order #${existing.orderNumber}`);
 
     return NextResponse.json({
       success: true,
-      message: "Order cancelled successfully",
-      data: cancelled,
+      message: "Order deleted successfully",
+      data: { id: existing.id },
     });
 
   } catch (error) {
-    console.error("[API] Manual order cancellation failed:", error);
-    
+    console.error("[API] Manual order deletion failed:", error);
+
     if (error instanceof Error && error.message.includes("P2025")) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
-    
-    return NextResponse.json({ error: "Failed to cancel order" }, { status: 500 });
+
+    return NextResponse.json({ error: "Failed to delete order" }, { status: 500 });
   }
 }

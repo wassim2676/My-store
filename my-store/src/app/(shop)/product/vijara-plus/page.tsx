@@ -6,7 +6,7 @@ import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, ChevronDown, ChevronLeft, ChevronRight,
   AlertCircle, Loader2, X, MessageCircle, Menu, Search, BadgeCheck, Globe2,
   ThumbsUp, MessageSquare, Share2, MoreHorizontal, RotateCcw, Zap, Headphones, Info, HelpCircle,
-  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp,
+  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, CornerDownLeft, RefreshCw, Pencil,
 } from "lucide-react";
 
 // ==================== 🎨 الهوية البصرية — Facebook SaaS ====================
@@ -511,6 +511,63 @@ function UsersIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
 }
 
+// ==================== 🏷️ معرّف الصفحة (يُستخدم في نظام الإعجابات والتعليقات الحقيقي) ====================
+const PAGE_SLUG = "vijara-plus";
+
+interface CommentNode {
+  id: string;
+  parentId: string | null;
+  name: string;
+  message: string;
+  likes: number;
+  createdAt: string;
+  replies: CommentNode[];
+}
+
+// ==================== 🔢 تنسيق الأرقام بصيغة مختصرة (K) ====================
+function formatK(n: number): string {
+  if (n >= 1000) {
+    const val = n / 1000;
+    return `${val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)}K`;
+  }
+  return String(n);
+}
+
+// ==================== 🎭 مولّد أسماء مستعارة افتراضية (يمكن للزائر تعديلها لاحقاً) ====================
+const DEFAULT_NAME_POOL = [
+  "زائر مهتم", "عميل جديد", "متابع فيجارا", "زائر الصفحة", "مهتم بالعرض",
+  "عميل محتمل", "زائر فضولي", "متابع مهتم", "مستخدم جديد", "زائر اليوم",
+];
+function getOrCreateDisplayName(): string {
+  if (typeof window === "undefined") return DEFAULT_NAME_POOL[0];
+  const stored = window.localStorage.getItem("comment_display_name");
+  if (stored) return stored;
+  const random = DEFAULT_NAME_POOL[Math.floor(Math.random() * DEFAULT_NAME_POOL.length)];
+  const suffix = Math.floor(100 + Math.random() * 900);
+  const generated = `${random} ${suffix}`;
+  window.localStorage.setItem("comment_display_name", generated);
+  return generated;
+}
+
+// بناء شجرة الردود (مستويين: تعليقات رئيسية + ردودها) من قائمة مسطّحة قادمة من الـ API
+function buildCommentTree(flat: { id: string; parentId: string | null; name: string; message: string; likes: number; createdAt: string }[]): CommentNode[] {
+  const roots: CommentNode[] = [];
+  const map = new Map<string, CommentNode>();
+  flat.forEach((c) => map.set(c.id, { ...c, replies: [] }));
+  flat.forEach((c) => {
+    const node = map.get(c.id)!;
+    if (c.parentId && map.has(c.parentId)) {
+      map.get(c.parentId)!.replies.push(node);
+    } else {
+      roots.push(node);
+    }
+  });
+  // الأحدث أولاً للتعليقات الرئيسية، الأقدم أولاً للردود (كنقاش طبيعي)
+  roots.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  roots.forEach((r) => r.replies.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+  return roots;
+}
+
 // ==================== 🏠 المكوّن الرئيسي ====================
 export default function VijaraPlusFbExactPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -524,6 +581,205 @@ export default function VijaraPlusFbExactPage() {
   const [mobileQuantityMode, setMobileQuantityMode] = useState<"preset" | "custom">("preset");
   const [offerClaims, setOfferClaims] = useState(2500);
   const orderFormRef = useRef<HTMLDivElement>(null);
+
+  // ==================== 👍 حالة إعجاب المنشور نفسه ====================
+  const [likesCount, setLikesCount] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeBusy, setLikeBusy] = useState(false);
+
+  // ==================== 💬 حالة التعليقات والردود (شجرية) ====================
+  const [comments, setComments] = useState<CommentNode[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [showComments, setShowComments] = useState(false);
+  const [displayName, setDisplayName] = useState(""); // الاسم المستعار الحالي (قابل للتعديل)
+  const [editingName, setEditingName] = useState(false);
+  const [commentMessage, setCommentMessage] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null); // معرّف التعليق الجاري الرد عليه
+  const [replyMessage, setReplyMessage] = useState("");
+  const [submittingReply, setSubmittingReply] = useState(false);
+  const [likedCommentIds, setLikedCommentIds] = useState<Set<string>>(new Set());
+
+  // ==================== 🔗 حالة المشاركة ====================
+  const [shareCopied, setShareCopied] = useState(false);
+
+  // جلب الإعجابات والتعليقات الحقيقية + الاسم المستعار عند فتح الصفحة
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- قراءة/توليد الاسم المستعار المحفوظ محلياً لهذا الزائر
+    setDisplayName(getOrCreateDisplayName());
+
+    const likedBefore = window.localStorage.getItem(`liked_${PAGE_SLUG}`) === "true";
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- قراءة حالة الإعجاب المحفوظة محلياً لهذا الزائر
+    setIsLiked(likedBefore);
+
+    const likedComments = window.localStorage.getItem("liked_comments");
+    if (likedComments) {
+      try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- استرجاع قائمة التعليقات المُعجب بها من قبل
+        setLikedCommentIds(new Set(JSON.parse(likedComments)));
+      } catch {
+        // تجاهل بيانات تالفة بصمت
+      }
+    }
+
+    fetch(`/api/likes?slug=${PAGE_SLUG}`)
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setLikesCount(d.data.likes); })
+      .catch(() => {});
+
+    fetch(`/api/comments?slug=${PAGE_SLUG}`)
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setComments(buildCommentTree(d.data)); })
+      .catch(() => {})
+      .finally(() => setCommentsLoading(false));
+  }, []);
+
+  // تبديل إعجاب المنشور (بدون تسجيل دخول — تماماً كمنشور فيسبوك عام)
+  const handleToggleLike = async () => {
+    if (likeBusy) return;
+    setLikeBusy(true);
+    const nextLiked = !isLiked;
+    setIsLiked(nextLiked);
+    setLikesCount((prev) => Math.max(0, prev + (nextLiked ? 1 : -1)));
+
+    try {
+      const res = await fetch("/api/likes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: PAGE_SLUG, action: nextLiked ? "like" : "unlike" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLikesCount(data.data.likes);
+        window.localStorage.setItem(`liked_${PAGE_SLUG}`, String(nextLiked));
+      }
+    } catch {
+      setIsLiked(!nextLiked);
+      setLikesCount((prev) => Math.max(0, prev - (nextLiked ? 1 : -1)));
+    } finally {
+      setLikeBusy(false);
+    }
+  };
+
+  // تبديل إعجاب تعليق أو رد محدد (بنفس منطق إعجاب المنشور، لكن لكل تعليق على حدة)
+  const handleToggleCommentLike = async (commentId: string) => {
+    const alreadyLiked = likedCommentIds.has(commentId);
+    const nextLiked = !alreadyLiked;
+
+    // تحديث تفاؤلي فوري (شجرة متداخلة: نبحث في التعليقات الرئيسية وردودها معاً)
+    const applyDelta = (nodes: CommentNode[]): CommentNode[] =>
+      nodes.map((n) => ({
+        ...n,
+        likes: n.id === commentId ? Math.max(0, n.likes + (nextLiked ? 1 : -1)) : n.likes,
+        replies: applyDelta(n.replies),
+      }));
+    setComments((prev) => applyDelta(prev));
+
+    setLikedCommentIds((prev) => {
+      const next = new Set(prev);
+      if (nextLiked) next.add(commentId); else next.delete(commentId);
+      window.localStorage.setItem("liked_comments", JSON.stringify(Array.from(next)));
+      return next;
+    });
+
+    try {
+      await fetch(`/api/comments/${commentId}/like`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: nextLiked ? "like" : "unlike" }),
+      });
+    } catch {
+      // فشل الشبكة: نترك التحديث التفاؤلي كما هو (تجربة مستخدم أفضل من التراجع المفاجئ)
+    }
+  };
+
+  // إضافة تعليق رئيسي جديد
+  const handleAddComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!displayName.trim() || !commentMessage.trim()) {
+      setToast({ message: "الرجاء كتابة تعليق أولاً", type: "error" });
+      return;
+    }
+    setSubmittingComment(true);
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: PAGE_SLUG, name: displayName.trim(), message: commentMessage.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setComments((prev) => [{ ...data.data, replies: [] }, ...prev]);
+        setCommentMessage("");
+      } else {
+        setToast({ message: data.error || "تعذر نشر التعليق", type: "error" });
+      }
+    } catch {
+      setToast({ message: "خطأ في الاتصال بالخادم", type: "error" });
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  // إضافة رد على تعليق رئيسي
+  const handleAddReply = async (parentId: string) => {
+    if (!displayName.trim() || !replyMessage.trim()) return;
+    setSubmittingReply(true);
+    try {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: PAGE_SLUG, parentId, name: displayName.trim(), message: replyMessage.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setComments((prev) =>
+          prev.map((c) => (c.id === parentId ? { ...c, replies: [...c.replies, { ...data.data, replies: [] }] } : c))
+        );
+        setReplyMessage("");
+        setReplyingTo(null);
+      } else {
+        setToast({ message: data.error || "تعذر نشر الرد", type: "error" });
+      }
+    } catch {
+      setToast({ message: "خطأ في الاتصال بالخادم", type: "error" });
+    } finally {
+      setSubmittingReply(false);
+    }
+  };
+
+  // حفظ الاسم المستعار الجديد عند تعديله يدوياً
+  const handleSaveDisplayName = (value: string) => {
+    const trimmed = value.trim() || getOrCreateDisplayName();
+    setDisplayName(trimmed);
+    window.localStorage.setItem("comment_display_name", trimmed);
+    setEditingName(false);
+  };
+
+  // مشاركة رابط الصفحة (Web Share API على الموبايل، نسخ الرابط كبديل على الحاسوب)
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareTitle = "فيجارا بلس";
+    const shareText = "فيجارا بلس — تركيبة طبيعية مختارة للاستخدام اليومي. اكتشف العرض الآن:";
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+      } catch {
+        // المستخدم أغلق نافذة المشاركة — لا حاجة لأي إجراء
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setToast({ message: "تم نسخ رابط الصفحة! يمكنك لصقه في أي مكان للمشاركة", type: "success" });
+      setTimeout(() => setShareCopied(false), 2500);
+    } catch {
+      setToast({ message: "تعذر نسخ الرابط، انسخه يدوياً من شريط العنوان", type: "info" });
+    }
+  };
 
   const selectedPackage = useMemo(
     () => packages.find((p) => p.id === formData.packageId) || null,
@@ -722,23 +978,206 @@ export default function VijaraPlusFbExactPage() {
 
               {/* شريط التفاعل + نجوم التقييم */}
               <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E4E6EB] text-sm text-[#65676B] font-semibold">
-                <span>+30K عميل</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
+                    <ThumbsUp className="w-2.5 h-2.5 text-white fill-white" />
+                  </span>
+                  <span className="tabular-nums">{formatK(likesCount)}</span>
+                </span>
                 <span className="flex items-center gap-2">
                   <Stars rating={4.9} size="w-4 h-4" />
                   4.9/5
                 </span>
               </div>
               <div className="grid grid-cols-3 border-t border-[#E4E6EB] mt-1 pt-1">
-                <button className="flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] text-[#65676B] font-semibold text-sm transition-colors cursor-pointer">
-                  <ThumbsUp className="w-5 h-5" /> أعجبني
+                <button
+                  onClick={handleToggleLike}
+                  disabled={likeBusy}
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60 ${
+                    isLiked ? "text-[#1877F2]" : "text-[#65676B]"
+                  }`}
+                >
+                  <ThumbsUp className={`w-5 h-5 ${isLiked ? "fill-[#1877F2]" : ""}`} /> أعجبني
                 </button>
-                <button className="flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] text-[#65676B] font-semibold text-sm transition-colors cursor-pointer">
-                  <MessageSquare className="w-5 h-5" /> تعليق
+                <button
+                  onClick={() => { setShowComments((v) => !v); if (!showComments) scrollTo("post-comments"); }}
+                  className="flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] text-[#65676B] font-semibold text-sm transition-colors cursor-pointer"
+                >
+                  <MessageSquare className="w-5 h-5" /> تعليق {comments.length > 0 && `(${comments.length})`}
                 </button>
-                <button className="flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] text-[#65676B] font-semibold text-sm transition-colors cursor-pointer">
-                  <Share2 className="w-5 h-5" /> مشاركة
+                <button
+                  onClick={handleShare}
+                  className="flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] text-[#65676B] font-semibold text-sm transition-colors cursor-pointer"
+                >
+                  {shareCopied ? <Check className="w-5 h-5 text-[#42B72A]" /> : <Share2 className="w-5 h-5" />}
+                  {shareCopied ? "تم النسخ" : "مشاركة"}
                 </button>
               </div>
+
+              {/* ==================== 💬 لوحة التعليقات والردود الحقيقية (بأسلوب فيسبوك) ==================== */}
+              {showComments && (
+                <div id="post-comments" className="mt-3 pt-4 border-t border-[#E4E6EB] scroll-mt-24">
+                  {/* الاسم المستعار الحالي + إمكانية تعديله */}
+                  <div className="flex items-center gap-2 mb-3 text-xs text-[#65676B]">
+                    <div className="w-7 h-7 rounded-full bg-[#1877F2] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                      {(displayName || "؟").trim().charAt(0).toUpperCase()}
+                    </div>
+                    {editingName ? (
+                      <form
+                        onSubmit={(e) => { e.preventDefault(); handleSaveDisplayName((e.target as HTMLFormElement).nameInput.value); }}
+                        className="flex items-center gap-1.5 flex-1"
+                      >
+                        <input
+                          name="nameInput"
+                          defaultValue={displayName}
+                          autoFocus
+                          maxLength={60}
+                          className="flex-1 px-2.5 py-1.5 rounded-lg text-xs border border-[#1877F2] outline-none bg-white"
+                          placeholder="اكتب اسمك الحقيقي إن أردت"
+                        />
+                        <button type="submit" className="text-[#1877F2] hover:text-[#166FE5] cursor-pointer" aria-label="حفظ الاسم">
+                          <Check className="w-4 h-4" />
+                        </button>
+                      </form>
+                    ) : (
+                      <>
+                        <span>
+                          تُعلّق باسم <b className="text-[#050505]">{displayName}</b>
+                        </span>
+                        <button
+                          onClick={() => setEditingName(true)}
+                          className="flex items-center gap-1 text-[#1877F2] hover:underline cursor-pointer"
+                        >
+                          <Pencil className="w-3 h-3" /> تعديل
+                        </button>
+                        <button
+                          onClick={() => {
+                            window.localStorage.removeItem("comment_display_name");
+                            setDisplayName(getOrCreateDisplayName());
+                          }}
+                          className="flex items-center gap-1 text-[#65676B] hover:text-[#1877F2] cursor-pointer"
+                          title="توليد اسم مستعار جديد"
+                        >
+                          <RefreshCw className="w-3 h-3" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {/* نموذج إضافة تعليق رئيسي */}
+                  <form onSubmit={handleAddComment} className="flex gap-2 mb-5">
+                    <input
+                      type="text"
+                      value={commentMessage}
+                      onChange={(e) => setCommentMessage(e.target.value)}
+                      placeholder="اكتب تعليقاً..."
+                      maxLength={500}
+                      className="flex-1 min-w-0 px-3.5 py-2.5 rounded-lg text-sm border border-[#CED0D4] outline-none focus:border-[#1877F2] bg-[#F0F2F5] focus:bg-white transition-colors"
+                    />
+                    <button
+                      type="submit"
+                      disabled={submittingComment}
+                      className="w-10 h-10 flex-shrink-0 rounded-lg bg-[#1877F2] hover:bg-[#166FE5] text-white flex items-center justify-center transition-colors disabled:opacity-60 cursor-pointer"
+                      aria-label="نشر التعليق"
+                    >
+                      {submittingComment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </form>
+
+                  {/* قائمة التعليقات والردود */}
+                  {commentsLoading ? (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="w-5 h-5 animate-spin text-[#1877F2]" />
+                    </div>
+                  ) : comments.length === 0 ? (
+                    <p className="text-center text-sm text-[#65676B] py-4">كن أول من يعلّق على هذا المنشور!</p>
+                  ) : (
+                    <div className="space-y-4 max-h-96 overflow-y-auto pr-1">
+                      {comments.map((c) => (
+                        <div key={c.id}>
+                          {/* التعليق الرئيسي */}
+                          <div className="flex items-start gap-2.5">
+                            <div className="w-8 h-8 rounded-full bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0 font-bold text-xs">
+                              {c.name.trim().charAt(0).toUpperCase()}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="bg-[#F0F2F5] rounded-2xl px-3.5 py-2.5">
+                                <p className="text-xs font-bold text-[#050505]">{c.name}</p>
+                                <p className="text-sm text-[#050505] leading-relaxed break-words">{c.message}</p>
+                              </div>
+                              <div className="flex items-center gap-3 mt-1 px-2 text-[11px] font-bold text-[#65676B]">
+                                <button
+                                  onClick={() => handleToggleCommentLike(c.id)}
+                                  className={`hover:underline cursor-pointer flex items-center gap-1 ${likedCommentIds.has(c.id) ? "text-[#1877F2]" : ""}`}
+                                >
+                                  إعجاب {c.likes > 0 && `(${c.likes})`}
+                                </button>
+                                <button
+                                  onClick={() => setReplyingTo(replyingTo === c.id ? null : c.id)}
+                                  className="hover:underline cursor-pointer flex items-center gap-1"
+                                >
+                                  <CornerDownLeft className="w-3 h-3" /> رد
+                                </button>
+                              </div>
+
+                              {/* نموذج الرد */}
+                              {replyingTo === c.id && (
+                                <form
+                                  onSubmit={(e) => { e.preventDefault(); handleAddReply(c.id); }}
+                                  className="flex gap-2 mt-2"
+                                >
+                                  <input
+                                    type="text"
+                                    autoFocus
+                                    value={replyMessage}
+                                    onChange={(e) => setReplyMessage(e.target.value)}
+                                    placeholder={`الرد على ${c.name}...`}
+                                    maxLength={500}
+                                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-xs border border-[#CED0D4] outline-none focus:border-[#1877F2] bg-white"
+                                  />
+                                  <button
+                                    type="submit"
+                                    disabled={submittingReply}
+                                    className="w-8 h-8 flex-shrink-0 rounded-lg bg-[#1877F2] hover:bg-[#166FE5] text-white flex items-center justify-center transition-colors disabled:opacity-60 cursor-pointer"
+                                    aria-label="نشر الرد"
+                                  >
+                                    {submittingReply ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                                  </button>
+                                </form>
+                              )}
+
+                              {/* الردود المتداخلة */}
+                              {c.replies.length > 0 && (
+                                <div className="mt-2.5 space-y-2.5 border-r-2 border-[#E4E6EB] pr-3">
+                                  {c.replies.map((r) => (
+                                    <div key={r.id} className="flex items-start gap-2">
+                                      <div className="w-6 h-6 rounded-full bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0 font-bold text-[10px]">
+                                        {r.name.trim().charAt(0).toUpperCase()}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="bg-[#F0F2F5] rounded-2xl px-3 py-2">
+                                          <p className="text-[11px] font-bold text-[#050505]">{r.name}</p>
+                                          <p className="text-xs text-[#050505] leading-relaxed break-words">{r.message}</p>
+                                        </div>
+                                        <button
+                                          onClick={() => handleToggleCommentLike(r.id)}
+                                          className={`text-[10px] font-bold mt-1 px-2 hover:underline cursor-pointer ${likedCommentIds.has(r.id) ? "text-[#1877F2]" : "text-[#65676B]"}`}
+                                        >
+                                          إعجاب {r.likes > 0 && `(${r.likes})`}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

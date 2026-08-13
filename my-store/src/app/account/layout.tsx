@@ -135,26 +135,26 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Language>("ar");
+  const [lang, setLang] = useState<Language>(() => {
+    if (typeof window === "undefined") return "ar";
+    const savedLang = window.localStorage.getItem("lang") as Language;
+    return savedLang && ["ar", "fr", "en"].includes(savedLang) ? savedLang : "ar";
+  });
 
   const t = translations[lang];
 
-  // 🔹 تحميل اللغة المحفوظة
+  // 🔹 مزامنة اتجاه الصفحة مع اللغة المحفوظة (بدون استدعاء setState هنا، القيمة الأولية جاهزة أعلاه)
   useEffect(() => {
-    const savedLang = localStorage.getItem("lang") as Language;
-    if (savedLang && ["ar", "fr", "en"].includes(savedLang)) {
-      setLang(savedLang);
-      document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
-      document.documentElement.lang = savedLang;
-    }
-  }, []);
+    // eslint-disable-next-line react-hooks/immutability -- ضبط اتجاه الصفحة مطلوب هنا فعلياً عند تغيّر اللغة
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    // eslint-disable-next-line react-hooks/immutability -- ضبط اتجاه الصفحة مطلوب هنا فعلياً عند تغيّر اللغة
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   // 🔹 تغيير اللغة مع تحديث الاتجاه
   const changeLang = (newLang: Language) => {
     setLang(newLang);
-    localStorage.setItem("lang", newLang);
-    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = newLang;
+    window.localStorage.setItem("lang", newLang);
   };
 
   // ✅ التصحيح: مبدل اللغة في الجهة المعاكس للـ Sidebar
@@ -253,7 +253,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={async () => {
+              // ✅ إصلاح تسجيل الخروج: إعادة تحميل كاملة تضمن مسح الجلسة فعلياً
+              await signOut({ redirect: false });
+              window.location.href = "/login";
+            }}
             className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500"
             aria-label={t.logout}
           >
@@ -304,9 +308,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             );
           })}
           <button
-            onClick={() => {
+            onClick={async () => {
               setMobileMenuOpen(false);
-              signOut({ callbackUrl: "/login" });
+              // ✅ إصلاح تسجيل الخروج: إعادة تحميل كاملة تضمن مسح الجلسة فعلياً
+              await signOut({ redirect: false });
+              window.location.href = "/login";
             }}
             className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 mt-2"
             aria-label={t.logout}

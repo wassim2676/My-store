@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import type { Prisma } from "@prisma/client";
 
 // ==================== 🔐 مخططات التحقق (Zod) ====================
 
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
     const maxTotal = searchParams.get("maxTotal");
 
     // بناء شرط الاستعلام
-    const where: any = {};
+    const where: Prisma.ManualOrderWhereInput = {};
 
     // فلاتر الحالة
     if (status && status !== "all") where.status = status;
@@ -200,7 +201,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // قراءة الجسم والتحقق من صحته
-    let body: any;
+    let body: unknown;
     try {
       body = await request.json();
     } catch {

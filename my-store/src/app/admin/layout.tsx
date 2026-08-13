@@ -70,7 +70,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <div className="absolute bottom-0 start-0 end-0 p-4 border-t border-gray-200 dark:border-gray-800">
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={async () => {
+              // ✅ إصلاح تسجيل الخروج: إعادة تحميل كاملة بدل تنقّل داخلي فقط
+              await signOut({ redirect: false });
+              window.location.href = "/login";
+            }}
             className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
@@ -93,12 +97,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Bell className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-3 ps-4 border-s border-gray-200 dark:border-gray-800">
-                <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-medium text-sm cursor-pointer">
-                  {session?.user?.firstName?.[0] || "A"}
+                <div className="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-sm flex-shrink-0">
+                  {session?.user?.firstName?.[0]?.toUpperCase() || "A"}
                 </div>
-                <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {session?.user?.firstName || "Admin"}
-                </span>
+                <div className="hidden sm:flex flex-col leading-tight">
+                  <span className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                    {session?.user?.firstName || "Admin"}
+                  </span>
+                  {session?.user?.email && (
+                    <span className="text-xs text-gray-400 dark:text-gray-500">{session.user.email}</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
