@@ -41,27 +41,33 @@ const packages: PackageOption[] = [
   {
     id: 1, name: "باقة تجريبية", boxes: 1, duration: "شهر واحد",
     price: 500, originalPrice: 600, save: 100, popular: false,
-    features: ["عبوة واحدة من المنتج", "توصيل لجميع المدن", "الدفع عند الاستلام"],
+    features: ["علبة واحدة من المنتج", "توصيل لجميع المدن", "الدفع عند الاستلام"],
   },
   {
     id: 2, name: "باقة التوفير", boxes: 2, duration: "شهران",
     price: 900, originalPrice: 1200, save: 300, popular: true,
-    features: ["عبوتان من المنتج", "قيمة أفضل للكمية", "توصيل سريع مجاني", "الدفع عند الاستلام"],
+    features: ["علبتان من المنتج", "قيمة أفضل للكمية", "توصيل سريع مجاني", "الدفع عند الاستلام"],
   },
   {
     id: 3, name: "باقة القوة", boxes: 3, duration: "3 أشهر",
     price: 1200, originalPrice: 1800, save: 600, popular: false,
-    features: ["3 عبوات من المنتج", "أعلى قيمة للكمية", "توصيل سريع مجاني", "الدفع عند الاستلام"],
+    features: ["3 علب من المنتج", "أعلى قيمة للكمية", "توصيل سريع مجاني", "الدفع عند الاستلام"],
   },
 ];
 
-// ==================== 📸 صور المنتج ====================
-// ✅ يمكن استبدال الروابط بصور محلية من /public مثل: "/images/vijara-1.jpg"
+// ==================== 📸 صور المنتج الحقيقية (من public/products) ====================
 const productImages = [
-  { url: "https://images.unsplash.com/photo-1584308972272-9cf4b93c8c65?w=900&h=700&fit=crop", alt: "فيجارا بلس - المظهر الطبيعي الموثوق" },
-  { url: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=900&h=700&fit=crop", alt: "مكونات طبيعية نقية لفيجارا بلس" },
-  { url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&h=700&fit=crop", alt: "فوائد مثبتة علمياً لفيجارا بلس" },
-  { url: "https://images.unsplash.com/photo-1550596334-7bb40a71b6bc?w=900&h=700&fit=crop", alt: "علب فيجارا بلس الفاخرة والأصلية" },
+  { url: "/products/vijara1.png", alt: "فيجارا بلس - المظهر الطبيعي الموثوق" },
+  { url: "/products/vijara2.png", alt: "مكونات طبيعية نقية لفيجارا بلس" },
+  { url: "/products/vijara3.png", alt: "علب فيجارا بلس الفاخرة والأصلية" },
+];
+
+// ==================== 🖼️ بطاقات سيكشن المعرض (صورة تجريبية موحّدة حالياً) ====================
+const galleryCards = [
+  { id: 1, desc: "تعبئة أصلية ومحكمة الإغلاق تصلك بنفس الجودة التي تراها هنا." },
+  { id: 2, desc: "تركيبة مختارة بعناية لتناسب الاستخدام اليومي دون أي إزعاج." },
+  { id: 3, desc: "علبة عملية سهلة الحمل، مناسبة لجدولك اليومي أينما كنت." },
+  { id: 4, desc: "نفس المنتج الذي يثق به آلاف العملاء يومياً في كل المدن." },
 ];
 
 // ==================== 🌿 المكونات الفعّالة (سيكشن جديد تحت الهيرو) ====================
@@ -160,6 +166,7 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
   const navLinks = [
     { id: "home", label: "الرئيسية" },
     { id: "ingredients", label: "المكونات" },
+    { id: "gallery", label: "المعرض" },
     { id: "why", label: "لماذا نحن" },
     { id: "packages", label: "الباقات" },
     { id: "order-form", label: "الطلب" },
@@ -247,16 +254,25 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
             <button
               onClick={() => setMobileOpen((v) => !v)}
               className="w-10 h-10 rounded-full bg-[#F0F2F5] hover:bg-[#E4E6EB] flex items-center justify-center text-[#050505] transition-colors cursor-pointer lg:hidden"
-              aria-label="القائمة"
+              aria-label={mobileOpen ? "إغلاق القائمة" : "فتح القائمة"}
             >
-              <Menu className="w-5 h-5" />
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
+        {/* تظليل خفيف خلف القائمة عند فتحها — الضغط عليه يغلق القائمة (بدون ضبابية أو تعتيم مبالغ فيه) */}
+        {mobileOpen && (
+          <div
+            className="fixed inset-0 bg-black/10 z-30 lg:hidden"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* قائمة الموبايل */}
         {mobileOpen && (
-          <nav className="lg:hidden flex flex-col gap-1 pb-4 border-t border-[#E4E6EB] pt-3">
+          <nav className="relative z-40 lg:hidden flex flex-col gap-1 pb-4 border-t border-[#E4E6EB] pt-3 bg-white">
             {navLinks.map((link) => (
               <button
                 key={link.id}
@@ -281,7 +297,7 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
   );
 }
 
-// ==================== 🖼️ معرض الصور — صور مندمجة لا تملأ الإطار ====================
+// ==================== 🖼️ معرض الصور — صور مندمجة لا تملأ الإطار، بدعم كامل للسحب باللمس ====================
 function PostGallery({ images, activeIndex, onChange }: {
   images: { url: string; alt: string }[];
   activeIndex: number;
@@ -290,23 +306,51 @@ function PostGallery({ images, activeIndex, onChange }: {
   const prevIdx = (activeIndex - 1 + images.length) % images.length;
   const nextIdx = (activeIndex + 1) % images.length;
 
+  // ✅ دعم السحب باللمس (سوايب) على الهاتف — بنفس منطق أزرار التنقل تماماً
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+  const handleTouchEnd = () => {
+    const SWIPE_THRESHOLD = 40;
+    if (touchDeltaX.current <= -SWIPE_THRESHOLD) {
+      onChange(nextIdx); // سحب لليسار → الصورة التالية
+    } else if (touchDeltaX.current >= SWIPE_THRESHOLD) {
+      onChange(prevIdx); // سحب لليمين → الصورة السابقة
+    }
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+  };
+
   return (
-    <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-[#F7F8FA] overflow-hidden select-none">
-      {/* معاينة جانبية (يمين) — بطاقة مندمجة بحواف ناعمة */}
-      <div className="hidden sm:block absolute top-[14%] bottom-[16%] right-0 w-[17%] rounded-xl overflow-hidden opacity-70 shadow-lg">
-        <Image src={images[prevIdx].url} alt="" fill sizes="17vw" className="object-cover" loading="lazy" unoptimized />
+    <div
+      className="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-[#F7F8FA] overflow-hidden select-none touch-pan-y"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* معاينة جانبية (يمين) — تظهر في الهاتف والحاسوب على حدٍ سواء الآن */}
+      <div className="block absolute top-[14%] bottom-[16%] right-0 w-[17%] rounded-xl overflow-hidden opacity-70 shadow-lg bg-white">
+        <Image src={images[prevIdx].url} alt="" fill sizes="17vw" className="object-contain p-1.5 sm:p-2" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-l from-white/30 via-white/55 to-white/80" />
       </div>
       {/* معاينة جانبية (يسار) */}
-      <div className="hidden sm:block absolute top-[14%] bottom-[16%] left-0 w-[17%] rounded-xl overflow-hidden opacity-70 shadow-lg">
-        <Image src={images[nextIdx].url} alt="" fill sizes="17vw" className="object-cover" loading="lazy" unoptimized />
+      <div className="block absolute top-[14%] bottom-[16%] left-0 w-[17%] rounded-xl overflow-hidden opacity-70 shadow-lg bg-white">
+        <Image src={images[nextIdx].url} alt="" fill sizes="17vw" className="object-contain p-1.5 sm:p-2" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/55 to-white/80" />
       </div>
 
-      {/* الصورة الرئيسية — لا تملأ الإطار: هوامش تنفس + حواف دائرية مندمجة */}
+      {/* الصورة الرئيسية — تملأ الإطار دون أي قصّ، بغض النظر عن أبعاد الصورة الأصلية */}
       <div
         key={activeIndex}
-        className="absolute top-[5%] bottom-[9%] right-[5%] left-[5%] sm:top-[8%] sm:bottom-[13%] sm:right-[13%] sm:left-[13%] rounded-xl overflow-hidden shadow-[0_18px_45px_rgba(0,0,0,0.14)] ring-1 ring-black/5"
+        className="absolute top-[6%] bottom-[11%] right-[13%] left-[13%] sm:top-[8%] sm:bottom-[13%] rounded-xl overflow-hidden shadow-[0_18px_45px_rgba(0,0,0,0.14)] ring-1 ring-black/5 bg-white"
         style={{ animation: "galleryZoom 0.45s ease" }}
       >
         <Image
@@ -314,10 +358,9 @@ function PostGallery({ images, activeIndex, onChange }: {
           alt={images[activeIndex].alt}
           fill
           sizes="(max-width: 640px) 90vw, 70vw"
-          className="object-cover"
+          className="object-contain p-3 sm:p-5"
           priority={activeIndex === 0}
           loading={activeIndex === 0 ? "eager" : "lazy"}
-          unoptimized
         />
         {/* دمج الحواف مع الخلفية */}
         <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(255,255,255,0.12)]" />
@@ -578,7 +621,6 @@ export default function VijaraPlusFbExactPage() {
     fullName: "", phone: "", city: "", address: "", quantity: "", packageId: null,
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [mobileQuantityMode, setMobileQuantityMode] = useState<"preset" | "custom">("preset");
   const [offerClaims, setOfferClaims] = useState(2500);
   const orderFormRef = useRef<HTMLDivElement>(null);
 
@@ -793,16 +835,21 @@ export default function VijaraPlusFbExactPage() {
     if (Number.isFinite(stored) && stored >= 2500) setOfferClaims(Math.floor(stored));
   }, []);
 
-  const totalPrice = selectedPackage
-    ? selectedPackage.price * (formData.quantity === "" ? 1 : formData.quantity)
-    : 0;
+  const totalPrice = selectedPackage ? selectedPackage.price : 0;
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  // ✅ اختيار الباقة (من البطاقات الجانبية أو من خانة "اختيار الباقة" داخل النموذج) — يُحدّث الكمية تلقائياً معه
   const choosePackage = (id: number) => {
-    setFormData((f) => ({ ...f, packageId: id }));
+    const pkg = packages.find((p) => p.id === id);
+    setFormData((f) => ({ ...f, packageId: id, quantity: pkg ? pkg.boxes : f.quantity }));
+  };
+
+  // نفس اختيار الباقة لكن مع التمرير التلقائي لقسم الطلب (تُستخدم من بطاقات الباقات خارج النموذج)
+  const choosePackageAndScroll = (id: number) => {
+    choosePackage(id);
     scrollTo("order-form");
   };
 
@@ -812,9 +859,8 @@ export default function VijaraPlusFbExactPage() {
     if (!formData.phone.trim()) errors.phone = "رقم الهاتف مطلوب";
     else if (!/^[\d\s-]{6,15}$/.test(formData.phone)) errors.phone = "صيغة رقم الهاتف غير صالحة";
     if (!formData.city.trim()) errors.city = "الرجاء تحديد المدينة";
-    if (formData.quantity === "" || formData.quantity < 1) errors.quantity = "الرجاء تحديد الكمية";
     if (!formData.address.trim()) errors.address = "العنوان الدقيق مطلوب";
-    if (!formData.packageId) errors.packageId = "الرجاء اختيار باقة أولاً من قسم الباقات";
+    if (!formData.packageId) errors.packageId = "الرجاء اختيار باقة أولاً";
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -841,7 +887,7 @@ export default function VijaraPlusFbExactPage() {
         city: formData.city,
         address: formData.address,
         productType: selectedPackage.name,
-        quantity: Number(formData.quantity),
+        quantity: selectedPackage.boxes,
         unitPrice: selectedPackage.price,
         paymentMethod: "COD",
         sourcePage: "/product/vijara-plus",
@@ -860,7 +906,6 @@ export default function VijaraPlusFbExactPage() {
         });
         setToast({ message: "🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً لتأكيد التسليم.", type: "success" });
         setFormData({ fullName: "", phone: "", city: "", address: "", quantity: "", packageId: null });
-        setMobileQuantityMode("preset");
       } else {
         setToast({ message: result.error || "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى", type: "error" });
       }
@@ -963,14 +1008,15 @@ export default function VijaraPlusFbExactPage() {
               <h1 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">فيجارا بلس</h1>
               <p className="text-sm text-[#65676B] font-normal mt-1">منتج يومي · الدفع عند الاستلام · توصيل سريع</p>
               <div className="flex items-center gap-3 mt-4 flex-wrap">
-                <span className="text-2xl sm:text-3xl font-bold text-[#050505]">{packages[0].price} درهم</span>
-                <span className="text-base text-[#8A8D91] line-through font-normal">{packages[0].originalPrice} درهم</span>
-                <span className="text-xs font-semibold text-[#1877F2] bg-[#E7F3FF] border border-[#1877F2]/20 px-2.5 py-1.5 rounded-lg">
+                <p className="text-base sm:text-lg font-semibold text-[#050505] leading-snug">
+                  حدّد الباقة التي تناسبك من عروضنا وأكمل طلبك
+                </p>
+                <span className="text-xs font-semibold text-[#1877F2] bg-[#E7F3FF] border border-[#1877F2]/20 px-2.5 py-1.5 rounded-lg whitespace-nowrap">
                   عرض محدود
                 </span>
               </div>
               <button
-                onClick={() => choosePackage(packages[0].id)}
+                onClick={() => choosePackageAndScroll(packages[0].id)}
                 className="w-full mt-5 py-3.5 bg-[#1877F2] hover:bg-[#166FE5] text-white font-semibold text-base rounded-xl transition-colors cursor-pointer"
               >
                 اطلب الآن
@@ -1193,7 +1239,7 @@ export default function VijaraPlusFbExactPage() {
                 {packages.map((pkg) => (
                   <button
                     key={pkg.id}
-                    onClick={() => choosePackage(pkg.id)}
+                    onClick={() => choosePackageAndScroll(pkg.id)}
                     className={`w-full flex items-center justify-between rounded-xl border p-4 transition-all cursor-pointer text-right min-h-[92px] ${
                       formData.packageId === pkg.id
                         ? "border-[#1877F2] bg-[#E7F3FF] ring-2 ring-[#1877F2]/15"
@@ -1207,7 +1253,7 @@ export default function VijaraPlusFbExactPage() {
                           <span className="text-[10px] font-semibold text-white bg-[#1877F2] px-2 py-0.5 rounded-full">الأكثر طلباً</span>
                         )}
                       </p>
-                      <p className="text-xs text-[#65676B] font-normal mt-1">{pkg.boxes} عبوة · {pkg.duration}</p>
+                      <p className="text-xs text-[#65676B] font-normal mt-1">{pkg.boxes} علبة · {pkg.duration}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-base font-semibold text-[#1877F2]">{pkg.price} د</span>
@@ -1299,7 +1345,62 @@ export default function VijaraPlusFbExactPage() {
           </div>
         </section>
 
-        {/* ==================== لماذا يختار العملاء فيجارا بلس؟ ==================== */}
+        {/* ==================== 🖼️ معرض صور المنتج — بأسلوب منشور فيسبوك (سيكشن ثالث) ==================== */}
+        <section id="gallery" className="mt-2 sm:mt-3 scroll-mt-24">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+            {/* رأس بأسلوب منشور فيسبوك */}
+            <div className="px-4 sm:px-5 pt-4 pb-3">
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm text-[#050505] flex items-center gap-1">
+                    فيجارا بلس
+                    <BadgeCheck className="w-3.5 h-3.5 text-[#1877F2]" />
+                  </p>
+                  <p className="text-[11px] text-[#65676B] flex items-center gap-1">
+                    معرض الصور <Globe2 className="w-3 h-3" />
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-[#050505] leading-relaxed">
+                <span className="font-semibold">فيجارا بلس</span> — لمحة أقرب على المنتج من كل الزوايا، تعبئة أصلية ومحكمة تصل إليك كما تراها هنا تماماً.
+              </p>
+            </div>
+
+            {/* بطاقات الصور — سكرول جانبي في الهاتف، شبكة كاملة في الحاسوب (بأسلوب فيسبوك تماماً) */}
+            <div className="flex sm:grid sm:grid-cols-4 gap-2.5 px-4 sm:px-5 pb-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory sm:snap-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {galleryCards.map((card) => (
+                <div
+                  key={card.id}
+                  className="flex-shrink-0 w-[72%] sm:w-auto rounded-xl overflow-hidden border border-[#E4E6EB] bg-white snap-center flex flex-col shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="relative aspect-square bg-[#F7F8FA]">
+                    <Image
+                      src="/products/all-vijara.png"
+                      alt={`فيجارا بلس - صورة ${card.id}`}
+                      fill
+                      sizes="(max-width: 640px) 70vw, 23vw"
+                      className="object-contain p-3"
+                      loading="lazy"
+                    />
+                  </div>
+                  {/* ✅ الجزء السفلي — وصف بسيط + زر اطلب الآن بأسلوب فيسبوك الرمادي */}
+                  <div className="p-3 flex flex-col gap-2.5 flex-1">
+                    <p className="text-xs text-[#65676B] leading-relaxed flex-1">{card.desc}</p>
+                    <button
+                      onClick={() => choosePackageAndScroll(packages[0].id)}
+                      className="w-full py-2 bg-[#F0F2F5] hover:bg-[#E4E6EB] text-[#050505] text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                    >
+                      اطلب الآن
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
         <section id="why" className="mt-2 sm:mt-3 scroll-mt-24">
           <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
             <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
@@ -1348,7 +1449,7 @@ export default function VijaraPlusFbExactPage() {
             </div>
 
           <div className="grid md:grid-cols-3 gap-3 p-3 sm:p-4 items-stretch">
-            {packages.map((pkg) => {
+            {packages.map((pkg, pkgIndex) => {
               const selected = formData.packageId === pkg.id;
               return (
                 <div
@@ -1376,13 +1477,12 @@ export default function VijaraPlusFbExactPage() {
                   {/* ✅ صورة أطول عمودياً، مندمجة بدون حواف حادة */}
                   <div className="relative h-52 sm:h-56 rounded-xl bg-gradient-to-b from-[#F7F8FA] to-white border border-[#E4E6EB]/70 overflow-hidden mb-4 flex items-center justify-center p-5">
                     <Image
-                      src={productImages[3].url}
+                      src={productImages[pkgIndex % productImages.length].url}
                       alt={pkg.name}
                       fill
                       sizes="(max-width: 768px) 90vw, 30vw"
                       className="object-contain rounded-lg drop-shadow-xl p-5"
                       loading="lazy"
-                      unoptimized
                     />
                     <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none" />
                     <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-white/70 to-transparent pointer-events-none" />
@@ -1406,7 +1506,7 @@ export default function VijaraPlusFbExactPage() {
                   </ul>
 
                   <button
-                    onClick={() => choosePackage(pkg.id)}
+                    onClick={() => choosePackageAndScroll(pkg.id)}
                     className={`mt-auto w-full py-3.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
                       selected
                         ? "bg-[#F0F2F5] text-[#1877F2] border border-[#1877F2]/30"
@@ -1477,89 +1577,31 @@ export default function VijaraPlusFbExactPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label dir="rtl" className="block text-right text-sm font-semibold text-[#050505] mb-2">الكمية <span className="text-[#DC2626] font-bold">*</span></label>
+                      <label dir="rtl" className="block text-right text-sm font-semibold text-[#050505] mb-2">اختيار الباقة <span className="text-[#DC2626] font-bold">*</span></label>
 
-                      {/* الحاسوب: إدخال مباشر بدون إظهار 1 افتراضياً */}
-                      <div className="hidden sm:block">
-                        <input
-                          type="number"
-                          min="1"
-                          step="1"
-                          inputMode="numeric"
-                          value={formData.quantity}
-                          onChange={(e) => {
-                            const raw = e.target.value;
-                            if (raw === "") {
-                              setFormData({ ...formData, quantity: "" });
-                              return;
-                            }
-                            const value = Number(raw);
-                            setFormData({
-                              ...formData,
-                              quantity: Number.isFinite(value) && value >= 1 ? Math.floor(value) : "",
-                            });
-                          }}
-                          className={`${inputBase} ${formErrors.quantity ? inputErr : inputOk} text-right`}
-                          placeholder="اكتب الكمية التي تريدها"
-                          aria-label="الكمية"
-                        />
-                      </div>
+                      {/* ✅ خانة إضافية لاختيار الباقة (تتزامن تلقائياً مع البطاقات بالأعلى) — تعرض سعر كل باقة */}
+                      <select
+                        value={formData.packageId === null ? "" : String(formData.packageId)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === "") {
+                            setFormData({ ...formData, packageId: null });
+                          } else {
+                            choosePackage(Number(value));
+                          }
+                        }}
+                        className={`${inputBase} ${formErrors.packageId ? inputErr : inputOk} text-right bg-white`}
+                        aria-label="اختر الباقة"
+                      >
+                        <option value="">اختر الباقة</option>
+                        {packages.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.name} — {p.price} درهم
+                          </option>
+                        ))}
+                      </select>
 
-                      {/* الهاتف: اختيارات جاهزة + خيار لكتابة أي رقم */}
-                      <div className="sm:hidden space-y-2">
-                        <select
-                          value={mobileQuantityMode === "custom" ? "custom" : (formData.quantity === "" ? "" : String(formData.quantity))}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "custom") {
-                              setMobileQuantityMode("custom");
-                              setFormData({ ...formData, quantity: "" });
-                            } else if (value === "") {
-                              setMobileQuantityMode("preset");
-                              setFormData({ ...formData, quantity: "" });
-                            } else {
-                              setMobileQuantityMode("preset");
-                              setFormData({ ...formData, quantity: Number(value) });
-                            }
-                          }}
-                          className={`${inputBase} ${formErrors.quantity ? inputErr : inputOk} text-right bg-white`}
-                          aria-label="اختر الكمية"
-                        >
-                          <option value="">اختر الكمية</option>
-                          {Array.from({ length: 10 }, (_, i) => i + 1).map((qty) => (
-                            <option key={qty} value={qty}>{qty}</option>
-                          ))}
-                          <option value="custom">✎ كتابة رقم آخر</option>
-                        </select>
-
-                        {mobileQuantityMode === "custom" && (
-                          <input
-                            type="number"
-                            min="1"
-                            step="1"
-                            inputMode="numeric"
-                            value={formData.quantity}
-                            onChange={(e) => {
-                              const raw = e.target.value;
-                              if (raw === "") {
-                                setFormData({ ...formData, quantity: "" });
-                                return;
-                              }
-                              const value = Number(raw);
-                              setFormData({
-                                ...formData,
-                                quantity: Number.isFinite(value) && value >= 1 ? Math.floor(value) : "",
-                              });
-                            }}
-                            className={`${inputBase} ${formErrors.quantity ? inputErr : inputOk} text-right`}
-                            placeholder="اكتب الرقم الذي تريده"
-                            aria-label="اكتب كمية مخصصة"
-                            autoFocus
-                          />
-                        )}
-                      </div>
-
-                      {formErrors.quantity && <p className="text-[#DC2626] text-xs mt-1.5 font-semibold">{formErrors.quantity}</p>}
+                      {formErrors.packageId && <p className="text-[#DC2626] text-xs mt-1.5 font-semibold">{formErrors.packageId}</p>}
                     </div>
                     <div>
                       <label dir="rtl" className="block text-right text-sm font-semibold text-[#050505] mb-2">المدينة <span className="text-[#E41E3F] font-bold">*</span></label>
@@ -1594,8 +1636,7 @@ export default function VijaraPlusFbExactPage() {
                     {selectedPackage ? (
                       <div className="space-y-2.5 text-sm">
                         <div className="flex justify-between"><span className="text-[#65676B] font-normal">الباقة:</span><span className="font-semibold">{selectedPackage.name}</span></div>
-                        <div className="flex justify-between"><span className="text-[#65676B] font-normal">الكمية:</span><span className="font-semibold">× {formData.quantity === "" ? "—" : formData.quantity}</span></div>
-                        <div className="flex justify-between"><span className="text-[#65676B] font-normal">سعر الوحدة:</span><span className="font-semibold">{selectedPackage.price} درهم</span></div>
+                        <div className="flex justify-between"><span className="text-[#65676B] font-normal">عدد العلب:</span><span className="font-semibold">{selectedPackage.boxes}</span></div>
                         <div className="flex justify-between"><span className="text-[#65676B] font-normal">الدفع:</span><span className="font-semibold">عند الاستلام</span></div>
                         <div className="flex justify-between border-t border-[#1877F2]/20 pt-3 mt-3">
                           <span className="font-semibold text-[#050505]">الإجمالي:</span>
@@ -1671,7 +1712,7 @@ export default function VijaraPlusFbExactPage() {
                 <div className="flex justify-between"><span className="text-[#65676B] font-normal">الاسم:</span><span className="font-semibold">{formData.fullName}</span></div>
                 <div className="flex justify-between"><span className="text-[#65676B] font-normal">الهاتف:</span><span className="font-semibold font-mono" dir="ltr">{formData.phone}</span></div>
                 <div className="flex justify-between"><span className="text-[#65676B] font-normal">العنوان:</span><span className="font-semibold">{formData.city}، {formData.address}</span></div>
-                <div className="flex justify-between border-t border-[#E4E6EB] pt-3 mt-3"><span className="text-[#65676B] font-semibold">الباقة:</span><span className="font-semibold text-[#1877F2]">{selectedPackage.name} × {formData.quantity}</span></div>
+                <div className="flex justify-between border-t border-[#E4E6EB] pt-3 mt-3"><span className="text-[#65676B] font-semibold">الباقة:</span><span className="font-semibold text-[#1877F2]">{selectedPackage.name}</span></div>
                 <div className="flex justify-between"><span className="text-[#65676B] font-semibold">الإجمالي:</span><span className="font-semibold text-base">{totalPrice} درهم</span></div>
               </div>
               <div className="flex gap-3 pt-1">
