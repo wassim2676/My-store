@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, OrderStatus, CallStatus, PaymentStatus } from "@prisma/client";
 
 // ==================== 🔐 مخططات التحقق (Zod) ====================
 
@@ -75,9 +75,9 @@ export async function GET(request: NextRequest) {
     const where: Prisma.ManualOrderWhereInput = {};
 
     // فلاتر الحالة
-    if (status && status !== "all") where.status = status;
-    if (callStatus && callStatus !== "all") where.callStatus = callStatus;
-    if (paymentStatus && paymentStatus !== "all") where.paymentStatus = paymentStatus;
+    if (status && status !== "all") where.status = status as OrderStatus;
+    if (callStatus && callStatus !== "all") where.callStatus = callStatus as CallStatus;
+    if (paymentStatus && paymentStatus !== "all") where.paymentStatus = paymentStatus as PaymentStatus;
     
     // فلاتر الموقع
     if (city && city !== "all") where.city = { contains: city, mode: "insensitive" as const };
