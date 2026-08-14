@@ -266,7 +266,7 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
       {/* تظليل خفيف خلف القائمة عند فتحها — الضغط عليه يغلق القائمة (بدون ضبابية أو تعتيم مبالغ فيه) */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/10 z-30 lg:hidden"
+          className="fixed top-16 sm:top-[70px] left-0 right-0 bottom-0 bg-black/10 z-30 lg:hidden"
           onClick={() => setMobileOpen(false)}
           aria-hidden="true"
         />
@@ -341,17 +341,17 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
       onTouchEnd={handleTouchEnd}
     >
       {/* معاينة جانبية (يمين) — تظهر في الهاتف والحاسوب على حدٍ سواء الآن */}
-      <div className="block absolute top-[14%] bottom-[16%] right-0 w-[17%] rounded-xl overflow-hidden opacity-70 shadow-lg bg-white">
-        <Image src={images[prevIdx].url} alt="" fill sizes="17vw" className="object-contain p-1.5 sm:p-2" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-l from-white/30 via-white/55 to-white/80" />
+      <div className="block absolute top-[14%] bottom-[16%] right-0 w-[17%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
+        <Image src={images[prevIdx].url} alt="" fill sizes="17vw" className="object-contain p-1" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#F7F8FA]/20 via-[#F7F8FA]/45 to-[#F7F8FA]/75" />
       </div>
       {/* معاينة جانبية (يسار) */}
-      <div className="block absolute top-[14%] bottom-[16%] left-0 w-[17%] rounded-xl overflow-hidden opacity-70 shadow-lg bg-white">
-        <Image src={images[nextIdx].url} alt="" fill sizes="17vw" className="object-contain p-1.5 sm:p-2" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/55 to-white/80" />
+      <div className="block absolute top-[14%] bottom-[16%] left-0 w-[17%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
+        <Image src={images[nextIdx].url} alt="" fill sizes="17vw" className="object-contain p-1" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F7F8FA]/20 via-[#F7F8FA]/45 to-[#F7F8FA]/75" />
       </div>
 
-      {/* الصورة الرئيسية — تملأ الإطار دون أي قصّ، قابلة للضغط لعرضها بملء الشاشة */}
+      {/* الصورة الرئيسية — بدون إطار أبيض، فقط خط رفيع أنيق محيط بها لمشهد مندمج بالكامل */}
       <div
         key={activeIndex}
         onClick={onExpand}
@@ -359,7 +359,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
         aria-label="تكبير الصورة"
-        className="absolute top-[6%] bottom-[11%] right-[13%] left-[13%] sm:top-[8%] sm:bottom-[13%] rounded-xl overflow-hidden shadow-[0_18px_45px_rgba(0,0,0,0.14)] ring-1 ring-black/5 bg-white cursor-zoom-in"
+        className="absolute top-[6%] bottom-[11%] right-[13%] left-[13%] sm:top-[8%] sm:bottom-[13%] rounded-xl overflow-hidden border border-[#1877F2]/15 shadow-md cursor-zoom-in"
         style={{ animation: "galleryZoom 0.45s ease" }}
       >
         <Image
@@ -367,12 +367,10 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           alt={images[activeIndex].alt}
           fill
           sizes="(max-width: 640px) 90vw, 70vw"
-          className="object-contain p-3 sm:p-5"
+          className="object-contain p-1.5 sm:p-2"
           priority={activeIndex === 0}
           loading={activeIndex === 0 ? "eager" : "lazy"}
         />
-        {/* دمج الحواف مع الخلفية */}
-        <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(255,255,255,0.12)]" />
         {/* شارة طبيعي 100% */}
         <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs font-semibold text-[#1877F2] shadow-md flex items-center gap-1">
           <BadgeCheck className="w-3.5 h-3.5" />
@@ -611,7 +609,7 @@ function FAQSection() {
 
   return (
     <section id="faqs" className="py-3 sm:py-4 px-0 sm:px-4 lg:px-6 scroll-mt-20">
-      <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
         <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
           <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505] tracking-tight">الأسئلة الشائعة</h2>
           <p className="text-[#65676B] text-sm font-normal mt-0.5">إجابات سريعة قبل إتمام طلبك</p>
@@ -1437,7 +1435,7 @@ export default function VijaraPlusFbExactPage() {
             </div>
 
             {/* ملاحظة الخصوصية */}
-            <div className="bg-white border border-[#E4E6EB] rounded-xl p-4 flex items-start gap-2.5">
+            <div className="bg-white border-y sm:border border-[#E4E6EB] rounded-none sm:rounded-xl p-4 flex items-start gap-2.5">
               <span className="text-base flex-shrink-0">🔒</span>
               <p className="text-xs text-[#65676B] leading-relaxed font-normal">
                 بياناتك تُستخدم فقط لمعالجة طلبك والتواصل معك لتأكيد التسليم.
