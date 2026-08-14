@@ -57,9 +57,9 @@ const packages: PackageOption[] = [
 
 // ==================== 📸 صور المنتج الحقيقية (من public/products) ====================
 const productImages = [
-  { url: "/products/vijara1.png", alt: "فيجارا بلس - المظهر الطبيعي الموثوق" },
-  { url: "/products/vijara2.png", alt: "مكونات طبيعية نقية لفيجارا بلس" },
-  { url: "/products/vijara3.png", alt: "علب فيجارا بلس الفاخرة والأصلية" },
+  { url: "/products/erovia1.png", alt: "إيروفيا بلس - المظهر الطبيعي الموثوق" },
+  { url: "/products/erovia2.png", alt: "مكونات طبيعية نقية لإيروفيا بلس" },
+  { url: "/products/erovia3.png", alt: "علب إيروفيا بلس الفاخرة والأصلية" },
 ];
 
 // ==================== 🖼️ بطاقات سيكشن المعرض (صورة تجريبية موحّدة حالياً) ====================
@@ -100,7 +100,7 @@ const ingredients = [
 
 // ==================== ❓ الأسئلة الشائعة ====================
 const faqs = [
-  { question: "ما هو فيجارا بلس وكيف يعمل؟", answer: "منتج طبيعي 100% مستخلص من أعشاب نادرة، يعزز الطاقة والحيوية بشكل طبيعي وآمن." },
+  { question: "ما هو إيروفيا بلس وكيف يعمل؟", answer: "منتج طبيعي 100% مستخلص من أعشاب نادرة، يعزز الطاقة والحيوية بشكل طبيعي وآمن." },
   { question: "كم من الوقت يستغرق ظهور النتائج؟", answer: "معظم العملاء يلاحظون تحسناً خلال الأسبوع الأول من الاستخدام المنتظم." },
   { question: "هل يمكنني الدفع عند الاستلام؟", answer: "نعم، نقبل الدفع عند الاستلام (COD) في كل المدن التي نخدمها." },
   { question: "ما هي سياسة الاسترداد؟", answer: "ضمان استرداد الأموال لمدة 14 يوماً إذا لم تكن راضياً عن المنتج لأي سبب." },
@@ -209,7 +209,7 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div className="text-right">
-              <p className="font-semibold text-base sm:text-lg text-[#050505] leading-none tracking-tight">فيجارا بلس</p>
+              <p className="font-semibold text-base sm:text-lg text-[#050505] leading-none tracking-tight">إيروفيا بلس</p>
               <p className="text-[11px] text-[#65676B] font-semibold mt-1">متجر رسمي · أصلي 100%</p>
             </div>
           </button>
@@ -236,7 +236,7 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
             <div className="hidden md:flex items-center gap-2 bg-[#F0F2F5] rounded-full pr-4 pl-1.5 py-1.5 w-64 lg:w-80">
               <input
                 type="text"
-                placeholder="بحث في فيجارا بلس"
+                placeholder="بحث في إيروفيا بلس"
                 className="flex-1 bg-transparent outline-none text-sm text-[#050505] placeholder-[#65676B] min-w-0"
                 readOnly
               />
@@ -644,7 +644,7 @@ function SiteFooter() {
     <footer className="bg-white border-t border-[#E4E6EB] py-10 px-4 sm:px-6 lg:px-10">
       <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-sm text-[#65676B] font-normal text-center sm:text-right">
-          © {new Date().getFullYear()} فيجارا بلس — تجربة شراء بسيطة وواضحة
+          © {new Date().getFullYear()} إيروفيا بلس — تجربة شراء بسيطة وواضحة
         </p>
         <div className="flex flex-wrap justify-center gap-5 text-sm text-[#65676B] font-normal">
           <Link href="/privacy" className="hover:text-[#1877F2] transition-colors">سياسة الخصوصية</Link>
@@ -710,7 +710,7 @@ function formatK(n: number): string {
 
 // ==================== 🎭 مولّد أسماء مستعارة افتراضية (يمكن للزائر تعديلها لاحقاً) ====================
 const DEFAULT_NAME_POOL = [
-  "زائر مهتم", "عميل جديد", "متابع فيجارا", "زائر الصفحة", "مهتم بالعرض",
+  "زائر مهتم", "عميل جديد", "متابع إيروفيا", "زائر الصفحة", "مهتم بالعرض",
   "عميل محتمل", "زائر فضولي", "متابع مهتم", "مستخدم جديد", "زائر اليوم",
 ];
 function getOrCreateDisplayName(): string {
@@ -934,8 +934,8 @@ export default function VijaraPlusFbExactPage() {
   // مشاركة رابط الصفحة (Web Share API على الموبايل، نسخ الرابط كبديل على الحاسوب)
   const handleShare = async () => {
     const shareUrl = window.location.href;
-    const shareTitle = "فيجارا بلس";
-    const shareText = "فيجارا بلس — تركيبة طبيعية مختارة للاستخدام اليومي. اكتشف العرض الآن:";
+    const shareTitle = "إيروفيا بلس";
+    const shareText = "إيروفيا بلس — تركيبة طبيعية مختارة للاستخدام اليومي. اكتشف العرض الآن:";
 
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
@@ -1115,7 +1115,7 @@ export default function VijaraPlusFbExactPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-base text-[#050505] flex items-center gap-1.5">
-                    فيجارا بلس
+                    إيروفيا بلس
                     <BadgeCheck className="w-4 h-4 text-[#1877F2] fill-[#1877F2]/15" />
                   </p>
                   <p className="text-xs text-[#65676B] font-normal flex items-center gap-1 mt-0.5">
@@ -1130,7 +1130,7 @@ export default function VijaraPlusFbExactPage() {
 
             {/* نص المنشور */}
             <p className="px-5 pb-4 text-[15px] text-[#050505] leading-relaxed">
-              <span className="font-semibold">فيجارا بلس</span> — تركيبة مختارة للاستخدام اليومي. اكتشف المنتج والباقات المتاحة واختر الأنسب لك.
+              <span className="font-semibold">إيروفيا بلس</span> — تركيبة مختارة للاستخدام اليومي. اكتشف المنتج والباقات المتاحة واختر الأنسب لك.
             </p>
 
             {/* المعرض */}
@@ -1138,7 +1138,7 @@ export default function VijaraPlusFbExactPage() {
 
             {/* تفاصيل المنشور — عنوان أوضح وأفخم */}
             <div className="p-5 sm:p-6">
-              <h1 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">فيجارا بلس</h1>
+              <h1 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">إيروفيا بلس</h1>
               <p className="text-sm text-[#65676B] font-normal mt-1">منتج يومي · الدفع عند الاستلام · توصيل سريع</p>
               <div className="flex items-center gap-3 mt-4 flex-wrap">
                 <p className="text-base sm:text-lg font-semibold text-[#050505] leading-snug">
@@ -1454,8 +1454,8 @@ export default function VijaraPlusFbExactPage() {
                 </div>
                 <div>
                   <span className="text-xs font-semibold text-[#1877F2]">العلم يلتقي بالطبيعة</span>
-                  <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505] mt-1">لماذا يعتبر فيجارا بلس الخيار الأول؟</h2>
-                  <p className="text-[#65676B] text-sm leading-relaxed font-normal mt-1.5">على عكس المنتجات التجارية الكيميائية، يعتمد فيجارا بلس على تغذية الخلايا والأنشطة العضوية لتأمين تدفق دموي مستدام.</p>
+                  <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505] mt-1">لماذا يعتبر إيروفيا بلس الخيار الأول؟</h2>
+                  <p className="text-[#65676B] text-sm leading-relaxed font-normal mt-1.5">على عكس المنتجات التجارية الكيميائية، يعتمد إيروفيا بلس على تغذية الخلايا والأنشطة العضوية لتأمين تدفق دموي مستدام.</p>
                 </div>
               </div>
             </div>
@@ -1489,7 +1489,7 @@ export default function VijaraPlusFbExactPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-sm text-[#050505] flex items-center gap-1">
-                    فيجارا بلس
+                    إيروفيا بلس
                     <BadgeCheck className="w-3.5 h-3.5 text-[#1877F2]" />
                   </p>
                   <p className="text-[11px] text-[#65676B] flex items-center gap-1">
@@ -1498,7 +1498,7 @@ export default function VijaraPlusFbExactPage() {
                 </div>
               </div>
               <p className="text-sm text-[#050505] leading-relaxed">
-                <span className="font-semibold">فيجارا بلس</span> — لمحة أقرب على المنتج من كل الزوايا، تعبئة أصلية ومحكمة تصل إليك كما تراها هنا تماماً.
+                <span className="font-semibold">إيروفيا بلس</span> — لمحة أقرب على المنتج من كل الزوايا، تعبئة أصلية ومحكمة تصل إليك كما تراها هنا تماماً.
               </p>
             </div>
 
@@ -1511,8 +1511,8 @@ export default function VijaraPlusFbExactPage() {
                 >
                   <div className="relative aspect-square bg-[#F7F8FA]">
                     <Image
-                      src="/products/all-vijara.png"
-                      alt={`فيجارا بلس - صورة ${card.id}`}
+                      src="/products/all-erovia.png"
+                      alt={`إيروفيا بلس - صورة ${card.id}`}
                       fill
                       sizes="(max-width: 640px) 70vw, 23vw"
                       className="object-contain p-3"
@@ -1537,7 +1537,7 @@ export default function VijaraPlusFbExactPage() {
         <section id="why" className="mt-2 sm:mt-3 scroll-mt-24">
           <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
-              <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">لماذا يختار العملاء فيجارا بلس؟</h2>
+              <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">لماذا يختار العملاء إيروفيا بلس؟</h2>
               <p className="text-[#65676B] text-sm font-normal mt-0.5">معلومات واضحة ومباشرة، وكل ما تحتاج معرفته في مكان واحد.</p>
             </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 p-2.5 sm:p-3">
@@ -1817,7 +1817,7 @@ export default function VijaraPlusFbExactPage() {
               </div>
             </form>
 
-            <p className="text-center text-xs text-[#65676B] font-normal px-4 pt-4 pb-5 sm:pb-6">فيجارا بلس - تجربة شراء بسيطة وواضحة</p>
+            <p className="text-center text-xs text-[#65676B] font-normal px-4 pt-4 pb-5 sm:pb-6">إيروفيا بلس - تجربة شراء بسيطة وواضحة</p>
           </div>
         </section>
       </main>
