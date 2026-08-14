@@ -6,7 +6,7 @@ import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, ChevronDown, ChevronLeft, ChevronRight,
   AlertCircle, Loader2, X, MessageCircle, Menu, Search, BadgeCheck, Globe2,
   ThumbsUp, MessageSquare, Share2, MoreHorizontal, RotateCcw, Zap, Headphones, Info, HelpCircle,
-  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, CornerDownLeft, RefreshCw, Pencil,
+  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, CornerDownLeft, RefreshCw, Pencil, Maximize2,
 } from "lucide-react";
 
 // ==================== 🎨 الهوية البصرية — Facebook SaaS ====================
@@ -261,18 +261,21 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
           </div>
         </div>
 
-        {/* تظليل خفيف خلف القائمة عند فتحها — الضغط عليه يغلق القائمة (بدون ضبابية أو تعتيم مبالغ فيه) */}
-        {mobileOpen && (
-          <div
-            className="fixed inset-0 bg-black/10 z-30 lg:hidden"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden="true"
-          />
-        )}
+      </div>
 
-        {/* قائمة الموبايل */}
-        {mobileOpen && (
-          <nav className="relative z-40 lg:hidden flex flex-col gap-1 pb-4 border-t border-[#E4E6EB] pt-3 bg-white">
+      {/* تظليل خفيف خلف القائمة عند فتحها — الضغط عليه يغلق القائمة (بدون ضبابية أو تعتيم مبالغ فيه) */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/10 z-30 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ✅ قائمة الموبايل — بنفس امتداد النافبار البصري بالكامل (عرض كامل)، وظل يجعلها ملحقة به بانسجام وليست مقصوصة */}
+      {mobileOpen && (
+        <nav className="relative z-40 lg:hidden bg-white border-t border-[#E4E6EB] shadow-[0_12px_28px_rgba(0,0,0,0.08)]">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-3 flex flex-col gap-1">
             {navLinks.map((link) => (
               <button
                 key={link.id}
@@ -290,18 +293,19 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
             >
               اطلب الآن
             </button>
-          </nav>
-        )}
-      </div>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
 
 // ==================== 🖼️ معرض الصور — صور مندمجة لا تملأ الإطار، بدعم كامل للسحب باللمس ====================
-function PostGallery({ images, activeIndex, onChange }: {
+function PostGallery({ images, activeIndex, onChange, onExpand }: {
   images: { url: string; alt: string }[];
   activeIndex: number;
   onChange: (i: number) => void;
+  onExpand: () => void;
 }) {
   const prevIdx = (activeIndex - 1 + images.length) % images.length;
   const nextIdx = (activeIndex + 1) % images.length;
@@ -347,10 +351,15 @@ function PostGallery({ images, activeIndex, onChange }: {
         <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/55 to-white/80" />
       </div>
 
-      {/* الصورة الرئيسية — تملأ الإطار دون أي قصّ، بغض النظر عن أبعاد الصورة الأصلية */}
+      {/* الصورة الرئيسية — تملأ الإطار دون أي قصّ، قابلة للضغط لعرضها بملء الشاشة */}
       <div
         key={activeIndex}
-        className="absolute top-[6%] bottom-[11%] right-[13%] left-[13%] sm:top-[8%] sm:bottom-[13%] rounded-xl overflow-hidden shadow-[0_18px_45px_rgba(0,0,0,0.14)] ring-1 ring-black/5 bg-white"
+        onClick={onExpand}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
+        aria-label="تكبير الصورة"
+        className="absolute top-[6%] bottom-[11%] right-[13%] left-[13%] sm:top-[8%] sm:bottom-[13%] rounded-xl overflow-hidden shadow-[0_18px_45px_rgba(0,0,0,0.14)] ring-1 ring-black/5 bg-white cursor-zoom-in"
         style={{ animation: "galleryZoom 0.45s ease" }}
       >
         <Image
@@ -372,6 +381,10 @@ function PostGallery({ images, activeIndex, onChange }: {
         {/* عدّاد الصور */}
         <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold">
           {activeIndex + 1} / {images.length}
+        </div>
+        {/* ✅ تلميح إمكانية التكبير */}
+        <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
+          <Maximize2 className="w-3.5 h-3.5" />
         </div>
       </div>
 
@@ -406,10 +419,120 @@ function PostGallery({ images, activeIndex, onChange }: {
   );
 }
 
+// ==================== 🔍 صندوق عرض الصورة بملء الشاشة (Lightbox) ====================
+function ImageLightbox({ images, activeIndex, onChange, onClose }: {
+  images: { url: string; alt: string }[];
+  activeIndex: number;
+  onChange: (i: number) => void;
+  onClose: () => void;
+}) {
+  const prevIdx = (activeIndex - 1 + images.length) % images.length;
+  const nextIdx = (activeIndex + 1) % images.length;
+
+  // إغلاق بمفتاح Esc + التنقل بالأسهم من لوحة المفاتيح
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onChange(prevIdx);
+      if (e.key === "ArrowLeft") onChange(nextIdx);
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose, onChange, prevIdx, nextIdx]);
+
+  // سحب باللمس للتنقل بين الصور، بنفس منطق المعرض الرئيسي
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+  const handleTouchEnd = () => {
+    if (touchDeltaX.current <= -40) onChange(nextIdx);
+    else if (touchDeltaX.current >= 40) onChange(prevIdx);
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-[#050505]/92 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="عرض الصورة بملء الشاشة"
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+        aria-label="إغلاق"
+      >
+        <X className="w-5 h-5 sm:w-6 sm:h-6" />
+      </button>
+
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 bg-white/10 text-white text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full">
+        {activeIndex + 1} / {images.length}
+      </div>
+
+      <button
+        onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
+        className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+        aria-label="السابق"
+      >
+        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); onChange(nextIdx); }}
+        className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+        aria-label="التالي"
+      >
+        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+      </button>
+
+      <div
+        className="relative w-full h-full max-w-4xl max-h-[85vh]"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <Image
+          src={images[activeIndex].url}
+          alt={images[activeIndex].alt}
+          fill
+          sizes="100vw"
+          className="object-contain select-none"
+          priority
+        />
+      </div>
+
+      {/* نقاط التنقل */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            onClick={(e) => { e.stopPropagation(); onChange(i); }}
+            aria-label={`صورة ${i + 1}`}
+            className={`h-2 rounded-full transition-all cursor-pointer ${i === activeIndex ? "w-7 bg-white" : "w-2 bg-white/40 hover:bg-white/70"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ==================== 👀 عداد الزوار + العرض المحدود ====================
 function LiveOfferCard() {
   const [visitorCount, setVisitorCount] = useState(12100);
-  const [remaining, setRemaining] = useState(30 * 60);
+  const [remaining, setRemaining] = useState(24 * 60 * 60);
 
   useEffect(() => {
     // عداد واجهة ديناميكي للاستخدام التسويقي؛ القيمة تتغير بسلاسة داخل نطاق العرض.
@@ -424,16 +547,16 @@ function LiveOfferCard() {
     const now = Date.now();
     let endAt = Number(window.localStorage.getItem(storageKey));
     if (!endAt || endAt <= now) {
-      endAt = now + 30 * 60 * 1000;
+      endAt = now + 24 * 60 * 60 * 1000;
       window.localStorage.setItem(storageKey, String(endAt));
     }
 
     const tick = () => {
       let seconds = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
       if (seconds <= 0) {
-        endAt = Date.now() + 30 * 60 * 1000;
+        endAt = Date.now() + 24 * 60 * 60 * 1000;
         window.localStorage.setItem(storageKey, String(endAt));
-        seconds = 30 * 60;
+        seconds = 24 * 60 * 60;
       }
       setRemaining(seconds);
     };
@@ -446,12 +569,13 @@ function LiveOfferCard() {
     };
   }, []);
 
-  const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
+  const hours = String(Math.floor(remaining / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
   const seconds = String(remaining % 60).padStart(2, "0");
   const displayVisitors = `${(visitorCount / 1000).toFixed(1)}K`;
 
   return (
-    <div className="bg-white rounded-xl border border-[#E4E6EB] shadow-sm p-4 lg:min-h-[128px] flex flex-col justify-center">
+    <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-4 lg:min-h-[128px] flex flex-col justify-center">
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -474,7 +598,7 @@ function LiveOfferCard() {
           <p className="text-[11px] text-[#65676B] mt-0.5">احجز باقتك قبل انتهاء المؤقت</p>
         </div>
         <div dir="ltr" className="text-base font-bold tracking-wide text-[#1877F2] bg-[#E7F3FF] px-3 py-1.5 rounded-lg tabular-nums">
-          {minutes}:{seconds}
+          {hours}:{minutes}:{seconds}
         </div>
       </div>
     </div>
@@ -486,7 +610,7 @@ function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faqs" className="py-3 sm:py-4 px-3 sm:px-4 lg:px-6 scroll-mt-20">
+    <section id="faqs" className="py-3 sm:py-4 px-0 sm:px-4 lg:px-6 scroll-mt-20">
       <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
         <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
           <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505] tracking-tight">الأسئلة الشائعة</h2>
@@ -545,13 +669,23 @@ function WhatsAppButton() {
       className="fixed bottom-6 left-4 z-[60] w-14 h-14 rounded-full bg-[#25D366] shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-transform"
       aria-label="تواصل عبر واتساب"
     >
-      <MessageCircle className="w-6 h-6 fill-white" />
+      <WhatsAppIcon className="w-7 h-7 text-white" />
     </a>
   );
 }
 
 function UsersIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+}
+
+// ✅ أيقونة واتساب الفعلية والاحترافية (شكل السماعة المميز داخل بالون المحادثة)
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M16.004 3C9.376 3 4 8.373 4 15c0 2.383.7 4.6 1.902 6.46L4 29l7.73-1.868A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3Zm0 21.75a9.7 9.7 0 0 1-4.95-1.354l-.355-.21-4.59 1.11 1.128-4.472-.232-.367A9.68 9.68 0 0 1 5.25 15c0-5.93 4.824-10.75 10.754-10.75 5.93 0 10.746 4.82 10.746 10.75s-4.816 9.75-10.746 9.75Z"/>
+      <path d="M21.62 17.87c-.297-.148-1.76-.868-2.033-.967-.273-.1-.472-.148-.67.148-.198.297-.767.967-.94 1.166-.174.198-.347.223-.644.075-.297-.149-1.254-.462-2.39-1.474-.883-.787-1.48-1.76-1.653-2.057-.174-.297-.019-.457.13-.605.134-.133.297-.347.446-.52.148-.174.198-.298.297-.496.099-.198.05-.372-.025-.52-.074-.149-.669-1.612-.917-2.208-.242-.582-.487-.503-.669-.512l-.57-.01c-.198 0-.52.075-.792.372-.273.297-1.04 1.017-1.04 2.48s1.065 2.876 1.213 3.074c.148.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.693.626.712.227 1.36.195 1.872.118.571-.085 1.76-.72 2.008-1.415.248-.694.248-1.29.174-1.414-.074-.124-.272-.198-.57-.347Z"/>
+    </svg>
+  );
 }
 
 // ==================== 🏷️ معرّف الصفحة (يُستخدم في نظام الإعجابات والتعليقات الحقيقي) ====================
@@ -614,6 +748,7 @@ function buildCommentTree(flat: { id: string; parentId: string | null; name: str
 // ==================== 🏠 المكوّن الرئيسي ====================
 export default function VijaraPlusFbExactPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -969,11 +1104,11 @@ export default function VijaraPlusFbExactPage() {
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <TopHeader onScrollTo={scrollTo} />
 
-      <main id="home" className="w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-0 py-3 sm:py-4">
+      <main id="home" className="w-full max-w-7xl mx-auto px-0 sm:px-4 lg:px-0 py-3 sm:py-4">
         {/* ==================== الهيرو: المنشور + الشريط الجانبي ==================== */}
         <div className="w-full grid lg:grid-cols-[minmax(0,1fr)_360px] gap-3 sm:gap-4 items-stretch">
           {/* ===== بطاقة منشور المنتج ===== */}
-          <div className="order-1 bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+          <div className="order-1 bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             {/* رأس المنشور */}
             <div className="flex items-start justify-between px-5 pt-5 pb-4">
               <div className="flex items-center gap-3">
@@ -1001,7 +1136,7 @@ export default function VijaraPlusFbExactPage() {
             </p>
 
             {/* المعرض */}
-            <PostGallery images={productImages} activeIndex={activeImageIndex} onChange={setActiveImageIndex} />
+            <PostGallery images={productImages} activeIndex={activeImageIndex} onChange={setActiveImageIndex} onExpand={() => setLightboxOpen(true)} />
 
             {/* تفاصيل المنشور — عنوان أوضح وأفخم */}
             <div className="p-5 sm:p-6">
@@ -1230,7 +1365,7 @@ export default function VijaraPlusFbExactPage() {
           {/* ===== الشريط الجانبي ===== */}
           <aside className="order-2 flex flex-col gap-3 scroll-mt-24 h-full">
             {/* اختيار سريع للباقة */}
-            <div className="bg-white rounded-xl border border-[#E4E6EB] shadow-sm p-5 lg:min-h-[320px] flex-[1.15] flex flex-col">
+            <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-5 lg:min-h-[320px] flex-[1.15] flex flex-col">
               <h2 className="font-bold text-xl sm:text-2xl leading-tight text-[#050505] mb-4 flex items-center gap-2">
                 <Package className="w-5 h-5 text-[#1877F2]" />
                 اختر الباقة
@@ -1268,7 +1403,7 @@ export default function VijaraPlusFbExactPage() {
             <LiveOfferCard />
 
             {/* معلومات مهمة */}
-            <div className="bg-white rounded-xl border border-[#E4E6EB] shadow-sm p-5 lg:min-h-[250px] flex-1 flex flex-col">
+            <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-5 lg:min-h-[250px] flex-1 flex flex-col">
               <h2 className="font-bold text-xl sm:text-2xl leading-tight text-[#050505] mb-4">معلومات مهمة</h2>
               <div className="space-y-3.5 flex-1">
                 <div className="flex items-center gap-3.5">
@@ -1313,7 +1448,7 @@ export default function VijaraPlusFbExactPage() {
 
         {/* ==================== 🆕 سيكشن المكونات — تحت الهيرو مباشرة ==================== */}
         <section id="ingredients" className="mt-2 sm:mt-3 scroll-mt-24">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-full bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0">
@@ -1347,7 +1482,7 @@ export default function VijaraPlusFbExactPage() {
 
         {/* ==================== 🖼️ معرض صور المنتج — بأسلوب منشور فيسبوك (سيكشن ثالث) ==================== */}
         <section id="gallery" className="mt-2 sm:mt-3 scroll-mt-24">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             {/* رأس بأسلوب منشور فيسبوك */}
             <div className="px-4 sm:px-5 pt-4 pb-3">
               <div className="flex items-center gap-2.5 mb-2.5">
@@ -1402,7 +1537,7 @@ export default function VijaraPlusFbExactPage() {
           </div>
         </section>
         <section id="why" className="mt-2 sm:mt-3 scroll-mt-24">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
               <h2 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">لماذا يختار العملاء فيجارا بلس؟</h2>
               <p className="text-[#65676B] text-sm font-normal mt-0.5">معلومات واضحة ومباشرة، وكل ما تحتاج معرفته في مكان واحد.</p>
@@ -1423,7 +1558,7 @@ export default function VijaraPlusFbExactPage() {
 
         {/* ==================== شريط الإحصائيات + نجوم التقييم ==================== */}
         <section className="mt-2 sm:mt-3">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm px-4 py-4 sm:px-5 sm:py-5">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm px-4 py-4 sm:px-5 sm:py-5">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
               {stats.map((s, i) => (
                 <div key={i} className="text-center">
@@ -1442,7 +1577,7 @@ export default function VijaraPlusFbExactPage() {
 
         {/* ==================== سيكشن الباقات — ارتفاع وصورة أفضل ==================== */}
         <section id="packages" className="mt-6 sm:mt-8 scroll-mt-24">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB]">
               <h2 className="text-2xl sm:text-[26px] font-bold leading-tight text-[#050505]">اختر الباقة المناسبة لك</h2>
               <p className="text-[#65676B] text-sm font-normal mt-0.5">كلما زادت الكمية، حصلت على قيمة أفضل.</p>
@@ -1524,7 +1659,7 @@ export default function VijaraPlusFbExactPage() {
 
         {/* ==================== نموذج إتمام الطلب ==================== */}
         <section id="order-form" ref={orderFormRef} className="mt-6 sm:mt-8 scroll-mt-24">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden">
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
             <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB] flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-2xl sm:text-[26px] font-bold leading-tight text-[#050505]">أكمل طلبك</h2>
@@ -1684,7 +1819,7 @@ export default function VijaraPlusFbExactPage() {
               </div>
             </form>
 
-            <p className="text-center text-xs text-[#65676B] font-normal mt-4">فيجارا بلس - تجربة شراء بسيطة وواضحة</p>
+            <p className="text-center text-xs text-[#65676B] font-normal px-4 pt-4 pb-5 sm:pb-6">فيجارا بلس - تجربة شراء بسيطة وواضحة</p>
           </div>
         </section>
       </main>
@@ -1692,6 +1827,15 @@ export default function VijaraPlusFbExactPage() {
       <FAQSection />
       <SiteFooter />
       <WhatsAppButton />
+
+      {lightboxOpen && (
+        <ImageLightbox
+          images={productImages}
+          activeIndex={activeImageIndex}
+          onChange={setActiveImageIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
 
       {/* ==================== نافذة تأكيد الطلب ==================== */}
       {showConfirmModal && selectedPackage && (
