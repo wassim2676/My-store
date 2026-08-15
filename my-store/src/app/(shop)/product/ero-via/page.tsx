@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { BannerImage } from "@/components/shop/EroviaBanners";
 import {
   ShoppingCart, Star, Truck, ShieldCheck, RotateCcw, CheckCircle2,
   User, Phone, MapPin, Home, X, Loader2, AlertCircle, Info,
-  Award, FlaskConical, FileCheck2, Factory,
 } from "lucide-react";
 
 // ==================== 🎨 الهوية البصرية — أسود + أحمر (بأسلوب TikTok) ====================
@@ -39,16 +39,7 @@ interface OrderFormData {
   packageId: number | null;
 }
 
-// ==================== 🖼️ بانرات تجريبية — استبدلها لاحقاً بصورك النهائية بنفس الأسماء تماماً ====================
-// ⚠️ ضع صورك في public/products/ بهذه الأسماء بالضبط، أو غيّر المسارات هنا لاحقاً
-const BANNERS = {
-  hero: "/products/ero-via-banner-hero.jpg",
-  quality: "/products/ero-via-banner-quality.jpg",
-  lifestyle: "/products/ero-via-banner-lifestyle.jpg",
-  howToUse: "/products/ero-via-banner-howtouse.jpg",
-};
-
-const productThumb = "/products/erovia1.png";
+const productThumb = "/products/erovia-bottle-real.png";
 
 // ==================== ⭐ آراء العملاء ====================
 const testimonials = [
@@ -78,15 +69,6 @@ function Toast({ message, type, onClose }: { message: string; type: "success" | 
       <button onClick={onClose} className="text-white/80 hover:text-white cursor-pointer" aria-label="إغلاق">
         <X className="w-4 h-4" />
       </button>
-    </div>
-  );
-}
-
-// ==================== 🖼️ بانر عريض يملأ الشاشة بالكامل بدون أي حواف جانبية ====================
-function FullBanner({ src, alt, aspect = "aspect-[4/5] sm:aspect-[21/9]" }: { src: string; alt: string; aspect?: string }) {
-  return (
-    <div className={`relative w-full ${aspect} bg-[#0A0A0A]`}>
-      <Image src={src} alt={alt} fill sizes="100vw" className="object-cover" />
     </div>
   );
 }
@@ -209,9 +191,9 @@ export default function EroViaProductPage() {
 
       <SimpleHeader onOrderClick={scrollToOrder} />
 
-      {/* ==================== 🖼️ الهيرو — بانر عريض يملأ الشاشة ==================== */}
+      {/* ==================== 🖼️ الهيرو — بانر احترافي بصورة المنتج الحقيقية ==================== */}
       <section className="relative">
-        <FullBanner src={BANNERS.hero} alt="Erovia — حيوية وثقة يومية" aspect="aspect-[4/5] sm:aspect-[16/7]" />
+        <BannerImage src="/products/ero-via-banner-hero.png" alt="Erovia — استعد طاقتك وثقتك اليومية" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Stars count={5} />
@@ -338,35 +320,11 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🖤 بانر الجودة — خلفية سوداء ==================== */}
-      <section className="bg-[#0A0A0A]">
-        <FullBanner src={BANNERS.quality} alt="Erovia — جودة مضمونة ومختبرة" aspect="aspect-[4/5] sm:aspect-[21/9]" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[
-            { icon: Award, label: "جودة ممتازة" },
-            { icon: FlaskConical, label: "مُختبر في المختبر" },
-            { icon: FileCheck2, label: "مطابق للمعايير" },
-            { icon: Factory, label: "تصنيع موثوق" },
-          ].map((item, i) => (
-            <div key={i} className="flex flex-col items-center text-center gap-2">
-              <div className="w-12 h-12 rounded-full bg-[#FE2C55]/15 flex items-center justify-center">
-                <item.icon className="w-6 h-6 text-[#FE2C55]" />
-              </div>
-              <p className="text-white text-xs sm:text-sm font-bold">{item.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ==================== 🌿 بانر المكونات الكاملة — مصحَّحة بالكامل ==================== */}
+      <BannerImage src="/products/ero-via-banner-ingredients.png" alt="Erovia — قائمة المكونات الكاملة" background="bg-white" />
 
-      {/* ==================== 🤍 بانر نمط الحياة — خلفية بيضاء ==================== */}
-      <section className="bg-white">
-        <FullBanner src={BANNERS.lifestyle} alt="Erovia — تجربة يومية مريحة" aspect="aspect-[4/5] sm:aspect-[21/9]" />
-      </section>
-
-      {/* ==================== 🖤 بانر طريقة الاستخدام — خلفية سوداء ==================== */}
-      <section className="bg-[#0A0A0A]">
-        <FullBanner src={BANNERS.howToUse} alt="Erovia — طريقة الاستخدام" aspect="aspect-[4/5] sm:aspect-[21/9]" />
-      </section>
+      {/* ==================== 🖤 بانر الثقة — 60 كبسولة / طبيعي 100% / دعم شامل ==================== */}
+      <BannerImage src="/products/ero-via-banner-trust.png" alt="Erovia — دواعي الثقة" background="bg-[#0A0A0A]" />
 
       {/* ==================== ⭐ آراء العملاء — سيكشن قوي وجذاب، خلفية بيضاء ==================== */}
       <section className="bg-white py-12 sm:py-16 px-4 sm:px-6">
