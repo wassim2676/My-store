@@ -125,7 +125,14 @@ export async function PUT(
   }
 }
 
-// ==================== 🔴 DELETE: إلغاء طلب يدوي (Soft Delete) ====================
+// ==================== 🔴 DELETE: حذف طلب يدوي نهائياً ====================
+/**
+ * 🔴 DELETE /api/manual-orders/[id]
+ * حذف حقيقي للطلب من قاعدة البيانات
+ * - محمي: Admin/Super Admin فقط
+ * - 🛡️ الحماية الوحيدة: لا يمكن حذف طلب تم تحصيل دفعه فعلياً (paymentStatus = PAID)
+ *   لأن ذلك سيفقد سجلاً مالياً حقيقياً. بدل الحذف، يمكن للأدمن تغيير حالته إلى CANCELLED عبر PUT.
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -136,36 +143,38 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const existingOrder = await prisma.manualOrder.findUnique({ where: { id } });
-    if (!existingOrder) {
+    const existing = await prisma.manualOrder.findUnique({
+      where: { id },
+      select: { id: true, orderNumber: true, paymentStatus: true },
+    });
+
+    if (!existing) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    if (["PAID", "REFUNDED"].includes(existingOrder.paymentStatus)) {
+    if (existing.paymentStatus === "PAID") {
       return NextResponse.json(
         {
-          error: `Cannot delete order with payment status: ${existingOrder.paymentStatus}`,
-          suggestion: "Use status update instead of deletion",
+          error: "لا يمكن حذف طلب تم تحصيل دفعه فعلياً (حفاظاً على السجل المالي). يمكنك تغيير حالته إلى «ملغى» بدل حذفه.",
         },
         { status: 400 }
       );
     }
 
-    const cancelledOrder = await prisma.manualOrder.update({
-      where: { id },
-      data: {
-        status: "CANCELLED",
-        cancelledAt: new Date(),
-        adminNotes: `${existingOrder.adminNotes || ""}\n[Cancelled by admin ${session.user.id} at ${new Date().toISOString()}]`,
-        updatedAt: new Date(),
-      },
+    await prisma.manualOrder.delete({ where: { id } });
+
+    console.log(`[AUDIT] Admin ${session.user.id} deleted manual order #${existing.orderNumber}`);
+
+    return NextResponse.json({
+      success: true,
+      message: "Order deleted successfully",
+      data: { id: existing.id },
     });
-
-    console.log(`[AUDIT] User ${session.user.id} cancelled manual order ${id}`);
-
-    return NextResponse.json({ success: true, message: "Order cancelled successfully", data: cancelledOrder });
   } catch (error) {
     console.error("[API] Manual order deletion failed:", error);
-    return NextResponse.json({ error: "Failed to cancel order" }, { status: 500 });
+    if (error instanceof Error && error.message.includes("P2025")) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    }
+    return NextResponse.json({ error: "Failed to delete order" }, { status: 500 });
   }
 }

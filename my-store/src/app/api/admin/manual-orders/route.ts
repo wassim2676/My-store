@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import type { Prisma, OrderStatus, CallStatus, PaymentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
 
     const status = searchParams.get("status");
     const callStatus = searchParams.get("callStatus");
+    const paymentStatus = searchParams.get("paymentStatus");
     const search = searchParams.get("search")?.trim();
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
@@ -50,8 +51,9 @@ export async function GET(request: NextRequest) {
     // بناء شرط الاستعلام (مطابق فعلياً لنموذج ManualOrder)
     const where: Prisma.ManualOrderWhereInput = {};
 
-    if (status && status !== "all") where.status = status as Prisma.EnumOrderStatusFilter["equals"];
-    if (callStatus && callStatus !== "all") where.callStatus = callStatus as Prisma.EnumCallStatusFilter["equals"];
+    if (status && status !== "all") where.status = status as OrderStatus;
+    if (callStatus && callStatus !== "all") where.callStatus = callStatus as CallStatus;
+    if (paymentStatus && paymentStatus !== "all") where.paymentStatus = paymentStatus as PaymentStatus;
 
     if (dateFrom || dateTo) {
       where.createdAt = {};
@@ -96,7 +98,7 @@ export async function GET(request: NextRequest) {
             hasNext: page * limit < total,
             hasPrev: page > 1,
           },
-          filters: { status, callStatus, search, dateFrom, dateTo },
+          filters: { status, callStatus, paymentStatus, search, dateFrom, dateTo },
         },
         meta: { timestamp: new Date().toISOString(), currency: "MAD" },
       },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import type { LucideIcon } from "lucide-react";
 import { 
   ChevronDown, ChevronUp, Phone, Mail, MapPin, Package, 
   Download, Search, AlertCircle, RefreshCw, Loader2, Filter, X,
@@ -65,7 +66,7 @@ interface Filters {
 }
 
 // ==================== 🎨 ثوابت الواجهة ====================
-const CALL_STATUS_OPTIONS: { value: CallStatus | "all"; label: string; color: string; icon: any }[] = [
+const CALL_STATUS_OPTIONS: { value: CallStatus | "all"; label: string; color: string; icon: LucideIcon | null }[] = [
   { value: "all", label: "All Calls", color: "bg-gray-100 text-gray-700", icon: null },
   { value: "NOT_CALLED", label: "Not Called", color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300", icon: Clock },
   { value: "CALLED_SUCCESS", label: "Called ✓", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle },
@@ -73,7 +74,7 @@ const CALL_STATUS_OPTIONS: { value: CallStatus | "all"; label: string; color: st
   { value: "CALL_LATER", label: "Call Later ⏰", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400", icon: Clock },
 ];
 
-const ORDER_STATUS_OPTIONS: { value: OrderStatus | "all"; label: string; color: string; icon: any }[] = [
+const ORDER_STATUS_OPTIONS: { value: OrderStatus | "all"; label: string; color: string; icon: LucideIcon | null }[] = [
   { value: "all", label: "All Orders", color: "bg-gray-100 text-gray-700", icon: null },
   { value: "PENDING", label: "Pending", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400", icon: Clock },
   { value: "CONFIRMED", label: "Confirmed", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle },
@@ -85,7 +86,7 @@ const ORDER_STATUS_OPTIONS: { value: OrderStatus | "all"; label: string; color: 
   { value: "RETURNED", label: "Returned", color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400", icon: AlertTriangle },
 ];
 
-const PAYMENT_STATUS_OPTIONS: { value: PaymentStatus | "all"; label: string; color: string; icon: any }[] = [
+const PAYMENT_STATUS_OPTIONS: { value: PaymentStatus | "all"; label: string; color: string; icon: LucideIcon | null }[] = [
   { value: "all", label: "All Payments", color: "bg-gray-100 text-gray-700", icon: null },
   { value: "PENDING", label: "Pending", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400", icon: Clock },
   { value: "PAID", label: "Paid ✓", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle },
@@ -95,7 +96,7 @@ const PAYMENT_STATUS_OPTIONS: { value: PaymentStatus | "all"; label: string; col
 
 const CITIES = ["All", "Casablanca", "Rabat", "Marrakech", "Fes", "Tangier", "Agadir", "Other"];
 const COUNTRIES = ["All", "Morocco", "Algeria", "Tunisia", "Saudi Arabia", "UAE", "Other"];
-const PRODUCT_TYPES = ["All", "Vijara Plus - 1 Box", "Vijara Plus - 2 Boxes", "Vijara Plus - 3 Boxes", "Other"];
+const PRODUCT_TYPES = ["All", "Erovia - 1 Box", "Erovia - 2 Boxes", "Erovia - 3 Boxes", "Other"];
 
 // ==================== 🎨 مكون Toast ====================
 function Toast({ message, type, onClose }: { message: string; type: ToastType; onClose: () => void }) {
@@ -128,11 +129,13 @@ function StatusBadge({ status, type }: { status: string; type: "order" | "call" 
   const options = type === "order" ? ORDER_STATUS_OPTIONS : type === "call" ? CALL_STATUS_OPTIONS : PAYMENT_STATUS_OPTIONS;
   const option = options.find(o => o.value === status) || options[0];
   const Icon = option.icon;
+  // ✅ بادئة توضيحية (Order/Call/Payment) لتمييز كل بادج فوراً دون التباس (خصوصاً بما أن "Pending" تتكرر في أكثر من نوع)
+  const typeLabel = type === "order" ? "Order" : type === "call" ? "Call" : "Payment";
 
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${option.color} dark:bg-opacity-30`}>
       {Icon && <Icon className="w-3 h-3" />}
-      {option.label}
+      <span className="opacity-60 font-normal">{typeLabel}:</span> {option.label}
     </span>
   );
 }
@@ -356,6 +359,7 @@ export default function ManualOrdersPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- تحميل أولي عند فتح الصفحة
     fetchOrders();
   }, [fetchOrders]);
 
@@ -442,7 +446,7 @@ export default function ManualOrdersPage() {
       });
       
       if (response.ok) {
-        setOrders(prev => prev.map(o => o.id === id ? { ...o, [field]: value as any } : o));
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, [field]: value } as ManualOrder : o));
         setToast({ message: "✅ تم تحديث الحالة بنجاح", type: "success" });
       } else {
         const res = await response.json();
@@ -523,7 +527,7 @@ export default function ManualOrdersPage() {
   // عرض اسم المصدر بشكل جميل
   const getSourceDisplayName = (source: string) => {
     const names: Record<string, string> = {
-      "/product/vijara-plus": "Vijara Plus Product Page",
+      "/product/erovia": "Erovia Product Page",
       "/": "Homepage",
       "/blog": "Blog Page",
       "/marketplace": "Marketplace",
@@ -534,7 +538,7 @@ export default function ManualOrdersPage() {
 
   const getSourceIcon = (source: string) => {
     const icons: Record<string, string> = {
-      "/product/vijara-plus": "💊",
+      "/product/erovia": "💊",
       "/": "",
       "/blog": "📝",
       "/marketplace": "🛒",
@@ -760,7 +764,7 @@ export default function ManualOrdersPage() {
                   <Package className="w-8 h-8 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No orders found</h3>
-                <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters to find what you're looking for.</p>
+                <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters to find what you&apos;re looking for.</p>
               </div>
             ) : (
               filteredOrders.map((order, index) => (
@@ -782,13 +786,13 @@ export default function ManualOrdersPage() {
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-bold text-gray-900 dark:text-white">#{order.orderNumber}</span>
-                          <StatusBadge status={order.status} type="order" />
                           <StatusBadge status={order.callStatus} type="call" />
+                          <StatusBadge status={order.status} type="order" />
                           <StatusBadge status={order.paymentStatus} type="payment" />
                         </div>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
                           <User className="w-3 h-3" />
-                          {order.customerName} • {order.city}{order.country && `, ${order.country}`}
+                          {order.customerName} • {order.address}, {order.city}{order.country && `, ${order.country}`}
                         </p>
                       </div>
                     </div>
@@ -881,22 +885,6 @@ export default function ManualOrdersPage() {
                         <div className="space-y-4">
                           <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
-                              <Package className="w-3 h-3" /> Order Status
-                            </label>
-                            <select 
-                              value={order.status} 
-                              onChange={(e) => updateStatus(order.id, "order", e.target.value)}
-                              disabled={updatingId === order.id}
-                              className="w-full px-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {ORDER_STATUS_OPTIONS.filter(o => o.value !== "all").map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                              ))}
-                            </select>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
                               <Phone className="w-3 h-3" /> Call Status
                             </label>
                             <select 
@@ -906,6 +894,22 @@ export default function ManualOrdersPage() {
                               className="w-full px-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {CALL_STATUS_OPTIONS.filter(o => o.value !== "all").map(opt => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
+                              <Package className="w-3 h-3" /> Order Status
+                            </label>
+                            <select 
+                              value={order.status} 
+                              onChange={(e) => updateStatus(order.id, "order", e.target.value)}
+                              disabled={updatingId === order.id}
+                              className="w-full px-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {ORDER_STATUS_OPTIONS.filter(o => o.value !== "all").map(opt => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
                               ))}
                             </select>
