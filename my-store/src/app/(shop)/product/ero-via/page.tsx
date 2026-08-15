@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { BannerImage } from "@/components/shop/EroviaBanners";
@@ -8,14 +7,10 @@ import {
   User, Phone, MapPin, Home, X, Loader2, AlertCircle, Info,
 } from "lucide-react";
 
-// ==================== 🎨 الهوية البصرية — أسود + أحمر (بأسلوب TikTok) ====================
-// أزرار سوداء #0A0A0A بدل الأزرق، أحمر #FE2C55 كلون تمييز (خصومات/شارات)
-// خلفيات السيكشنز متبادلة: أبيض / أسود، بانرات عريضة تملأ الشاشة بالكامل
-
-// ==================== 🏷️ معرّف مصدر الصفحة (لتمييزها عن نسخة erovia في تتبّع الطلبات) ====================
+// ==================== 🏷️ معرّف مصدر الصفحة ====================
 const SOURCE_PAGE = "/product/ero-via";
 
-// ==================== 💰 الباقات — نفس منتج ونفس أسعار صفحة Erovia تماماً (لضمان اختبار A/B عادل) ====================
+// ==================== 💰 الباقات — أسعار محدّثة + صور مخصصة ====================
 interface PackageOption {
   id: number;
   name: string;
@@ -23,12 +18,37 @@ interface PackageOption {
   price: number;
   originalPrice: number;
   promo: boolean;
+  image: string;
 }
 
 const packages: PackageOption[] = [
-  { id: 1, name: "Erovia — علبة واحدة", boxes: 1, price: 350, originalPrice: 600, promo: false },
-  { id: 2, name: "Erovia (× 2 علب)", boxes: 2, price: 900, originalPrice: 1200, promo: true },
-  { id: 3, name: "Erovia (× 3 علب)", boxes: 3, price: 1200, originalPrice: 1800, promo: true },
+  { 
+    id: 1, 
+    name: "Erovia — علبة واحدة", 
+    boxes: 1, 
+    price: 350, 
+    originalPrice: 350, 
+    promo: false,
+    image: "/products/erovia1.png"
+  },
+  { 
+    id: 2, 
+    name: "Erovia (× 2 علب)", 
+    boxes: 2, 
+    price: 600, 
+    originalPrice: 700, 
+    promo: true,
+    image: "/products/erovia2.png"
+  },
+  { 
+    id: 3, 
+    name: "Erovia (× 3 علب)", 
+    boxes: 3, 
+    price: 800, 
+    originalPrice: 1050, 
+    promo: true,
+    image: "/products/erovia3.png"
+  },
 ];
 
 interface OrderFormData {
@@ -38,8 +58,6 @@ interface OrderFormData {
   address: string;
   packageId: number | null;
 }
-
-const productThumb = "/products/erovia-bottle-real.png";
 
 // ==================== ⭐ آراء العملاء ====================
 const testimonials = [
@@ -90,7 +108,7 @@ function SimpleHeader({ onOrderClick }: { onOrderClick: () => void }) {
     <header className="sticky top-0 z-40 bg-[#0A0A0A] text-white">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
         <span className="text-xl font-black tracking-tight">
-          Erovia<span className="text-[#FE2C55]">.</span>
+          Erovia <span className="text-[#FE2C55]">.</span>
         </span>
         <button
           onClick={onOrderClick}
@@ -110,7 +128,11 @@ export default function EroViaProductPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [formData, setFormData] = useState<OrderFormData>({
-    fullName: "", phone: "", city: "", address: "", packageId: 2, // الباقة الأكثر طلباً محددة افتراضياً
+    fullName: "",
+    phone: "",
+    city: "",
+    address: "",
+    packageId: 2,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -191,7 +213,7 @@ export default function EroViaProductPage() {
 
       <SimpleHeader onOrderClick={scrollToOrder} />
 
-      {/* ==================== 🖼️ الهيرو — بانر احترافي بصورة المنتج الحقيقية ==================== */}
+      {/* ==================== 🖼️ الهيرو ==================== */}
       <section className="relative">
         <BannerImage src="/products/ero-via-banner-hero.png" alt="Erovia — استعد طاقتك وثقتك اليومية" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
@@ -213,7 +235,7 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🧾 سيكشن الطلب — مباشرة بعد الهيرو، بأسلوب مبسّط ومباشر ==================== */}
+      {/* ==================== 🧾 سيكشن الطلب ==================== */}
       <section id="order-form" className="bg-[#FAFAFA] py-10 sm:py-14 px-4 sm:px-6 scroll-mt-16">
         <div className="max-w-xl mx-auto">
           <h2 className="text-center text-xl sm:text-2xl font-black text-[#0A0A0A] mb-6">إملأ الاستمارة للطلب</h2>
@@ -231,8 +253,14 @@ export default function EroViaProductPage() {
                     selected ? "border-[#0A0A0A] bg-[#FE2C55]/[0.06]" : "border-gray-200 bg-white hover:border-gray-300"
                   }`}
                 >
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-                    <Image src={productThumb} alt={pkg.name} fill sizes="64px" className="object-contain p-1.5" />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-white border border-gray-100 flex-shrink-0">
+                    <Image 
+                      src={pkg.image} 
+                      alt={pkg.name} 
+                      fill 
+                      sizes="(max-width: 640px) 56px, 64px" 
+                      className="object-contain p-1" 
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[#0A0A0A] text-sm sm:text-base">{pkg.name}</p>
@@ -273,8 +301,7 @@ export default function EroViaProductPage() {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/[^\d\s+-]/g, "") })}
                 placeholder="رقم الهاتف / Numéro"
-                dir="ltr"
-                className={`${inputBase} ${errors.phone ? inputErr : inputOk} text-right`}
+                className={`${inputBase} ${errors.phone ? inputErr : inputOk}`}
               />
               {errors.phone && <p className="text-[#FE2C55] text-xs mt-1 font-semibold">{errors.phone}</p>}
             </div>
@@ -291,7 +318,6 @@ export default function EroViaProductPage() {
               {errors.city && <p className="text-[#FE2C55] text-xs mt-1 font-semibold">{errors.city}</p>}
             </div>
 
-            {/* ⚠️ حقل العنوان: غير موجود في التصميم المرجعي، لكن أبقيته لأن التوصيل الفعلي يحتاجه (مطلوب في نظامنا الخلفي) */}
             <div className="relative">
               <Home className="absolute top-1/2 -translate-y-1/2 start-4 w-4.5 h-4.5 text-gray-400" />
               <input
@@ -320,13 +346,13 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🌿 بانر المكونات الكاملة — مصحَّحة بالكامل ==================== */}
+      {/* ==================== 🌿 بانر المكونات ==================== */}
       <BannerImage src="/products/ero-via-banner-ingredients.png" alt="Erovia — قائمة المكونات الكاملة" background="bg-white" />
 
-      {/* ==================== 🖤 بانر الثقة — 60 كبسولة / طبيعي 100% / دعم شامل ==================== */}
+      {/* ==================== 🖤 بانر الثقة ==================== */}
       <BannerImage src="/products/ero-via-banner-trust.png" alt="Erovia — دواعي الثقة" background="bg-[#0A0A0A]" />
 
-      {/* ==================== ⭐ آراء العملاء — سيكشن قوي وجذاب، خلفية بيضاء ==================== */}
+      {/* ==================== ⭐ آراء العملاء ==================== */}
       <section className="bg-white py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-lg mx-auto mb-10">
@@ -360,7 +386,7 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🖤 دعوة أخيرة للطلب — خلفية سوداء ==================== */}
+      {/* ==================== 🖤 دعوة أخيرة للطلب ==================== */}
       <section className="bg-[#0A0A0A] py-12 sm:py-16 px-4 sm:px-6 text-center">
         <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">لا تفوّت عرضك اليوم</h2>
         <p className="text-gray-400 text-sm sm:text-base mb-6">كميات محدودة — الدفع عند الاستلام في جميع المدن</p>
@@ -373,7 +399,7 @@ export default function EroViaProductPage() {
         </button>
       </section>
 
-      {/* ==================== 🦶 فوتر — معلومات ثقة فقط، بدون روابط صفحات ==================== */}
+      {/* ==================== 🦶 فوتر ==================== */}
       <footer className="bg-white border-t border-gray-100 py-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-gray-500 font-semibold">
           <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#0A0A0A]" /> دفع آمن 100%</span>
@@ -384,7 +410,7 @@ export default function EroViaProductPage() {
         <p className="text-center text-[11px] text-gray-300 mt-5">© {new Date().getFullYear()} Erovia</p>
       </footer>
 
-      {/* ==================== 🔴 زر الطلب العائم — يبقى ظاهراً أثناء التمرير ==================== */}
+      {/* ==================== 🔴 زر الطلب العائم ==================== */}
       <button
         onClick={scrollToOrder}
         className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:w-auto z-[60] flex items-center justify-center gap-2.5 bg-[#0A0A0A] hover:bg-[#FE2C55] text-white font-black px-6 py-4 rounded-xl shadow-2xl transition-colors cursor-pointer text-sm sm:text-base"
