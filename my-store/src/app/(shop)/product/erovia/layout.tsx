@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import FacebookPixel from "@/components/shared/FacebookPixel";
 
 // ==================== 🖼️ صورة وبيانات المعاينة عند مشاركة الرابط ====================
 // ⚠️ هذه هي الصورة التي ستظهر عند مشاركة الرابط في واتساب/فيسبوك/تيليجرام إلخ.
@@ -35,5 +36,10 @@ export const metadata: Metadata = {
 };
 
 export default function EroviaLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <FacebookPixel />
+      {children}
+    </>
+  );
 }

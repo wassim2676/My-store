@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo, useRef } from "react";
+import { fbTrack, generateEventId, getFbBrowserIds } from "@/lib/fbPixel";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -968,6 +969,17 @@ export default function EroviaProductPage() {
     if (Number.isFinite(stored) && stored >= 2500) setOfferClaims(Math.floor(stored));
   }, []);
 
+  // ✅ Facebook Pixel: ViewContent عند فتح صفحة المنتج
+  useEffect(() => {
+    fbTrack("ViewContent", {
+      content_name: "Erovia",
+      content_category: "erovia",
+      currency: "MAD",
+      value: packages[0]?.price,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const totalPrice = selectedPackage ? selectedPackage.price : 0;
 
   const scrollTo = (id: string) => {
@@ -978,6 +990,14 @@ export default function EroviaProductPage() {
   const choosePackage = (id: number) => {
     const pkg = packages.find((p) => p.id === id);
     setFormData((f) => ({ ...f, packageId: id, quantity: pkg ? pkg.boxes : f.quantity }));
+    if (pkg) {
+      fbTrack("InitiateCheckout", {
+        content_name: pkg.name,
+        content_category: "erovia",
+        currency: "MAD",
+        value: pkg.price,
+      });
+    }
   };
 
   // نفس اختيار الباقة لكن مع التمرير التلقائي لقسم الطلب (تُستخدم من بطاقات الباقات خارج النموذج)
@@ -1012,6 +1032,11 @@ export default function EroviaProductPage() {
     setShowConfirmModal(false);
     setSubmitting(true);
     try {
+      // ✅ معرّف حدث موحّد يُستخدم في كل من بكسل المتصفح وConversions API من السيرفر
+      // لضمان عدم احتساب نفس عملية الشراء مرتين في Meta Events Manager
+      const fbEventId = generateEventId();
+      const { fbp, fbc } = getFbBrowserIds();
+
       const orderData = {
         customerName: formData.fullName.trim(),
         phone: formData.phone.trim(),
@@ -1024,6 +1049,10 @@ export default function EroviaProductPage() {
         unitPrice: selectedPackage.price,
         paymentMethod: "COD",
         sourcePage: "/product/erovia",
+        fbEventId,
+        fbp: fbp || undefined,
+        fbc: fbc || undefined,
+        contentCategory: "erovia",
       };
       const response = await fetch("/api/manual-orders", {
         method: "POST",
@@ -1032,6 +1061,18 @@ export default function EroviaProductPage() {
       });
       const result = await response.json();
       if (response.ok && result.success) {
+        // ✅ إطلاق Purchase من المتصفح بنفس المعرّف المُرسل للسيرفر أعلاه
+        fbTrack(
+          "Purchase",
+          {
+            content_name: selectedPackage.name,
+            content_category: "erovia",
+            currency: "MAD",
+            value: selectedPackage.price,
+          },
+          fbEventId
+        );
+
         setOfferClaims((current) => {
           const next = Math.max(2500, current + 1);
           window.localStorage.setItem("erovia_offer_claims", String(next));

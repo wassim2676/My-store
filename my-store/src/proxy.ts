@@ -37,6 +37,7 @@ export default auth((req: AuthenticatedRequest) => {
     "/api/blog",
     "/api/likes",
     "/api/comments",
+    "/api/manual-orders",
     "/favicon.ico",
     "/robots.txt",
     "/sitemap.xml",

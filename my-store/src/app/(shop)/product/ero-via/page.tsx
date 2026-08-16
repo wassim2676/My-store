@@ -1,5 +1,7 @@
 "use client";
+
 import { useState, useEffect, useMemo } from "react";
+import { fbTrack, generateEventId, getFbBrowserIds } from "@/lib/fbPixel";
 import Image from "next/image";
 import { BannerImage } from "@/components/shop/EroviaBanners";
 import {
@@ -7,10 +9,14 @@ import {
   User, Phone, MapPin, Home, X, Loader2, AlertCircle, Info,
 } from "lucide-react";
 
-// ==================== 🏷️ معرّف مصدر الصفحة ====================
+// ==================== 🎨 الهوية البصرية — أسود + أحمر (بأسلوب TikTok) ====================
+// أزرار سوداء #0A0A0A بدل الأزرق، أحمر #FE2C55 كلون تمييز (خصومات/شارات)
+// خلفيات السيكشنز متبادلة: أبيض / أسود، بانرات عريضة تملأ الشاشة بالكامل
+
+// ==================== 🏷️ معرّف مصدر الصفحة (لتمييزها عن نسخة erovia في تتبّع الطلبات) ====================
 const SOURCE_PAGE = "/product/ero-via";
 
-// ==================== 💰 الباقات — أسعار محدّثة + صور مخصصة ====================
+// ==================== 💰 الباقات — نفس منتج ونفس أسعار صفحة Erovia تماماً (لضمان اختبار A/B عادل) ====================
 interface PackageOption {
   id: number;
   name: string;
@@ -18,37 +24,12 @@ interface PackageOption {
   price: number;
   originalPrice: number;
   promo: boolean;
-  image: string;
 }
 
 const packages: PackageOption[] = [
-  { 
-    id: 1, 
-    name: "Erovia — علبة واحدة", 
-    boxes: 1, 
-    price: 350, 
-    originalPrice: 350, 
-    promo: false,
-    image: "/products/erovia1.png"
-  },
-  { 
-    id: 2, 
-    name: "Erovia (× 2 علب)", 
-    boxes: 2, 
-    price: 600, 
-    originalPrice: 700, 
-    promo: true,
-    image: "/products/erovia2.png"
-  },
-  { 
-    id: 3, 
-    name: "Erovia (× 3 علب)", 
-    boxes: 3, 
-    price: 800, 
-    originalPrice: 1050, 
-    promo: true,
-    image: "/products/erovia3.png"
-  },
+  { id: 1, name: "Erovia — علبة واحدة", boxes: 1, price: 350, originalPrice: 600, promo: false },
+  { id: 2, name: "Erovia (× 2 علب)", boxes: 2, price: 900, originalPrice: 1200, promo: true },
+  { id: 3, name: "Erovia (× 3 علب)", boxes: 3, price: 1200, originalPrice: 1800, promo: true },
 ];
 
 interface OrderFormData {
@@ -58,6 +39,8 @@ interface OrderFormData {
   address: string;
   packageId: number | null;
 }
+
+const packageImages = ["/products/erovia1.png", "/products/erovia2.png", "/products/erovia3.png"];
 
 // ==================== ⭐ آراء العملاء ====================
 const testimonials = [
@@ -79,7 +62,7 @@ function Toast({ message, type, onClose }: { message: string; type: "success" | 
   return (
     <div
       className={`fixed top-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-[90] ${
-        type === "success" ? "bg-[#0A0A0A]" : "bg-[#FE2C55]"
+        type === "success" ? "bg-[#16A34A]" : "bg-[#FE2C55]"
       } text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3`}
     >
       {type === "success" ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
@@ -108,7 +91,7 @@ function SimpleHeader({ onOrderClick }: { onOrderClick: () => void }) {
     <header className="sticky top-0 z-40 bg-[#0A0A0A] text-white">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
         <span className="text-xl font-black tracking-tight">
-          Erovia <span className="text-[#FE2C55]">.</span>
+          Erovia<span className="text-[#FE2C55]">.</span>
         </span>
         <button
           onClick={onOrderClick}
@@ -127,12 +110,19 @@ export default function EroViaProductPage() {
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // ✅ قفل تمرير الصفحة الخلفية طالما نافذة التأكيد مفتوحة
+  useEffect(() => {
+    if (showConfirm) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [showConfirm]);
   const [formData, setFormData] = useState<OrderFormData>({
-    fullName: "",
-    phone: "",
-    city: "",
-    address: "",
-    packageId: 2,
+    fullName: "", phone: "", city: "", address: "", packageId: 2, // الباقة الأكثر طلباً محددة افتراضياً
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -140,6 +130,17 @@ export default function EroViaProductPage() {
     () => packages.find((p) => p.id === formData.packageId) || null,
     [formData.packageId]
   );
+
+  // ✅ Facebook Pixel: ViewContent عند فتح صفحة المنتج
+  useEffect(() => {
+    fbTrack("ViewContent", {
+      content_name: "Erovia",
+      content_category: "ero-via",
+      currency: "MAD",
+      value: packages[0]?.price,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scrollToOrder = () => {
     document.getElementById("order-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -171,6 +172,10 @@ export default function EroViaProductPage() {
     setShowConfirm(false);
     setSubmitting(true);
     try {
+      // ✅ معرّف حدث موحّد بين بكسل المتصفح وConversions API من السيرفر (يمنع الاحتساب المزدوج)
+      const fbEventId = generateEventId();
+      const { fbp, fbc } = getFbBrowserIds();
+
       const res = await fetch("/api/manual-orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -186,10 +191,26 @@ export default function EroViaProductPage() {
           unitPrice: selectedPackage.price,
           paymentMethod: "COD",
           sourcePage: SOURCE_PAGE,
+          fbEventId,
+          fbp: fbp || undefined,
+          fbc: fbc || undefined,
+          contentCategory: "ero-via",
         }),
       });
       const data = await res.json();
       if (res.ok && data.success) {
+        // ✅ إطلاق Purchase من المتصفح بنفس المعرّف المُرسل للسيرفر أعلاه
+        fbTrack(
+          "Purchase",
+          {
+            content_name: selectedPackage.name,
+            content_category: "ero-via",
+            currency: "MAD",
+            value: selectedPackage.price,
+          },
+          fbEventId
+        );
+
         setToast({ message: "🎉 تم استلام طلبك! سنتصل بك قريباً لتأكيد التوصيل.", type: "success" });
         setFormData({ fullName: "", phone: "", city: "", address: "", packageId: 2 });
       } else {
@@ -203,17 +224,17 @@ export default function EroViaProductPage() {
   };
 
   const inputBase =
-    "w-full ps-11 pe-4 py-3.5 rounded-xl text-sm border outline-none transition-all bg-white placeholder:text-gray-400";
+    "w-full ps-11 pe-4 py-3.5 rounded-xl text-sm border outline-none transition-all bg-white text-[#0A0A0A] placeholder:text-gray-400";
   const inputOk = "border-gray-200 focus:border-[#0A0A0A] focus:ring-2 focus:ring-[#0A0A0A]/10";
   const inputErr = "border-[#FE2C55] bg-[#FE2C55]/5 focus:ring-2 focus:ring-[#FE2C55]/15";
 
   return (
-    <div className="min-h-screen bg-white font-sans antialiased" dir="rtl">
+    <div className="min-h-screen bg-white font-sans antialiased" dir="rtl" style={{ colorScheme: "light" }}>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
       <SimpleHeader onOrderClick={scrollToOrder} />
 
-      {/* ==================== 🖼️ الهيرو ==================== */}
+      {/* ==================== 🖼️ الهيرو — بانر احترافي بصورة المنتج الحقيقية ==================== */}
       <section className="relative">
         <BannerImage src="/products/ero-via-banner-hero.png" alt="Erovia — استعد طاقتك وثقتك اليومية" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
@@ -235,32 +256,34 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🧾 سيكشن الطلب ==================== */}
+      {/* ==================== 🧾 سيكشن الطلب — مباشرة بعد الهيرو، بأسلوب مبسّط ومباشر ==================== */}
       <section id="order-form" className="bg-[#FAFAFA] py-10 sm:py-14 px-4 sm:px-6 scroll-mt-16">
         <div className="max-w-xl mx-auto">
           <h2 className="text-center text-xl sm:text-2xl font-black text-[#0A0A0A] mb-6">إملأ الاستمارة للطلب</h2>
 
           {/* اختيار الباقة */}
           <div className="space-y-3 mb-5">
-            {packages.map((pkg) => {
+            {packages.map((pkg, pkgIndex) => {
               const selected = formData.packageId === pkg.id;
               return (
                 <button
                   key={pkg.id}
                   type="button"
-                  onClick={() => setFormData((f) => ({ ...f, packageId: pkg.id }))}
+                  onClick={() => {
+                    setFormData((f) => ({ ...f, packageId: pkg.id }));
+                    fbTrack("InitiateCheckout", {
+                      content_name: pkg.name,
+                      content_category: "ero-via",
+                      currency: "MAD",
+                      value: pkg.price,
+                    });
+                  }}
                   className={`w-full flex items-center gap-4 p-3 rounded-2xl border-2 transition-all cursor-pointer text-right ${
                     selected ? "border-[#0A0A0A] bg-[#FE2C55]/[0.06]" : "border-gray-200 bg-white hover:border-gray-300"
                   }`}
                 >
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-white border border-gray-100 flex-shrink-0">
-                    <Image 
-                      src={pkg.image} 
-                      alt={pkg.name} 
-                      fill 
-                      sizes="(max-width: 640px) 56px, 64px" 
-                      className="object-contain p-1" 
-                    />
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100">
+                    <Image src={packageImages[pkgIndex % packageImages.length]} alt={pkg.name} fill sizes="80px" className="object-contain p-1" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[#0A0A0A] text-sm sm:text-base">{pkg.name}</p>
@@ -301,7 +324,8 @@ export default function EroViaProductPage() {
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/[^\d\s+-]/g, "") })}
                 placeholder="رقم الهاتف / Numéro"
-                className={`${inputBase} ${errors.phone ? inputErr : inputOk}`}
+                dir="ltr"
+                className={`${inputBase} ${errors.phone ? inputErr : inputOk} !pl-4 !pr-11 text-right`}
               />
               {errors.phone && <p className="text-[#FE2C55] text-xs mt-1 font-semibold">{errors.phone}</p>}
             </div>
@@ -318,6 +342,7 @@ export default function EroViaProductPage() {
               {errors.city && <p className="text-[#FE2C55] text-xs mt-1 font-semibold">{errors.city}</p>}
             </div>
 
+            {/* ⚠️ حقل العنوان: غير موجود في التصميم المرجعي، لكن أبقيته لأن التوصيل الفعلي يحتاجه (مطلوب في نظامنا الخلفي) */}
             <div className="relative">
               <Home className="absolute top-1/2 -translate-y-1/2 start-4 w-4.5 h-4.5 text-gray-400" />
               <input
@@ -346,13 +371,13 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🌿 بانر المكونات ==================== */}
+      {/* ==================== 🌿 بانر المكونات الكاملة — مصحَّحة بالكامل ==================== */}
       <BannerImage src="/products/ero-via-banner-ingredients.png" alt="Erovia — قائمة المكونات الكاملة" background="bg-white" />
 
-      {/* ==================== 🖤 بانر الثقة ==================== */}
+      {/* ==================== 🖤 بانر الثقة — 60 كبسولة / طبيعي 100% / دعم شامل ==================== */}
       <BannerImage src="/products/ero-via-banner-trust.png" alt="Erovia — دواعي الثقة" background="bg-[#0A0A0A]" />
 
-      {/* ==================== ⭐ آراء العملاء ==================== */}
+      {/* ==================== ⭐ آراء العملاء — سيكشن قوي وجذاب، خلفية بيضاء ==================== */}
       <section className="bg-white py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-lg mx-auto mb-10">
@@ -386,7 +411,7 @@ export default function EroViaProductPage() {
         </div>
       </section>
 
-      {/* ==================== 🖤 دعوة أخيرة للطلب ==================== */}
+      {/* ==================== 🖤 دعوة أخيرة للطلب — خلفية سوداء ==================== */}
       <section className="bg-[#0A0A0A] py-12 sm:py-16 px-4 sm:px-6 text-center">
         <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">لا تفوّت عرضك اليوم</h2>
         <p className="text-gray-400 text-sm sm:text-base mb-6">كميات محدودة — الدفع عند الاستلام في جميع المدن</p>
@@ -399,7 +424,7 @@ export default function EroViaProductPage() {
         </button>
       </section>
 
-      {/* ==================== 🦶 فوتر ==================== */}
+      {/* ==================== 🦶 فوتر — معلومات ثقة فقط، بدون روابط صفحات ==================== */}
       <footer className="bg-white border-t border-gray-100 py-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-gray-500 font-semibold">
           <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#0A0A0A]" /> دفع آمن 100%</span>
@@ -410,7 +435,7 @@ export default function EroViaProductPage() {
         <p className="text-center text-[11px] text-gray-300 mt-5">© {new Date().getFullYear()} Erovia</p>
       </footer>
 
-      {/* ==================== 🔴 زر الطلب العائم ==================== */}
+      {/* ==================== 🔴 زر الطلب العائم — يبقى ظاهراً أثناء التمرير ==================== */}
       <button
         onClick={scrollToOrder}
         className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:w-auto z-[60] flex items-center justify-center gap-2.5 bg-[#0A0A0A] hover:bg-[#FE2C55] text-white font-black px-6 py-4 rounded-xl shadow-2xl transition-colors cursor-pointer text-sm sm:text-base"
@@ -422,24 +447,29 @@ export default function EroViaProductPage() {
       {/* ==================== نافذة تأكيد الطلب ==================== */}
       {showConfirm && selectedPackage && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setShowConfirm(false)} />
-          <div className="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-5 sm:p-6">
+          <div className="absolute inset-0 bg-black/65 backdrop-blur-[2px]" onClick={() => setShowConfirm(false)} />
+          <div className="relative bg-white w-full max-w-sm max-h-[88vh] overflow-y-auto rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] ring-1 ring-black/5 p-5 sm:p-6">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
-              <h3 className="font-black text-base text-[#0A0A0A]">تأكيد الطلب</h3>
-              <button onClick={() => setShowConfirm(false)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center cursor-pointer" aria-label="إغلاق">
-                <X className="w-4 h-4" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#16A34A]/10 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-[#16A34A]" />
+                </div>
+                <h3 className="font-black text-base text-[#0A0A0A]">تأكيد الطلب</h3>
+              </div>
+              <button onClick={() => setShowConfirm(false)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center cursor-pointer flex-shrink-0" aria-label="إغلاق">
+                <X className="w-4 h-4 text-[#0A0A0A]" />
               </button>
             </div>
-            <div className="bg-[#FAFAFA] rounded-xl p-4 space-y-2 text-sm mb-4">
-              <div className="flex justify-between"><span className="text-gray-500">الاسم:</span><span className="font-bold">{formData.fullName}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">الهاتف:</span><span className="font-bold" dir="ltr">{formData.phone}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">المدينة:</span><span className="font-bold">{formData.city}</span></div>
-              <div className="flex justify-between border-t border-gray-200 pt-2 mt-2"><span className="text-gray-500 font-bold">الباقة:</span><span className="font-black text-[#FE2C55]">{selectedPackage.name}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500 font-bold">الإجمالي:</span><span className="font-black text-base">{selectedPackage.price}.00 dh</span></div>
+            <div className="bg-[#FAFAFA] rounded-xl p-4 space-y-2.5 text-sm mb-4 border border-gray-100">
+              <div className="flex justify-between"><span className="text-gray-500">الاسم:</span><span className="font-bold text-[#0A0A0A]">{formData.fullName}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">الهاتف:</span><span className="font-bold text-[#0A0A0A]" dir="ltr">{formData.phone}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500">المدينة:</span><span className="font-bold text-[#0A0A0A]">{formData.city}</span></div>
+              <div className="flex justify-between border-t border-gray-200 pt-2.5 mt-1"><span className="text-gray-500 font-bold">الباقة:</span><span className="font-black text-[#FE2C55]">{selectedPackage.name}</span></div>
+              <div className="flex justify-between"><span className="text-gray-500 font-bold">الإجمالي:</span><span className="font-black text-base text-[#0A0A0A]">{selectedPackage.price}.00 dh</span></div>
             </div>
             <div className="flex gap-3">
               <button onClick={confirmOrder} className="flex-1 py-3 bg-[#0A0A0A] hover:bg-[#FE2C55] text-white rounded-xl text-sm font-black transition-colors cursor-pointer">
-                نعم، أكّد الطلب
+                نعم، تأكيد الطلب
               </button>
               <button onClick={() => setShowConfirm(false)} className="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-[#0A0A0A] rounded-xl text-sm font-bold transition-colors cursor-pointer">
                 تعديل

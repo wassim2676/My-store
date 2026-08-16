@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import FacebookPixel from "@/components/shared/FacebookPixel";
 
 // ⚠️ صورة مؤقتة — استبدلها بصورتك النهائية لاحقاً (نفس أسلوب صفحة erovia الأصلية)
 const OG_IMAGE_URL = "https://images.unsplash.com/photo-1584308972272-9cf4b93c8c65?w=1200&h=630&fit=crop";
@@ -25,5 +26,10 @@ export const metadata: Metadata = {
 };
 
 export default function EroViaLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <FacebookPixel />
+      {children}
+    </>
+  );
 }
