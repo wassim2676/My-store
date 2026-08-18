@@ -7,7 +7,7 @@ import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, ChevronDown, ChevronLeft, ChevronRight,
   AlertCircle, Loader2, X, MessageCircle, Menu, Search, BadgeCheck, Globe2,
   ThumbsUp, MessageSquare, Share2, MoreHorizontal, RotateCcw, Zap, Headphones, Info, HelpCircle,
-  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, RefreshCw, Pencil, Maximize2, Lock,
+  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, RefreshCw, Pencil, Maximize2, Lock, Phone,
 } from "lucide-react";
 
 // ==================== 🎨 الهوية البصرية — Facebook SaaS ====================
@@ -336,18 +336,18 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* معاينة جانبية (يمين) — تظهر في الهاتف والحاسوب على حدٍ سواء الآن */}
-      <div className="block absolute top-[9%] bottom-[11%] right-0 w-[14%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
-        <Image src={images[prevIdx].url} alt="" fill sizes="14vw" className="object-contain p-1" loading="lazy" />
+      {/* معاينة جانبية (يمين) — تظهر في الهاتف والحاسوب على حدٍ سواء الآن، بحجم واضح غير مصغّر */}
+      <div className="block absolute top-[3%] bottom-[5%] right-0 w-[22%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
+        <Image src={images[prevIdx].url} alt="" fill sizes="22vw" className="object-contain p-1" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-l from-white/20 via-white/45 to-white/75" />
       </div>
       {/* معاينة جانبية (يسار) */}
-      <div className="block absolute top-[9%] bottom-[11%] left-0 w-[14%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
-        <Image src={images[nextIdx].url} alt="" fill sizes="14vw" className="object-contain p-1" loading="lazy" />
+      <div className="block absolute top-[3%] bottom-[5%] left-0 w-[22%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
+        <Image src={images[nextIdx].url} alt="" fill sizes="22vw" className="object-contain p-1" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/45 to-white/75" />
       </div>
 
-      {/* الصورة الرئيسية — بدون إطار أبيض، فقط خط رفيع أنيق محيط بها لمشهد مندمج بالكامل */}
+      {/* الصورة الرئيسية — أطول قليلاً الآن (هوامش أقل من الأعلى والأسفل) بدون إطار أبيض */}
       <div
         key={activeIndex}
         onClick={onExpand}
@@ -355,7 +355,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
         aria-label="تكبير الصورة"
-        className="absolute top-[4%] bottom-[8%] right-[8%] left-[8%] sm:top-[5%] sm:bottom-[9%] rounded-xl overflow-hidden border border-[#1877F2]/15 shadow-md cursor-zoom-in"
+        className="absolute top-[2%] bottom-[4%] right-[11%] left-[11%] rounded-xl overflow-hidden border border-[#1877F2]/15 shadow-md cursor-zoom-in"
         style={{ animation: "galleryZoom 0.45s ease" }}
       >
         <Image
@@ -777,6 +777,11 @@ export default function EroviaProductPage() {
   const [likedCommentIds, setLikedCommentIds] = useState<Set<string>>(new Set());
   // ✅ هل أتمّ هذا الزائر طلباً من قبل؟ (شرط السماح له بالتعليق)
   const [hasOrdered, setHasOrdered] = useState(false);
+  // ✅ صفحة "شكراً لطلبك" — تظهر بنفس المسار بعد إتمام الطلب فعلياً (بدون تنقّل لرابط آخر)
+  const [orderCompleted, setOrderCompleted] = useState(false);
+  const [completedOrderInfo, setCompletedOrderInfo] = useState<{
+    fullName: string; phone: string; city: string; packageName: string; total: number;
+  } | null>(null);
 
   // ==================== 🔗 حالة المشاركة ====================
   const [shareCopied, setShareCopied] = useState(false);
@@ -1065,8 +1070,18 @@ export default function EroviaProductPage() {
         // ✅ فتح إمكانية التعليق فوراً بعد نجاح الطلب فعلياً
         window.localStorage.setItem(`ordered_${PAGE_SLUG}`, "true");
         setHasOrdered(true);
-        setToast({ message: "🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً لتأكيد التسليم.", type: "success" });
+
+        // ✅ حفظ لقطة من تفاصيل الطلب قبل تصفير النموذج، ثم عرض صفحة الشكر الاحترافية
+        setCompletedOrderInfo({
+          fullName: formData.fullName.trim(),
+          phone: formData.phone.trim(),
+          city: formData.city,
+          packageName: selectedPackage.name,
+          total: selectedPackage.price,
+        });
         setFormData({ fullName: "", phone: "", city: "", address: "", quantity: "", packageId: null });
+        setOrderCompleted(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         setToast({ message: result.error || "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى", type: "error" });
       }
@@ -1124,6 +1139,99 @@ export default function EroviaProductPage() {
     { name: "سفيان.ر", city: "طنجة", rating: 5, text: "الدفع عند الاستلام أراحني كثيراً، وخدمة العملاء متجاوبة وسريعة في الرد." },
     { name: "عادل.و", city: "فاس", rating: 5, text: "منتج طبيعي فعلاً، لاحظت الفرق خلال أسبوع من الاستخدام المنتظم. أنصح به بثقة." },
   ];
+
+  // ==================== ✅ صفحة "شكراً لطلبك" — تحلّ محل الصفحة بالكامل بنفس المسار ====================
+  if (orderCompleted && completedOrderInfo) {
+    return (
+      <div className="min-h-screen bg-[#F0F2F5] font-sans antialiased" dir="rtl" style={{ colorScheme: "light" }}>
+        {/* هيدر مبسّط */}
+        <header className="bg-white border-b border-[#E4E6EB]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-center">
+            <span className="font-semibold text-lg text-[#050505] flex items-center gap-1.5">
+              إيروفيا
+              <BadgeCheck className="w-4 h-4 text-[#1877F2]" />
+            </span>
+          </div>
+        </header>
+
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+          {/* شارة النجاح */}
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="w-20 h-20 rounded-full bg-[#42B72A]/10 flex items-center justify-center mb-5">
+              <div className="w-14 h-14 rounded-full bg-[#42B72A] flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#050505] mb-2">تم استلام طلبك بنجاح! 🎉</h1>
+            <p className="text-[#65676B] text-sm sm:text-base leading-relaxed max-w-md">
+              شكراً لثقتك بنا — طلبك الآن قيد المعالجة وسيصلك في أقرب وقت.
+            </p>
+          </div>
+
+          {/* إشعار الاتصال للتأكيد */}
+          <div className="bg-[#E7F3FF] border border-[#1877F2]/20 rounded-xl p-4 sm:p-5 flex items-start gap-3.5 mb-6">
+            <div className="w-11 h-11 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
+              <Phone className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="font-semibold text-[#050505] text-sm sm:text-base mb-1">سيتصل بك أحد أفراد فريقنا قريباً</p>
+              <p className="text-[#65676B] text-xs sm:text-sm leading-relaxed">
+                للتأكد من صحة بياناتك وتأكيد موعد التوصيل النهائي. يُرجى إبقاء هاتفك بالقرب منك.
+              </p>
+            </div>
+          </div>
+
+          {/* ملخص الطلب */}
+          <div className="bg-white rounded-xl border border-[#E4E6EB] shadow-sm overflow-hidden mb-6">
+            <div className="px-4 sm:px-5 py-3.5 border-b border-[#E4E6EB]">
+              <h2 className="font-semibold text-[#050505] text-sm sm:text-base">ملخص طلبك</h2>
+            </div>
+            <div className="p-4 sm:p-5 space-y-3 text-sm">
+              <div className="flex justify-between"><span className="text-[#65676B]">الاسم الكامل</span><span className="font-semibold text-[#050505]">{completedOrderInfo.fullName}</span></div>
+              <div className="flex justify-between"><span className="text-[#65676B]">رقم الهاتف</span><span className="font-semibold text-[#050505]" dir="ltr">{completedOrderInfo.phone}</span></div>
+              <div className="flex justify-between"><span className="text-[#65676B]">المدينة</span><span className="font-semibold text-[#050505]">{completedOrderInfo.city}</span></div>
+              <div className="flex justify-between border-t border-[#E4E6EB] pt-3"><span className="text-[#65676B]">الباقة</span><span className="font-semibold text-[#1877F2]">{completedOrderInfo.packageName}</span></div>
+              <div className="flex justify-between"><span className="text-[#65676B] font-semibold">الإجمالي (دفع عند الاستلام)</span><span className="font-bold text-lg text-[#050505]">{completedOrderInfo.total} درهم</span></div>
+            </div>
+          </div>
+
+          {/* شارات الثقة */}
+          <div className="grid grid-cols-3 gap-2.5 mb-8">
+            <div className="bg-white rounded-xl border border-[#E4E6EB] p-3.5 text-center">
+              <CheckCircle className="w-5 h-5 text-[#42B72A] mx-auto mb-1.5" />
+              <p className="text-[11px] sm:text-xs font-semibold text-[#050505]">دفع عند الاستلام</p>
+            </div>
+            <div className="bg-white rounded-xl border border-[#E4E6EB] p-3.5 text-center">
+              <Truck className="w-5 h-5 text-[#1877F2] mx-auto mb-1.5" />
+              <p className="text-[11px] sm:text-xs font-semibold text-[#050505]">توصيل سريع</p>
+            </div>
+            <div className="bg-white rounded-xl border border-[#E4E6EB] p-3.5 text-center">
+              <Shield className="w-5 h-5 text-[#1877F2] mx-auto mb-1.5" />
+              <p className="text-[11px] sm:text-xs font-semibold text-[#050505]">بيانات محمية</p>
+            </div>
+          </div>
+
+          {/* دعم العملاء */}
+          <div className="text-center">
+            <p className="text-xs text-[#65676B] mb-3">لديك سؤال بخصوص طلبك؟</p>
+            <a
+              href="https://wa.me/2126XXXXXXXX"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20BD5A] text-white text-sm font-semibold rounded-lg transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+              تواصل معنا عبر واتساب
+            </a>
+          </div>
+        </main>
+
+        <footer className="bg-white border-t border-[#E4E6EB] py-6 text-center">
+          <p className="text-[11px] text-[#65676B]">© {new Date().getFullYear()} إيروفيا — تجربة شراء بسيطة وواضحة</p>
+        </footer>
+      </div>
+    );
+  }
 
   return (
     // ✅ خلفية الصفحة رمادية مثل فيسبوك — وكل المحتوى داخل إطارات بيضاء
