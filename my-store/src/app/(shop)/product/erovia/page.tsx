@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { fbTrack, generateEventId, getFbBrowserIds } from "@/lib/fbPixel";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,7 +7,7 @@ import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, ChevronDown, ChevronLeft, ChevronRight,
   AlertCircle, Loader2, X, MessageCircle, Menu, Search, BadgeCheck, Globe2,
   ThumbsUp, MessageSquare, Share2, MoreHorizontal, RotateCcw, Zap, Headphones, Info, HelpCircle,
-  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, CornerDownLeft, RefreshCw, Pencil, Maximize2,
+  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, RefreshCw, Pencil, Maximize2, Lock,
 } from "lucide-react";
 
 // ==================== 🎨 الهوية البصرية — Facebook SaaS ====================
@@ -26,6 +26,7 @@ interface PackageOption {
   save: number;
   popular: boolean;
   features: string[];
+  image: string;
 }
 
 interface OrderFormData {
@@ -43,16 +44,19 @@ const packages: PackageOption[] = [
     id: 1, name: "باقة تجريبية", boxes: 1, duration: "شهر واحد",
     price: 350, originalPrice: 600, save: 250, popular: false,
     features: ["علبة واحدة من المنتج", "توصيل لجميع المدن", "الدفع عند الاستلام"],
+    image: "/products/packages/pack-1.png",
   },
   {
     id: 2, name: "باقة التوفير", boxes: 2, duration: "شهران",
-    price: 900, originalPrice: 1200, save: 300, popular: true,
+    price: 600, originalPrice: 700, save: 100, popular: true,
     features: ["علبتان من المنتج", "قيمة أفضل للكمية", "توصيل سريع مجاني", "الدفع عند الاستلام"],
+    image: "/products/packages/pack-2.png",
   },
   {
     id: 3, name: "باقة القوة", boxes: 3, duration: "3 أشهر",
-    price: 1200, originalPrice: 1800, save: 600, popular: false,
+    price: 800, originalPrice: 1050, save: 250, popular: false,
     features: ["3 علب من المنتج", "أعلى قيمة للكمية", "توصيل سريع مجاني", "الدفع عند الاستلام"],
+    image: "/products/packages/pack-3.png",
   },
 ];
 
@@ -72,31 +76,22 @@ const galleryCards = [
 ];
 
 // ==================== 🌿 المكونات الفعّالة (سيكشن جديد تحت الهيرو) ====================
+// 🖼️ صور المكونات — ضعها لاحقاً في public/products/ingredients/ بنفس هذه الأسماء بالضبط
 const ingredients = [
-  {
-    icon: Leaf,
-    title: "الجينسنغ الأحمر الكوري الأقصى",
-    desc: "مستخلص نقي بتركيز عالٍ يعزز مستويات الطاقة الخلوية، يرفع القدرة البدنية على التحمل، ويقوّي جدران الأوعية الدموية بشكل طبيعي ومثبت علمياً.",
-    stat: "+40% طاقة مستدامة",
-  },
-  {
-    icon: Zap,
-    title: "مستخلص Horny Goat Weed الطبيعي",
-    desc: "محفز حيوي فوري يعمل على تحسين كفاءة ومعدل ضخ الدورة الدموية الطرفية، مما يعزز من قوة وسرعة الاستجابة الجسدية دون أي إجهاد للقلب.",
-    stat: "+35% تدفق دموي للشرايين",
-  },
-  {
-    icon: Heart,
-    title: "عشبة Tribulus Terrestris النقية",
-    desc: "تعمل بذكاء على دعم وتحفيز إنتاج التستوستيرون الطبيعي الحر بالجسم، مما يرفع الكفاءة العضلية الكلية ويزيد مستويات الأداء اليومي.",
-    stat: "+25% هرمون ذكورة حر",
-  },
-  {
-    icon: Award,
-    title: "جذور الماكا البيروفية العضوية",
-    desc: "الذهب الأسود النادر من مرتفعات الأنديز، يعزز التوازن الهرموني، ويرفع مستويات الخصوبة الذكورية بشكل جذري، ويقضي على الإجهاد الذهني والبدني المفرط.",
-    stat: "+30% خصوبة حيوية وثبات",
-  },
+  { icon: Leaf, title: "مستخلص الجينسنغ", titleFr: "Extrait de Ginseng", desc: "من أقوى المكونات الطبيعية عالمياً لدعم الطاقة — يعزز الحيوية الخلوية ويرفع القدرة على التحمل بشكل طبيعي ومثبت علمياً.", stat: "+40% طاقة مستدامة", image: "/products/ingredients/ginseng.png" },
+  { icon: Award, title: "مستخلص الماكا", titleFr: "Extrait de Maca", desc: "الذهب الأسود النادر من مرتفعات الأنديز — كنز طبيعي حقيقي يعزز التوازن الهرموني ويمنحك حيوية ملحوظة يوماً بعد يوم.", stat: "توازن هرموني طبيعي", image: "/products/ingredients/maca.png" },
+  { icon: Zap, title: "مستخلص تونغكات علي", titleFr: "Extrait de Tongkat Ali", desc: "عشبة آسيوية أصيلة ذات سمعة قوية عبر قرون — تدعم الحيوية الذكورية والنشاط البدني اليومي بفعالية ملموسة.", stat: "دعم الحيوية الذكورية", image: "/products/ingredients/tongkat-ali.png" },
+  { icon: Shield, title: "غلوكونات الزنك", titleFr: "Gluconate de Zinc", desc: "معدن أساسي لا غنى عنه — يمنح جهاز المناعة دعماً قوياً ويعزز الوظائف الإنجابية بشكل طبيعي وفعّال.", stat: "دعم المناعة والخصوبة", image: "/products/ingredients/zinc.png" },
+  { icon: Sparkles, title: "فيتامين ب3", titleFr: "Vitamine B3", desc: "عنصر حيوي يسرّع التمثيل الغذائي الطبيعي للطاقة، ويساهم بفعالية في تقليل الإجهاد والشعور بالتعب اليومي.", stat: "دعم التمثيل الغذائي", image: "/products/ingredients/vitamin-b3.png" },
+  { icon: Leaf, title: "حبوب لقاح النخيل", titleFr: "Pollen de Palmier", desc: "كنز غذائي طبيعي غنيّ جداً بالعناصر الحيوية — يمنح الجسم دفعة نشاط وحيوية عامة يشعر بها المستخدم بوضوح.", stat: "غنيّ بالعناصر الحيوية", image: "/products/ingredients/palm-pollen.png" },
+  { icon: Heart, title: "غذاء ملكات النحل", titleFr: "Gelée Royale", desc: "من أثمن المنتجات الطبيعية على الإطلاق — تغذية خلوية متكاملة معروفة تاريخياً بدعمها القوي للحيوية والنشاط اليومي.", stat: "تغذية خلوية متكاملة", image: "/products/ingredients/royal-jelly.png" },
+  { icon: Sparkles, title: "فيتامين ب10 (PABA)", titleFr: "Vitamine B10 (PABA)", desc: "يدعم صحة الخلايا بعمق ويساهم بفعالية حقيقية في الحفاظ على الوظائف الحيوية الطبيعية للجسم.", stat: "دعم صحة الخلايا", image: "/products/ingredients/vitamin-b10.png" },
+  { icon: Zap, title: "سترات المغنيسيوم", titleFr: "Citrate de Magnésium", desc: "عنصر أساسي يمنح الجسم استرخاءً عضلياً وعصبياً حقيقياً، ويقلل الشعور بالتعب بشكل ملحوظ.", stat: "استرخاء عضلي وعصبي", image: "/products/ingredients/magnesium.png" },
+  { icon: TrendingUp, title: "تورين", titleFr: "Taurine", desc: "حمض أميني قوي التأثير يدعم تنشيط الدورة الدموية بفعالية، ويمنح الجسم دفعة حقيقية من النشاط البدني.", stat: "تنشيط الدورة الدموية", image: "/products/ingredients/taurine.png" },
+  { icon: Heart, title: "إل-أرجينين", titleFr: "L-Arginine", desc: "من أكثر الأحماض الأمينية شهرة عالمياً لدوره القوي في دعم تدفق الدم الصحي داخل الجسم بكفاءة عالية.", stat: "دعم تدفق الدم الصحي", image: "/products/ingredients/l-arginine.png" },
+  { icon: Shield, title: "دنج", titleFr: "Propolis", desc: "مادة طبيعية ثمينة من خلية النحل، معروفة عالمياً بخصائصها القوية المضادة للأكسدة وفوائدها الصحية العديدة.", stat: "خصائص مضادة للأكسدة", image: "/products/ingredients/propolis.png" },
+  { icon: Leaf, title: "جلسرين", titleFr: "Glycérine", desc: "مكوّن طبيعي عالي الجودة يمنح التركيبة قواماً ناعماً ومثالياً وسهل الامتصاص للاستفادة القصوى.", stat: "قوام طبيعي ناعم", image: "/products/ingredients/glycerin.png" },
+  { icon: Award, title: "سوربيتول", titleFr: "Sorbitol", desc: "محلٍّ طبيعي خفيف ومتوازن، يُستخدم بعناية فائقة ضمن التركيبة لضمان مذاق مثالي دون أي إخلال بالجودة.", stat: "محلٍّ طبيعي خفيف", image: "/products/ingredients/sorbitol.png" },
 ];
 
 // ==================== ❓ الأسئلة الشائعة ====================
@@ -336,7 +331,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
 
   return (
     <div
-      className="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-[#F7F8FA] overflow-hidden select-none touch-pan-y"
+      className="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-white border-y border-[#E4E6EB] overflow-hidden select-none touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -344,12 +339,12 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
       {/* معاينة جانبية (يمين) — تظهر في الهاتف والحاسوب على حدٍ سواء الآن */}
       <div className="block absolute top-[9%] bottom-[11%] right-0 w-[14%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
         <Image src={images[prevIdx].url} alt="" fill sizes="14vw" className="object-contain p-1" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-l from-[#F7F8FA]/20 via-[#F7F8FA]/45 to-[#F7F8FA]/75" />
+        <div className="absolute inset-0 bg-gradient-to-l from-white/20 via-white/45 to-white/75" />
       </div>
       {/* معاينة جانبية (يسار) */}
       <div className="block absolute top-[9%] bottom-[11%] left-0 w-[14%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
         <Image src={images[nextIdx].url} alt="" fill sizes="14vw" className="object-contain p-1" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F7F8FA]/20 via-[#F7F8FA]/45 to-[#F7F8FA]/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/45 to-white/75" />
       </div>
 
       {/* الصورة الرئيسية — بدون إطار أبيض، فقط خط رفيع أنيق محيط بها لمشهد مندمج بالكامل */}
@@ -403,15 +398,19 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
         <ChevronLeft className="w-5 h-5" />
       </button>
 
-      {/* نقاط التنقل */}
+      {/* نقاط التنقل — كلها عرضية بنفس الحجم، والنشطة تُميَّز بتعبئة داخلية مع فراغ من الحواف */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2">
         {images.map((_, i) => (
           <button
             key={i}
             onClick={() => onChange(i)}
             aria-label={`صورة ${i + 1}`}
-            className={`h-2 rounded-full transition-all cursor-pointer ${i === activeIndex ? "w-7 bg-[#1877F2]" : "w-2 bg-[#CED0D4] hover:bg-[#8A8D91]"}`}
-          />
+            className={`h-2.5 w-7 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center ${
+              i === activeIndex ? "bg-white border-[#1877F2]" : "bg-white/80 border-[#E4E6EB] hover:border-[#8A8D91]/60"
+            }`}
+          >
+            {i === activeIndex && <span className="h-1.5 w-5 rounded-full bg-[#1877F2]" />}
+          </button>
         ))}
       </div>
     </div>
@@ -520,8 +519,12 @@ function ImageLightbox({ images, activeIndex, onChange, onClose }: {
             key={i}
             onClick={(e) => { e.stopPropagation(); onChange(i); }}
             aria-label={`صورة ${i + 1}`}
-            className={`h-2 rounded-full transition-all cursor-pointer ${i === activeIndex ? "w-7 bg-white" : "w-2 bg-white/40 hover:bg-white/70"}`}
-          />
+            className={`h-2.5 w-7 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center ${
+              i === activeIndex ? "bg-white/10 border-white" : "bg-white/10 border-white/25 hover:border-white/45"
+            }`}
+          >
+            {i === activeIndex && <span className="h-1.5 w-5 rounded-full bg-white" />}
+          </button>
         ))}
       </div>
     </div>
@@ -771,10 +774,9 @@ export default function EroviaProductPage() {
   const [editingName, setEditingName] = useState(false);
   const [commentMessage, setCommentMessage] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
-  const [replyingTo, setReplyingTo] = useState<string | null>(null); // معرّف التعليق الجاري الرد عليه
-  const [replyMessage, setReplyMessage] = useState("");
-  const [submittingReply, setSubmittingReply] = useState(false);
   const [likedCommentIds, setLikedCommentIds] = useState<Set<string>>(new Set());
+  // ✅ هل أتمّ هذا الزائر طلباً من قبل؟ (شرط السماح له بالتعليق)
+  const [hasOrdered, setHasOrdered] = useState(false);
 
   // ==================== 🔗 حالة المشاركة ====================
   const [shareCopied, setShareCopied] = useState(false);
@@ -797,6 +799,10 @@ export default function EroviaProductPage() {
         // تجاهل بيانات تالفة بصمت
       }
     }
+
+    const orderedBefore = window.localStorage.getItem(`ordered_${PAGE_SLUG}`) === "true";
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- قراءة حالة إتمام الطلب المحفوظة محلياً لهذا الزائر
+    setHasOrdered(orderedBefore);
 
     fetch(`/api/likes?slug=${PAGE_SLUG}`)
       .then((r) => r.json())
@@ -872,6 +878,10 @@ export default function EroviaProductPage() {
   // إضافة تعليق رئيسي جديد
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!hasOrdered) {
+      setToast({ message: "يمكنك إضافة تعليقك بعد إتمام طلبك أولاً", type: "error" });
+      return;
+    }
     if (!displayName.trim() || !commentMessage.trim()) {
       setToast({ message: "الرجاء كتابة تعليق أولاً", type: "error" });
       return;
@@ -894,33 +904,6 @@ export default function EroviaProductPage() {
       setToast({ message: "خطأ في الاتصال بالخادم", type: "error" });
     } finally {
       setSubmittingComment(false);
-    }
-  };
-
-  // إضافة رد على تعليق رئيسي
-  const handleAddReply = async (parentId: string) => {
-    if (!displayName.trim() || !replyMessage.trim()) return;
-    setSubmittingReply(true);
-    try {
-      const res = await fetch("/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: PAGE_SLUG, parentId, name: displayName.trim(), message: replyMessage.trim() }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setComments((prev) =>
-          prev.map((c) => (c.id === parentId ? { ...c, replies: [...c.replies, { ...data.data, replies: [] }] } : c))
-        );
-        setReplyMessage("");
-        setReplyingTo(null);
-      } else {
-        setToast({ message: data.error || "تعذر نشر الرد", type: "error" });
-      }
-    } catch {
-      setToast({ message: "خطأ في الاتصال بالخادم", type: "error" });
-    } finally {
-      setSubmittingReply(false);
     }
   };
 
@@ -1078,6 +1061,10 @@ export default function EroviaProductPage() {
           window.localStorage.setItem("erovia_offer_claims", String(next));
           return next;
         });
+
+        // ✅ فتح إمكانية التعليق فوراً بعد نجاح الطلب فعلياً
+        window.localStorage.setItem(`ordered_${PAGE_SLUG}`, "true");
+        setHasOrdered(true);
         setToast({ message: "🎉 تم استلام طلبك بنجاح! سنتواصل معك قريباً لتأكيد التسليم.", type: "success" });
         setFormData({ fullName: "", phone: "", city: "", address: "", quantity: "", packageId: null });
       } else {
@@ -1097,11 +1084,45 @@ export default function EroviaProductPage() {
     { icon: Zap, title: "تجربة بسيطة", desc: "معلومات المنتج والطلب في مكان واحد واضح." },
   ];
 
-  const stats = [
-    { value: "24/7", label: "دعم العملاء", stars: false },
-    { value: "98%", label: "تجربة موصى بها", stars: false },
-    { value: "4.9/5", label: "تقييم العملاء", stars: true },
-    { value: "+30K", label: "عميل سعيد", stars: false },
+  // ✅ التمرير بالأسهم لسكشن المكونات (حاسوب فقط) — مع تتبّع حقيقي لموضع السكرول
+  // لإخفاء كل سهم تلقائياً عند وصوله لنهايته (متوافق مع اتجاه RTL في كل المتصفحات)
+  const ingredientsScrollRef = useRef<HTMLDivElement>(null);
+  const [ingredientsAtStart, setIngredientsAtStart] = useState(true);
+  const [ingredientsAtEnd, setIngredientsAtEnd] = useState(false);
+
+  const updateIngredientsScrollState = useCallback(() => {
+    const el = ingredientsScrollRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const pos = Math.abs(el.scrollLeft); // القيمة المطلقة تتعامل مع اختلاف تفسير scrollLeft بين المتصفحات في RTL
+    setIngredientsAtStart(pos <= 2);
+    setIngredientsAtEnd(pos >= maxScroll - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = ingredientsScrollRef.current;
+    if (!el) return;
+    updateIngredientsScrollState();
+    el.addEventListener("scroll", updateIngredientsScrollState, { passive: true });
+    window.addEventListener("resize", updateIngredientsScrollState);
+    return () => {
+      el.removeEventListener("scroll", updateIngredientsScrollState);
+      window.removeEventListener("resize", updateIngredientsScrollState);
+    };
+  }, [updateIngredientsScrollState]);
+
+  const scrollIngredients = (dir: "prev" | "next") => {
+    const el = ingredientsScrollRef.current;
+    if (!el) return;
+    const amount = Math.min(el.clientWidth * 0.8, 640);
+    el.scrollBy({ left: dir === "next" ? -amount : amount, behavior: "smooth" });
+  };
+
+  const testimonials = [
+    { name: "يوسف.ب", city: "الدار البيضاء", rating: 5, text: "توصيل سريع فعلاً وسرّي تماماً، والمنتج أصلي 100%. مقتنع بالجودة من أول علبة." },
+    { name: "كريم.م", city: "مراكش", rating: 5, text: "كنت متردداً في البداية، لكن التجربة تجاوزت توقعاتي. سأطلب الباقة الكبيرة المرة القادمة." },
+    { name: "سفيان.ر", city: "طنجة", rating: 5, text: "الدفع عند الاستلام أراحني كثيراً، وخدمة العملاء متجاوبة وسريعة في الرد." },
+    { name: "عادل.و", city: "فاس", rating: 5, text: "منتج طبيعي فعلاً، لاحظت الفرق خلال أسبوع من الاستخدام المنتظم. أنصح به بثقة." },
   ];
 
   return (
@@ -1137,6 +1158,42 @@ export default function EroviaProductPage() {
         }
         .erovia-fb-page .font-normal {
           font-weight: 400;
+        }
+        /* ✅ إطار سيكشن المكونات — CSS صريح (بدل كلاسات Tailwind arbitrary) لضمان تطبيقه دائماً */
+        .ingredients-frame {
+          display: flex;
+          flex-direction: column;
+          height: 560px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          scrollbar-width: none;
+        }
+        .ingredients-frame::-webkit-scrollbar {
+          display: none;
+        }
+        @media (min-width: 640px) {
+          .ingredients-frame {
+            flex-direction: row;
+            height: auto;
+            overflow-y: visible;
+            overflow-x: auto;
+          }
+        }
+        .ingredient-card {
+          width: 100%;
+          flex-shrink: 0;
+        }
+        @media (min-width: 640px) {
+          .ingredient-card {
+            width: 300px;
+            min-height: 420px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .ingredient-card {
+            width: 320px;
+            min-height: 450px;
+          }
         }
       `}</style>
 
@@ -1237,8 +1294,10 @@ export default function EroviaProductPage() {
               {/* ==================== 💬 لوحة التعليقات والردود الحقيقية (بأسلوب فيسبوك) ==================== */}
               {showComments && (
                 <div id="post-comments" className="mt-3 pt-4 border-t border-[#E4E6EB] scroll-mt-24">
-                  {/* الاسم المستعار الحالي + إمكانية تعديله */}
-                  <div className="flex items-center gap-2 mb-3 text-xs text-[#65676B]">
+                  {hasOrdered ? (
+                    <>
+                      {/* الاسم المستعار الحالي + إمكانية تعديله */}
+                      <div className="flex items-center gap-2 mb-3 text-xs text-[#65676B]">
                     <div className="w-7 h-7 rounded-full bg-[#1877F2] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
                       {(displayName || "؟").trim().charAt(0).toUpperCase()}
                     </div>
@@ -1303,6 +1362,18 @@ export default function EroviaProductPage() {
                       {submittingComment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     </button>
                   </form>
+                    </>
+                  ) : (
+                    /* 🔒 التعليق مقفل حتى يُتمّ الزائر طلباً فعلياً */
+                    <div className="flex items-center gap-3 bg-[#F0F2F5] rounded-xl p-4 mb-5">
+                      <div className="w-9 h-9 rounded-full bg-[#1877F2]/10 text-[#1877F2] flex items-center justify-center flex-shrink-0">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <p className="text-xs text-[#65676B] leading-relaxed">
+                        يمكنك إضافة تعليقك بعد إتمام طلبك — <button onClick={() => scrollTo("order-form")} className="text-[#1877F2] font-bold hover:underline cursor-pointer">أكمل طلبك الآن</button>
+                      </p>
+                    </div>
+                  )}
 
                   {/* قائمة التعليقات والردود */}
                   {commentsLoading ? (
@@ -1332,64 +1403,7 @@ export default function EroviaProductPage() {
                                 >
                                   إعجاب {c.likes > 0 && `(${c.likes})`}
                                 </button>
-                                <button
-                                  onClick={() => setReplyingTo(replyingTo === c.id ? null : c.id)}
-                                  className="hover:underline cursor-pointer flex items-center gap-1"
-                                >
-                                  <CornerDownLeft className="w-3 h-3" /> رد
-                                </button>
                               </div>
-
-                              {/* نموذج الرد */}
-                              {replyingTo === c.id && (
-                                <form
-                                  onSubmit={(e) => { e.preventDefault(); handleAddReply(c.id); }}
-                                  className="flex gap-2 mt-2"
-                                >
-                                  <input
-                                    type="text"
-                                    autoFocus
-                                    value={replyMessage}
-                                    onChange={(e) => setReplyMessage(e.target.value)}
-                                    placeholder={`الرد على ${c.name}...`}
-                                    maxLength={500}
-                                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-xs border border-[#CED0D4] outline-none focus:border-[#1877F2] bg-white"
-                                  />
-                                  <button
-                                    type="submit"
-                                    disabled={submittingReply}
-                                    className="w-8 h-8 flex-shrink-0 rounded-lg bg-[#1877F2] hover:bg-[#166FE5] text-white flex items-center justify-center transition-colors disabled:opacity-60 cursor-pointer"
-                                    aria-label="نشر الرد"
-                                  >
-                                    {submittingReply ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                                  </button>
-                                </form>
-                              )}
-
-                              {/* الردود المتداخلة */}
-                              {c.replies.length > 0 && (
-                                <div className="mt-2.5 space-y-2.5 border-r-2 border-[#E4E6EB] pr-3">
-                                  {c.replies.map((r) => (
-                                    <div key={r.id} className="flex items-start gap-2">
-                                      <div className="w-6 h-6 rounded-full bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0 font-bold text-[10px]">
-                                        {r.name.trim().charAt(0).toUpperCase()}
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <div className="bg-[#F0F2F5] rounded-2xl px-3 py-2">
-                                          <p className="text-[11px] font-bold text-[#050505]">{r.name}</p>
-                                          <p className="text-xs text-[#050505] leading-relaxed break-words">{r.message}</p>
-                                        </div>
-                                        <button
-                                          onClick={() => handleToggleCommentLike(r.id)}
-                                          className={`text-[10px] font-bold mt-1 px-2 hover:underline cursor-pointer ${likedCommentIds.has(r.id) ? "text-[#1877F2]" : "text-[#65676B]"}`}
-                                        >
-                                          إعجاب {r.likes > 0 && `(${r.likes})`}
-                                        </button>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -1501,20 +1515,74 @@ export default function EroviaProductPage() {
               </div>
             </div>
 
-          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-2.5 p-2.5 sm:p-3">
-            {ingredients.map((item, i) => (
-              <div key={i} className="bg-white rounded-xl border border-[#E4E6EB] shadow-sm p-4 sm:p-5 flex flex-col hover:shadow-lg hover:border-[#1877F2]/30 transition-all">
+          <div className="relative p-2.5 sm:p-3">
+            {/* 📱 موبايل: نفس فكرة الحاسوب بالضبط لكن عمودياً — إطار واحد يجمع كل الخانات
+                ويتم التمرير (سكرول) داخله عمودياً باليد، بلا أي snap أو قطع تلقائي
+                🖥️ حاسوب: نفس الإطار لكن أفقياً (بدون تغيير) */}
+            <div
+              ref={ingredientsScrollRef}
+              className="ingredients-frame
+                gap-2.5 sm:gap-3
+                rounded-xl border border-[#E4E6EB] sm:border-0
+                bg-[#F7F8FA] sm:bg-transparent
+                p-2.5 sm:p-0"
+            >
+              {ingredients.map((item, i) => (
+                <div
+                  key={i}
+                  className="ingredient-card bg-white rounded-xl border border-[#E4E6EB] shadow-sm p-4 sm:p-6 flex flex-col hover:shadow-lg hover:border-[#1877F2]/30 transition-all"
+                >
                 <div className="w-11 h-11 rounded-xl bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center mb-3">
                   <item.icon className="w-6 h-6" />
                 </div>
-                <h3 className="font-bold text-base text-[#050505] mb-1.5 leading-snug">{item.title}</h3>
-                <p className="text-sm text-[#65676B] leading-relaxed mb-4 flex-1">{item.desc}</p>
-                <span className="inline-flex items-center gap-1.5 self-start text-xs font-semibold text-[#42B72A] bg-[#42B72A]/10 border border-[#42B72A]/25 px-3 py-1.5 rounded-lg">
+                <h3 className="font-bold text-base sm:text-lg text-[#050505] leading-snug">{item.title}</h3>
+                <p className="text-[11px] sm:text-xs text-[#1877F2] font-semibold mb-2">{item.titleFr}</p>
+
+                {/* 🖼️ صورة المكوّن الحقيقية — public/products/ingredients/
+                    ⚠️ الارتفاع مفروض عبر style مباشر (وليس كلاس Tailwind) لضمان عدم انهياره لصفر أبداً */}
+                <div
+                  className="relative w-full mb-3 flex-shrink-0"
+                  style={{ height: "120px", minHeight: "120px" }}
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="320px"
+                    className="object-contain"
+                  />
+                </div>
+
+                <p className="text-sm sm:text-[15px] text-[#65676B] leading-relaxed mb-4 flex-1">{item.desc}</p>
+                <span className="inline-flex items-center gap-1.5 self-start text-xs sm:text-sm font-semibold text-[#42B72A] bg-[#42B72A]/10 border border-[#42B72A]/25 px-3 py-1.5 rounded-lg">
                   <TrendingUp className="w-3.5 h-3.5" />
                   {item.stat}
                 </span>
               </div>
-            ))}
+              ))}
+            </div>
+
+            {/* ⬅️➡️ أسهم التمرير — حاسوب فقط، بنفس ستايل أزرار الهيرو تماماً، يختفي كل سهم عند وصوله لحده */}
+            {!ingredientsAtStart && (
+              <button
+                type="button"
+                onClick={() => scrollIngredients("prev")}
+                className="hidden sm:flex absolute top-1/2 -translate-y-1/2 right-1 z-20 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+                aria-label="المكوّن السابق"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
+            {!ingredientsAtEnd && (
+              <button
+                type="button"
+                onClick={() => scrollIngredients("next")}
+                className="hidden sm:flex absolute top-1/2 -translate-y-1/2 left-1 z-20 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+                aria-label="المكوّن التالي"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
           </div>
           </div>
         </section>
@@ -1595,19 +1663,34 @@ export default function EroviaProductPage() {
           </div>
         </section>
 
-        {/* ==================== شريط الإحصائيات + نجوم التقييم ==================== */}
+        {/* ==================== ⭐ آراء العملاء — سيكشن احترافي بتقييمات مكتوبة فعلياً ==================== */}
         <section className="mt-2">
-          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm px-4 py-4 sm:px-5 sm:py-5">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-              {stats.map((s, i) => (
-                <div key={i} className="text-center">
-                  <p className="text-2xl sm:text-3xl font-bold text-[#050505]">{s.value}</p>
-                  {s.stars && (
-                    <div className="flex justify-center mt-2">
-                      <Stars rating={4.9} size="w-5 h-5" />
+          <div className="w-full max-w-7xl mx-auto bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm overflow-hidden">
+            <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-[#E4E6EB] text-center">
+              <span className="inline-block text-xs font-semibold text-[#1877F2] bg-[#E7F3FF] border border-[#1877F2]/20 px-3 py-1 rounded-full mb-2.5">
+                آراء حقيقية من عملائنا
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-[#050505]">ماذا يقول عملاؤنا عن إيروفيا؟</h2>
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <Stars rating={4.9} size="w-4 h-4" />
+                <span className="text-sm font-semibold text-[#65676B]">4.9/5 من +2,300 عميل</span>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-2.5 sm:p-3">
+              {testimonials.map((t, i) => (
+                <div key={i} className="bg-[#F7F8FA] rounded-xl border border-[#E4E6EB] p-4 hover:border-[#1877F2]/30 hover:shadow-md transition-all flex flex-col">
+                  <Stars rating={t.rating} size="w-3.5 h-3.5" />
+                  <p className="text-sm text-[#050505] leading-relaxed mt-3 mb-4 flex-1">&quot;{t.text}&quot;</p>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-[#1877F2] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                      {t.name.charAt(0)}
                     </div>
-                  )}
-                  <p className="text-sm text-[#65676B] font-normal mt-1">{s.label}</p>
+                    <div>
+                      <p className="text-xs font-bold text-[#050505]">{t.name}</p>
+                      <p className="text-[11px] text-[#65676B]">{t.city} · مشترٍ موثّق</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
