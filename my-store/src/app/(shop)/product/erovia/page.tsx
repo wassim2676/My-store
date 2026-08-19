@@ -347,12 +347,12 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* معاينة جانبية (يمين) — بسيطة وصغيرة، بنفس روح معاينة سيكشن المعرض عند التمرير */}
-        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
-          <Image src={images[prevIdx].url} alt="" fill sizes="10vw" className="object-contain p-1" loading="lazy" />
+        {/* معاينة جانبية (يمين) — مقصوصة لتملأ إطارها بالكامل بدون أي فراغ */}
+        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden bg-white">
+          <Image src={images[prevIdx].url} alt="" fill sizes="10vw" className="object-cover" loading="lazy" />
         </div>
 
-        {/* البطاقة الرئيسية — فخمة، تشغل كامل المساحة تقريباً، بدون زر أو نص، فقط الصورة */}
+        {/* البطاقة الرئيسية — فخمة، تشغل كامل المساحة تقريباً، بدون زر أو نص، فقط الصورة مندمجة بالكامل بدون حدود حادة */}
         <div
           key={activeIndex}
           onClick={onExpand}
@@ -360,7 +360,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
           aria-label="تكبير الصورة"
-          className="relative flex-1 min-w-0 rounded-xl overflow-hidden border border-[#1877F2]/15 bg-white shadow-md cursor-zoom-in"
+          className="relative flex-1 min-w-0 rounded-xl overflow-hidden bg-white cursor-zoom-in"
           style={{ animation: "galleryZoom 0.45s ease" }}
         >
           <Image
@@ -368,15 +368,10 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
             alt={images[activeIndex].alt}
             fill
             sizes="(max-width: 640px) 78vw, 80vw"
-            className="object-contain p-0.5"
+            className="object-contain"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
           />
-          {/* شارة طبيعي 100% */}
-          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs font-semibold text-[#1877F2] shadow-md flex items-center gap-1">
-            <BadgeCheck className="w-3.5 h-3.5" />
-            طبيعي 100%
-          </div>
           {/* عدّاد الصور */}
           <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold">
             {activeIndex + 1} / {images.length}
@@ -388,8 +383,8 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
         </div>
 
         {/* معاينة جانبية (يسار) */}
-        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
-          <Image src={images[nextIdx].url} alt="" fill sizes="10vw" className="object-contain p-1" loading="lazy" />
+        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden bg-white">
+          <Image src={images[nextIdx].url} alt="" fill sizes="10vw" className="object-cover" loading="lazy" />
         </div>
 
         {/* ✅ أزرار التنقل — على أطراف الحاوية بالكامل الآن (وليس حواف البطاقة الوسطية) */}
@@ -684,32 +679,21 @@ function SiteFooter() {
 }
 
 // ==================== 📱 زر واتساب العائم ====================
-function WhatsAppButton() {
+function FloatingOrderButton() {
   return (
     <a
-      href="https://wa.me/2126XXXXXXXX"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="fixed bottom-6 left-4 z-[60] w-14 h-14 rounded-full bg-[#25D366] shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-transform"
-      aria-label="تواصل عبر واتساب"
+      href="#order-form"
+      className="fixed bottom-6 left-4 z-[60] flex items-center gap-2 pl-5 pr-4 h-14 rounded-full bg-[#1877F2] hover:bg-[#166FE5] shadow-2xl text-white font-semibold text-sm transition-all hover:scale-105"
+      aria-label="اطلب الآن"
     >
-      <WhatsAppIcon className="w-7 h-7 text-white" />
+      <ShoppingCart className="w-5 h-5" />
+      اطلب الآن
     </a>
   );
 }
 
 function UsersIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-}
-
-// ✅ أيقونة واتساب الفعلية والاحترافية (شكل السماعة المميز داخل بالون المحادثة)
-function WhatsAppIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M16.004 3C9.376 3 4 8.373 4 15c0 2.383.7 4.6 1.902 6.46L4 29l7.73-1.868A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3Zm0 21.75a9.7 9.7 0 0 1-4.95-1.354l-.355-.21-4.59 1.11 1.128-4.472-.232-.367A9.68 9.68 0 0 1 5.25 15c0-5.93 4.824-10.75 10.754-10.75 5.93 0 10.746 4.82 10.746 10.75s-4.816 9.75-10.746 9.75Z"/>
-      <path d="M21.62 17.87c-.297-.148-1.76-.868-2.033-.967-.273-.1-.472-.148-.67.148-.198.297-.767.967-.94 1.166-.174.198-.347.223-.644.075-.297-.149-1.254-.462-2.39-1.474-.883-.787-1.48-1.76-1.653-2.057-.174-.297-.019-.457.13-.605.134-.133.297-.347.446-.52.148-.174.198-.298.297-.496.099-.198.05-.372-.025-.52-.074-.149-.669-1.612-.917-2.208-.242-.582-.487-.503-.669-.512l-.57-.01c-.198 0-.52.075-.792.372-.273.297-1.04 1.017-1.04 2.48s1.065 2.876 1.213 3.074c.148.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.693.626.712.227 1.36.195 1.872.118.571-.085 1.76-.72 2.008-1.415.248-.694.248-1.29.174-1.414-.074-.124-.272-.198-.57-.347Z"/>
-    </svg>
-  );
 }
 
 // ==================== 🏷️ معرّف الصفحة (يُستخدم في نظام الإعجابات والتعليقات الحقيقي) ====================
@@ -1263,6 +1247,9 @@ export default function EroviaProductPage() {
                   <p className="font-semibold text-base text-[#050505] flex items-center gap-1.5">
                     إيروفيا
                     <BadgeCheck className="w-4 h-4 text-[#1877F2] fill-[#1877F2]/15" />
+                    <span className="inline-flex items-center gap-1 bg-[#E7F3FF] text-[#1877F2] text-[11px] font-semibold px-2 py-0.5 rounded-full">
+                      طبيعي 100%
+                    </span>
                   </p>
                   <p className="text-xs text-[#65676B] font-normal flex items-center gap-1 mt-0.5">
                     منشور الآن · <Globe2 className="w-3.5 h-3.5" />
@@ -2018,7 +2005,7 @@ export default function EroviaProductPage() {
 
       <FAQSection />
       <SiteFooter />
-      <WhatsAppButton />
+      <FloatingOrderButton />
 
       {lightboxOpen && (
         <ImageLightbox
