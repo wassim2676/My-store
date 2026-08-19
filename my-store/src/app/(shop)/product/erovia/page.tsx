@@ -331,86 +331,101 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
   };
 
   return (
-    <div
-      className="relative w-full aspect-[4/3] sm:aspect-[16/9] bg-white border-y border-[#E4E6EB] overflow-hidden select-none touch-pan-y"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* معاينة جانبية (يمين) — تظهر في الهاتف والحاسوب على حدٍ سواء الآن، بحجم واضح غير مصغّر */}
-      <div className="block absolute top-[3%] bottom-[5%] right-0 w-[22%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
-        <Image src={images[prevIdx].url} alt="" fill sizes="22vw" className="object-contain p-1" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-l from-white/20 via-white/45 to-white/75" />
-      </div>
-      {/* معاينة جانبية (يسار) */}
-      <div className="block absolute top-[3%] bottom-[5%] left-0 w-[22%] rounded-xl overflow-hidden opacity-70 border border-[#E4E6EB]">
-        <Image src={images[nextIdx].url} alt="" fill sizes="22vw" className="object-contain p-1" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/45 to-white/75" />
-      </div>
-
-      {/* الصورة الرئيسية — أطول قليلاً الآن (هوامش أقل من الأعلى والأسفل) بدون إطار أبيض */}
+    <div className="w-full select-none">
+      {/* ✅ صف البطاقات — منفصلة بحدود واضحة وفراغ حقيقي بينها (بنفس روح تصميم سيكشن المعرض)، بدون أي تراكب */}
       <div
-        key={activeIndex}
-        onClick={onExpand}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
-        aria-label="تكبير الصورة"
-        className="absolute top-[2%] bottom-[4%] right-[22%] left-[22%] rounded-xl overflow-hidden border border-[#1877F2]/15 shadow-md cursor-zoom-in"
-        style={{ animation: "galleryZoom 0.45s ease" }}
+        className="flex gap-2 sm:gap-3 w-full aspect-[4/3] sm:aspect-[16/9] touch-pan-y"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
-        <Image
-          src={images[activeIndex].url}
-          alt={images[activeIndex].alt}
-          fill
-          sizes="(max-width: 640px) 90vw, 70vw"
-          className="object-contain p-1.5 sm:p-2"
-          priority={activeIndex === 0}
-          loading={activeIndex === 0 ? "eager" : "lazy"}
-        />
-        {/* شارة طبيعي 100% */}
-        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs font-semibold text-[#1877F2] shadow-md flex items-center gap-1">
-          <BadgeCheck className="w-3.5 h-3.5" />
-          طبيعي 100%
+        {/* بطاقة جانبية (يمين) — منفصلة تماماً، الصورة تملأ البطاقة بالكامل بدون زر أو نص */}
+        <div className="relative flex-shrink-0 w-[20%] sm:w-[22%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
+          <Image src={images[prevIdx].url} alt="" fill sizes="20vw" className="object-contain p-1.5" loading="lazy" />
         </div>
-        {/* عدّاد الصور */}
-        <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold">
-          {activeIndex + 1} / {images.length}
+
+        {/* البطاقة الرئيسية */}
+        <div
+          key={activeIndex}
+          onClick={onExpand}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
+          aria-label="تكبير الصورة"
+          className="relative flex-1 min-w-0 rounded-xl overflow-hidden border border-[#1877F2]/15 bg-white shadow-md cursor-zoom-in"
+          style={{ animation: "galleryZoom 0.45s ease" }}
+        >
+          <Image
+            src={images[activeIndex].url}
+            alt={images[activeIndex].alt}
+            fill
+            sizes="(max-width: 640px) 60vw, 56vw"
+            className="object-contain p-1.5 sm:p-2"
+            priority={activeIndex === 0}
+            loading={activeIndex === 0 ? "eager" : "lazy"}
+          />
+          {/* شارة طبيعي 100% */}
+          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 text-xs font-semibold text-[#1877F2] shadow-md flex items-center gap-1">
+            <BadgeCheck className="w-3.5 h-3.5" />
+            طبيعي 100%
+          </div>
+          {/* عدّاد الصور */}
+          <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold">
+            {activeIndex + 1} / {images.length}
+          </div>
+          {/* ✅ تلميح إمكانية التكبير */}
+          <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
+            <Maximize2 className="w-3.5 h-3.5" />
+          </div>
+
+          {/* أزرار التنقل — داخل البطاقة الرئيسية */}
+          <button
+            onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
+            className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+            aria-label="السابق"
+          >
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onChange(nextIdx); }}
+            className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+            aria-label="التالي"
+          >
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
         </div>
-        {/* ✅ تلميح إمكانية التكبير */}
-        <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
-          <Maximize2 className="w-3.5 h-3.5" />
+
+        {/* بطاقة جانبية (يسار) */}
+        <div className="relative flex-shrink-0 w-[20%] sm:w-[22%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
+          <Image src={images[nextIdx].url} alt="" fill sizes="20vw" className="object-contain p-1.5" loading="lazy" />
         </div>
       </div>
 
-      {/* أزرار التنقل */}
-      <button
-        onClick={() => onChange(prevIdx)}
-        className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-4 z-10 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
-        aria-label="السابق"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
-      <button
-        onClick={() => onChange(nextIdx)}
-        className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-4 z-10 w-10 h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
-        aria-label="التالي"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-
-      {/* نقاط التنقل — كلها عرضية بنفس الحجم، والنشطة تُميَّز بتعبئة داخلية مع فراغ من الحواف */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+      {/* ✅ نقاط التنقل — أصبحت الآن في صف مستقل تحت البطاقات (لا تلتصق بحافة الصورة)، بفراغ متساوٍ من كل الأطراف */}
+      <div className="flex items-center justify-center gap-2 pt-3 pb-1">
         {images.map((_, i) => (
           <button
             key={i}
             onClick={() => onChange(i)}
             aria-label={`صورة ${i + 1}`}
-            className={`h-2.5 w-7 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center ${
-              i === activeIndex ? "bg-white border-[#1877F2]" : "bg-white/80 border-[#E4E6EB] hover:border-[#8A8D91]/60"
-            }`}
+            className="rounded-full transition-all cursor-pointer flex items-center justify-center"
+            style={{
+              height: 14,
+              width: 36,
+              borderWidth: 2,
+              borderStyle: "solid",
+              borderColor: i === activeIndex ? "#1877F2" : "#E4E6EB",
+              backgroundColor: "#FFFFFF",
+            }}
           >
-            {i === activeIndex && <span className="h-1.5 w-5 rounded-full bg-[#1877F2]" />}
+            <span
+              className="rounded-full transition-all"
+              style={{
+                height: 4,
+                width: i === activeIndex ? 26 : 6,
+                backgroundColor: i === activeIndex ? "#1877F2" : "#CED0D4",
+              }}
+            />
           </button>
         ))}
       </div>
