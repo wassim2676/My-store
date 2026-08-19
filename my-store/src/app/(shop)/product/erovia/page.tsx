@@ -200,15 +200,16 @@ function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean)
     <header className="sticky top-0 z-40 bg-white border-b border-[#E4E6EB] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex items-center justify-between h-16 sm:h-[70px] gap-3">
-          {/* ✅ شعار المنتج — يظهر في الهاتف والكمبيوتر */}
-          <button onClick={() => go("home")} className="flex items-center gap-2.5 cursor-pointer flex-shrink-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#1877F2] to-[#0E5FCB] flex items-center justify-center shadow-md shadow-[#1877F2]/25">
-              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            </div>
-            <div className="text-right">
-              <p className="font-semibold text-base sm:text-lg text-[#050505] leading-none tracking-tight">إيروفيا</p>
-              <p className="text-[11px] text-[#65676B] font-semibold mt-1">متجر رسمي · أصلي 100%</p>
-            </div>
+          {/* ✅ الشعار الرسمي الحقيقي — public/erovia/erovialogo.svg */}
+          <button onClick={() => go("home")} className="flex items-center cursor-pointer flex-shrink-0">
+            <Image
+              src="/erovia/erovialogo.svg"
+              alt="إيروفيا"
+              width={160}
+              height={44}
+              className="h-9 sm:h-11 w-auto"
+              priority
+            />
           </button>
 
           {/* روابط التنقل — وسط، بكلمات أوضح وحجم أكبر */}
@@ -332,19 +333,19 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
 
   return (
     <div className="w-full select-none">
-      {/* ✅ صف البطاقات — منفصلة بحدود واضحة وفراغ حقيقي بينها (بنفس روح تصميم سيكشن المعرض)، بدون أي تراكب */}
+      {/* ✅ الصف: صورة رئيسية فخمة تشغل معظم المساحة + معاينتان جانبيتان بسيطتان، والأسهم على أطراف الحاوية كاملة */}
       <div
-        className="flex gap-2 sm:gap-3 w-full aspect-[4/3] sm:aspect-[16/9] touch-pan-y"
+        className="relative flex items-stretch gap-2 sm:gap-3 w-full aspect-[4/3] sm:aspect-[16/9] touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* بطاقة جانبية (يمين) — منفصلة تماماً، الصورة تملأ البطاقة بالكامل بدون زر أو نص */}
-        <div className="relative flex-shrink-0 w-[20%] sm:w-[22%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
-          <Image src={images[prevIdx].url} alt="" fill sizes="20vw" className="object-contain p-1.5" loading="lazy" />
+        {/* معاينة جانبية (يمين) — بسيطة وصغيرة، بنفس روح معاينة سيكشن المعرض عند التمرير */}
+        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
+          <Image src={images[prevIdx].url} alt="" fill sizes="10vw" className="object-contain p-1" loading="lazy" />
         </div>
 
-        {/* البطاقة الرئيسية */}
+        {/* البطاقة الرئيسية — فخمة، تشغل كامل المساحة تقريباً، بدون زر أو نص، فقط الصورة */}
         <div
           key={activeIndex}
           onClick={onExpand}
@@ -359,8 +360,8 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
             src={images[activeIndex].url}
             alt={images[activeIndex].alt}
             fill
-            sizes="(max-width: 640px) 60vw, 56vw"
-            className="object-contain p-1.5 sm:p-2"
+            sizes="(max-width: 640px) 78vw, 80vw"
+            className="object-contain p-2 sm:p-3"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
           />
@@ -377,32 +378,32 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
             <Maximize2 className="w-3.5 h-3.5" />
           </div>
-
-          {/* أزرار التنقل — داخل البطاقة الرئيسية */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
-            className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
-            aria-label="السابق"
-          >
-            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); onChange(nextIdx); }}
-            className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
-            aria-label="التالي"
-          >
-            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
         </div>
 
-        {/* بطاقة جانبية (يسار) */}
-        <div className="relative flex-shrink-0 w-[20%] sm:w-[22%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
-          <Image src={images[nextIdx].url} alt="" fill sizes="20vw" className="object-contain p-1.5" loading="lazy" />
+        {/* معاينة جانبية (يسار) */}
+        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden border border-[#E4E6EB] bg-white">
+          <Image src={images[nextIdx].url} alt="" fill sizes="10vw" className="object-contain p-1" loading="lazy" />
         </div>
+
+        {/* ✅ أزرار التنقل — على أطراف الحاوية بالكامل الآن (وليس حواف البطاقة الوسطية) */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
+          className="absolute top-1/2 -translate-y-1/2 right-1 sm:right-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+          aria-label="السابق"
+        >
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onChange(nextIdx); }}
+          className="absolute top-1/2 -translate-y-1/2 left-1 sm:left-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+          aria-label="التالي"
+        >
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+        </button>
       </div>
 
-      {/* ✅ نقاط التنقل — أصبحت الآن في صف مستقل تحت البطاقات (لا تلتصق بحافة الصورة)، بفراغ متساوٍ من كل الأطراف */}
-      <div className="flex items-center justify-center gap-2 pt-3 pb-1">
+      {/* ✅ نقاط التنقل — أصغر قليلاً وأنيق، والحالة غير النشطة فارغة تماماً بدون نقطة داخلية */}
+      <div className="flex items-center justify-center gap-1.5 pt-3 pb-1">
         {images.map((_, i) => (
           <button
             key={i}
@@ -410,22 +411,20 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
             aria-label={`صورة ${i + 1}`}
             className="rounded-full transition-all cursor-pointer flex items-center justify-center"
             style={{
-              height: 14,
-              width: 36,
+              height: 11,
+              width: 28,
               borderWidth: 2,
               borderStyle: "solid",
               borderColor: i === activeIndex ? "#1877F2" : "#E4E6EB",
               backgroundColor: "#FFFFFF",
             }}
           >
-            <span
-              className="rounded-full transition-all"
-              style={{
-                height: 4,
-                width: i === activeIndex ? 26 : 6,
-                backgroundColor: i === activeIndex ? "#1877F2" : "#CED0D4",
-              }}
-            />
+            {i === activeIndex && (
+              <span
+                className="rounded-full"
+                style={{ height: 3, width: 18, backgroundColor: "#1877F2" }}
+              />
+            )}
           </button>
         ))}
       </div>
@@ -1239,8 +1238,8 @@ export default function EroviaProductPage() {
             {/* رأس المنشور */}
             <div className="flex items-start justify-between px-5 pt-5 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#1877F2] to-[#0E5FCB] flex items-center justify-center flex-shrink-0 shadow-md shadow-[#1877F2]/20">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 relative bg-[#F0F2F5]">
+                  <Image src="/erovia/eroviaicon.png" alt="إيروفيا" fill sizes="44px" className="object-cover" />
                 </div>
                 <div>
                   <p className="font-semibold text-base text-[#050505] flex items-center gap-1.5">
@@ -1624,8 +1623,8 @@ export default function EroviaProductPage() {
             {/* رأس بأسلوب منشور فيسبوك */}
             <div className="px-4 sm:px-5 pt-4 pb-3">
               <div className="flex items-center gap-2.5 mb-2.5">
-                <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 relative bg-[#F0F2F5]">
+                  <Image src="/erovia/eroviaicon.png" alt="إيروفيا" fill sizes="40px" className="object-cover" />
                 </div>
                 <div>
                   <p className="font-semibold text-sm text-[#050505] flex items-center gap-1">
