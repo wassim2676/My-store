@@ -63,6 +63,13 @@ const packages: PackageOption[] = [
 
 // ==================== 📸 صور المنتج الحقيقية (من public/products) ====================
 const productImages = [
+  { url: "/erovia/herobanner1.png", alt: "إيروفيا - المظهر الطبيعي الموثوق" },
+  { url: "/erovia/herobanner2.png", alt: "مكونات طبيعية نقية لإيروفيا" },
+  { url: "/erovia/herobanner3.png", alt: "علب إيروفيا الفاخرة والأصلية" },
+];
+
+// ✅ صور سيكشن الباقات — منفصلة تماماً عن صور الهيرو، لم تتغيّر إطلاقاً
+const packageSectionImages = [
   { url: "/products/erovia1.png", alt: "إيروفيا - المظهر الطبيعي الموثوق" },
   { url: "/products/erovia2.png", alt: "مكونات طبيعية نقية لإيروفيا" },
   { url: "/products/erovia3.png", alt: "علب إيروفيا الفاخرة والأصلية" },
@@ -361,7 +368,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
             alt={images[activeIndex].alt}
             fill
             sizes="(max-width: 640px) 78vw, 80vw"
-            className="object-contain p-2 sm:p-3"
+            className="object-contain p-0.5"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
           />
@@ -767,6 +774,17 @@ export default function EroviaProductPage() {
   const router = useRouter();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  // ✅ قائمة النقاط الثلاث في رأس المنشور — تنقّل مباشر لكل سيكشنز الصفحة
+  const [postMenuOpen, setPostMenuOpen] = useState(false);
+  const postMenuLinks = [
+    { id: "home", label: "الرئيسية" },
+    { id: "ingredients", label: "المكونات" },
+    { id: "gallery", label: "المعرض" },
+    { id: "why", label: "لماذا نحن" },
+    { id: "packages", label: "الباقات" },
+    { id: "order-form", label: "الطلب" },
+    { id: "faqs", label: "الأسئلة الشائعة" },
+  ];
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -1251,9 +1269,31 @@ export default function EroviaProductPage() {
                   </p>
                 </div>
               </div>
-              <button className="w-9 h-9 rounded-full hover:bg-[#F0F2F5] flex items-center justify-center text-[#65676B] transition-colors cursor-pointer" aria-label="خيارات">
-                <MoreHorizontal className="w-5 h-5" />
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setPostMenuOpen((v) => !v)}
+                  className="w-9 h-9 rounded-full hover:bg-[#F0F2F5] flex items-center justify-center text-[#65676B] transition-colors cursor-pointer"
+                  aria-label="خيارات وتنقّل سريع"
+                >
+                  <MoreHorizontal className="w-5 h-5" />
+                </button>
+                {postMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-30" onClick={() => setPostMenuOpen(false)} aria-hidden="true" />
+                    <div className="absolute left-0 top-11 z-40 w-48 bg-white rounded-xl border border-[#E4E6EB] shadow-lg py-1.5 overflow-hidden">
+                      {postMenuLinks.map((link) => (
+                        <button
+                          key={link.id}
+                          onClick={() => { scrollTo(link.id); setPostMenuOpen(false); }}
+                          className="w-full text-right px-4 py-2.5 text-sm text-[#050505] hover:bg-[#F0F2F5] transition-colors cursor-pointer"
+                        >
+                          {link.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* نص المنشور */}
@@ -1267,7 +1307,7 @@ export default function EroviaProductPage() {
             {/* تفاصيل المنشور — عنوان أوضح وأفخم */}
             <div className="p-5 sm:p-6">
               <h1 className="text-xl sm:text-2xl font-bold leading-tight text-[#050505]">إيروفيا</h1>
-              <p className="text-sm text-[#65676B] font-normal mt-1">منتج يومي · الدفع عند الاستلام · توصيل سريع</p>
+              <p className="text-sm text-[#65676B] font-normal mt-1">استعد طاقتك الذكورية وثقتك الحميمية · الدفع عند الاستلام · توصيل سريع</p>
               <div className="flex items-center gap-3 mt-4 flex-wrap">
                 <p className="text-base sm:text-lg font-semibold text-[#050505] leading-snug">
                   حدّد الباقة التي تناسبك من عروضنا وأكمل طلبك
@@ -1764,7 +1804,7 @@ export default function EroviaProductPage() {
                   {/* ✅ صورة أطول عمودياً، مندمجة بدون حواف حادة */}
                   <div className="relative h-52 sm:h-56 rounded-xl bg-gradient-to-b from-[#F7F8FA] to-white border border-[#E4E6EB]/70 overflow-hidden mb-4 flex items-center justify-center p-5">
                     <Image
-                      src={productImages[pkgIndex % productImages.length].url}
+                      src={packageSectionImages[pkgIndex % packageSectionImages.length].url}
                       alt={pkg.name}
                       fill
                       sizes="(max-width: 768px) 90vw, 30vw"
