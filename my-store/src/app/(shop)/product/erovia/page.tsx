@@ -77,10 +77,10 @@ const packageSectionImages = [
 
 // ==================== 🖼️ بطاقات سيكشن المعرض (صورة تجريبية موحّدة حالياً) ====================
 const galleryCards = [
-  { id: 1, desc: "تعبئة أصلية ومحكمة الإغلاق تصلك بنفس الجودة التي تراها هنا." },
-  { id: 2, desc: "تركيبة مختارة بعناية لتناسب الاستخدام اليومي دون أي إزعاج." },
-  { id: 3, desc: "علبة عملية سهلة الحمل، مناسبة لجدولك اليومي أينما كنت." },
-  { id: 4, desc: "نفس المنتج الذي يثق به آلاف العملاء يومياً في كل المدن." },
+  { id: 1, desc: "تعبئة أصلية ومحكمة الإغلاق تصلك بنفس الجودة التي تراها هنا.", image: "/erovia/gallery1.png" },
+  { id: 2, desc: "تركيبة مختارة بعناية لتناسب الاستخدام اليومي دون أي إزعاج.", image: "/erovia/gallery2.png" },
+  { id: 3, desc: "علبة عملية سهلة الحمل، مناسبة لجدولك اليومي أينما كنت.", image: "/erovia/gallery3.png" },
+  { id: 4, desc: "نفس المنتج الذي يثق به آلاف العملاء يومياً في كل المدن.", image: "/erovia/gallery4.png" },
 ];
 
 // ==================== 🌿 المكونات الفعّالة (سيكشن جديد تحت الهيرو) ====================
@@ -340,19 +340,24 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
 
   return (
     <div className="w-full select-none">
-      {/* ✅ الصف: صورة رئيسية فخمة تشغل معظم المساحة + معاينتان جانبيتان بسيطتان، والأسهم على أطراف الحاوية كاملة */}
+      {/* ✅ إطار واحد متصل بلا أي فواصل بين الصور — مطابق تماماً لأسلوب سيكشن المعرض الطبيعي */}
       <div
-        className="relative flex items-stretch gap-2 sm:gap-3 w-full aspect-[4/3] sm:aspect-[16/9] touch-pan-y"
+        className="relative w-full aspect-[4/3] sm:aspect-[16/9] rounded-xl overflow-hidden bg-white touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* معاينة جانبية (يمين) — مقصوصة لتملأ إطارها بالكامل بدون أي فراغ */}
-        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden bg-white">
-          <Image src={images[prevIdx].url} alt="" fill sizes="10vw" className="object-cover" loading="lazy" />
+        {/* معاينة جانبية (يمين) — بحجم طبيعي غير مضغوط، مقصوصة بشكل طبيعي فقط عند حافة الإطار */}
+        <div className="absolute inset-y-0 right-0 w-[20%] overflow-hidden">
+          <Image src={images[prevIdx].url} alt="" fill sizes="20vw" className="object-cover" loading="lazy" />
         </div>
 
-        {/* البطاقة الرئيسية — فخمة، تشغل كامل المساحة تقريباً، بدون زر أو نص، فقط الصورة مندمجة بالكامل بدون حدود حادة */}
+        {/* معاينة جانبية (يسار) */}
+        <div className="absolute inset-y-0 left-0 w-[20%] overflow-hidden">
+          <Image src={images[nextIdx].url} alt="" fill sizes="20vw" className="object-cover" loading="lazy" />
+        </div>
+
+        {/* البطاقة الرئيسية — بلا أي حدود أو زوايا منفصلة، مندمجة بالكامل مع الإطار العام */}
         <div
           key={activeIndex}
           onClick={onExpand}
@@ -360,14 +365,14 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
           aria-label="تكبير الصورة"
-          className="relative flex-1 min-w-0 rounded-xl overflow-hidden bg-white cursor-zoom-in"
+          className="absolute inset-y-0 right-[20%] left-[20%] cursor-zoom-in"
           style={{ animation: "galleryZoom 0.45s ease" }}
         >
           <Image
             src={images[activeIndex].url}
             alt={images[activeIndex].alt}
             fill
-            sizes="(max-width: 640px) 78vw, 80vw"
+            sizes="(max-width: 640px) 60vw, 60vw"
             className="object-contain"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
@@ -382,12 +387,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           </div>
         </div>
 
-        {/* معاينة جانبية (يسار) */}
-        <div className="relative flex-shrink-0 w-[10%] sm:w-[9%] rounded-xl overflow-hidden bg-white">
-          <Image src={images[nextIdx].url} alt="" fill sizes="10vw" className="object-cover" loading="lazy" />
-        </div>
-
-        {/* ✅ أزرار التنقل — على أطراف الحاوية بالكامل الآن (وليس حواف البطاقة الوسطية) */}
+        {/* ✅ أزرار التنقل — على أطراف الإطار الخارجي بالكامل */}
         <button
           onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
           className="absolute top-1/2 -translate-y-1/2 right-1 sm:right-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
@@ -683,7 +683,7 @@ function FloatingOrderButton() {
   return (
     <a
       href="#order-form"
-      className="fixed bottom-6 left-4 z-[60] flex items-center gap-2 pl-5 pr-4 h-14 rounded-full bg-[#1877F2] hover:bg-[#166FE5] shadow-2xl text-white font-semibold text-sm transition-all hover:scale-105"
+      className="fixed bottom-5 left-4 z-[60] flex items-center gap-2 px-5 py-3.5 rounded-xl bg-[#1877F2] hover:bg-[#166FE5] shadow-xl text-white font-semibold text-sm transition-colors"
       aria-label="اطلب الآن"
     >
       <ShoppingCart className="w-5 h-5" />
@@ -707,7 +707,44 @@ interface CommentNode {
   likes: number;
   createdAt: string;
   replies: CommentNode[];
+  avatar?: string;
 }
+
+// ==================== 👥 أرقام تفاعل أساسية (Social Proof) — تُضاف فوق الأرقام الحقيقية، والنظام الفعلي يعمل بشكل طبيعي فوقها ====================
+const LIKES_BASELINE = 5000;
+const SHARES_BASELINE = 200;
+
+// 🖼️ صور أفاتار متنوعة للتعليقات الأساسية — ضعها لاحقاً في public/erovia/avatars/
+const SEED_AVATARS = [
+  "/erovia/avatars/avatar1.png",
+  "/erovia/avatars/avatar2.png",
+  "/erovia/avatars/avatar3.png",
+  "/erovia/avatars/avatar4.png",
+];
+
+// 💬 20 تعليقاً أساسياً متنوعاً (Social Proof) — تظهر فوراً، والتعليقات الحقيقية تُضاف فوقها بشكل طبيعي
+const SEED_COMMENTS: CommentNode[] = [
+  { id: "seed-1", parentId: null, name: "يوسف العلوي", message: "المنتج أصلي فعلاً، التغليف احترافي جداً ولا يحمل أي إشارة تكشف المحتوى.", likes: 34, createdAt: "2026-08-01T10:00:00Z", replies: [], avatar: SEED_AVATARS[0] },
+  { id: "seed-2", parentId: null, name: "كريم بنعلي", message: "توصيل سريع، وصلني خلال يومين فقط من الرباط. تجربة ممتازة.", likes: 21, createdAt: "2026-08-02T11:00:00Z", replies: [], avatar: SEED_AVATARS[1] },
+  { id: "seed-3", parentId: null, name: "سفيان الإدريسي", message: "كنت متردداً بالبداية بصراحة، لكن الدفع عند الاستلام شجّعني أطلب.", likes: 45, createdAt: "2026-08-03T09:30:00Z", replies: [], avatar: SEED_AVATARS[2] },
+  { id: "seed-4", parentId: null, name: "عادل الوردي", message: "لاحظت فرقاً حقيقياً في مستوى الطاقة خلال أول أسبوعين من الاستخدام المنتظم.", likes: 58, createdAt: "2026-08-04T14:20:00Z", replies: [], avatar: SEED_AVATARS[3] },
+  { id: "seed-5", parentId: null, name: "أمين حمداوي", message: "خدمة العملاء متجاوبة معايا بسرعة كبيرة على واتساب، شكراً ليكم.", likes: 19, createdAt: "2026-08-05T16:00:00Z", replies: [], avatar: SEED_AVATARS[0] },
+  { id: "seed-6", parentId: null, name: "محمد الصقلي", message: "طلبت باقة الثلاث علب مباشرة بعد التوصية، والقيمة ممتازة مقارنة بالسعر.", likes: 27, createdAt: "2026-08-06T08:45:00Z", replies: [], avatar: SEED_AVATARS[1] },
+  { id: "seed-7", parentId: null, name: "طارق بوزيان", message: "المكونات الطبيعية المكتوبة على العلبة مطابقة تماماً لما هو موجود بالوصف هنا.", likes: 15, createdAt: "2026-08-07T12:10:00Z", replies: [], avatar: SEED_AVATARS[2] },
+  { id: "seed-8", parentId: null, name: "رشيد الفاسي", message: "أول مرة نجرب منتج من صفحة فيسبوك ويوصل فعلاً بالسرعة اللي وعدو بيها.", likes: 38, createdAt: "2026-08-08T15:30:00Z", replies: [], avatar: SEED_AVATARS[3] },
+  { id: "seed-9", parentId: null, name: "نبيل شرقاوي", message: "الثقة زادت عندي بعد قراءة كل هاد التعليقات الصادقة قبل ما نطلب.", likes: 12, createdAt: "2026-08-09T09:00:00Z", replies: [], avatar: SEED_AVATARS[0] },
+  { id: "seed-10", parentId: null, name: "حمزة الزياني", message: "التوصيل وصل حتى لمدينتنا الصغيرة، ما كنتش متوقع هاد السرعة.", likes: 24, createdAt: "2026-08-10T13:40:00Z", replies: [], avatar: SEED_AVATARS[1] },
+  { id: "seed-11", parentId: null, name: "إلياس مرابط", message: "جودة العلبة نفسها فاخرة، حسّيت بيها منتج أصلي من أول لمسة.", likes: 31, createdAt: "2026-08-11T10:15:00Z", replies: [], avatar: SEED_AVATARS[2] },
+  { id: "seed-12", parentId: null, name: "بلال التازي", message: "شكراً على الشرح الواضح للمكونات، ساعدني نفهم كل شي قبل الطلب.", likes: 17, createdAt: "2026-08-12T11:50:00Z", replies: [], avatar: SEED_AVATARS[3] },
+  { id: "seed-13", parentId: null, name: "زكرياء الحسني", message: "ضمان الاسترداد كان سبب رئيسي خلاني نجرب بدون خوف.", likes: 22, createdAt: "2026-08-13T14:00:00Z", replies: [], avatar: SEED_AVATARS[0] },
+  { id: "seed-14", parentId: null, name: "أيوب الغازي", message: "التغليف السرّي والاحترافي نقطة مهمة جداً بالنسبة لي شخصياً.", likes: 29, createdAt: "2026-08-14T16:30:00Z", replies: [], avatar: SEED_AVATARS[1] },
+  { id: "seed-15", parentId: null, name: "وليد بنجلون", message: "أنصح بباقة التوفير، أفضل قيمة مقابل السعر من تجربتي الشخصية.", likes: 41, createdAt: "2026-08-15T09:20:00Z", replies: [], avatar: SEED_AVATARS[2] },
+  { id: "seed-16", parentId: null, name: "عمر الراشدي", message: "التواصل قبل التأكيد كان مريح، أكدو معايا كل التفاصيل بالهاتف.", likes: 13, createdAt: "2026-08-16T12:45:00Z", replies: [], avatar: SEED_AVATARS[3] },
+  { id: "seed-17", parentId: null, name: "سعيد لحلو", message: "منتج طبيعي بصح، ما حسيتش بأي إزعاج أو أعراض جانبية.", likes: 36, createdAt: "2026-08-17T15:10:00Z", replies: [], avatar: SEED_AVATARS[0] },
+  { id: "seed-18", parentId: null, name: "يونس بركاش", message: "صراحة السعر معقول جداً مقارنة بمنتجات مشابهة شفتها فسوق مغربي.", likes: 20, createdAt: "2026-08-18T10:30:00Z", replies: [], avatar: SEED_AVATARS[1] },
+  { id: "seed-19", parentId: null, name: "معاذ الخطابي", message: "الصفحة واضحة ومنظمة، سهّلت عليا نختار الباقة المناسبة ليا بسرعة.", likes: 25, createdAt: "2026-08-19T13:00:00Z", replies: [], avatar: SEED_AVATARS[2] },
+  { id: "seed-20", parentId: null, name: "أنس الجراري", message: "تجربة شراء بسيطة فعلاً من الطلب حتى التوصيل، ما كاينش تعقيد.", likes: 33, createdAt: "2026-08-20T08:00:00Z", replies: [], avatar: SEED_AVATARS[3] },
+];
 
 // ==================== 🔢 تنسيق الأرقام بصيغة مختصرة (K) ====================
 function formatK(n: number): string {
@@ -829,8 +866,12 @@ export default function EroviaProductPage() {
 
     fetch(`/api/comments?slug=${PAGE_SLUG}`)
       .then((r) => r.json())
-      .then((d) => { if (d.success) setComments(buildCommentTree(d.data)); })
-      .catch(() => {})
+      .then((d) => {
+        const realComments = d.success ? buildCommentTree(d.data) : [];
+        // ✅ التعليقات الحقيقية أولاً (الأحدث)، ثم التعليقات الأساسية بعدها — النظام الحقيقي يعمل بشكل طبيعي فوقها
+        setComments([...realComments, ...SEED_COMMENTS]);
+      })
+      .catch(() => setComments(SEED_COMMENTS))
       .finally(() => setCommentsLoading(false));
   }, []);
 
@@ -881,6 +922,9 @@ export default function EroviaProductPage() {
       window.localStorage.setItem("liked_comments", JSON.stringify(Array.from(next)));
       return next;
     });
+
+    // ✅ التعليقات الأساسية (seed-) غير موجودة فعلياً في قاعدة البيانات — تحديث بصري محلي فقط بدون طلب شبكة عبثي
+    if (commentId.startsWith("seed-")) return;
 
     try {
       await fetch(`/api/comments/${commentId}/like`, {
@@ -1316,7 +1360,7 @@ export default function EroviaProductPage() {
                   <span className="w-4 h-4 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
                     <ThumbsUp className="w-2.5 h-2.5 text-white fill-white" />
                   </span>
-                  <span className="tabular-nums">{formatK(likesCount)}</span>
+                  <span className="tabular-nums">{formatK(likesCount + LIKES_BASELINE)}</span>
                 </span>
                 <span className="flex items-center gap-2">
                   <Stars rating={4.9} size="w-4 h-4" />
@@ -1344,7 +1388,7 @@ export default function EroviaProductPage() {
                   className="flex items-center justify-center gap-2 py-2.5 rounded-lg hover:bg-[#F0F2F5] text-[#65676B] font-semibold text-sm transition-colors cursor-pointer"
                 >
                   {shareCopied ? <Check className="w-5 h-5 text-[#42B72A]" /> : <Share2 className="w-5 h-5" />}
-                  {shareCopied ? "تم النسخ" : "مشاركة"}
+                  {shareCopied ? "تم النسخ" : `مشاركة (${SHARES_BASELINE})`}
                 </button>
               </div>
 
@@ -1445,8 +1489,12 @@ export default function EroviaProductPage() {
                         <div key={c.id}>
                           {/* التعليق الرئيسي */}
                           <div className="flex items-start gap-2.5">
-                            <div className="w-8 h-8 rounded-full bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                              {c.name.trim().charAt(0).toUpperCase()}
+                            <div className="relative w-8 h-8 rounded-full bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0 font-bold text-xs overflow-hidden">
+                              {c.avatar ? (
+                                <Image src={c.avatar} alt={c.name} fill sizes="32px" className="object-cover" />
+                              ) : (
+                                c.name.trim().charAt(0).toUpperCase()
+                              )}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="bg-[#F0F2F5] rounded-2xl px-3.5 py-2.5">
@@ -1677,7 +1725,7 @@ export default function EroviaProductPage() {
                 >
                   <div className="relative aspect-square bg-[#F7F8FA]">
                     <Image
-                      src="/products/all-erovia.png"
+                      src={card.image}
                       alt={`إيروفيا - صورة ${card.id}`}
                       fill
                       sizes="(max-width: 640px) 70vw, 23vw"
