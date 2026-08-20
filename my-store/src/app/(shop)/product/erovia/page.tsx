@@ -340,24 +340,20 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
 
   return (
     <div className="w-full select-none">
-      {/* ✅ إطار واحد متصل بلا أي فواصل بين الصور — مطابق تماماً لأسلوب سيكشن المعرض الطبيعي */}
+      {/* ✅ كل صورة بزواياها الدائرية المستقلة الخاصة بها (تماماً كبطاقات سيكشن المعرض) — بلا فواصل بينها،
+          فتظهر الاستدارة طبيعياً في الجهة الداخلية الملاصقة، بينما تُقص الجهة الخارجية بشكل طبيعي عند حافة الشاشة */}
       <div
-        className="relative w-full aspect-[4/3] sm:aspect-[16/9] rounded-xl overflow-hidden bg-white touch-pan-y"
+        className="relative flex items-stretch w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* معاينة جانبية (يمين) — بحجم طبيعي غير مضغوط، مقصوصة بشكل طبيعي فقط عند حافة الإطار */}
-        <div className="absolute inset-y-0 right-0 w-[20%] overflow-hidden">
-          <Image src={images[prevIdx].url} alt="" fill sizes="20vw" className="object-cover" loading="lazy" />
+        {/* معاينة جانبية (يمين) — بحجم فخم غير مضغوط، بزاويتها الداخلية الدائرية الخاصة */}
+        <div className="relative flex-shrink-0 w-[19%] sm:w-[17%] rounded-xl overflow-hidden bg-white">
+          <Image src={images[prevIdx].url} alt="" fill sizes="19vw" className="object-cover" loading="lazy" />
         </div>
 
-        {/* معاينة جانبية (يسار) */}
-        <div className="absolute inset-y-0 left-0 w-[20%] overflow-hidden">
-          <Image src={images[nextIdx].url} alt="" fill sizes="20vw" className="object-cover" loading="lazy" />
-        </div>
-
-        {/* البطاقة الرئيسية — بلا أي حدود أو زوايا منفصلة، مندمجة بالكامل مع الإطار العام */}
+        {/* البطاقة الرئيسية — أكبر وأفخم، بزواياها الدائرية الخاصة بها بالكامل */}
         <div
           key={activeIndex}
           onClick={onExpand}
@@ -365,14 +361,14 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
           aria-label="تكبير الصورة"
-          className="absolute inset-y-0 right-[20%] left-[20%] cursor-zoom-in"
+          className="relative flex-1 min-w-0 rounded-xl overflow-hidden bg-white cursor-zoom-in"
           style={{ animation: "galleryZoom 0.45s ease" }}
         >
           <Image
             src={images[activeIndex].url}
             alt={images[activeIndex].alt}
             fill
-            sizes="(max-width: 640px) 60vw, 60vw"
+            sizes="(max-width: 640px) 62vw, 66vw"
             className="object-contain"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
@@ -385,6 +381,11 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
             <Maximize2 className="w-3.5 h-3.5" />
           </div>
+        </div>
+
+        {/* معاينة جانبية (يسار) */}
+        <div className="relative flex-shrink-0 w-[19%] sm:w-[17%] rounded-xl overflow-hidden bg-white">
+          <Image src={images[nextIdx].url} alt="" fill sizes="19vw" className="object-cover" loading="lazy" />
         </div>
 
         {/* ✅ أزرار التنقل — على أطراف الإطار الخارجي بالكامل */}
@@ -402,33 +403,6 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
-      </div>
-
-      {/* ✅ نقاط التنقل — أصغر قليلاً وأنيق، والحالة غير النشطة فارغة تماماً بدون نقطة داخلية */}
-      <div className="flex items-center justify-center gap-1.5 pt-3 pb-1">
-        {images.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => onChange(i)}
-            aria-label={`صورة ${i + 1}`}
-            className="rounded-full transition-all cursor-pointer flex items-center justify-center"
-            style={{
-              height: 11,
-              width: 28,
-              borderWidth: 2,
-              borderStyle: "solid",
-              borderColor: i === activeIndex ? "#1877F2" : "#E4E6EB",
-              backgroundColor: "#FFFFFF",
-            }}
-          >
-            {i === activeIndex && (
-              <span
-                className="rounded-full"
-                style={{ height: 3, width: 18, backgroundColor: "#1877F2" }}
-              />
-            )}
-          </button>
-        ))}
       </div>
     </div>
   );
@@ -594,29 +568,35 @@ function LiveOfferCard() {
   const displayVisitors = `${(visitorCount / 1000).toFixed(1)}K`;
 
   return (
-    <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-4 lg:min-h-[128px] flex flex-col justify-center">
+    <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-4 sm:p-4 lg:min-h-[128px] flex flex-col justify-center">
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#42B72A] opacity-60" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#42B72A]" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#42B72A]" />
             </span>
-            <p className="text-sm font-bold text-[#050505] tabular-nums transition-all duration-700">{displayVisitors} زائر</p>
+            <p className="text-base sm:text-sm font-bold text-[#050505] tabular-nums transition-all duration-700">{displayVisitors} زائر</p>
           </div>
-          <p className="text-xs text-[#65676B] mt-1">يشاهدون هذا العرض الآن</p>
+          <p className="text-sm sm:text-xs text-[#65676B] mt-1">يشاهدون هذا العرض الآن</p>
         </div>
-        <div className="w-10 h-10 rounded-xl bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center">
+        <div className="w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0">
           <TrendingUp className="w-5 h-5" />
         </div>
       </div>
 
       <div className="mt-3 pt-3 border-t border-[#E4E6EB] flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold text-[#050505]">🔥 العرض الحالي لفترة محدودة</p>
-          <p className="text-[11px] text-[#65676B] mt-0.5">احجز باقتك قبل انتهاء المؤقت</p>
+        <div className="flex items-center gap-2.5">
+          {/* ✅ أيقونة لهب احترافية بأسلوب SaaS (بدل الإيموجي) */}
+          <div className="w-9 h-9 rounded-lg bg-[#FE2C55]/10 text-[#FE2C55] flex items-center justify-center flex-shrink-0">
+            <Flame className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <p className="text-sm sm:text-xs font-bold text-[#050505]">العرض الحالي لفترة محدودة</p>
+            <p className="text-xs sm:text-[11px] text-[#65676B] mt-0.5">احجز باقتك قبل انتهاء المؤقت</p>
+          </div>
         </div>
-        <div dir="ltr" className="text-base font-bold tracking-wide text-[#1877F2] bg-[#E7F3FF] px-3 py-1.5 rounded-lg tabular-nums">
+        <div dir="ltr" className="text-lg sm:text-base font-bold tracking-wide text-[#1877F2] bg-[#E7F3FF] px-3 py-1.5 rounded-lg tabular-nums flex-shrink-0">
           {hours}:{minutes}:{seconds}
         </div>
       </div>
@@ -1277,6 +1257,11 @@ export default function EroviaProductPage() {
       <TopHeader onScrollTo={scrollTo} />
 
       <main id="home" className="w-full max-w-7xl mx-auto px-0 sm:px-4 lg:px-0 py-3 sm:py-4">
+        {/* ✅ في الهاتف فقط: بطاقة عدد الزوار والعرض المحدود تظهر أول سيكشن بأعلى الصفحة */}
+        <div className="lg:hidden mb-2">
+          <LiveOfferCard />
+        </div>
+
         {/* ==================== الهيرو: المنشور + الشريط الجانبي ==================== */}
         <div className="w-full grid lg:grid-cols-[minmax(0,1fr)_360px] gap-2 items-stretch">
           {/* ===== بطاقة منشور المنتج ===== */}
@@ -1557,8 +1542,10 @@ export default function EroviaProductPage() {
               </div>
             </div>
 
-            {/* زوار العرض + عداد العرض */}
-            <LiveOfferCard />
+            {/* زوار العرض + عداد العرض — تظهر هنا في الحاسوب فقط (نسخة الهاتف انتقلت لأعلى الصفحة) */}
+            <div className="hidden lg:block">
+              <LiveOfferCard />
+            </div>
 
             {/* معلومات مهمة */}
             <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-5 lg:min-h-[250px] flex-1 flex flex-col">
@@ -1729,7 +1716,7 @@ export default function EroviaProductPage() {
                       alt={`إيروفيا - صورة ${card.id}`}
                       fill
                       sizes="(max-width: 640px) 70vw, 23vw"
-                      className="object-contain p-3"
+                      className="object-contain p-1"
                       loading="lazy"
                     />
                   </div>
