@@ -358,7 +358,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
             alt={images[activeIndex].alt}
             fill
             sizes="(max-width: 640px) 92vw, 60vw"
-            className="object-contain p-4 sm:p-6"
+            className="object-cover"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
           />
@@ -1340,19 +1340,26 @@ export default function EroviaProductPage() {
                 اطلب الآن
               </button>
 
-              {/* شريط الإحصائيات: الإعجابات والتعليقات والمشاركات على سطر واحد، وتقييم العملاء أسفله */}
-              <div className="mt-5 pt-4 border-t border-[#E4E6EB]">
-                <p className="text-sm text-[#65676B] font-semibold tabular-nums">
-                  {formatK(likesCount + LIKES_BASELINE)} إعجاب · {comments.length} تعليق · {SHARES_BASELINE} مشاركة
-                </p>
-                <div className="flex items-center justify-between mt-1.5">
-                  <span className="text-sm text-[#65676B] font-semibold">تقييم العملاء</span>
-                  <span className="flex items-center gap-2 text-sm text-[#65676B] font-semibold">
-                    <Stars rating={4.9} size="w-4 h-4" />
-                    4.9/5
+              {/* ✅ شريط إحصائيات التفاعل — بنفس تصميم فيسبوك الحقيقي تماماً */}
+              <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E4E6EB] text-sm text-[#65676B]">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-[18px] h-[18px] rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0 ring-2 ring-white">
+                    <ThumbsUp className="w-2.5 h-2.5 text-white fill-white" />
                   </span>
-                </div>
+                  <span className="tabular-nums">{formatK(likesCount + LIKES_BASELINE)}</span>
+                </span>
+                <span className="tabular-nums">{comments.length} تعليقًا · {SHARES_BASELINE} مشاركة</span>
               </div>
+
+              {/* صندوق تقييم العملاء — كما هو بدون تغيير */}
+              <div className="flex items-center justify-between mt-2.5">
+                <span className="text-sm text-[#65676B] font-semibold">تقييم العملاء</span>
+                <span className="flex items-center gap-2 text-sm text-[#65676B] font-semibold">
+                  <Stars rating={4.9} size="w-4 h-4" />
+                  4.9/5
+                </span>
+              </div>
+
               <div className="grid grid-cols-3 border-t border-[#E4E6EB] mt-3 pt-1">
                 <button
                   onClick={handleToggleLike}
@@ -1492,6 +1499,7 @@ export default function EroviaProductPage() {
                                   onClick={() => handleToggleCommentLike(c.id)}
                                   className={`hover:underline cursor-pointer flex items-center gap-1 ${likedCommentIds.has(c.id) ? "text-[#1877F2]" : ""}`}
                                 >
+                                  <ThumbsUp className={`w-3 h-3 ${likedCommentIds.has(c.id) ? "fill-[#1877F2]" : ""}`} />
                                   إعجاب {c.likes > 0 && `(${c.likes})`}
                                 </button>
                               </div>
