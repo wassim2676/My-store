@@ -3,7 +3,6 @@ import { z } from "zod";
 import type { Prisma, OrderStatus, CallStatus, PaymentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { sendServerEvent } from "@/lib/fbConversionsApi";
 
 // ==================== 🔐 مخططات التحقق (Zod Schemas) ====================
 // ⚠️ مصححة لتطابق نموذج ManualOrder الفعلي في قاعدة البيانات (وليس Order)
@@ -13,7 +12,7 @@ const createManualOrderSchema = z.object({
   phone: z.string().regex(/^\+?[0-9\s\-]{8,15}$/, "Invalid phone number"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   city: z.string().min(1, "City is required").max(100),
-  address: z.string().min(1, "Address is required").max(500),
+  address: z.string().min(5, "Address is required").max(500),
   country: z.string().max(100).optional().default("Morocco"),
   productType: z.string().min(1, "Product type is required").max(255),
   quantity: z.number().int().min(1).max(999).default(1),
@@ -23,11 +22,7 @@ const createManualOrderSchema = z.object({
   customerNote: z.string().max(1000).optional(),
   adminNotes: z.string().max(2000).optional(),
   sourcePage: z.string().max(255).optional(),
-  // ✅ بيانات تتبّع Facebook Pixel/CAPI (اختيارية — لا تُفشل الطلب أبداً إن غابت)
-  fbEventId: z.string().max(100).optional(),
-  fbp: z.string().max(200).optional(),
-  fbc: z.string().max(200).optional(),
-  contentCategory: z.string().max(100).optional(),
+  isLead: z.boolean().optional().default(false),
 });
 
 // ==================== 🎯 الثوابت ====================
@@ -120,11 +115,13 @@ export async function GET(request: NextRequest) {
 }
 
 // ==================== 🟢 POST: إنشاء طلب يدوي جديد ====================
-// ⚠️ هذا المسار عام بالكامل (بدون تسجيل دخول) — يُستدعى مباشرة من صفحات الهبوط
-// العامة (erovia / ero-via) من قِبل زوار مجهولين لإرسال طلباتهم الحقيقية.
-// لا يوجد أي فحص صلاحيات هنا عمداً؛ الحماية الوحيدة هي التحقق ببيانات المدخلات (Zod) أدناه.
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN")) {
+      return NextResponse.json({ error: "Unauthorized. Admin access required." }, { status: 401 });
+    }
+
     let body: unknown;
     try {
       body = await request.json();
@@ -167,38 +164,12 @@ export async function POST(request: NextRequest) {
         callStatus: data.callStatus,
         customerNote: data.customerNote || null,
         adminNotes: data.adminNotes || null,
-        sourcePage: data.sourcePage || "Public",
+        sourcePage: data.sourcePage || "Admin",
+        isLead: data.isLead,
       },
     });
 
-    console.log(`[AUDIT] Public order created: ${newOrder.id} (source: ${data.sourcePage || "unknown"})`);
-
-    // ✅ إطلاق حدث Purchase من السيرفر عبر Conversions API — بنفس event_id المُرسل من المتصفح
-    // (إن وُجد) لضمان عدم الاحتساب المزدوج. لا نُفشل الطلب أبداً إن فشل التتبّع نفسه.
-    if (data.fbEventId) {
-      const clientIp =
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-real-ip") ||
-        null;
-      const userAgent = request.headers.get("user-agent");
-
-      sendServerEvent({
-        eventName: "Purchase",
-        eventId: data.fbEventId,
-        eventSourceUrl: data.sourcePage
-          ? `https://${request.headers.get("host") || ""}${data.sourcePage}`
-          : request.headers.get("referer") || "",
-        phone: data.phone,
-        clientIp,
-        userAgent,
-        fbp: data.fbp,
-        fbc: data.fbc,
-        value: totalPrice,
-        currency: "MAD",
-        contentName: data.productType,
-        contentCategory: data.contentCategory,
-      }).catch((err) => console.error("[FB_CAPI_ASYNC_ERROR]", err));
-    }
+    console.log(`[AUDIT] User ${session.user.id} created manual order: ${newOrder.id}`);
 
     return NextResponse.json(
       { success: true, message: "Manual order created successfully", data: newOrder },

@@ -377,6 +377,10 @@ model ManualOrder {
   calledAt            DateTime?     // متى تم الاتصال بالعميل
   cancelledAt         DateTime?
 
+  // ==================== 🎯 طلب مبدئي غير مؤكَّد (Lead) ====================
+  // ✅ true = التُقط تلقائياً فور إكمال رقم الهاتف، ولم يضغط الزائر على "تأكيد الطلب" إطلاقاً
+  isLead              Boolean       @default(false)
+
   // ==================== 🚚 معلومات الشحن (كانت مفقودة سابقاً وتسبب خطأ عند الحفظ) ====================
   trackingNumber      String?       @db.VarChar(100)
   trackingUrl         String?       @db.Text

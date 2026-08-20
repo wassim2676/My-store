@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Link from "next/link";
 import * as XLSX from "xlsx";
 import type { LucideIcon } from "lucide-react";
 import { 
@@ -41,6 +42,7 @@ interface ManualOrder {
   updatedAt: string;
   calledAt?: string | null;
   cancelledAt?: string | null;
+  isLead: boolean;
 }
 
 interface Pagination {
@@ -414,8 +416,12 @@ export default function ManualOrdersPage() {
   }, [orders]);
 
   // فلترة الطلبات بناء على المصدر المختار والفلاتر الأخرى
+  const leadsCount = useMemo(() => orders.filter((o) => o.isLead).length, [orders]);
+
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
+      // ✅ الطلبات المبدئية غير المؤكَّدة لا تظهر هنا — لها صفحتها الخاصة (manual-orders/leads)
+      if (order.isLead) return false;
       if (selectedSource && (order.sourcePage || "Direct / Unknown") !== selectedSource) return false;
       if (filters.status !== "all" && order.status !== filters.status) return false;
       if (filters.callStatus !== "all" && order.callStatus !== filters.callStatus) return false;
@@ -617,6 +623,17 @@ export default function ManualOrdersPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/admin/manual-orders/leads"
+            className="relative flex items-center gap-2 px-4 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 rounded-lg font-medium hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors cursor-pointer"
+          >
+            <AlertTriangle className="w-4 h-4" /> طلبات مبدئية
+            {leadsCount > 0 && (
+              <span className="absolute -top-2 -left-2 min-w-[20px] h-5 px-1 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">
+                {leadsCount}
+              </span>
+            )}
+          </Link>
           {selectedSource && (
             <button 
               onClick={handleExportExcel}
