@@ -340,69 +340,70 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
 
   return (
     <div className="w-full select-none">
-      {/* ✅ كل صورة بزواياها الدائرية المستقلة الخاصة بها (تماماً كبطاقات سيكشن المعرض) — بلا فواصل بينها،
-          فتظهر الاستدارة طبيعياً في الجهة الداخلية الملاصقة، بينما تُقص الجهة الخارجية بشكل طبيعي عند حافة الشاشة */}
+      {/* ✅ الصورة الرئيسية — بطاقة واحدة نظيفة، مربّعة الشكل، لا تعتمد على أي نسب معقدة */}
       <div
-        className="relative flex items-stretch w-full aspect-[4/3] sm:aspect-[16/9] overflow-hidden touch-pan-y"
+        className="relative w-full aspect-square rounded-xl border border-[#E4E6EB] overflow-hidden bg-white touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* معاينة جانبية (يمين) — بحجم فخم غير مضغوط، بزاويتها الداخلية الدائرية الخاصة */}
-        <div className="relative flex-shrink-0 w-[19%] sm:w-[17%] rounded-xl overflow-hidden bg-white">
-          <Image src={images[prevIdx].url} alt="" fill sizes="19vw" className="object-cover" loading="lazy" />
-        </div>
-
-        {/* البطاقة الرئيسية — أكبر وأفخم، بزواياها الدائرية الخاصة بها بالكامل */}
-        <div
-          key={activeIndex}
-          onClick={onExpand}
-          role="button"
-          tabIndex={0}
+        <div key={activeIndex} onClick={onExpand} role="button" tabIndex={0}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onExpand(); }}
           aria-label="تكبير الصورة"
-          className="relative flex-1 min-w-0 rounded-xl overflow-hidden bg-white cursor-zoom-in"
+          className="absolute inset-0 cursor-zoom-in"
           style={{ animation: "galleryZoom 0.45s ease" }}
         >
           <Image
             src={images[activeIndex].url}
             alt={images[activeIndex].alt}
             fill
-            sizes="(max-width: 640px) 62vw, 66vw"
-            className="object-contain"
+            sizes="(max-width: 640px) 92vw, 60vw"
+            className="object-contain p-4 sm:p-6"
             priority={activeIndex === 0}
             loading={activeIndex === 0 ? "eager" : "lazy"}
           />
-          {/* عدّاد الصور */}
-          <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold">
-            {activeIndex + 1} / {images.length}
-          </div>
-          {/* ✅ تلميح إمكانية التكبير */}
-          <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
-            <Maximize2 className="w-3.5 h-3.5" />
-          </div>
         </div>
 
-        {/* معاينة جانبية (يسار) */}
-        <div className="relative flex-shrink-0 w-[19%] sm:w-[17%] rounded-xl overflow-hidden bg-white">
-          <Image src={images[nextIdx].url} alt="" fill sizes="19vw" className="object-cover" loading="lazy" />
+        {/* عدّاد الصور */}
+        <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold pointer-events-none">
+          {activeIndex + 1} / {images.length}
+        </div>
+        {/* تلميح إمكانية التكبير */}
+        <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
+          <Maximize2 className="w-3.5 h-3.5" />
         </div>
 
-        {/* ✅ أزرار التنقل — على أطراف الإطار الخارجي بالكامل */}
+        {/* أزرار التنقل */}
         <button
           onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
-          className="absolute top-1/2 -translate-y-1/2 right-1 sm:right-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+          className="absolute top-1/2 -translate-y-1/2 right-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
           aria-label="السابق"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onChange(nextIdx); }}
-          className="absolute top-1/2 -translate-y-1/2 left-1 sm:left-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+          className="absolute top-1/2 -translate-y-1/2 left-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
           aria-label="التالي"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
+      </div>
+
+      {/* ✅ شريط المصغّرات — 3 صور صغيرة ثابتة الحجم، الصورة النشطة محدَّدة بحدّ ملوّن واضح */}
+      <div className="flex items-center justify-center gap-2.5 mt-2.5">
+        {images.map((img, i) => (
+          <button
+            key={i}
+            onClick={() => onChange(i)}
+            aria-label={`عرض ${img.alt}`}
+            className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-white transition-all cursor-pointer ${
+              i === activeIndex ? "border-2 border-[#1877F2]" : "border border-[#E4E6EB] opacity-70 hover:opacity-100"
+            }`}
+          >
+            <Image src={img.url} alt="" fill sizes="80px" className="object-contain p-1.5" />
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -1339,20 +1340,20 @@ export default function EroviaProductPage() {
                 اطلب الآن
               </button>
 
-              {/* شريط التفاعل + نجوم التقييم */}
-              <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E4E6EB] text-sm text-[#65676B] font-semibold">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
-                    <ThumbsUp className="w-2.5 h-2.5 text-white fill-white" />
+              {/* شريط الإحصائيات: الإعجابات والتعليقات والمشاركات على سطر واحد، وتقييم العملاء أسفله */}
+              <div className="mt-5 pt-4 border-t border-[#E4E6EB]">
+                <p className="text-sm text-[#65676B] font-semibold tabular-nums">
+                  {formatK(likesCount + LIKES_BASELINE)} إعجاب · {comments.length} تعليق · {SHARES_BASELINE} مشاركة
+                </p>
+                <div className="flex items-center justify-between mt-1.5">
+                  <span className="text-sm text-[#65676B] font-semibold">تقييم العملاء</span>
+                  <span className="flex items-center gap-2 text-sm text-[#65676B] font-semibold">
+                    <Stars rating={4.9} size="w-4 h-4" />
+                    4.9/5
                   </span>
-                  <span className="tabular-nums">{formatK(likesCount + LIKES_BASELINE)}</span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <Stars rating={4.9} size="w-4 h-4" />
-                  4.9/5
-                </span>
+                </div>
               </div>
-              <div className="grid grid-cols-3 border-t border-[#E4E6EB] mt-1 pt-1">
+              <div className="grid grid-cols-3 border-t border-[#E4E6EB] mt-3 pt-1">
                 <button
                   onClick={handleToggleLike}
                   disabled={likeBusy}
@@ -1716,7 +1717,7 @@ export default function EroviaProductPage() {
                       alt={`إيروفيا - صورة ${card.id}`}
                       fill
                       sizes="(max-width: 640px) 70vw, 23vw"
-                      className="object-contain p-1"
+                      className="object-cover"
                       loading="lazy"
                     />
                   </div>
