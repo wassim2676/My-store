@@ -364,26 +364,26 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
           />
         </div>
 
-        {/* عدّاد الصور */}
-        <div className="absolute top-3 left-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-semibold pointer-events-none">
+        {/* عدّاد الصور — شفافية مطابقة لصندوق التكبير */}
+        <div className="absolute top-3 left-3 bg-white/10 backdrop-blur-sm text-white rounded-full px-3 py-1.5 text-xs font-semibold pointer-events-none">
           {activeIndex + 1} / {images.length}
         </div>
         {/* تلميح إمكانية التكبير */}
-        <div className="absolute bottom-3 right-3 bg-[#050505]/60 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
+        <div className="absolute bottom-3 right-3 bg-white/10 backdrop-blur-sm text-white rounded-full p-1.5 pointer-events-none">
           <Maximize2 className="w-3.5 h-3.5" />
         </div>
 
-        {/* أزرار التنقل */}
+        {/* أزرار التنقل — شفافية مطابقة لصندوق التكبير */}
         <button
           onClick={(e) => { e.stopPropagation(); onChange(prevIdx); }}
-          className="absolute top-1/2 -translate-y-1/2 right-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+          className="absolute top-1/2 -translate-y-1/2 right-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
           aria-label="السابق"
         >
           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onChange(nextIdx); }}
-          className="absolute top-1/2 -translate-y-1/2 left-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white shadow-lg flex items-center justify-center text-[#050505] transition-all hover:scale-105 cursor-pointer"
+          className="absolute top-1/2 -translate-y-1/2 left-2 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
           aria-label="التالي"
         >
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -692,8 +692,8 @@ interface CommentNode {
 }
 
 // ==================== 👥 أرقام تفاعل أساسية (Social Proof) — تُضاف فوق الأرقام الحقيقية، والنظام الفعلي يعمل بشكل طبيعي فوقها ====================
-const LIKES_BASELINE = 5000;
-const SHARES_BASELINE = 200;
+const LIKES_BASELINE = 5327;
+const SHARES_BASELINE = 237;
 
 // 🖼️ صور أفاتار متنوعة للتعليقات الأساسية — ضعها لاحقاً في public/erovia/avatars/
 const SEED_AVATARS = [
@@ -725,6 +725,9 @@ const SEED_COMMENTS: CommentNode[] = [
   { id: "seed-18", parentId: null, name: "يونس بركاش", message: "صراحة السعر معقول جداً مقارنة بمنتجات مشابهة شفتها فسوق مغربي.", likes: 20, createdAt: "2026-08-18T10:30:00Z", replies: [], avatar: SEED_AVATARS[1] },
   { id: "seed-19", parentId: null, name: "معاذ الخطابي", message: "الصفحة واضحة ومنظمة، سهّلت عليا نختار الباقة المناسبة ليا بسرعة.", likes: 25, createdAt: "2026-08-19T13:00:00Z", replies: [], avatar: SEED_AVATARS[2] },
   { id: "seed-20", parentId: null, name: "أنس الجراري", message: "تجربة شراء بسيطة فعلاً من الطلب حتى التوصيل، ما كاينش تعقيد.", likes: 33, createdAt: "2026-08-20T08:00:00Z", replies: [], avatar: SEED_AVATARS[3] },
+  { id: "seed-21", parentId: null, name: "خالد بنيس", message: "صراحة تفاجأت بجودة الخدمة، كنت متوقع أقل من هاد المستوى.", likes: 18, createdAt: "2026-08-21T09:15:00Z", replies: [], avatar: SEED_AVATARS[0] },
+  { id: "seed-22", parentId: null, name: "عبد الرحيم زروالي", message: "أول طلبية ليا من صفحة فيسبوك ونجحت، ثقتي زادت فالتسوق أونلاين.", likes: 26, createdAt: "2026-08-22T11:40:00Z", replies: [], avatar: SEED_AVATARS[1] },
+  { id: "seed-23", parentId: null, name: "فؤاد الناصري", message: "التوصيل جا فالوقت المحدد بالضبط، ما كاين حتى تأخير.", likes: 14, createdAt: "2026-08-23T14:20:00Z", replies: [], avatar: SEED_AVATARS[2] },
 ];
 
 // ==================== 🔢 تنسيق الأرقام بصيغة مختصرة (K) ====================
@@ -1340,8 +1343,17 @@ export default function EroviaProductPage() {
                 اطلب الآن
               </button>
 
+              {/* صندوق تقييم العملاء — أولاً، مباشرة تحت زر الطلب */}
+              <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E4E6EB]">
+                <span className="text-sm text-[#65676B] font-semibold">تقييم العملاء</span>
+                <span className="flex items-center gap-2 text-sm text-[#65676B] font-semibold">
+                  <Stars rating={4.9} size="w-4 h-4" />
+                  4.9/5
+                </span>
+              </div>
+
               {/* ✅ شريط إحصائيات التفاعل — بنفس تصميم فيسبوك الحقيقي تماماً */}
-              <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E4E6EB] text-sm text-[#65676B]">
+              <div className="flex items-center justify-between mt-2.5 text-sm text-[#65676B]">
                 <span className="flex items-center gap-1.5">
                   <span className="w-[18px] h-[18px] rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0 ring-2 ring-white">
                     <ThumbsUp className="w-2.5 h-2.5 text-white fill-white" />
@@ -1349,15 +1361,6 @@ export default function EroviaProductPage() {
                   <span className="tabular-nums">{formatK(likesCount + LIKES_BASELINE)}</span>
                 </span>
                 <span className="tabular-nums">{comments.length} تعليقًا · {SHARES_BASELINE} مشاركة</span>
-              </div>
-
-              {/* صندوق تقييم العملاء — كما هو بدون تغيير */}
-              <div className="flex items-center justify-between mt-2.5">
-                <span className="text-sm text-[#65676B] font-semibold">تقييم العملاء</span>
-                <span className="flex items-center gap-2 text-sm text-[#65676B] font-semibold">
-                  <Stars rating={4.9} size="w-4 h-4" />
-                  4.9/5
-                </span>
               </div>
 
               <div className="grid grid-cols-3 border-t border-[#E4E6EB] mt-3 pt-1">
