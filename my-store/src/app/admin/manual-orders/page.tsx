@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import * as XLSX from "xlsx";
 import type { LucideIcon } from "lucide-react";
 import { 
   ChevronDown, ChevronUp, Phone, Mail, MapPin, Package, 
@@ -508,21 +509,67 @@ export default function ManualOrdersPage() {
     }
   };
 
-  const handleExportCSV = useCallback(() => {
-    const headers = ["Order #", "Customer", "Phone", "Email", "City", "Country", "Product", "Qty", "Total", "Source", "Order Status", "Call Status"];
-    const rows = filteredOrders.map(o => [
-      `#${o.orderNumber}`, o.customerName, o.phone, o.email || "", o.city, o.country, o.productType, o.quantity.toString(), formatCurrency(o.totalPrice), o.sourcePage || "Direct", o.status, o.callStatus
-    ]);
-    const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `orders-${selectedSource || "all"}-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    setToast({ message: "✅ تم تصدير الملف بنجاح", type: "success" });
-  }, [filteredOrders, formatCurrency, selectedSource]);
+  const handleExportExcel = useCallback(() => {
+    // ✅ تصدير كملف Excel حقيقي (.xlsx) — يُفتح بدقة كاملة في Google Sheets (File > Import)
+    // بدون أي مشاكل ترميز عربي (على عكس CSV الخام الذي كان يظهر "مبعثراً" في إكسل/جوجل شيتس)
+    const rows = filteredOrders.map((o) => ({
+      "رقم الطلب": `#${o.orderNumber}`,
+      "الاسم الكامل": o.customerName,
+      "الهاتف": o.phone,
+      "البريد الإلكتروني": o.email || "",
+      "المدينة": o.city,
+      "العنوان بالتفصيل": o.address,
+      "الدولة": o.country,
+      "المنتج / الباقة": o.productType,
+      "الكمية": o.quantity,
+      "سعر الوحدة": o.unitPrice,
+      "الإجمالي": o.totalPrice,
+      "طريقة الدفع": o.paymentMethod,
+      "حالة الدفع": o.paymentStatus,
+      "حالة الطلب": o.status,
+      "حالة الاتصال": o.callStatus,
+      "مصدر الطلب": o.sourcePage || "مباشر",
+      "تاريخ الطلب": new Date(o.createdAt).toLocaleString("ar-MA"),
+      "ملاحظات العميل": o.customerNote || "",
+      "ملاحظات الأدمن": o.adminNotes || "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+
+    // ✅ عرض أعمدة مضبوط يدوياً لكل حقل — يمنع التشوّه ويجعل الملف منظماً ومقروءاً فوراً
+    worksheet["!cols"] = [
+      { wch: 12 }, // رقم الطلب
+      { wch: 22 }, // الاسم الكامل
+      { wch: 15 }, // الهاتف
+      { wch: 22 }, // البريد الإلكتروني
+      { wch: 14 }, // المدينة
+      { wch: 32 }, // العنوان بالتفصيل
+      { wch: 12 }, // الدولة
+      { wch: 22 }, // المنتج / الباقة
+      { wch: 9 },  // الكمية
+      { wch: 12 }, // سعر الوحدة
+      { wch: 12 }, // الإجمالي
+      { wch: 14 }, // طريقة الدفع
+      { wch: 14 }, // حالة الدفع
+      { wch: 14 }, // حالة الطلب
+      { wch: 16 }, // حالة الاتصال
+      { wch: 20 }, // مصدر الطلب
+      { wch: 20 }, // تاريخ الطلب
+      { wch: 28 }, // ملاحظات العميل
+      { wch: 28 }, // ملاحظات الأدمن
+    ];
+
+    // ✅ تجميد الصف الأول (رؤوس الأعمدة) — يبقى ظاهراً دائماً أثناء التمرير لأسفل، تماماً كأي جدول بيانات احترافي
+    worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "الطلبات");
+
+    const fileName = `orders-${selectedSource || "all"}-${new Date().toISOString().split("T")[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+
+    setToast({ message: "✅ تم تصدير ملف Excel بنجاح — يفتح مباشرة في Google Sheets", type: "success" });
+  }, [filteredOrders, selectedSource]);
 
   // عرض اسم المصدر بشكل جميل
   const getSourceDisplayName = (source: string) => {
@@ -572,10 +619,10 @@ export default function ManualOrdersPage() {
         <div className="flex items-center gap-2">
           {selectedSource && (
             <button 
-              onClick={handleExportCSV}
+              onClick={handleExportExcel}
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
             >
-              <Download className="w-4 h-4" /> Export CSV
+              <Download className="w-4 h-4" /> تصدير Excel
             </button>
           )}
           <button
