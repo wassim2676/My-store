@@ -115,13 +115,13 @@ export async function GET(request: NextRequest) {
 }
 
 // ==================== 🟢 POST: إنشاء طلب يدوي جديد ====================
+// ⚠️ هذا المسار عام بالكامل عمداً (بدون أي تحقق من تسجيل الدخول أو الصلاحيات) —
+// يُستدعى مباشرة من صفحات الهبوط العامة (erovia) من قِبل أي زائر مجهول تماماً،
+// سواء كان لديه حساب أم لا، مسجّلاً دخوله أم لا، أدمن أم عميلاً عادياً. لا تُضِف
+// أي فحص auth()/session هنا مطلقاً مهما كان السبب — الحماية الوحيدة المقصودة
+// هي التحقق من صحة البيانات المُدخَلة (Zod) أدناه، وليس هوية المُرسِل.
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN")) {
-      return NextResponse.json({ error: "Unauthorized. Admin access required." }, { status: 401 });
-    }
-
     let body: unknown;
     try {
       body = await request.json();
@@ -164,12 +164,12 @@ export async function POST(request: NextRequest) {
         callStatus: data.callStatus,
         customerNote: data.customerNote || null,
         adminNotes: data.adminNotes || null,
-        sourcePage: data.sourcePage || "Admin",
+        sourcePage: data.sourcePage || "Public",
         isLead: data.isLead,
       },
     });
 
-    console.log(`[AUDIT] User ${session.user.id} created manual order: ${newOrder.id}`);
+    console.log(`[AUDIT] Public order created: ${newOrder.id} (source: ${data.sourcePage || "unknown"})`);
 
     return NextResponse.json(
       { success: true, message: "Manual order created successfully", data: newOrder },
