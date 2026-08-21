@@ -11,6 +11,21 @@ import {
   Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, RefreshCw, Pencil, Maximize2, Lock, Phone,
 } from "lucide-react";
 
+// ==================== 🔙 حماية زر الرجوع في الهاتف ====================
+// عند فتح أي عنصر "شبه منبثق" (صورة مكبّرة، قائمة، تعليقات، سؤال شائع)، نُضيف محطة تاريخ
+// وهمية للمتصفح. فإذا ضغط الزائر زر الرجوع بهاتفه أثناء فتحه، يُغلَق العنصر فقط
+// ويبقى داخل الموقع — بدل خروجه بالكامل من الصفحة كما كان يحدث سابقاً.
+function useBackButtonClose(isOpen: boolean, onClose: () => void) {
+  useEffect(() => {
+    if (!isOpen) return;
+    window.history.pushState({ __overlay: true }, "");
+    const handlePopState = () => onClose();
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+}
+
 // ==================== 🎨 الهوية البصرية — Facebook SaaS ====================
 // خلفية الصفحة رمادية #F0F2F5 وكل المحتوى داخل إطارات بيضاء مثل فيسبوك تماماً
 // #1877F2 أساسي / #166FE5 تحويم / #E4E6EB حدود / #65676B نصوص ثانوية / #050505 نصوص أساسية
@@ -165,6 +180,7 @@ function Toast({ message, type, onClose }: { message: string; type: ToastType; o
 // ==================== 🧭 الهيدر — شعار + تتبع القسم النشط ====================
 function TopHeader({ onScrollTo }: { onScrollTo: (id: string, instant?: boolean) => void }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  useBackButtonClose(mobileOpen, () => setMobileOpen(false));
   const [active, setActive] = useState("home");
 
   const navLinks = [
@@ -365,7 +381,7 @@ function PostGallery({ images, activeIndex, onChange, onExpand }: {
       {/* 🖥️ الحاسوب فقط — صورة رئيسية + شريط مصغّرات تفاعلي */}
       <div className="hidden sm:block">
         <div
-          className="relative w-full aspect-square rounded-xl border border-[#E4E6EB] overflow-hidden bg-white touch-pan-y"
+          className="relative w-full aspect-[4/3] rounded-xl border border-[#E4E6EB] overflow-hidden bg-white touch-pan-y"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -631,6 +647,7 @@ function LiveOfferCard() {
 // ==================== ❓ قسم الأسئلة الشائعة ====================
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  useBackButtonClose(openIndex !== null, () => setOpenIndex(null));
 
   return (
     <section id="faqs" className="py-3 sm:py-4 px-0 sm:px-4 lg:px-6 scroll-mt-20">
@@ -794,6 +811,7 @@ export default function EroviaProductPage() {
   const router = useRouter();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  useBackButtonClose(lightboxOpen, () => setLightboxOpen(false));
   // ✅ قائمة النقاط الثلاث في رأس المنشور — تنقّل مباشر لكل سيكشنز الصفحة
   const [postMenuOpen, setPostMenuOpen] = useState(false);
   const postMenuLinks = [
@@ -809,7 +827,7 @@ export default function EroviaProductPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [formData, setFormData] = useState<OrderFormData>({
-    fullName: "", phone: "", city: "", address: "", quantity: "", packageId: null,
+    fullName: "", phone: "", city: "", address: "", quantity: packages[0].boxes, packageId: packages[0].id,
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [offerClaims, setOfferClaims] = useState(2500);
@@ -826,6 +844,7 @@ export default function EroviaProductPage() {
   const [comments, setComments] = useState<CommentNode[]>([]);
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [showComments, setShowComments] = useState(false);
+  useBackButtonClose(showComments, () => setShowComments(false));
   const [displayName, setDisplayName] = useState(""); // الاسم المستعار الحالي (قابل للتعديل)
   const [editingName, setEditingName] = useState(false);
   const [commentMessage, setCommentMessage] = useState("");
@@ -1008,13 +1027,13 @@ export default function EroviaProductPage() {
     [formData.packageId]
   );
 
-  // ✅ التقاط الطلب تلقائياً بمجرد إكمال رقم هاتف مغربي صحيح — حتى لو لم يضغط الزائر زر التأكيد إطلاقاً
-  // (مصنَّف بوضوح في ملاحظات الأدمن كـ"طلب مبدئي غير مؤكَّد" ليسهل تمييزه عن الطلبات الحقيقية المكتملة)
+  // ✅ التقاط الطلب تلقائياً بمجرد كتابة رقم هاتف بطول معقول — حتى بدون اسم أو عنوان،
+  // وحتى لو لم يضغط الزائر زر التأكيد إطلاقاً (مصنَّف في ملاحظات الأدمن كـ"طلب مبدئي غير مؤكَّد")
   useEffect(() => {
     if (leadCapturedRef.current) return;
     const digitsOnly = formData.phone.replace(/[^\d]/g, "");
-    const isCompleteMoroccanPhone = /^0[5-7]\d{8}$/.test(digitsOnly);
-    if (!isCompleteMoroccanPhone) return;
+    // ✅ أي رقم بطول 9 أرقام فأكثر يكفي لإطلاق الالتقاط (بدون شرط بادئة صارم قد يستثني أرقاماً صحيحة)
+    if (digitsOnly.length < 9) return;
 
     const timer = setTimeout(() => {
       if (leadCapturedRef.current) return;
@@ -1035,13 +1054,14 @@ export default function EroviaProductPage() {
           unitPrice: pkg.price,
           paymentMethod: "COD",
           sourcePage: "/product/erovia",
-          adminNotes: "⚠️ طلب مبدئي غير مؤكَّد — تم التقاطه تلقائياً فور إكمال رقم الهاتف، ولم يضغط الزائر على زر تأكيد الطلب. يُنصح بالاتصال للتأكد قبل الشحن.",
+          adminNotes: "⚠️ طلب مبدئي غير مؤكَّد — تم التقاطه تلقائياً فور كتابة رقم الهاتف، ولم يضغط الزائر على زر تأكيد الطلب. يُنصح بالاتصال للتأكد قبل الشحن.",
           isLead: true,
         }),
-      }).catch(() => {
-        // فشل صامت — لا نريد إزعاج الزائر بأي رسالة خطأ على عملية خلفية لم يطلبها صراحة
+      }).catch((err) => {
+        // نُسجّل الخطأ في الكونسول للتشخيص، لكن لا نزعج الزائر بأي رسالة على عملية خلفية لم يطلبها صراحة
+        console.error("[Lead capture failed]", err);
       });
-    }, 1500); // مهلة قصيرة تضمن أن الزائر توقف فعلاً عن الكتابة (وليس لا يزال يكتب رقماً أطول)
+    }, 800); // مهلة قصيرة تضمن أن الزائر توقف فعلاً عن الكتابة
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1181,7 +1201,7 @@ export default function EroviaProductPage() {
             total: selectedPackage.price,
           })
         );
-        setFormData({ fullName: "", phone: "", city: "", address: "", quantity: "", packageId: null });
+        setFormData({ fullName: "", phone: "", city: "", address: "", quantity: packages[0].boxes, packageId: packages[0].id });
         router.push("/product/erovia/thankyou");
       } else {
         setToast({ message: result.error || "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى", type: "error" });
