@@ -8,7 +8,7 @@ import {
   ShoppingCart, CheckCircle, Truck, Shield, Star, ChevronDown, ChevronLeft, ChevronRight,
   AlertCircle, Loader2, X, MessageCircle, Menu, Search, BadgeCheck, Globe2,
   ThumbsUp, MessageSquare, Share2, MoreHorizontal, RotateCcw, Zap, Headphones, Info, HelpCircle,
-  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, RefreshCw, Pencil, Maximize2, Lock, Phone, Eye,
+  Flame, Package, Sparkles, Leaf, Heart, Award, TrendingUp, Send, Check, RefreshCw, Pencil, Maximize2, Lock, Phone, Eye, Mic, Trash2,
 } from "lucide-react";
 
 // ==================== 🔙 حماية زر الرجوع في الهاتف ====================
@@ -561,6 +561,74 @@ function ImageLightbox({ images, activeIndex, onChange, onClose }: {
 }
 
 // ==================== 👀 عداد الزوار + العرض المحدود ====================
+// ✅ نسخة مدمجة (شارتان جنباً لجنب) لأعلى الصفحة في الهاتف — بنفس أسلوب بادج
+// "حصلوا على هذا العرض" الموجود في نموذج الطلب: أيقونة دائرية + رقم بارز + تسمية صغيرة
+function MobileTopBadges() {
+  const [visitorCount, setVisitorCount] = useState(12100);
+  const [remaining, setRemaining] = useState(24 * 60 * 60);
+
+  useEffect(() => {
+    const visitorTimer = window.setInterval(() => {
+      setVisitorCount((current) => {
+        const delta = Math.floor(Math.random() * 1201) - 600;
+        return Math.min(30000, Math.max(5000, current + delta));
+      });
+    }, 7000);
+
+    const storageKey = "erovia_offer_end_at";
+    const now = Date.now();
+    let endAt = Number(window.localStorage.getItem(storageKey));
+    if (!endAt || endAt <= now) {
+      endAt = now + 24 * 60 * 60 * 1000;
+      window.localStorage.setItem(storageKey, String(endAt));
+    }
+    const tick = () => {
+      let seconds = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
+      if (seconds <= 0) {
+        endAt = Date.now() + 24 * 60 * 60 * 1000;
+        window.localStorage.setItem(storageKey, String(endAt));
+        seconds = 24 * 60 * 60;
+      }
+      setRemaining(seconds);
+    };
+    tick();
+    const countdownTimer = window.setInterval(tick, 1000);
+
+    return () => {
+      window.clearInterval(visitorTimer);
+      window.clearInterval(countdownTimer);
+    };
+  }, []);
+
+  const displayVisitors = `${(visitorCount / 1000).toFixed(1)}K`;
+  const hours = String(Math.floor(remaining / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+  const seconds = String(remaining % 60).padStart(2, "0");
+
+  return (
+    <div className="flex gap-2">
+      <div className="flex-1 flex items-center gap-2 bg-[#E7F3FF] border border-[#1877F2]/20 rounded-lg px-3 py-2.5 min-w-0">
+        <span className="w-8 h-8 rounded-full bg-white text-[#1877F2] flex items-center justify-center flex-shrink-0">
+          <Eye className="w-4 h-4" />
+        </span>
+        <div className="text-right min-w-0">
+          <p className="text-xs font-bold text-[#1877F2] tabular-nums truncate">{displayVisitors} زائر</p>
+          <p className="text-[10px] text-[#65676B] truncate">يشاهدون الآن</p>
+        </div>
+      </div>
+      <div className="flex-1 flex items-center gap-2 bg-[#FE2C55]/5 border border-[#FE2C55]/20 rounded-lg px-3 py-2.5 min-w-0">
+        <span className="w-8 h-8 rounded-full bg-white text-[#FE2C55] flex items-center justify-center flex-shrink-0">
+          <Flame className="w-4 h-4" />
+        </span>
+        <div className="text-right min-w-0">
+          <p className="text-xs font-bold text-[#FE2C55] truncate">عرض محدود</p>
+          <p className="text-[10px] text-[#65676B] tabular-nums" dir="ltr">{hours}:{minutes}:{seconds}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function VisitorCountCard() {
   const [visitorCount, setVisitorCount] = useState(12100);
 
@@ -825,6 +893,139 @@ function buildCommentTree(flat: { id: string; parentId: string | null; name: str
 }
 
 // ==================== 🏠 المكوّن الرئيسي ====================
+// ==================== 🎙️ تسجيل الطلب صوتياً — حد أقصى دقيقة واحدة ====================
+const VOICE_MAX_SECONDS = 60;
+
+function VoiceOrderRecorder({
+  voiceBlob,
+  onRecorded,
+  onClear,
+}: {
+  voiceBlob: Blob | null;
+  onRecorded: (blob: Blob, url: string) => void;
+  onClear: () => void;
+}) {
+  const [isRecording, setIsRecording] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const stopStream = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  };
+
+  const startRecording = async () => {
+    setError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      chunksRef.current = [];
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        onRecorded(blob, url);
+        stopStream();
+      };
+
+      recorder.start();
+      setIsRecording(true);
+      setSeconds(0);
+      timerRef.current = setInterval(() => {
+        setSeconds((s) => {
+          if (s + 1 >= VOICE_MAX_SECONDS) {
+            recorder.stop();
+            if (timerRef.current) clearInterval(timerRef.current);
+            setIsRecording(false);
+            return VOICE_MAX_SECONDS;
+          }
+          return s + 1;
+        });
+      }, 1000);
+    } catch {
+      setError("تعذّر الوصول للميكروفون — تحقق من صلاحيات المتصفح");
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    if (timerRef.current) clearInterval(timerRef.current);
+    setIsRecording(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      stopStream();
+    };
+  }, []);
+
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+
+  if (voiceBlob) {
+    return (
+      <div className="bg-[#E7F3FF] border border-[#1877F2]/20 rounded-xl p-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center flex-shrink-0">
+          <Check className="w-5 h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-[#050505] mb-1.5">تم تسجيل طلبك الصوتي ✅</p>
+          <audio controls src={URL.createObjectURL(voiceBlob)} className="w-full h-9" />
+        </div>
+        <button
+          type="button"
+          onClick={onClear}
+          className="w-9 h-9 rounded-lg bg-white hover:bg-gray-100 text-[#65676B] flex items-center justify-center flex-shrink-0 cursor-pointer"
+          aria-label="حذف التسجيل وإعادة المحاولة"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#F0F2F5] rounded-xl p-4">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={isRecording ? stopRecording : startRecording}
+          className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors ${
+            isRecording ? "bg-[#FE2C55] animate-pulse" : "bg-[#1877F2] hover:bg-[#166FE5]"
+          }`}
+          aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"}
+        >
+          {isRecording ? <div className="w-3.5 h-3.5 bg-white rounded-sm" /> : <Mic className="w-5 h-5 text-white" />}
+        </button>
+        <div className="flex-1 min-w-0">
+          {isRecording ? (
+            <>
+              <p className="text-sm font-semibold text-[#FE2C55] tabular-nums" dir="ltr">{mm}:{ss} / 01:00</p>
+              <p className="text-xs text-[#65676B] mt-0.5">جارٍ التسجيل... اضغط للإيقاف</p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-[#050505]">اضغط لتسجيل طلبك صوتياً</p>
+              <p className="text-xs text-[#65676B] mt-0.5">حتى دقيقة واحدة — اذكر اسمك ومدينتك وعنوانك والباقة المطلوبة</p>
+            </>
+          )}
+        </div>
+      </div>
+      {error && <p className="text-[#E41E3F] text-xs font-semibold mt-2.5">{error}</p>}
+    </div>
+  );
+}
+
 export default function EroviaProductPage() {
   const router = useRouter();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -847,6 +1048,9 @@ export default function EroviaProductPage() {
   const [formData, setFormData] = useState<OrderFormData>({
     fullName: "", phone: "", city: "", address: "", quantity: packages[0].boxes, packageId: packages[0].id,
   });
+  // ✅ حالة التسجيل الصوتي — Blob في الذاكرة فقط حتى لحظة الإرسال (لا نرفعها في كل مرة يتغيّر فيها شيء)
+  const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
+  const [voiceUrl, setVoiceUrl] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [offerClaims, setOfferClaims] = useState(2500);
   const orderFormRef = useRef<HTMLDivElement>(null);
@@ -1156,6 +1360,17 @@ export default function EroviaProductPage() {
       const fbEventId = generateEventId();
       const { fbp, fbc } = getFbBrowserIds();
 
+      // ✅ تحويل التسجيل الصوتي (إن وُجد) إلى Base64 لإرفاقه ضمن بيانات الطلب
+      let voiceNoteBase64: string | undefined;
+      if (voiceBlob) {
+        voiceNoteBase64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(voiceBlob);
+        });
+      }
+
       const orderData = {
         customerName: formData.fullName.trim() || "لم يُكتب الاسم",
         phone: formData.phone.trim(),
@@ -1172,6 +1387,7 @@ export default function EroviaProductPage() {
         fbp: fbp || undefined,
         fbc: fbc || undefined,
         contentCategory: "erovia",
+        voiceNoteBase64,
       };
       const response = await fetch("/api/manual-orders", {
         method: "POST",
@@ -1351,10 +1567,9 @@ export default function EroviaProductPage() {
       <TopHeader onScrollTo={scrollTo} />
 
       <main id="home" className="w-full max-w-7xl mx-auto px-0 sm:px-4 lg:px-0 py-3 sm:py-4">
-        {/* ✅ في الهاتف فقط: بطاقتا الزوار والعرض المحدود تظهران أول سيكشن بأعلى الصفحة، منفصلتين تماماً */}
-        <div className="lg:hidden mb-2 space-y-2">
-          <VisitorCountCard />
-          <CountdownOfferCard />
+        {/* ✅ في الهاتف فقط: شارتا الزوار والعرض المحدود مدمجتان جنباً لجنب بأعلى الصفحة */}
+        <div className="lg:hidden mb-2">
+          <MobileTopBadges />
         </div>
 
         {/* ==================== الهيرو: المنشور + الشريط الجانبي ==================== */}
@@ -1648,38 +1863,23 @@ export default function EroviaProductPage() {
               <CountdownOfferCard />
             </div>
 
-            {/* معلومات مهمة */}
+            {/* ✅ الطلب الصوتي — بديل عن "معلومات مهمة" السابقة */}
             <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-5 lg:min-h-[250px] flex-1 flex flex-col">
-              <h2 className="font-bold text-xl sm:text-2xl leading-tight text-[#050505] mb-4">معلومات مهمة</h2>
-              <div className="space-y-3.5 flex-1">
-                <div className="flex items-center gap-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0">
-                    <CheckCircle className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#050505]">الدفع عند الاستلام</p>
-                    <p className="text-xs text-[#65676B] font-normal mt-0.5">لا تدفع مسبقاً</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0">
-                    <Truck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#050505]">توصيل سريع</p>
-                    <p className="text-xs text-[#65676B] font-normal mt-0.5">حسب المدينة</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#E7F3FF] text-[#1877F2] flex items-center justify-center flex-shrink-0">
-                    <RotateCcw className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#050505]">ضمان الاسترداد</p>
-                    <p className="text-xs text-[#65676B] font-normal mt-0.5">14 يوماً لاسترداد أموالك</p>
-                  </div>
-                </div>
-              </div>
+              <h2 className="font-bold text-xl sm:text-2xl leading-tight text-[#050505] mb-1.5">اطلب صوتياً 🎙️</h2>
+              <p className="text-sm text-[#65676B] font-normal mb-4">
+                يمكنك إنشاء طلبك صوتياً هنا، أو ملء الخانة في الأسفل.
+              </p>
+              <VoiceOrderRecorder
+                voiceBlob={voiceBlob}
+                onRecorded={(blob, url) => {
+                  setVoiceBlob(blob);
+                  setVoiceUrl(url);
+                }}
+                onClear={() => {
+                  setVoiceBlob(null);
+                  setVoiceUrl(null);
+                }}
+              />
             </div>
 
             {/* ملاحظة الخصوصية */}
@@ -1796,6 +1996,16 @@ export default function EroviaProductPage() {
                     />
                     {formErrors.address && <p className="text-[#E41E3F] text-xs mt-1.5 font-semibold">{formErrors.address}</p>}
                   </div>
+
+                  {/* ✅ نسخة الهاتف فقط من زر التأكيد — تظهر مباشرة بعد العنوان، فوق ملخص الطلب */}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="lg:hidden w-full py-3.5 bg-[#1877F2] hover:bg-[#166FE5] text-white rounded-xl text-base font-semibold transition-colors disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2.5"
+                  >
+                    {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShoppingCart className="w-5 h-5" />}
+                    {submitting ? "جاري التأكيد..." : "تأكيد الطلب والدفع عند الاستلام"}
+                  </button>
                 </div>
 
                 {/* ملخص الطلب */}
@@ -1834,11 +2044,11 @@ export default function EroviaProductPage() {
                 </aside>
               </div>
 
-              {/* زر التأكيد */}
+              {/* زر التأكيد — نسخة الحاسوب فقط (نسخة الهاتف انتقلت فوق ملخص الطلب مباشرة) */}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full mt-5 py-3.5 bg-[#1877F2] hover:bg-[#166FE5] text-white rounded-xl text-base font-semibold transition-colors disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2.5"
+                className="hidden lg:flex w-full mt-5 py-3.5 bg-[#1877F2] hover:bg-[#166FE5] text-white rounded-xl text-base font-semibold transition-colors disabled:opacity-60 cursor-pointer items-center justify-center gap-2.5"
               >
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShoppingCart className="w-5 h-5" />}
                 {submitting ? "جاري التأكيد..." : "تأكيد الطلب والدفع عند الاستلام"}

@@ -12,7 +12,7 @@ const createManualOrderSchema = z.object({
   phone: z.string().regex(/^\+?[0-9\s\-]{8,15}$/, "Invalid phone number"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   city: z.string().min(1, "City is required").max(100),
-  address: z.string().min(5, "Address is required").max(500),
+  address: z.string().min(1, "Address is required").max(500),
   country: z.string().max(100).optional().default("Morocco"),
   productType: z.string().min(1, "Product type is required").max(255),
   quantity: z.number().int().min(1).max(999).default(1),
@@ -23,6 +23,8 @@ const createManualOrderSchema = z.object({
   adminNotes: z.string().max(2000).optional(),
   sourcePage: z.string().max(255).optional(),
   isLead: z.boolean().optional().default(false),
+  // ✅ حد أقصى ~2MB (base64) — كافٍ جداً لتسجيل صوتي بحد أقصى دقيقة واحدة بصيغة webm مضغوطة
+  voiceNoteBase64: z.string().max(2_800_000).optional(),
 });
 
 // ==================== 🎯 الثوابت ====================
@@ -166,6 +168,7 @@ export async function POST(request: NextRequest) {
         adminNotes: data.adminNotes || null,
         sourcePage: data.sourcePage || "Public",
         isLead: data.isLead,
+        voiceNoteBase64: data.voiceNoteBase64 || null,
       },
     });
 
