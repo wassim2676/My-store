@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronUp, Phone, Mail, MapPin, Package, 
   Download, Search, AlertCircle, RefreshCw, Loader2, Filter, X,
   Calendar, CheckCircle, Clock, AlertTriangle, User, CreditCard,
-  Edit, Trash2, ArrowLeft, Layers, DollarSign, TrendingUp, Mic
+  Edit, Trash2, ArrowLeft, Layers, DollarSign, TrendingUp, Mic, Copy, Check
 } from "lucide-react";
 
 // ==================== 📦 تعريف الأنواع ====================
@@ -322,6 +322,7 @@ export default function ManualOrdersPage() {
   });
 
   const [loadingVoiceId, setLoadingVoiceId] = useState<string | null>(null);
+  const [copiedVoiceId, setCopiedVoiceId] = useState<string | null>(null);
 
   const toggleExpand = async (id: string) => {
     setExpandedId((prevId) => (prevId === id ? null : id));
@@ -951,7 +952,29 @@ export default function ManualOrdersPage() {
                                   <Loader2 className="w-4 h-4 animate-spin" /> جارٍ تحميل التسجيل...
                                 </div>
                               ) : order.voiceNoteBase64 ? (
-                                <audio controls src={order.voiceNoteBase64} className="w-full h-10" />
+                                <div className="space-y-2.5">
+                                  <audio controls src={order.voiceNoteBase64} className="w-full h-10" />
+                                  {/* ✅ حل احتياطي مضمون 100% — انسخ الرابط والصقه في تبويب جديد ليعمل دائماً */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(order.voiceNoteBase64 || "");
+                                      setCopiedVoiceId(order.id);
+                                      setTimeout(() => setCopiedVoiceId(null), 2000);
+                                    }}
+                                    className="flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                                  >
+                                    {copiedVoiceId === order.id ? (
+                                      <>
+                                        <Check className="w-3.5 h-3.5 text-emerald-500" /> تم نسخ الرابط — الصقه في تبويب جديد
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5" /> نسخ رابط التسجيل (بديل مضمون)
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
                               ) : (
                                 <p className="text-sm text-gray-400 italic">تعذّر تحميل التسجيل، أغلق البطاقة وأعد فتحها</p>
                               )}

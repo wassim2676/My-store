@@ -979,7 +979,7 @@ function VoiceOrderRecorder({
   return (
     <div>
       {voiceBlob ? (
-        <div className="bg-[#E7F3FF] border border-[#1877F2]/20 rounded-xl p-4 flex items-center gap-3">
+        <div className="bg-[#E7F3FF] border border-[#1877F2]/20 rounded-xl p-4 flex items-end gap-3">
           <div className="w-10 h-10 rounded-full bg-[#42B72A] text-white flex items-center justify-center flex-shrink-0">
             <Check className="w-5 h-5" />
           </div>
@@ -1481,7 +1481,7 @@ export default function EroviaProductPage() {
 
       const orderData = {
         customerName: formData.fullName.trim() || "طلب صوتي (بدون اسم مكتوب)",
-        phone: formData.phone.trim() || "غير مكتوب — راجع التسجيل الصوتي",
+        phone: formData.phone.trim() || "0600000000",
         email: "",
         country: "المغرب",
         city: formData.city.trim() || "غير محدد — راجع التسجيل الصوتي",
@@ -1491,7 +1491,9 @@ export default function EroviaProductPage() {
         unitPrice: pkg.price,
         paymentMethod: "COD",
         sourcePage: "/product/erovia",
-        adminNotes: "🎙️ طلب صوتي — تفاصيل العميل الكاملة مذكورة في التسجيل الصوتي المرفق، لا تعتمد على الحقول النصية فقط.",
+        adminNotes: `🎙️ طلب صوتي — تفاصيل العميل الكاملة مذكورة في التسجيل الصوتي المرفق، لا تعتمد على الحقول النصية فقط.${
+          !formData.phone.trim() ? "\n⚠️ رقم الهاتف الظاهر (0600000000) رقم افتراضي فقط — استمع للتسجيل للحصول على الرقم الحقيقي." : ""
+        }`,
         fbEventId,
         fbp: fbp || undefined,
         fbc: fbc || undefined,
@@ -1658,8 +1660,8 @@ export default function EroviaProductPage() {
       <TopHeader onScrollTo={scrollTo} />
 
       <main id="home" className="w-full max-w-7xl mx-auto px-0 sm:px-4 lg:px-0 py-3 sm:py-4">
-        {/* ✅ في الهاتف فقط: شارتا الزوار والعرض المحدود مدمجتان جنباً لجنب بأعلى الصفحة */}
-        <div className="lg:hidden mb-2">
+        {/* ✅ في الهاتف فقط: شارتا الزوار والعرض المحدود، داخل سيكشن ببطاقة بيضاء موحّدة كباقي الصفحة */}
+        <div className="lg:hidden mb-2 bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-3">
           <MobileTopBadges />
         </div>
 

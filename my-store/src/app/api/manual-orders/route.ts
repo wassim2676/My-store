@@ -75,15 +75,33 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [orders, total] = await Promise.all([
+    const [ordersRaw, total] = await Promise.all([
       prisma.manualOrder.findMany({
         where,
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
+        select: {
+          id: true, orderNumber: true, customerName: true, phone: true, email: true,
+          country: true, city: true, address: true, productType: true, quantity: true,
+          unitPrice: true, totalPrice: true, paymentMethod: true, paymentStatus: true,
+          status: true, callStatus: true, customerNote: true, adminNotes: true,
+          sourcePage: true, createdAt: true, updatedAt: true, calledAt: true,
+          cancelledAt: true, isLead: true,
+          // ✅ لا نجلب المحتوى الفعلي الثقيل هنا (voiceNoteBase64) — فقط نتحقق من وجوده أدناه بجلب منفصل خفيف
+        },
       }),
       prisma.manualOrder.count({ where }),
     ]);
+
+    // ✅ نجلب فقط "هل يوجد تسجيل صوتي؟" بشكل منفصل وخفيف (بدون محتواه) لتفادي ثقل الحمولة
+    const orderIds = ordersRaw.map((o) => o.id);
+    const voiceFlags = await prisma.manualOrder.findMany({
+      where: { id: { in: orderIds }, voiceNoteBase64: { not: null } },
+      select: { id: true },
+    });
+    const hasVoiceSet = new Set(voiceFlags.map((v) => v.id));
+    const orders = ordersRaw.map((o) => ({ ...o, hasVoiceNote: hasVoiceSet.has(o.id) }));
 
     const headers = new Headers();
     headers.set("Cache-Control", `public, s-maxage=${MANUAL_ORDERS_CACHE_DURATION}, stale-while-revalidate`);
