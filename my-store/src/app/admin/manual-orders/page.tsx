@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronUp, Phone, Mail, MapPin, Package, 
   Download, Search, AlertCircle, RefreshCw, Loader2, Filter, X,
   Calendar, CheckCircle, Clock, AlertTriangle, User, CreditCard,
-  Edit, Trash2, ArrowLeft, Layers, DollarSign, TrendingUp
+  Edit, Trash2, ArrowLeft, Layers, DollarSign, TrendingUp, Mic
 } from "lucide-react";
 
 // ==================== 📦 تعريف الأنواع ====================
@@ -43,6 +43,8 @@ interface ManualOrder {
   calledAt?: string | null;
   cancelledAt?: string | null;
   isLead: boolean;
+  hasVoiceNote?: boolean;
+  voiceNoteBase64?: string | null;
 }
 
 interface Pagination {
@@ -319,7 +321,29 @@ export default function ManualOrdersPage() {
     dateFrom: "", dateTo: "", city: "All", country: "All", productType: "All", minTotal: "", maxTotal: ""
   });
 
-  const toggleExpand = (id: string) => setExpandedId(prevId => (prevId === id ? null : id));
+  const [loadingVoiceId, setLoadingVoiceId] = useState<string | null>(null);
+
+  const toggleExpand = async (id: string) => {
+    setExpandedId((prevId) => (prevId === id ? null : id));
+    // ✅ جلب الصوت الفعلي بشكل كسول (Lazy) — فقط عند فتح طلب يحتوي تسجيلاً ولم نجلبه من قبل
+    const order = orders.find((o) => o.id === id);
+    if (order && order.hasVoiceNote && order.voiceNoteBase64 === undefined) {
+      setLoadingVoiceId(id);
+      try {
+        const res = await fetch(`/api/manual-orders/${id}`);
+        const data = await res.json();
+        if (data.success) {
+          setOrders((prev) =>
+            prev.map((o) => (o.id === id ? { ...o, voiceNoteBase64: data.data.voiceNoteBase64 || null } : o))
+          );
+        }
+      } catch {
+        // فشل صامت — الزر سيبقى بدون مشغّل صوت، يمكن للأدمن إعادة المحاولة بفتح/طي البطاقة
+      } finally {
+        setLoadingVoiceId(null);
+      }
+    }
+  };
 
   const formatCurrency = useCallback((amount: number | string | null | undefined) => {
     if (amount == null) return "0 MAD";
@@ -853,6 +877,11 @@ export default function ManualOrdersPage() {
                           <StatusBadge status={order.callStatus} type="call" />
                           <StatusBadge status={order.status} type="order" />
                           <StatusBadge status={order.paymentStatus} type="payment" />
+                          {order.hasVoiceNote && (
+                            <span className="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
+                              <Mic className="w-3 h-3" /> صوتي
+                            </span>
+                          )}
                         </div>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
                           <User className="w-3 h-3" />
@@ -910,6 +939,24 @@ export default function ManualOrdersPage() {
                               <span className="break-words">{order.address}, {order.city}, {order.country}</span>
                             </div>
                           </div>
+
+                          {/* ✅ الطلب الصوتي — يظهر فقط إن وُجد */}
+                          {order.hasVoiceNote && (
+                            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                              <h5 className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <Mic className="w-4 h-4 text-emerald-500" /> طلب صوتي مرفق
+                              </h5>
+                              {loadingVoiceId === order.id ? (
+                                <div className="flex items-center gap-2 text-sm text-gray-400">
+                                  <Loader2 className="w-4 h-4 animate-spin" /> جارٍ تحميل التسجيل...
+                                </div>
+                              ) : order.voiceNoteBase64 ? (
+                                <audio controls src={order.voiceNoteBase64} className="w-full h-10" />
+                              ) : (
+                                <p className="text-sm text-gray-400 italic">تعذّر تحميل التسجيل، أغلق البطاقة وأعد فتحها</p>
+                              )}
+                            </div>
+                          )}
                           
                           {/* Product Details */}
                           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">

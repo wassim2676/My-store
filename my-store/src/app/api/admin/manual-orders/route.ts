@@ -12,7 +12,7 @@ const createManualOrderSchema = z.object({
   phone: z.string().regex(/^\+?[0-9\s\-]{8,15}$/, "Invalid phone number"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   city: z.string().min(1, "City is required").max(100),
-  address: z.string().min(5, "Address is required").max(500),
+  address: z.string().min(1, "Address is required").max(500),
   country: z.string().max(100).optional().default("Morocco"),
   productType: z.string().min(1, "Product type is required").max(255),
   quantity: z.number().int().min(1).max(999).default(1),
@@ -22,6 +22,9 @@ const createManualOrderSchema = z.object({
   customerNote: z.string().max(1000).optional(),
   adminNotes: z.string().max(2000).optional(),
   sourcePage: z.string().max(255).optional(),
+  isLead: z.boolean().optional().default(false),
+  // ✅ حد أقصى ~2MB (base64) — كافٍ جداً لتسجيل صوتي بحد أقصى دقيقة واحدة بصيغة webm مضغوطة
+  voiceNoteBase64: z.string().max(2_800_000).optional(),
 });
 
 // ==================== 🎯 الثوابت ====================
@@ -72,15 +75,33 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [orders, total] = await Promise.all([
+    const [ordersRaw, total] = await Promise.all([
       prisma.manualOrder.findMany({
         where,
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
+        select: {
+          id: true, orderNumber: true, customerName: true, phone: true, email: true,
+          country: true, city: true, address: true, productType: true, quantity: true,
+          unitPrice: true, totalPrice: true, paymentMethod: true, paymentStatus: true,
+          status: true, callStatus: true, customerNote: true, adminNotes: true,
+          sourcePage: true, createdAt: true, updatedAt: true, calledAt: true,
+          cancelledAt: true, isLead: true,
+          // ✅ لا نجلب المحتوى الفعلي الثقيل هنا (voiceNoteBase64) — فقط نتحقق من وجوده أدناه بجلب منفصل خفيف
+        },
       }),
       prisma.manualOrder.count({ where }),
     ]);
+
+    // ✅ نجلب فقط "هل يوجد تسجيل صوتي؟" بشكل منفصل وخفيف (بدون محتواه) لتفادي ثقل الحمولة
+    const orderIds = ordersRaw.map((o) => o.id);
+    const voiceFlags = await prisma.manualOrder.findMany({
+      where: { id: { in: orderIds }, voiceNoteBase64: { not: null } },
+      select: { id: true },
+    });
+    const hasVoiceSet = new Set(voiceFlags.map((v) => v.id));
+    const orders = ordersRaw.map((o) => ({ ...o, hasVoiceNote: hasVoiceSet.has(o.id) }));
 
     const headers = new Headers();
     headers.set("Cache-Control", `public, s-maxage=${MANUAL_ORDERS_CACHE_DURATION}, stale-while-revalidate`);
@@ -114,13 +135,13 @@ export async function GET(request: NextRequest) {
 }
 
 // ==================== 🟢 POST: إنشاء طلب يدوي جديد ====================
+// ⚠️ هذا المسار عام بالكامل عمداً (بدون أي تحقق من تسجيل الدخول أو الصلاحيات) —
+// يُستدعى مباشرة من صفحات الهبوط العامة (erovia) من قِبل أي زائر مجهول تماماً،
+// سواء كان لديه حساب أم لا، مسجّلاً دخوله أم لا، أدمن أم عميلاً عادياً. لا تُضِف
+// أي فحص auth()/session هنا مطلقاً مهما كان السبب — الحماية الوحيدة المقصودة
+// هي التحقق من صحة البيانات المُدخَلة (Zod) أدناه، وليس هوية المُرسِل.
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session || (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN")) {
-      return NextResponse.json({ error: "Unauthorized. Admin access required." }, { status: 401 });
-    }
-
     let body: unknown;
     try {
       body = await request.json();
@@ -163,11 +184,13 @@ export async function POST(request: NextRequest) {
         callStatus: data.callStatus,
         customerNote: data.customerNote || null,
         adminNotes: data.adminNotes || null,
-        sourcePage: data.sourcePage || "Admin",
+        sourcePage: data.sourcePage || "Public",
+        isLead: data.isLead,
+        voiceNoteBase64: data.voiceNoteBase64 || null,
       },
     });
 
-    console.log(`[AUDIT] User ${session.user.id} created manual order: ${newOrder.id}`);
+    console.log(`[AUDIT] Public order created: ${newOrder.id} (source: ${data.sourcePage || "unknown"})`);
 
     return NextResponse.json(
       { success: true, message: "Manual order created successfully", data: newOrder },

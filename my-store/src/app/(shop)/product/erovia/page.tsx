@@ -900,10 +900,14 @@ function VoiceOrderRecorder({
   voiceBlob,
   onRecorded,
   onClear,
+  onSubmit,
+  submitting,
 }: {
   voiceBlob: Blob | null;
   onRecorded: (blob: Blob, url: string) => void;
   onClear: () => void;
+  onSubmit: () => void;
+  submitting: boolean;
 }) {
   const [isRecording, setIsRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
@@ -972,56 +976,71 @@ function VoiceOrderRecorder({
   const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
   const ss = String(seconds % 60).padStart(2, "0");
 
-  if (voiceBlob) {
-    return (
-      <div className="bg-[#E7F3FF] border border-[#1877F2]/20 rounded-xl p-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center flex-shrink-0">
-          <Check className="w-5 h-5" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-[#050505] mb-1.5">تم تسجيل طلبك الصوتي ✅</p>
-          <audio controls src={URL.createObjectURL(voiceBlob)} className="w-full h-9" />
-        </div>
-        <button
-          type="button"
-          onClick={onClear}
-          className="w-9 h-9 rounded-lg bg-white hover:bg-gray-100 text-[#65676B] flex items-center justify-center flex-shrink-0 cursor-pointer"
-          aria-label="حذف التسجيل وإعادة المحاولة"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-[#F0F2F5] rounded-xl p-4">
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={isRecording ? stopRecording : startRecording}
-          className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors ${
-            isRecording ? "bg-[#FE2C55] animate-pulse" : "bg-[#1877F2] hover:bg-[#166FE5]"
-          }`}
-          aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"}
-        >
-          {isRecording ? <div className="w-3.5 h-3.5 bg-white rounded-sm" /> : <Mic className="w-5 h-5 text-white" />}
-        </button>
-        <div className="flex-1 min-w-0">
-          {isRecording ? (
-            <>
-              <p className="text-sm font-semibold text-[#FE2C55] tabular-nums" dir="ltr">{mm}:{ss} / 01:00</p>
-              <p className="text-xs text-[#65676B] mt-0.5">جارٍ التسجيل... اضغط للإيقاف</p>
-            </>
-          ) : (
-            <>
-              <p className="text-sm font-semibold text-[#050505]">اضغط لتسجيل طلبك صوتياً</p>
-              <p className="text-xs text-[#65676B] mt-0.5">حتى دقيقة واحدة — اذكر اسمك ومدينتك وعنوانك والباقة المطلوبة</p>
-            </>
-          )}
+    <div>
+      {voiceBlob ? (
+        <div className="bg-[#E7F3FF] border border-[#1877F2]/20 rounded-xl p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#42B72A] text-white flex items-center justify-center flex-shrink-0">
+            <Check className="w-5 h-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-[#050505] mb-1.5">تم تسجيل طلبك الصوتي</p>
+            <audio controls src={URL.createObjectURL(voiceBlob)} className="w-full h-9" />
+          </div>
+          <button
+            type="button"
+            onClick={onClear}
+            className="w-9 h-9 rounded-lg bg-white hover:bg-gray-100 text-[#65676B] flex items-center justify-center flex-shrink-0 cursor-pointer"
+            aria-label="حذف التسجيل وإعادة المحاولة"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
-      </div>
-      {error && <p className="text-[#E41E3F] text-xs font-semibold mt-2.5">{error}</p>}
+      ) : (
+        <div className="bg-[#F0F2F5] rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={isRecording ? stopRecording : startRecording}
+              className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors ${
+                isRecording ? "bg-[#FE2C55] animate-pulse" : "bg-[#1877F2] hover:bg-[#166FE5]"
+              }`}
+              aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"}
+            >
+              {isRecording ? <div className="w-3.5 h-3.5 bg-white rounded-sm" /> : <Mic className="w-5 h-5 text-white" />}
+            </button>
+            <div className="flex-1 min-w-0">
+              {isRecording ? (
+                <>
+                  <p className="text-sm font-semibold text-[#FE2C55] tabular-nums" dir="ltr">{mm}:{ss} / 01:00</p>
+                  <p className="text-xs text-[#65676B] mt-0.5">جارٍ التسجيل... اضغط للإيقاف</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-semibold text-[#050505]">اضغط لتسجيل طلبك صوتياً</p>
+                  <p className="text-xs text-[#65676B] mt-0.5">حتى دقيقة واحدة — اذكر اسمك ومدينتك وعنوانك والباقة المطلوبة</p>
+                </>
+              )}
+            </div>
+          </div>
+          {error && <p className="text-[#E41E3F] text-xs font-semibold mt-2.5">{error}</p>}
+        </div>
+      )}
+
+      {/* ✅ زر الإرسال — رمادي ومُعطَّل قبل وجود تسجيل، يصبح أزرق وفعّالاً بعده */}
+      <button
+        type="button"
+        onClick={onSubmit}
+        disabled={!voiceBlob || submitting}
+        className={`w-full mt-3 py-3 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
+          voiceBlob
+            ? "bg-[#1877F2] hover:bg-[#166FE5] text-white cursor-pointer disabled:opacity-60"
+            : "bg-[#E4E6EB] text-[#8A8D91] cursor-not-allowed"
+        }`}
+      >
+        {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+        {submitting ? "جارٍ الإرسال..." : "إرسال الطلب الصوتي"}
+      </button>
     </div>
   );
 }
@@ -1050,6 +1069,7 @@ export default function EroviaProductPage() {
   });
   // ✅ حالة التسجيل الصوتي — Blob في الذاكرة فقط حتى لحظة الإرسال (لا نرفعها في كل مرة يتغيّر فيها شيء)
   const [voiceBlob, setVoiceBlob] = useState<Blob | null>(null);
+  const [submittingVoice, setSubmittingVoice] = useState(false);
   const [voiceUrl, setVoiceUrl] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [offerClaims, setOfferClaims] = useState(2500);
@@ -1443,6 +1463,77 @@ export default function EroviaProductPage() {
     }
   };
 
+  // ✅ إرسال الطلب الصوتي مباشرة — يقبل الحقول الفارغة تماماً، ويحوّل لصفحة الشكر كالمعتاد
+  const handleSubmitVoiceOrder = async () => {
+    if (!voiceBlob) return;
+    setSubmittingVoice(true);
+    try {
+      const voiceNoteBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(voiceBlob);
+      });
+
+      const fbEventId = generateEventId();
+      const { fbp, fbc } = getFbBrowserIds();
+      const pkg = selectedPackage || packages[0];
+
+      const orderData = {
+        customerName: formData.fullName.trim() || "طلب صوتي (بدون اسم مكتوب)",
+        phone: formData.phone.trim() || "غير مكتوب — راجع التسجيل الصوتي",
+        email: "",
+        country: "المغرب",
+        city: formData.city.trim() || "غير محدد — راجع التسجيل الصوتي",
+        address: formData.address.trim() || "غير محدد — راجع التسجيل الصوتي",
+        productType: pkg.name,
+        quantity: pkg.boxes,
+        unitPrice: pkg.price,
+        paymentMethod: "COD",
+        sourcePage: "/product/erovia",
+        adminNotes: "🎙️ طلب صوتي — تفاصيل العميل الكاملة مذكورة في التسجيل الصوتي المرفق، لا تعتمد على الحقول النصية فقط.",
+        fbEventId,
+        fbp: fbp || undefined,
+        fbc: fbc || undefined,
+        contentCategory: "erovia",
+        voiceNoteBase64,
+      };
+
+      const response = await fetch("/api/manual-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        fbTrack("Purchase", { content_name: pkg.name, content_category: "erovia", currency: "MAD", value: pkg.price }, fbEventId);
+        window.localStorage.setItem(`ordered_${PAGE_SLUG}`, "true");
+        setHasOrdered(true);
+        window.sessionStorage.setItem(
+          "erovia_last_order",
+          JSON.stringify({
+            fullName: formData.fullName.trim() || "طلب صوتي",
+            phone: formData.phone.trim() || "—",
+            city: formData.city.trim() || "—",
+            address: "راجع التسجيل الصوتي المرفق",
+            packageName: pkg.name,
+            total: pkg.price,
+          })
+        );
+        setVoiceBlob(null);
+        setVoiceUrl(null);
+        router.push("/product/erovia/thankyou");
+      } else {
+        setToast({ message: result.error || "تعذّر إرسال الطلب الصوتي، حاول مجدداً", type: "error" });
+      }
+    } catch {
+      setToast({ message: "خطأ في الاتصال بالخادم، يرجى تكرار المحاولة", type: "error" });
+    } finally {
+      setSubmittingVoice(false);
+    }
+  };
+
   const whyUs = [
     { icon: Headphones, title: "دعم العملاء", desc: "مساعدة قبل وبعد إتمام الطلب، على مدار الساعة." },
     { icon: Truck, title: "توصيل سريع", desc: "متابعة الطلب خطوة بخطوة حتى التسليم." },
@@ -1642,12 +1733,21 @@ export default function EroviaProductPage() {
                   عرض محدود
                 </span>
               </div>
-              <button
-                onClick={() => choosePackageAndScroll(packages[0].id)}
-                className="w-full mt-5 py-3.5 bg-[#1877F2] hover:bg-[#166FE5] text-white font-semibold text-base rounded-xl transition-colors cursor-pointer"
-              >
-                اطلب الآن
-              </button>
+              <div className="flex gap-2.5 mt-5">
+                <button
+                  onClick={() => choosePackageAndScroll(packages[0].id)}
+                  className="flex-1 py-3.5 bg-[#1877F2] hover:bg-[#166FE5] text-white font-semibold text-base rounded-xl transition-colors cursor-pointer"
+                >
+                  اطلب الآن
+                </button>
+                <button
+                  onClick={() => scrollTo("voice-order")}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-[#F0F2F5] hover:bg-[#E4E6EB] text-[#050505] font-semibold text-base rounded-xl transition-colors cursor-pointer"
+                >
+                  <Mic className="w-5 h-5" />
+                  اطلب صوتياً
+                </button>
+              </div>
 
               {/* صندوق تقييم العملاء — أولاً، مباشرة تحت زر الطلب */}
               <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#E4E6EB]">
@@ -1864,7 +1964,7 @@ export default function EroviaProductPage() {
             </div>
 
             {/* ✅ الطلب الصوتي — بديل عن "معلومات مهمة" السابقة */}
-            <div className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-5 lg:min-h-[250px] flex-1 flex flex-col">
+            <div id="voice-order" className="bg-white rounded-none sm:rounded-xl border-y sm:border border-[#E4E6EB] shadow-none sm:shadow-sm p-5 lg:min-h-[250px] flex-1 flex flex-col scroll-mt-24">
               <h2 className="font-bold text-xl sm:text-2xl leading-tight text-[#050505] mb-1.5">اطلب صوتياً 🎙️</h2>
               <p className="text-sm text-[#65676B] font-normal mb-4">
                 يمكنك إنشاء طلبك صوتياً هنا، أو ملء الخانة في الأسفل.
@@ -1879,6 +1979,8 @@ export default function EroviaProductPage() {
                   setVoiceBlob(null);
                   setVoiceUrl(null);
                 }}
+                onSubmit={handleSubmitVoiceOrder}
+                submitting={submittingVoice}
               />
             </div>
 
