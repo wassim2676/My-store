@@ -785,7 +785,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 function FloatingWhatsAppButton() {
   // ⚠️ ضع رقم واتساب الحقيقي هنا بصيغة دولية بدون + أو أصفار (مثال مغربي: 2126XXXXXXXX)
-  const WHATSAPP_NUMBER = "212XXXXXXXXX";
+  const WHATSAPP_NUMBER = "212621819548";
   return (
     <a
       href={`https://wa.me/${WHATSAPP_NUMBER}`}
@@ -1717,7 +1717,7 @@ export default function EroviaProductPage() {
 
             {/* نص المنشور */}
             <p className="px-5 pb-4 text-[15px] text-[#050505] leading-relaxed">
-              <span className="font-semibold">إيروفيا</span> — تركيبة مختارة للاستخدام اليومي. اكتشف المنتج والباقات المتاحة واختر الأنسب لك.
+              <span className="font-semibold">إيروفيا</span> — وداعا للضعف الجنسي و ضعف الانتصاب و المشاكل الزوجية.  بفضل منتجنا الحل النهائي بين يديك اليوم. تركيبة مختارة للاستخدام اليومي. اكتشف المنتج والباقات المتاحة واختر الأنسب لك.
             </p>
 
             {/* المعرض */}
