@@ -548,3 +548,87 @@ model PageComment {
   @@index([parentId])
   @@index([createdAt])
 }
+
+// ==================== 🔗 نظام الأفلييت (Affiliate Marketplace) ====================
+// منتجات لا تُباع من المتجر مباشرة، بل تُحوّل الزائر لرابط أفلييت خارجي
+// (Walmart, Target, Amazon, ...) — منفصل تماماً عن نظام Product/Vendor الحالي
+// لتجنب أي تأثير على المتجر والطلبات اليدوية الفعّالة حالياً.
+
+enum AffiliateProductStatus {
+  DRAFT       // مسودة، غير ظاهرة للزوار
+  PUBLISHED   // منشورة وظاهرة للجميع
+  ARCHIVED    // مؤرشفة (مخفية لكن غير محذوفة)
+}
+
+// 🏷️ العلامة التجارية (Walmart, Target, Amazon, ...) — يضيفها الأدمن بحرية
+// الشعار يُخزَّن كـ SVG نصي خام يضيفه الأدمن نفسه (لا نولّد نحن أي شعار تجاري)
+model Brand {
+  id          String   @id @default(cuid())
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(120)
+
+  // شعار SVG خام (يلصقه الأدمن)، أو رابط لملف SVG/صورة في /public — أحدهما كافٍ
+  logoSvg     String?  @db.Text
+  logoUrl     String?  @db.VarChar(500)
+
+  // لون العلامة التجارية (يُستعمل في زر "اشتري من X" وشارة الشعار)
+  accentColor String   @default("#1D4ED8") @db.VarChar(20)
+
+  // نص زر الشراء المخصص، مثال: "الشراء من Walmart" — إن تُرك فارغاً نولّده تلقائياً
+  buyLabel    String?  @db.VarChar(100)
+
+  isActive    Boolean  @default(true)
+
+  products    AffiliateProduct[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+// 🛍️ منتج أفلييت — يعرضه الموقع مع مراجعة مختصرة وزر تحويل لرابط خارجي
+model AffiliateProduct {
+  id            String                  @id @default(cuid())
+  title         String                  @db.VarChar(255)
+  slug          String                  @unique @db.VarChar(255)
+
+  // مراجعة مختصرة تظهر في صفحة "تصفح المنتج"
+  shortReview   String                  @db.VarChar(600)
+  description   String?                 @db.Text
+
+  images        String[]
+  price         Decimal?                @db.Decimal(10, 2)
+  compareAt     Decimal?                @db.Decimal(10, 2)
+  currency      String                  @default("MAD") @db.VarChar(10)
+
+  category      String                  @db.VarChar(100)
+  tags          String[]
+
+  // 🔗 رابط الأفلييت الخارجي (Walmart/Target/Amazon/...) — يضبطه الأدمن
+  affiliateUrl  String                  @db.Text
+
+  rating        Float                   @default(0)
+  reviewCount   Int                     @default(0)
+
+  isFeatured    Boolean                 @default(false)
+  status        AffiliateProductStatus  @default(PUBLISHED)
+
+  // 📊 تتبع الأداء
+  views         Int                     @default(0)
+  clicks        Int                     @default(0)
+
+  brand         Brand                   @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  brandId       String
+
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([status])
+  @@index([brandId])
+  @@index([isFeatured])
+  @@index([createdAt])
+}

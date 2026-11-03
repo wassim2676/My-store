@@ -17,3 +17,12 @@ export async function getAuthSession() {
   if (!session?.user?.id) return null;
   return session;
 }
+
+// 🧩 استخراج كود خطأ Prisma (مثل P2002/P2025) بأمان دون استخدام "any"
+export function getPrismaErrorCode(error: unknown): string | undefined {
+  if (typeof error === "object" && error !== null && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+    return typeof code === "string" ? code : undefined;
+  }
+  return undefined;
+}

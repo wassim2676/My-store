@@ -28,32 +28,32 @@ export default function ProductSection({
   const isRtl = locale === "ar";
 
   return (
-    <section className={`py-12 lg:py-20 ${bgClassName}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8 lg:mb-10">
+    <section className={`py-8 lg:py-12 ${bgClassName}`}>
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="flex items-end justify-between gap-3 mb-5 lg:mb-6">
           <div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 mb-1.5 lg:mb-2">{title}</h2>
-            {subtitle && <p className="text-slate-500 text-sm sm:text-lg">{subtitle}</p>}
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">{title}</h2>
+            {subtitle && <p className="text-slate-500 text-xs sm:text-sm mt-1">{subtitle}</p>}
           </div>
           <Link
             href={viewAllHref}
-            className="text-orange-600 font-bold hover:text-orange-700 flex items-center gap-1 group text-sm sm:text-base w-fit"
+            className="text-orange-600 font-semibold hover:text-orange-700 flex items-center gap-1 group text-xs sm:text-sm w-fit flex-shrink-0"
           >
             {t("viewAll")}
             <span className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">
-              {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+              {isRtl ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
             </span>
           </Link>
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} />
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-slate-400 bg-white rounded-lg border border-dashed border-slate-200">
             <PackageSearch className="w-10 h-10" />
             <p className="text-sm font-medium">{t("emptyProducts")}</p>
           </div>

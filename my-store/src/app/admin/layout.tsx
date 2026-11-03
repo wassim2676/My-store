@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   LayoutDashboard, ShoppingCart, Users, Package,
-  Menu, X, LogOut, Bell, Store, Newspaper
+  Menu, X, LogOut, Bell, Store, Newspaper, Link2, Tags
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
@@ -22,6 +22,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/manual-orders", label: t("manualOrders"), icon: ShoppingCart },
     { href: "/admin/users", label: t("users"), icon: Users },
     { href: "/admin/products", label: t("products"), icon: Package },
+    { href: "/admin/affiliate-products", label: t("affiliateProducts"), icon: Link2 },
+    { href: "/admin/brands", label: t("brands"), icon: Tags },
     { href: "/admin/vendors", label: t("vendors"), icon: Store },
     { href: "/admin/blog", label: t("blog"), icon: Newspaper },
   ];

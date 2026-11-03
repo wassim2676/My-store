@@ -38,6 +38,9 @@ export default auth((req: AuthenticatedRequest) => {
     "/api/likes",
     "/api/comments",
     "/api/manual-orders",
+    // ⚠️ عام بالكامل بدون مصادقة — تتبع ضغطات زر "اشتري من" على صفحات منتجات الأفلييت.
+    // لا تضف فحص تسجيل دخول هنا أبداً (نفس مبدأ /api/manual-orders)، وإلا سيفشل التتبع للزوار غير المسجّلين.
+    "/api/affiliate-products",
     "/favicon.ico",
     "/robots.txt",
     "/sitemap.xml",

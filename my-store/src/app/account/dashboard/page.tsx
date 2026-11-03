@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { ShoppingBag, TrendingUp, Clock, Star, RefreshCw, AlertCircle } from "lucide-react";
+import { ShoppingBag, TrendingUp, Clock, Star, RefreshCw, AlertCircle, Shield } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { ordersAPI, wishlistAPI, type Order, type WishlistItem } from "@/lib/api";
@@ -16,6 +16,7 @@ const translations: Record<Language, any> = {
     guest: "ضيف",
     dashboardDesc: "إليك ملخص نشاطك الأخير في المتجر",
     browseProducts: "تصفح المنتجات",
+    adminPanel: "لوحة الأدمن",
     stats: { totalOrders: "إجمالي الطلبات", pending: "قيد التنفيذ", spent: "المبلغ المنفق", wishlist: "قائمة الأمنيات" },
     recentOrders: "آخر الطلبات",
     viewAll: "عرض الكل",
@@ -38,6 +39,7 @@ const translations: Record<Language, any> = {
     guest: "Invité",
     dashboardDesc: "Voici un résumé de votre activité récente",
     browseProducts: "Parcourir les produits",
+    adminPanel: "Panneau Admin",
     stats: { totalOrders: "Total commandes", pending: "En cours", spent: "Total dépensé", wishlist: "Favoris" },
     recentOrders: "Dernières commandes",
     viewAll: "Voir tout",
@@ -60,6 +62,7 @@ const translations: Record<Language, any> = {
     guest: "Guest",
     dashboardDesc: "Here's a summary of your recent activity",
     browseProducts: "Browse Products",
+    adminPanel: "Admin Panel",
     stats: { totalOrders: "Total Orders", pending: "Pending", spent: "Total Spent", wishlist: "Wishlist" },
     recentOrders: "Recent Orders",
     viewAll: "View All",
@@ -226,9 +229,20 @@ export default function DashboardPage() {
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">{t.dashboardDesc}</p>
         </div>
-        <Link href="/marketplace" className="px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg font-medium hover:from-sky-600 hover:to-blue-700 transition-all shadow-sm cursor-pointer inline-flex items-center justify-center">
-          {t.browseProducts}
-        </Link>
+        <div className="flex items-center gap-2 flex-wrap">
+          {(session?.user?.role === "ADMIN" || session?.user?.role === "SUPER_ADMIN") && (
+            <Link
+              href="/admin/dashboard"
+              className="px-4 py-2 bg-orange-500/10 border border-orange-500/30 text-orange-600 dark:text-orange-400 rounded-lg font-medium hover:bg-orange-500/20 transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+            >
+              <Shield className="w-4 h-4" />
+              {t.adminPanel}
+            </Link>
+          )}
+          <Link href="/marketplace" className="px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-lg font-medium hover:from-sky-600 hover:to-blue-700 transition-all shadow-sm cursor-pointer inline-flex items-center justify-center">
+            {t.browseProducts}
+          </Link>
+        </div>
       </div>
 
       {/* Error Alert */}

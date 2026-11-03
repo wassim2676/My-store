@@ -15,17 +15,15 @@ export default function TrustBadges() {
   ];
 
   return (
-    <section className="py-10 lg:py-14 bg-white border-y border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
+    <section className="bg-white border-y border-slate-200">
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y sm:divide-y-0 divide-slate-100 rtl:divide-x-reverse">
           {badges.map((badge, i) => (
-            <div key={i} className="flex flex-col items-center text-center gap-2.5">
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
-                <badge.icon className="w-6 h-6 lg:w-7 lg:h-7 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-slate-900">{badge.title}</p>
-                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5">{badge.desc}</p>
+            <div key={i} className="flex items-center gap-3 px-4 py-5 lg:py-6">
+              <badge.icon className="w-5 h-5 text-slate-700 flex-shrink-0" strokeWidth={1.75} />
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm font-semibold text-slate-900 truncate">{badge.title}</p>
+                <p className="text-[11px] sm:text-xs text-slate-500 truncate">{badge.desc}</p>
               </div>
             </div>
           ))}
