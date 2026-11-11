@@ -1,4 +1,4 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element -- الشعار قد يكون رابطاً خارجياً أو ملفاً في /public */
 import { Store } from "lucide-react";
 
 export interface BrandLogoData {
@@ -51,7 +51,7 @@ export default function BrandLogo({
         className={`relative inline-block shrink-0 ${className}`}
         style={{ width: size, height: size }}
       >
-        <Image src={brand.logoUrl} alt={brand.name} fill sizes={`${size}px`} className="object-contain" />
+        <img src={brand.logoUrl} alt={brand.name} className="h-full w-full object-contain" />
       </span>
     );
   }

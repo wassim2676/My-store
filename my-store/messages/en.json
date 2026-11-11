@@ -158,7 +158,7 @@
     "vendors": "Vendors",
     "blog": "Blog",
     "affiliateProducts": "Affiliate Products",
-    "brands": "Brands",
+    "brands": "Platforms (stores)",
     "signOut": "Sign Out",
     "addNew": "Add New",
     "edit": "Edit",
@@ -166,7 +166,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "close": "Close",
-    "search": "Search..."
+    "search": "Search...",
+    "marketers": "Marketers"
   },
   "footer": {
     "aboutTitle": "About",

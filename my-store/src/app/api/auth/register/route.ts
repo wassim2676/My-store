@@ -1,128 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { getPrismaErrorCode } from "@/lib/api-utils";
+import { slugSchema } from "@/lib/marketer";
 
-// دالة توليد slug آمن من اسم المتجر (يدعم الحروف العربية عبر fallback)
-function slugify(input: string): string {
-  const base = input
-    .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s-]/gu, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-  return base || `store-${Date.now()}`;
-}
-
+// ==================== 🧑‍💼 تسجيل مسوّق جديد + إنشاء صفحة الهبوط في نفس العملية ====================
 const registerSchema = z.object({
-  email: z.string().email("صيغة البريد الإلكتروني غير صحيحة"),
-  password: z.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
-  firstName: z.string().min(1, "الاسم الأول مطلوب").optional(),
-  lastName: z.string().min(1, "اسم العائلة مطلوب").optional(),
-  phone: z.string().optional(),
-  accountType: z.enum(["BUYER", "SELLER"]).default("BUYER"),
-  storeName: z.string().min(2, "اسم المتجر قصير جداً").optional(),
-}).refine(
-  (data) => data.accountType !== "SELLER" || !!data.storeName,
-  { message: "اسم المتجر مطلوب لحساب البائع", path: ["storeName"] }
-);
+  email: z.string().trim().toLowerCase().email("صيغة البريد الإلكتروني غير صحيحة"),
+  password: z.string().min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل").max(128),
+  firstName: z.string().trim().min(1, "الاسم الأول مطلوب").max(60),
+  lastName: z.string().trim().max(60).optional(),
+  pageTitle: z.string().trim().min(2, "اسم صفحة الهبوط قصير جداً").max(80),
+  slug: slugSchema,
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-
-    const validation = registerSchema.safeParse(body);
+    const validation = registerSchema.safeParse(await request.json().catch(() => ({})));
     if (!validation.success) {
-      return NextResponse.json(
-        { error: validation.error.issues[0].message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: validation.error.issues[0].message }, { status: 400 });
     }
 
-    const { email, password, firstName, lastName, phone, accountType, storeName } = validation.data;
+    const { email, password, firstName, lastName, pageTitle, slug } = validation.data;
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "هذا البريد الإلكتروني مسجل مسبقاً" },
-        { status: 409 }
-      );
-    }
+    const [existingUser, existingSlug] = await Promise.all([
+      prisma.user.findUnique({ where: { email }, select: { id: true } }),
+      prisma.landingPage.findUnique({ where: { slug }, select: { id: true } }),
+    ]);
+    if (existingUser) return NextResponse.json({ error: "هذا البريد الإلكتروني مسجل مسبقاً" }, { status: 409 });
+    if (existingSlug)
+      return NextResponse.json({ error: "اسم الرابط مستخدم، اختر اسماً آخر", field: "slug" }, { status: 409 });
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const passwordHash = await bcrypt.hash(password, 12);
 
-    // إنشاء المستخدم، وإن كان بائعاً: إنشاء متجره في نفس العملية (transaction)
-    const user = await prisma.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
-        data: {
-          email,
-          passwordHash: hashedPassword,
-          firstName: firstName || null,
-          lastName: lastName || null,
-          phone: phone || null,
-          role: accountType === "SELLER" ? "SELLER" : "USER",
-          isActive: true,
-        },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          phone: true,
-          role: true,
-          createdAt: true,
-        },
-      });
-
-      if (accountType === "SELLER" && storeName) {
-        let slug = slugify(storeName);
-
-        // ضمان تفرّد الـ slug
-        const existingSlug = await tx.vendor.findUnique({ where: { slug } });
-        if (existingSlug) {
-          slug = `${slug}-${newUser.id.slice(-6)}`;
-        }
-
-        await tx.vendor.create({
-          data: {
-            userId: newUser.id,
-            storeName,
-            slug,
-            contactEmail: email,
-            phone: phone || null,
-            status: "PENDING",
-          },
-        });
-      }
-
-      return newUser;
+    const user = await prisma.user.create({
+      data: {
+        email,
+        passwordHash,
+        firstName,
+        lastName: lastName || null,
+        role: "MARKETER",
+        isActive: true,
+        landingPage: { create: { slug, title: pageTitle } },
+      },
+      select: { id: true, email: true, landingPage: { select: { slug: true } } },
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        message:
-          accountType === "SELLER"
-            ? "تم إنشاء حساب البائع وسيتم مراجعة متجرك قريباً"
-            : "تم إنشاء حسابك بنجاح",
-        user,
-      },
-      { status: 201 }
-    );
-
+    return NextResponse.json({ success: true, message: "تم إنشاء حسابك وصفحتك بنجاح", user }, { status: 201 });
   } catch (error) {
-    console.error("[REGISTER_API_ERROR]", error);
-
-    if (error instanceof Error && error.message.includes("P2002")) {
-      return NextResponse.json(
-        { error: "هذا البريد الإلكتروني مسجل مسبقاً" },
-        { status: 409 }
-      );
+    if (getPrismaErrorCode(error) === "P2002") {
+      return NextResponse.json({ error: "البريد أو اسم الرابط مستخدم مسبقاً" }, { status: 409 });
     }
-
-    return NextResponse.json(
-      { error: "حدث خطأ غير متوقع أثناء إنشاء الحساب" },
-      { status: 500 }
-    );
+    console.error("[REGISTER_API_ERROR]", error);
+    return NextResponse.json({ error: "حدث خطأ غير متوقع أثناء إنشاء الحساب" }, { status: 500 });
   }
 }

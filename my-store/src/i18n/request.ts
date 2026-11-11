@@ -20,7 +20,10 @@ async function resolveLocale(): Promise<Locale> {
 export default getRequestConfig(async () => {
   const locale = await resolveLocale();
 
-  const messages = (await import(`../../messages/${locale}.json`)).default;
+  // رسائل الموقع الأساسية + رسائل منصة المسوّقين (ملف منفصل لسهولة الصيانة)
+  const base = (await import(`../../messages/${locale}.json`)).default;
+  const platform = (await import(`../../messages/platform/${locale}.json`)).default;
+  const messages = { ...base, ...platform };
 
   return {
     locale,

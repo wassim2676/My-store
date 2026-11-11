@@ -158,7 +158,7 @@
     "vendors": "Vendeurs",
     "blog": "Blog",
     "affiliateProducts": "Produits affiliés",
-    "brands": "Marques",
+    "brands": "Plateformes (magasins)",
     "signOut": "Déconnexion",
     "addNew": "Ajouter",
     "edit": "Modifier",
@@ -166,7 +166,8 @@
     "save": "Enregistrer",
     "cancel": "Annuler",
     "close": "Fermer",
-    "search": "Rechercher..."
+    "search": "Rechercher...",
+    "marketers": "Affiliés"
   },
   "footer": {
     "aboutTitle": "À propos",

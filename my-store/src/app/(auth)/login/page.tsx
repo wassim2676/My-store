@@ -11,8 +11,7 @@ import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 // يحدد وجهة التوجيه الافتراضية بعد الدخول حسب دور المستخدم
 function getDefaultRedirect(role?: string) {
   if (role === "ADMIN" || role === "SUPER_ADMIN") return "/admin/dashboard";
-  if (role === "SELLER") return "/vendor/dashboard";
-  return "/account/dashboard";
+  return "/dashboard";
 }
 
 export default function LoginPage() {

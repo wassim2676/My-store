@@ -14,6 +14,7 @@ datasource db {
 enum UserRole {
   USER
   SELLER
+  MARKETER
   ADMIN
   SUPER_ADMIN
 }
@@ -103,7 +104,10 @@ model User {
   wishlist      WishlistItem[]
   reviews       Review[]
   vendor        Vendor?
-  
+
+  // 🔗 صفحة الهبوط الخاصة بالمسوّق بالعمولة (واحدة لكل حساب)
+  landingPage   LandingPage?
+
   // NextAuth relations
   accounts      Account[]
   sessions      Session[]
@@ -580,12 +584,134 @@ model Brand {
   isActive    Boolean  @default(true)
 
   products    AffiliateProduct[]
+  offers      Offer[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([slug])
   @@index([isActive])
+}
+
+// ==================== 🚀 منصة المسوّقين بالعمولة ====================
+// كل مسوّق يملك صفحة هبوط واحدة على المسار /{slug} تعرض عروضه (Offer)
+// وكل عرض له صفحة مراجعة على /{slug}/{offerSlug} مع زر "اشترِ من {المتجر}".
+
+enum OfferStatus {
+  DRAFT       // مسودة — لا تظهر للزوار
+  PUBLISHED   // منشور
+  ARCHIVED    // مؤرشف (مخفي دون حذف)
+}
+
+model LandingPage {
+  id             String   @id @default(cuid())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String   @unique
+
+  slug           String   @unique @db.VarChar(40)
+  title          String   @db.VarChar(80)
+  tagline        String?  @db.VarChar(160)
+  bio            String?  @db.Text
+  avatarUrl      String?  @db.VarChar(1000)
+  coverUrl       String?  @db.VarChar(1000)
+
+  // 🎨 المظهر
+  language       String   @default("en") @db.VarChar(5)        // en | ar | fr — لغة واجهة الصفحة للزوار
+  theme          String   @default("midnight") @db.VarChar(20) // midnight | ivory | noir
+  accentColor    String   @default("#C8A24A") @db.VarChar(20)
+
+  // 🌐 روابط التواصل { instagram, tiktok, youtube, x, facebook, pinterest, website }
+  socialLinks    Json?
+
+  // ⚖️ إفصاح الأفلييت (مطلوب قانونياً عند Amazon/FTC)
+  showDisclosure Boolean  @default(true)
+  disclosure     String?  @db.Text
+
+  // 🔍 SEO
+  seoTitle       String?  @db.VarChar(70)
+  seoDescription String?  @db.VarChar(170)
+
+  isPublished    Boolean  @default(true)
+  views          Int      @default(0)
+
+  offers         Offer[]
+  dailyStats     LandingPageDailyStat[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model Offer {
+  id            String      @id @default(cuid())
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  landingPageId String
+
+  // 🏬 المتجر: علامة من قائمة المنصات (Amazon/Walmart/Target...) أو اسم متجر حر
+  brand         Brand?      @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId       String?
+  storeName     String?     @db.VarChar(80)
+
+  title         String      @db.VarChar(200)
+  slug          String      @db.VarChar(120)
+  subtitle      String?     @db.VarChar(200)
+
+  // ✍️ المحتوى
+  shortReview   String      @db.VarChar(700)
+  review        String?     @db.Text
+  pros          String[]
+  cons          String[]
+  highlights    String[]
+  specs         Json?       // [{ label, value }]
+  verdict       String?     @db.VarChar(400)
+
+  // 🖼️ الوسائط
+  images        String[]
+  videoUrl      String?     @db.VarChar(1000)
+
+  // 🔗 الأفلييت
+  affiliateUrl  String      @db.Text
+  buttonLabel   String?     @db.VarChar(60)
+  couponCode    String?     @db.VarChar(60)
+
+  // 💰 السعر (اختياري — الأسعار عند المتاجر تتغيّر باستمرار)
+  price         Decimal?    @db.Decimal(10, 2)
+  compareAt     Decimal?    @db.Decimal(10, 2)
+  currency      String      @default("USD") @db.VarChar(10)
+  dealEndsAt    DateTime?
+
+  // ⭐ تقييم المسوّق (0 – 5)
+  rating        Float?
+  category      String?     @db.VarChar(80)
+  badge         String?     @db.VarChar(40)
+
+  isFeatured    Boolean     @default(false)
+  status        OfferStatus @default(PUBLISHED)
+  position      Int         @default(0)
+
+  // 📊 تتبع
+  views         Int         @default(0)
+  clicks        Int         @default(0)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([landingPageId, slug])
+  @@index([landingPageId, status, position])
+  @@index([brandId])
+}
+
+// 📈 إحصائيات يومية مجمّعة لكل صفحة (زيارات + نقرات) — للرسم البياني في لوحة التحكم
+model LandingPageDailyStat {
+  id            String      @id @default(cuid())
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  landingPageId String
+  date          DateTime    @db.Date
+  views         Int         @default(0)
+  clicks        Int         @default(0)
+
+  @@unique([landingPageId, date])
 }
 
 // 🛍️ منتج أفلييت — يعرضه الموقع مع مراجعة مختصرة وزر تحويل لرابط خارجي

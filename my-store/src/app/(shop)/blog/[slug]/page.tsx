@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import MegaNavbar from "@/components/home/MegaNavbar";
-import MegaFooter from "@/components/home/MegaFooter";
+import MegaNavbar from "@/components/site/SiteNavbar";
+import MegaFooter from "@/components/site/SiteFooter";
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

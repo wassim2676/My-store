@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Newspaper } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import MegaNavbar from "@/components/home/MegaNavbar";
-import MegaFooter from "@/components/home/MegaFooter";
+import MegaNavbar from "@/components/site/SiteNavbar";
+import MegaFooter from "@/components/site/SiteFooter";
 
 export default async function BlogPage() {
   const posts = await prisma.post.findMany({

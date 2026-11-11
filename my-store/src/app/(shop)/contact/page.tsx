@@ -1,5 +1,5 @@
-import MegaNavbar from "@/components/home/MegaNavbar";
-import MegaFooter from "@/components/home/MegaFooter";
+import MegaNavbar from "@/components/site/SiteNavbar";
+import MegaFooter from "@/components/site/SiteFooter";
 
 export default function Page() {
   return (
