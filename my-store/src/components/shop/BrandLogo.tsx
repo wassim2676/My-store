@@ -1,5 +1,6 @@
-/* eslint-disable @next/next/no-img-element -- الشعار قد يكون رابطاً خارجياً أو ملفاً في /public */
 import { Store } from "lucide-react";
+import { toSlug } from "@/lib/landing";
+import BrandLogoImage from "./BrandLogoImage";
 
 export interface BrandLogoData {
   name: string;
@@ -20,7 +21,7 @@ function sanitizeSvg(raw: string): string {
 }
 
 // ==================== 🏷️ شعار العلامة التجارية ====================
-// الأولوية: SVG خام (يلصقه الأدمن) > رابط صورة/SVG > حرف أول داخل شارة ملوّنة
+// الأولوية: SVG خام (يلصقه الأدمن) > رابط صورة/SVG > ملف public/brands/{slug}.svg > حرف أول داخل شارة ملوّنة
 export default function BrandLogo({
   brand,
   size = 28,
@@ -45,19 +46,8 @@ export default function BrandLogo({
     );
   }
 
-  if (brand.logoUrl) {
-    return (
-      <span
-        className={`relative inline-block shrink-0 ${className}`}
-        style={{ width: size, height: size }}
-      >
-        <img src={brand.logoUrl} alt={brand.name} className="h-full w-full object-contain" />
-      </span>
-    );
-  }
-
   // 🔤 شارة احتياطية بحرف أول من اسم العلامة التجارية + أيقونة متجر عامة
-  return (
+  const initialBadge = (
     <span
       className={`inline-flex items-center justify-center rounded-lg font-black shrink-0 ${className}`}
       style={{ width: size, height: size, backgroundColor: `${accent}1A`, color: accent }}
@@ -69,6 +59,17 @@ export default function BrandLogo({
       ) : (
         <Store style={{ width: size * 0.55, height: size * 0.55 }} />
       )}
+    </span>
+  );
+
+  // رابط يحدّده الأدمن، وإلا ملف تلقائي من public/brands/{slug}.svg (مثل "Best Buy" → best-buy.svg)
+  const fileSlug = brand.name ? toSlug(brand.name) : "";
+  const src = brand.logoUrl || (fileSlug ? `/brands/${fileSlug}.svg` : null);
+  if (!src) return initialBadge;
+
+  return (
+    <span className={`relative inline-block shrink-0 ${className}`} style={{ width: size, height: size }}>
+      <BrandLogoImage key={src} src={src} alt={brand.name} fallback={initialBadge} />
     </span>
   );
 }
