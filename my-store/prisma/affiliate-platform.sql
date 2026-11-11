@@ -1,18 +1,21 @@
 -- ============================================================
 -- منصة المسوّقين بالعمولة — تحديث قاعدة البيانات (إضافات فقط، لا يحذف أي بيانات)
 -- الطريقة المفضّلة:  npx prisma db push
--- البديل اليدوي: Supabase Dashboard → SQL Editor → الصق هذا الملف → Run (مرة واحدة)
+-- البديل اليدوي: Supabase Dashboard → SQL Editor → الصق هذا الملف → Run (آمن لإعادة التشغيل أكثر من مرة)
 -- مولَّد من: prisma migrate diff
 -- ============================================================
 
 -- CreateEnum
-CREATE TYPE "OfferStatus" AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
+DO $$ BEGIN
+  CREATE TYPE "OfferStatus" AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- AlterEnum
-ALTER TYPE "UserRole" ADD VALUE 'MARKETER';
+ALTER TYPE "UserRole" ADD VALUE IF NOT EXISTS 'MARKETER';
 
 -- CreateTable
-CREATE TABLE "LandingPage" (
+CREATE TABLE IF NOT EXISTS "LandingPage" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "slug" VARCHAR(40) NOT NULL,
@@ -38,7 +41,7 @@ CREATE TABLE "LandingPage" (
 );
 
 -- CreateTable
-CREATE TABLE "Offer" (
+CREATE TABLE IF NOT EXISTS "Offer" (
     "id" TEXT NOT NULL,
     "landingPageId" TEXT NOT NULL,
     "brandId" TEXT,
@@ -77,7 +80,7 @@ CREATE TABLE "Offer" (
 );
 
 -- CreateTable
-CREATE TABLE "LandingPageDailyStat" (
+CREATE TABLE IF NOT EXISTS "LandingPageDailyStat" (
     "id" TEXT NOT NULL,
     "landingPageId" TEXT NOT NULL,
     "date" DATE NOT NULL,
@@ -88,37 +91,49 @@ CREATE TABLE "LandingPageDailyStat" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LandingPage_userId_key" ON "LandingPage"("userId");
+CREATE UNIQUE INDEX IF NOT EXISTS "LandingPage_userId_key" ON "LandingPage"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LandingPage_slug_key" ON "LandingPage"("slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "LandingPage_slug_key" ON "LandingPage"("slug");
 
 -- CreateIndex
-CREATE INDEX "LandingPage_slug_idx" ON "LandingPage"("slug");
+CREATE INDEX IF NOT EXISTS "LandingPage_slug_idx" ON "LandingPage"("slug");
 
 -- CreateIndex
-CREATE INDEX "Offer_landingPageId_status_position_idx" ON "Offer"("landingPageId", "status", "position");
+CREATE INDEX IF NOT EXISTS "Offer_landingPageId_status_position_idx" ON "Offer"("landingPageId", "status", "position");
 
 -- CreateIndex
-CREATE INDEX "Offer_brandId_idx" ON "Offer"("brandId");
+CREATE INDEX IF NOT EXISTS "Offer_brandId_idx" ON "Offer"("brandId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Offer_landingPageId_slug_key" ON "Offer"("landingPageId", "slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "Offer_landingPageId_slug_key" ON "Offer"("landingPageId", "slug");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LandingPageDailyStat_landingPageId_date_key" ON "LandingPageDailyStat"("landingPageId", "date");
+CREATE UNIQUE INDEX IF NOT EXISTS "LandingPageDailyStat_landingPageId_date_key" ON "LandingPageDailyStat"("landingPageId", "date");
 
 -- AddForeignKey
-ALTER TABLE "LandingPage" ADD CONSTRAINT "LandingPage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$ BEGIN
+  ALTER TABLE "LandingPage" ADD CONSTRAINT "LandingPage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- AddForeignKey
-ALTER TABLE "Offer" ADD CONSTRAINT "Offer_landingPageId_fkey" FOREIGN KEY ("landingPageId") REFERENCES "LandingPage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$ BEGIN
+  ALTER TABLE "Offer" ADD CONSTRAINT "Offer_landingPageId_fkey" FOREIGN KEY ("landingPageId") REFERENCES "LandingPage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- AddForeignKey
-ALTER TABLE "Offer" ADD CONSTRAINT "Offer_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+DO $$ BEGIN
+  ALTER TABLE "Offer" ADD CONSTRAINT "Offer_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- AddForeignKey
-ALTER TABLE "LandingPageDailyStat" ADD CONSTRAINT "LandingPageDailyStat_landingPageId_fkey" FOREIGN KEY ("landingPageId") REFERENCES "LandingPage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$ BEGIN
+  ALTER TABLE "LandingPageDailyStat" ADD CONSTRAINT "LandingPageDailyStat_landingPageId_fkey" FOREIGN KEY ("landingPageId") REFERENCES "LandingPage"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 
 -- ============================================================
