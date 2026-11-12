@@ -1,10 +1,47 @@
 {
   "platform": {
-    "nav": { "features": "Features", "how": "How it works", "blog": "Blog", "faq": "FAQ", "dashboard": "Dashboard", "login": "Log in", "start": "Get started" },
+    "nav": {
+      "features": "Features",
+      "how": "How it works",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "dashboard": "Dashboard",
+      "login": "Log in",
+      "start": "Get started",
+      "stores": "Stores",
+      "resources": "Resources",
+      "guide": "Affiliate guide",
+      "help": "Help center",
+      "blogDesc": "Tips and strategies for affiliate marketers",
+      "guideDesc": "Launch your first page step by step",
+      "helpDesc": "Answers about the dashboard and offers",
+      "faqDesc": "The questions marketers ask most",
+      "menu": "Menu"
+    },
     "footer": {
-      "about": "About", "help": "Help", "contact": "Contact", "terms": "Terms", "privacy": "Privacy",
+      "about": "About",
+      "help": "Help center",
+      "contact": "Contact",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
       "tagline": "Luxury landing pages for professional affiliate marketers. Showcase your Amazon, Walmart and Target picks in one link.",
-      "rights": "All rights reserved."
+      "rights": "All rights reserved.",
+      "product": "Product",
+      "resources": "Resources",
+      "company": "Company",
+      "legal": "Legal",
+      "features": "Features",
+      "how": "How it works",
+      "stores": "Supported stores",
+      "getStarted": "Create your page",
+      "blog": "Blog",
+      "guide": "Affiliate guide",
+      "faq": "FAQ",
+      "login": "Log in",
+      "cookies": "Cookie policy",
+      "disclosure": "Affiliate disclosure",
+      "acceptableUse": "Acceptable use",
+      "madeFor": "Made for affiliate marketers"
     },
     "hero": {
       "badge": "Built for professional affiliate marketers",
@@ -14,27 +51,96 @@
       "placeholder": "your-name",
       "note": "Free to start · Your commissions stay 100% yours"
     },
-    "mock": { "p1": "Noise-cancelling headphones", "p2": "Smart air fryer, 6 qt", "p3": "Linen throw blanket", "read": "Read review" },
-    "stores": { "title": "Promote products from" },
+    "mock": {
+      "p1": "Noise-cancelling headphones",
+      "p2": "Smart air fryer, 6 qt",
+      "p3": "Linen throw blanket",
+      "read": "Read review"
+    },
+    "stores": {
+      "title": "Promote products from",
+      "all": "See all supported stores"
+    },
     "features": {
       "title": "Everything a pro affiliate needs",
       "subtitle": "Spend your time choosing great products. We handle design, speed and tracking.",
-      "luxury": { "title": "Luxury showcase", "desc": "Premium cards, featured picks, search and filters — a page that looks like a curated boutique." },
-      "stores": { "title": "Store logos & buy buttons", "desc": "Each card shows the store logo, and each review ends with a \"Buy on Amazon\" button in the store's colors." },
-      "reviews": { "title": "Reviews that convert", "desc": "Short review, pros & cons, key features, specs, verdict and your score out of 5." },
-      "analytics": { "title": "Click analytics", "desc": "Daily views and clicks, click-through rate and your top-performing offers." },
-      "seo": { "title": "SEO & sharing", "desc": "Clean URLs, social previews and product review structured data for search engines." },
-      "disclosure": { "title": "Disclosure built in", "desc": "An editable affiliate disclosure on every page to keep you compliant with FTC and Amazon." },
-      "languages": { "title": "English, Arabic, French", "desc": "Choose your page language — including full right-to-left support for Arabic." },
-      "themes": { "title": "Themes & brand color", "desc": "Midnight, Noir or Ivory themes with your accent color, avatar, cover and social links." }
+      "luxury": {
+        "title": "Luxury showcase",
+        "desc": "Premium cards, featured picks, search and filters — a page that looks like a curated boutique."
+      },
+      "stores": {
+        "title": "Store logos & buy buttons",
+        "desc": "Each card shows the store logo, and each review ends with a \"Buy on Amazon\" button in the store's colors."
+      },
+      "reviews": {
+        "title": "Reviews that convert",
+        "desc": "Short review, pros & cons, key features, specs, verdict and your score out of 5."
+      },
+      "analytics": {
+        "title": "Click analytics",
+        "desc": "Daily views and clicks, click-through rate and your top-performing offers."
+      },
+      "seo": {
+        "title": "SEO & sharing",
+        "desc": "Clean URLs, social previews and product review structured data for search engines."
+      },
+      "disclosure": {
+        "title": "Disclosure built in",
+        "desc": "An editable affiliate disclosure on every page to keep you compliant with FTC and Amazon."
+      },
+      "languages": {
+        "title": "English, Arabic, French",
+        "desc": "Choose your page language — including full right-to-left support for Arabic."
+      },
+      "themes": {
+        "title": "Themes & brand color",
+        "desc": "Midnight, Noir or Ivory themes with your accent color, avatar, cover and social links."
+      }
     },
     "how": {
       "title": "Live in three steps",
-      "s1": { "title": "Pick your link", "desc": "Choose your page name and URL, for example yoursite.com/your-name." },
-      "s2": { "title": "Add your offers", "desc": "Paste your affiliate link — we detect the store — then add photos, price and your review." },
-      "s3": { "title": "Share & earn", "desc": "Put your link in your bio, videos and posts. Track every click from your dashboard." }
+      "s1": {
+        "title": "Pick your link",
+        "desc": "Choose your page name and URL, for example yoursite.com/your-name."
+      },
+      "s2": {
+        "title": "Add your offers",
+        "desc": "Paste your affiliate link — we detect the store — then add photos, price and your review."
+      },
+      "s3": {
+        "title": "Share & earn",
+        "desc": "Put your link in your bio, videos and posts. Track every click from your dashboard."
+      }
     },
-    "cta": { "title": "Your boutique of picks is one minute away", "subtitle": "Join marketers who turned a list of links into a page people trust.", "button": "Create my page" }
+    "cta": {
+      "title": "Your boutique of picks is one minute away",
+      "subtitle": "Join marketers who turned a list of links into a page people trust.",
+      "button": "Create my page"
+    },
+    "owner": {
+      "hidden": "This page or offer is hidden from visitors. You are seeing the owner preview.",
+      "preview": "You are viewing your page as visitors see it",
+      "dashboard": "Dashboard"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to manage your landing page and offers.",
+      "email": "Email address",
+      "password": "Password",
+      "remember": "Remember me",
+      "forgot": "Forgot password?",
+      "submit": "Log in",
+      "loading": "Logging in…",
+      "noAccount": "New here?",
+      "create": "Create your page",
+      "invalid": "Incorrect email or password.",
+      "unknown": "Something went wrong. Please try again.",
+      "registered": "Your account is ready. Log in to continue.",
+      "sideTitle": "Your picks. Your link. Your commissions.",
+      "side1": "Luxury landing page with your name",
+      "side2": "Review pages with “Buy on Walmart” buttons",
+      "side3": "Daily views and click analytics"
+    }
   },
   "register": {
     "title": "Create your affiliate page",
@@ -62,13 +168,33 @@
   },
   "dash": {
     "nav": {
-      "overview": "Overview", "offers": "My offers", "newOffer": "Add offer", "design": "Page design", "account": "Account",
-      "yourPage": "Your page", "live": "Live", "hidden": "Hidden from visitors", "view": "View page", "admin": "Admin panel", "logout": "Log out"
+      "overview": "Overview",
+      "offers": "My offers",
+      "newOffer": "Add offer",
+      "design": "Page design",
+      "account": "Account",
+      "yourPage": "Your page",
+      "live": "Live",
+      "hidden": "Hidden from visitors",
+      "view": "View page",
+      "admin": "Admin panel",
+      "logout": "Log out"
     },
-    "common": { "copy": "Copy", "copied": "Copied", "save": "Save changes", "saved": "Saved", "add": "Add", "error": "Something went wrong. Please try again." },
+    "common": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "save": "Save changes",
+      "saved": "Saved",
+      "add": "Add",
+      "error": "Something went wrong. Please try again."
+    },
     "slug": {
-      "checking": "Checking…", "available": "Available", "taken": "Already taken", "reserved": "This name is reserved",
-      "format": "3–40 characters: lowercase letters, numbers and hyphens", "chooseValid": "Choose an available page link."
+      "checking": "Checking…",
+      "available": "Available",
+      "taken": "Already taken",
+      "reserved": "This name is reserved",
+      "format": "3–40 characters: lowercase letters, numbers and hyphens",
+      "chooseValid": "Choose an available page link."
     },
     "onboarding": {
       "title": "Welcome {name} 👋",
@@ -83,7 +209,11 @@
       "yourLink": "Your page link",
       "checkTitle": "Get your page ready",
       "checkSubtitle": "Three quick steps to start earning.",
-      "check": { "offer": "Add your first offer", "design": "Add a photo & bio", "share": "Share your link" },
+      "check": {
+        "offer": "Add your first offer",
+        "design": "Add a photo & bio",
+        "share": "Share your link"
+      },
       "views30": "Views · 30 days",
       "clicks30": "Clicks · 30 days",
       "ctr": "Click rate",
@@ -97,8 +227,17 @@
     "offers": {
       "title": "My offers",
       "subtitle": "Manage, order and publish the offers on your page.",
-      "filter": { "all": "All", "PUBLISHED": "Published", "DRAFT": "Drafts", "ARCHIVED": "Archived" },
-      "status": { "PUBLISHED": "Published", "DRAFT": "Draft", "ARCHIVED": "Archived" },
+      "filter": {
+        "all": "All",
+        "PUBLISHED": "Published",
+        "DRAFT": "Drafts",
+        "ARCHIVED": "Archived"
+      },
+      "status": {
+        "PUBLISHED": "Published",
+        "DRAFT": "Draft",
+        "ARCHIVED": "Archived"
+      },
       "search": "Search offers…",
       "orderChanged": "You changed the order of your offers.",
       "saveOrder": "Save order",
@@ -106,59 +245,414 @@
       "empty": "Add your first affiliate offer — paste the link, add photos and a short review.",
       "noMatch": "No offers match.",
       "confirmDelete": "Delete this offer permanently?",
-      "actions": { "feature": "Feature", "edit": "Edit", "view": "View on page", "publish": "Publish", "unpublish": "Move to drafts", "duplicate": "Duplicate", "archive": "Archive", "delete": "Delete" },
-      "col": { "offer": "Offer", "views": "Views", "clicks": "Clicks" }
+      "actions": {
+        "feature": "Feature",
+        "edit": "Edit",
+        "view": "View on page",
+        "publish": "Publish",
+        "unpublish": "Move to drafts",
+        "duplicate": "Duplicate",
+        "archive": "Archive",
+        "delete": "Delete"
+      },
+      "col": {
+        "offer": "Offer",
+        "views": "Views",
+        "clicks": "Clicks"
+      }
     },
     "form": {
-      "newTitle": "Add offer", "editTitle": "Edit offer", "saveDraft": "Save as draft", "publish": "Publish offer",
-      "previewTitle": "Product title", "previewReview": "Your short review appears here.",
+      "newTitle": "Add offer",
+      "editTitle": "Edit offer",
+      "saveDraft": "Save as draft",
+      "publish": "Publish offer",
+      "previewTitle": "Product title",
+      "previewReview": "Your short review appears here.",
       "sec": {
-        "store": "Store & affiliate link", "storeHint": "Paste your affiliate link — the store is detected automatically when possible.",
-        "basics": "Basics", "media": "Photos & video", "mediaHint": "Paste image URLs (right-click the product image → Copy image address). The first image is the cover.",
-        "pricing": "Price", "pricingHint": "Optional. Store prices change often — the visitor always sees the final price on the store.",
-        "review": "Review", "specs": "Specifications", "publish": "Publishing"
+        "store": "Store & affiliate link",
+        "storeHint": "Paste your affiliate link — the store is detected automatically when possible.",
+        "basics": "Basics",
+        "media": "Photos & video",
+        "mediaHint": "Paste image URLs (right-click the product image → Copy image address). The first image is the cover.",
+        "pricing": "Price",
+        "pricingHint": "Optional. Store prices change often — the visitor always sees the final price on the store.",
+        "review": "Review",
+        "specs": "Specifications",
+        "publish": "Publishing"
       },
-      "affiliateUrl": "Affiliate link", "store": "Store", "otherStore": "Other store", "storeNamePh": "Store name",
-      "buttonLabel": "Button text", "buttonLabelHint": "Leave empty to use \"Buy on Amazon\" (with your store name).", "coupon": "Coupon code",
-      "title": "Title", "titlePh": "e.g. Sony WH-1000XM5 Wireless Headphones", "subtitle": "Subtitle", "subtitlePh": "One line that sells it",
-      "slug": "Offer link", "category": "Category", "categoryPh": "e.g. Tech, Home, Beauty", "badge": "Badge", "customBadge": "Custom…",
-      "video": "Video", "videoHint": "YouTube or Vimeo link (optional).",
-      "price": "Price", "compareAt": "Was", "currency": "Currency", "dealEnds": "Deal ends",
-      "shortReview": "Short review", "shortReviewHint": "Shown on the card and at the top of the review page.",
-      "rating": "Your score", "noRating": "Remove",
-      "pros": "Pros", "prosPh": "Add a pro and press Enter", "cons": "Cons", "consPh": "Add a con and press Enter",
-      "highlights": "Key features", "highlightsPh": "Add a feature and press Enter",
-      "fullReview": "Full review", "fullReviewHint": "Optional. Leave an empty line between paragraphs.",
-      "verdict": "Verdict", "verdictPh": "Who should buy it, in one or two sentences.",
-      "featured": "Featured", "featuredHint": "Shown at the top of your page.",
+      "affiliateUrl": "Affiliate link",
+      "store": "Store",
+      "otherStore": "Other store",
+      "storeNamePh": "Store name",
+      "buttonLabel": "Button text",
+      "buttonLabelHint": "Leave empty to use \"Buy on Amazon\" (with your store name).",
+      "coupon": "Coupon code",
+      "title": "Title",
+      "titlePh": "e.g. Sony WH-1000XM5 Wireless Headphones",
+      "subtitle": "Subtitle",
+      "subtitlePh": "One line that sells it",
+      "slug": "Offer link",
+      "category": "Category",
+      "categoryPh": "e.g. Tech, Home, Beauty",
+      "badge": "Badge",
+      "customBadge": "Custom…",
+      "video": "Video",
+      "videoHint": "YouTube or Vimeo link (optional).",
+      "price": "Price",
+      "compareAt": "Was",
+      "currency": "Currency",
+      "dealEnds": "Deal ends",
+      "shortReview": "Short review",
+      "shortReviewHint": "Shown on the card and at the top of the review page.",
+      "rating": "Your score",
+      "noRating": "Remove",
+      "pros": "Pros",
+      "prosPh": "Add a pro and press Enter",
+      "cons": "Cons",
+      "consPh": "Add a con and press Enter",
+      "highlights": "Key features",
+      "highlightsPh": "Add a feature and press Enter",
+      "fullReview": "Full review",
+      "fullReviewHint": "Optional. Leave an empty line between paragraphs.",
+      "verdict": "Verdict",
+      "verdictPh": "Who should buy it, in one or two sentences.",
+      "featured": "Featured",
+      "featuredHint": "Shown at the top of your page.",
       "preview": "Card preview",
-      "imageInvalid": "Enter a valid image URL starting with https://", "cover": "Cover", "makeCover": "Make cover", "imagePh": "https://…/image.jpg",
-      "specLabel": "e.g. Battery", "specValue": "e.g. 30 hours", "addSpec": "Add specification"
+      "imageInvalid": "Enter a valid image URL starting with https://",
+      "cover": "Cover",
+      "makeCover": "Make cover",
+      "imagePh": "https://…/image.jpg",
+      "specLabel": "e.g. Battery",
+      "specValue": "e.g. 30 hours",
+      "addSpec": "Add specification"
     },
     "design": {
       "title": "Page design",
       "subtitle": "Your identity, look and links.",
       "slugConfirm": "Changing your link will break links you already shared. Continue?",
-      "sec": { "identity": "Identity", "look": "Look & language", "social": "Social links", "disclosure": "Affiliate disclosure", "seo": "Search & sharing" },
-      "pageTitle": "Page name", "slug": "Page link",
+      "sec": {
+        "identity": "Identity",
+        "look": "Look & language",
+        "social": "Social links",
+        "disclosure": "Affiliate disclosure",
+        "seo": "Search & sharing"
+      },
+      "pageTitle": "Page name",
+      "slug": "Page link",
       "slugWarning": "Old links to your page will stop working after you save.",
-      "tagline": "Tagline", "taglineHint": "e.g. Tested picks for a beautiful home",
-      "bio": "Bio", "avatar": "Profile photo URL", "cover": "Cover image URL",
-      "theme": "Theme", "themes": { "midnight": "Midnight", "noir": "Noir", "ivory": "Ivory" },
+      "tagline": "Tagline",
+      "taglineHint": "e.g. Tested picks for a beautiful home",
+      "bio": "Bio",
+      "avatar": "Profile photo URL",
+      "cover": "Cover image URL",
+      "theme": "Theme",
+      "themes": {
+        "midnight": "Midnight",
+        "noir": "Noir",
+        "ivory": "Ivory"
+      },
       "accent": "Accent color",
-      "language": "Page language", "languageHint": "The language visitors see (buttons, labels, disclosure).",
-      "languages": { "en": "English", "ar": "العربية", "fr": "Français" },
-      "socials": { "instagram": "Instagram", "tiktok": "TikTok", "youtube": "YouTube", "x": "X (Twitter)", "facebook": "Facebook", "pinterest": "Pinterest", "website": "Website" },
-      "showDisclosure": "Show disclosure", "showDisclosureHint": "Required by Amazon Associates and the FTC.",
-      "disclosureText": "Disclosure text", "disclosureHint": "Leave empty to use the default text.",
-      "seoTitle": "SEO title", "seoDescription": "SEO description",
-      "published": "Page is public", "publishedHint": "Turn off to hide your page from visitors."
+      "language": "Page language",
+      "languageHint": "The language visitors see (buttons, labels, disclosure).",
+      "languages": {
+        "en": "English",
+        "ar": "العربية",
+        "fr": "Français"
+      },
+      "socials": {
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "youtube": "YouTube",
+        "x": "X (Twitter)",
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "website": "Website"
+      },
+      "showDisclosure": "Show disclosure",
+      "showDisclosureHint": "Required by Amazon Associates and the FTC.",
+      "disclosureText": "Disclosure text",
+      "disclosureHint": "Leave empty to use the default text.",
+      "seoTitle": "SEO title",
+      "seoDescription": "SEO description",
+      "published": "Page is public",
+      "publishedHint": "Turn off to hide your page from visitors."
     },
     "account": {
-      "title": "Account", "profile": "Profile", "firstName": "First name", "lastName": "Last name",
-      "password": "Password", "currentPassword": "Current password", "newPassword": "New password",
+      "title": "Account",
+      "profile": "Profile",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "password": "Password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
       "passwordHint": "Use uppercase and lowercase letters, numbers and a symbol (!@#$%^&*).",
       "changePassword": "Change password"
+    }
+  },
+  "pages": {
+    "updated": "Last updated: November 2026",
+    "about": {
+      "title": "About us",
+      "eyebrow": "Company",
+      "intro": "We build elegant landing pages for professional affiliate marketers.",
+      "sections": [
+        {
+          "h": "Our mission",
+          "p": "Affiliate marketers spend their time finding great products and writing honest reviews. We give them a premium page with their own name that gathers all their picks from the world’s biggest stores, with short reviews that build trust and raise conversions."
+        },
+        {
+          "h": "What we take care of",
+          "p": "Design, speed, mobile layout, search engine optimisation and click tracking. You focus on choosing products and writing reviews."
+        },
+        {
+          "h": "Your commissions stay yours",
+          "p": "Visitors are sent straight to your own affiliate link. We never replace your tracking tag and we never take a share of your commissions."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "eyebrow": "Support",
+      "intro": "Everything you need to know before you start.",
+      "sections": [
+        {
+          "h": "What is this platform?",
+          "p": "A platform for affiliate marketers. You create a luxury landing page with your name that shows your offers from Amazon, Walmart, Target and other stores. Each product gets a review page and a buy button that sends visitors to your affiliate link."
+        },
+        {
+          "h": "How do I get my page link?",
+          "p": "When you sign up you choose your page name and link, for example yoursite.com/your-name. You can change it later from Page design in your dashboard."
+        },
+        {
+          "h": "Does the platform take part of my commission?",
+          "p": "No. Visitors go directly to the affiliate link you added, and the store pays your commission under its own program."
+        },
+        {
+          "h": "Can I see how many clicks I get?",
+          "p": "Yes. Your dashboard shows views, clicks and click-through rate for every offer and for the last 30 days."
+        },
+        {
+          "h": "Do I need an affiliate disclosure?",
+          "p": "Programs such as Amazon Associates and FTC rules require it, so a disclosure appears by default at the bottom of your page. You can edit its text."
+        },
+        {
+          "h": "Which languages are supported?",
+          "p": "Your page can be in English, Arabic or French, with full right-to-left layout for Arabic."
+        }
+      ]
+    },
+    "help": {
+      "title": "Help center",
+      "eyebrow": "Support",
+      "intro": "Quick answers for using your dashboard.",
+      "sections": [
+        {
+          "h": "Adding an offer",
+          "p": "Open your dashboard and choose Add offer. Paste your affiliate link (we detect the store automatically), add the title, photos and a short review, then publish."
+        },
+        {
+          "h": "Ordering your offers",
+          "p": "On the Offers page use the arrows to reorder, then save the order. Offers marked with a star appear at the top of your page."
+        },
+        {
+          "h": "Customising your page",
+          "p": "In Page design change the theme, accent color, avatar, cover, social links and the language of your page."
+        },
+        {
+          "h": "Reading your stats",
+          "p": "The overview shows daily views and clicks for the last 30 days and your best performing offers."
+        },
+        {
+          "h": "Still need help?",
+          "p": "Contact us from the Contact page and we will get back to you quickly."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "eyebrow": "Legal",
+      "intro": "By using the platform you agree to these terms.",
+      "sections": [
+        {
+          "h": "Your account",
+          "p": "You are responsible for the information in your account and for keeping your password safe."
+        },
+        {
+          "h": "Your content",
+          "p": "You must publish honest information about products, respect the terms of the affiliate programs you join (such as Amazon Associates, Walmart Affiliates or Target Partners) and display an affiliate disclosure."
+        },
+        {
+          "h": "Forbidden content",
+          "p": "Using trademarks or images without the right to do so, or publishing misleading or illegal content, is not allowed."
+        },
+        {
+          "h": "Suspension",
+          "p": "We may suspend or close any page or account that breaks these terms."
+        },
+        {
+          "h": "Changes",
+          "p": "We may update these terms. Continuing to use the platform means you accept the updated version."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "eyebrow": "Legal",
+      "intro": "We respect your privacy and protect your personal data.",
+      "sections": [
+        {
+          "h": "Data we keep",
+          "p": "We keep your account data (name and email) to run your dashboard."
+        },
+        {
+          "h": "Visitors of marketer pages",
+          "p": "We only record aggregated statistics (daily views and clicks) without storing personal data about visitors."
+        },
+        {
+          "h": "External stores",
+          "p": "When a visitor clicks a buy button they are sent to the store’s website, where that store’s privacy policy applies."
+        },
+        {
+          "h": "Your rights",
+          "p": "You can ask us to delete your data at any time by contacting us."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookie policy",
+      "eyebrow": "Legal",
+      "intro": "We use as few cookies as possible.",
+      "sections": [
+        {
+          "h": "Essential cookies",
+          "p": "We use a session cookie to keep you logged in to your dashboard, and a cookie to remember your language."
+        },
+        {
+          "h": "No advertising cookies",
+          "p": "We do not place advertising or tracking cookies of our own on marketer pages."
+        },
+        {
+          "h": "Store cookies",
+          "p": "When a visitor follows an affiliate link, the store may set its own cookies to credit the sale to the marketer. Those cookies are controlled by the store."
+        },
+        {
+          "h": "Managing cookies",
+          "p": "You can delete or block cookies in your browser settings. Blocking essential cookies will log you out."
+        }
+      ]
+    },
+    "disclosure": {
+      "title": "Affiliate disclosure",
+      "eyebrow": "Legal",
+      "intro": "How affiliate links work on pages hosted here.",
+      "sections": [
+        {
+          "h": "Marketer pages contain affiliate links",
+          "p": "Pages created on the platform are run by independent marketers. When you buy through their links, they may earn a commission at no extra cost to you."
+        },
+        {
+          "h": "Prices and availability",
+          "p": "Prices and availability are set by the store and can change at any time. Always check the final price on the store’s website."
+        },
+        {
+          "h": "Independent opinions",
+          "p": "Reviews are the opinion of each marketer. The platform does not sell products and is not affiliated with the stores shown."
+        },
+        {
+          "h": "Trademarks",
+          "p": "Store names and logos belong to their owners and are used only to identify where a product is sold."
+        }
+      ]
+    },
+    "acceptableUse": {
+      "title": "Acceptable use",
+      "eyebrow": "Legal",
+      "intro": "Rules that keep the platform trusted by visitors and stores.",
+      "sections": [
+        {
+          "h": "Be honest",
+          "p": "Do not publish fake reviews, fake discounts or false claims about products."
+        },
+        {
+          "h": "Follow program rules",
+          "p": "Respect the rules of every affiliate program you use, including rules about how prices and logos may be shown."
+        },
+        {
+          "h": "Allowed products",
+          "p": "Do not promote illegal, dangerous or adult products, or anything the store itself forbids."
+        },
+        {
+          "h": "No abuse",
+          "p": "Do not use the platform for spam, phishing, malware or to impersonate another person or brand."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Contact us",
+      "eyebrow": "Company",
+      "intro": "Questions, feedback or partnership ideas? We would love to hear from you.",
+      "emailLabel": "Email",
+      "responseLabel": "Response time",
+      "response": "Usually within one business day",
+      "sections": [
+        {
+          "h": "Support",
+          "p": "For help with your account or dashboard, write to us and include the link of your page."
+        },
+        {
+          "h": "Report a page",
+          "p": "If you find a page that breaks our rules, send us its link and we will review it."
+        }
+      ]
+    },
+    "guide": {
+      "title": "Affiliate marketing guide",
+      "eyebrow": "Resources",
+      "intro": "Launch a page that converts in six steps.",
+      "sections": [
+        {
+          "h": "1. Join affiliate programs",
+          "p": "Apply to programs such as Amazon Associates, Walmart Affiliates and Target Partners. Each one gives you links that include your tracking tag."
+        },
+        {
+          "h": "2. Choose a niche",
+          "p": "Pages focused on one audience (tech, home, beauty, fitness…) earn more trust than pages that mix everything."
+        },
+        {
+          "h": "3. Pick great products",
+          "p": "Prefer products with strong ratings, fair prices and good availability. Fewer, better picks convert better."
+        },
+        {
+          "h": "4. Write short, honest reviews",
+          "p": "Explain who the product is for, list real pros and cons and give a clear verdict. Honesty sells."
+        },
+        {
+          "h": "5. Share your link everywhere",
+          "p": "Put your page link in your bio, video descriptions, posts and newsletters."
+        },
+        {
+          "h": "6. Measure and improve",
+          "p": "Check your dashboard each week. Move your best offers to the top and replace those that get no clicks."
+        }
+      ]
+    },
+    "storesPage": {
+      "title": "Supported stores",
+      "eyebrow": "Product",
+      "intro": "Add offers from these stores, or any other store by typing its name.",
+      "other": "Any other store",
+      "otherDesc": "Paste any affiliate link and type the store name.",
+      "cta": "Create your page"
+    },
+    "blog": {
+      "title": "Blog",
+      "eyebrow": "Resources",
+      "intro": "Strategies, tips and news for affiliate marketers.",
+      "empty": "No articles published yet",
+      "by": "By",
+      "back": "Blog",
+      "read": "Read article"
     }
   }
 }

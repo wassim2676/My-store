@@ -1,14 +1,7 @@
-import StaticPage from "@/components/site/StaticPage";
+import StaticPage, { contentMetadata } from "@/components/site/StaticPage";
 
-export const metadata = { title: "سياسة الخصوصية" };
+export const generateMetadata = () => contentMetadata("privacy");
 
 export default function Page() {
-  return (
-    <StaticPage title="سياسة الخصوصية">
-      <p>نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية.</p>
-      <p>نحتفظ ببيانات حسابك (الاسم والبريد) لتشغيل لوحة التحكم. لزوار صفحات المسوّقين نسجّل إحصائيات مجمّعة فقط (عدد الزيارات والنقرات اليومية) دون تخزين بيانات شخصية.</p>
-      <p>عند الضغط على زر الشراء يُحوَّل الزائر إلى موقع المتجر الخارجي، وتخضع بياناته هناك لسياسة خصوصية ذلك المتجر.</p>
-      <p>يمكنك طلب حذف بياناتك في أي وقت من خلال التواصل معنا.</p>
-    </StaticPage>
-  );
+  return <StaticPage pageKey="privacy" />;
 }

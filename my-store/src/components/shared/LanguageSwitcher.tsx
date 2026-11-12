@@ -12,8 +12,10 @@ import { locales, localeInfo, type Locale } from "@/i18n/config";
  */
 export default function LanguageSwitcher({
   variant = "default",
+  dropUp = false,
 }: {
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "dark";
+  dropUp?: boolean;
 }) {
   const currentLocale = useLocale() as Locale;
   const router = useRouter();
@@ -56,9 +58,11 @@ export default function LanguageSwitcher({
         className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 ${
           variant === "compact"
             ? "text-gray-700 hover:bg-gray-100"
-            : "text-white/90 hover:bg-white/10"
+            : variant === "dark"
+              ? "text-white/70 hover:bg-white/[0.06] hover:text-white"
+              : "text-white/90 hover:bg-white/10"
         }`}
-        aria-label="اختيار اللغة"
+        aria-label="Language"
       >
         <Globe className="w-4 h-4" />
         <span>{localeInfo[currentLocale].flag}</span>
@@ -67,18 +71,18 @@ export default function LanguageSwitcher({
       </button>
 
       {open && (
-        <div className="absolute end-0 mt-2 w-48 rounded-xl bg-white shadow-xl ring-1 ring-black/5 py-1.5 z-50 overflow-hidden">
+        <div className={`absolute end-0 ${dropUp ? "bottom-full mb-2" : "mt-2"} w-48 rounded-xl py-1.5 z-50 overflow-hidden shadow-xl ${variant === "dark" ? "bg-[#10141C] ring-1 ring-white/10" : "bg-white ring-1 ring-black/5"}`}>
           {locales.map((locale) => (
             <button
               key={locale}
               onClick={() => changeLocale(locale)}
-              className="w-full flex items-center justify-between gap-2 px-3.5 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+              className={`w-full flex items-center justify-between gap-2 px-3.5 py-2 text-sm transition-colors cursor-pointer ${variant === "dark" ? "text-white/80 hover:bg-white/[0.06]" : "text-gray-700 hover:bg-gray-50"}`}
             >
               <span className="flex items-center gap-2">
                 <span>{localeInfo[locale].flag}</span>
                 <span>{localeInfo[locale].nativeLabel}</span>
               </span>
-              {locale === currentLocale && <Check className="w-4 h-4 text-orange-500" />}
+              {locale === currentLocale && <Check className={`w-4 h-4 ${variant === "dark" ? "text-amber-300" : "text-orange-500"}`} />}
             </button>
           ))}
         </div>

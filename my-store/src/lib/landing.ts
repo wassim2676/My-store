@@ -75,6 +75,8 @@ export function themeStyle(theme: string, accent: string): CSSProperties {
     "--lp-muted": t.muted,
     "--lp-border": t.border,
     "--lp-accent": accent || "#C8A24A",
+    // الشعارات تظهر مباشرة على البطاقة: بيضاء في الثيمات الداكنة (كثير منها نصّه داكن)، بألوانها في Ivory
+    "--lp-logo-filter": t.isDark ? "brightness(0) invert(1)" : "none",
     backgroundColor: t.bg,
     color: t.text,
   } as CSSProperties;
@@ -234,6 +236,7 @@ export const RESERVED_SLUGS = new Set([
   "product", "products", "deals", "store", "stores", "go", "explore", "pricing", "support", "static",
   "public", "assets", "images", "img", "_next", "favicon.ico", "robots.txt", "sitemap.xml", "www",
   "mail", "new", "edit", "home", "index", "null", "undefined", "root", "system", "official",
+  "guide", "cookies", "affiliate-disclosure", "acceptable-use", "resources", "brands", "legal",
 ]);
 
 export function toSlug(input: string, maxLen = 40): string {

@@ -1,10 +1,47 @@
 {
   "platform": {
-    "nav": { "features": "Fonctionnalités", "how": "Comment ça marche", "blog": "Blog", "faq": "FAQ", "dashboard": "Tableau de bord", "login": "Connexion", "start": "Commencer" },
+    "nav": {
+      "features": "Fonctionnalités",
+      "how": "Comment ça marche",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "dashboard": "Tableau de bord",
+      "login": "Connexion",
+      "start": "Commencer",
+      "stores": "Boutiques",
+      "resources": "Ressources",
+      "guide": "Guide de l’affiliation",
+      "help": "Centre d’aide",
+      "blogDesc": "Conseils et stratégies pour les affiliés",
+      "guideDesc": "Lancez votre première page pas à pas",
+      "helpDesc": "Réponses sur le tableau de bord et les offres",
+      "faqDesc": "Les questions les plus fréquentes",
+      "menu": "Menu"
+    },
     "footer": {
-      "about": "À propos", "help": "Aide", "contact": "Contact", "terms": "Conditions", "privacy": "Confidentialité",
-      "tagline": "Des pages d'atterrissage haut de gamme pour les affiliés professionnels. Vos sélections Amazon, Walmart et Target en un seul lien.",
-      "rights": "Tous droits réservés."
+      "about": "À propos",
+      "help": "Centre d’aide",
+      "contact": "Contact",
+      "terms": "Conditions d’utilisation",
+      "privacy": "Politique de confidentialité",
+      "tagline": "Des pages d’atterrissage de luxe pour les affiliés professionnels. Présentez vos sélections Amazon, Walmart et Target en un seul lien.",
+      "rights": "Tous droits réservés.",
+      "product": "Produit",
+      "resources": "Ressources",
+      "company": "Entreprise",
+      "legal": "Légal",
+      "features": "Fonctionnalités",
+      "how": "Comment ça marche",
+      "stores": "Boutiques prises en charge",
+      "getStarted": "Créer votre page",
+      "blog": "Blog",
+      "guide": "Guide de l’affiliation",
+      "faq": "FAQ",
+      "login": "Connexion",
+      "cookies": "Politique de cookies",
+      "disclosure": "Divulgation d’affiliation",
+      "acceptableUse": "Utilisation acceptable",
+      "madeFor": "Conçu pour les affiliés"
     },
     "hero": {
       "badge": "Conçu pour les affiliés professionnels",
@@ -14,27 +51,96 @@
       "placeholder": "votre-nom",
       "note": "Gratuit pour commencer · Vos commissions restent à 100 % les vôtres"
     },
-    "mock": { "p1": "Casque à réduction de bruit", "p2": "Friteuse à air connectée", "p3": "Plaid en lin", "read": "Lire l'avis" },
-    "stores": { "title": "Faites la promotion de produits de" },
+    "mock": {
+      "p1": "Casque à réduction de bruit",
+      "p2": "Friteuse à air connectée",
+      "p3": "Plaid en lin",
+      "read": "Lire l'avis"
+    },
+    "stores": {
+      "title": "Faites la promotion de produits de",
+      "all": "Voir toutes les boutiques"
+    },
     "features": {
       "title": "Tout ce qu'il faut à un affilié pro",
       "subtitle": "Concentrez-vous sur le choix des produits. Nous gérons le design, la vitesse et le suivi.",
-      "luxury": { "title": "Vitrine luxueuse", "desc": "Cartes premium, sélections en vedette, recherche et filtres — une page digne d'une boutique." },
-      "stores": { "title": "Logos et boutons d'achat", "desc": "Chaque carte affiche le logo du magasin, chaque avis se termine par un bouton « Acheter sur Amazon »." },
-      "reviews": { "title": "Des avis qui convertissent", "desc": "Avis court, points forts et faibles, caractéristiques, verdict et votre note sur 5." },
-      "analytics": { "title": "Statistiques de clics", "desc": "Vues et clics quotidiens, taux de clic et vos meilleures offres." },
-      "seo": { "title": "SEO et partage", "desc": "URL propres, aperçus sociaux et données structurées d'avis produit." },
-      "disclosure": { "title": "Divulgation intégrée", "desc": "Une mention d'affiliation modifiable sur chaque page, conforme FTC et Amazon." },
-      "languages": { "title": "Anglais, arabe, français", "desc": "Choisissez la langue de votre page — avec prise en charge complète de l'arabe." },
-      "themes": { "title": "Thèmes et couleur", "desc": "Thèmes Midnight, Noir ou Ivory avec votre couleur, photo, couverture et réseaux sociaux." }
+      "luxury": {
+        "title": "Vitrine luxueuse",
+        "desc": "Cartes premium, sélections en vedette, recherche et filtres — une page digne d'une boutique."
+      },
+      "stores": {
+        "title": "Logos et boutons d'achat",
+        "desc": "Chaque carte affiche le logo du magasin, chaque avis se termine par un bouton « Acheter sur Amazon »."
+      },
+      "reviews": {
+        "title": "Des avis qui convertissent",
+        "desc": "Avis court, points forts et faibles, caractéristiques, verdict et votre note sur 5."
+      },
+      "analytics": {
+        "title": "Statistiques de clics",
+        "desc": "Vues et clics quotidiens, taux de clic et vos meilleures offres."
+      },
+      "seo": {
+        "title": "SEO et partage",
+        "desc": "URL propres, aperçus sociaux et données structurées d'avis produit."
+      },
+      "disclosure": {
+        "title": "Divulgation intégrée",
+        "desc": "Une mention d'affiliation modifiable sur chaque page, conforme FTC et Amazon."
+      },
+      "languages": {
+        "title": "Anglais, arabe, français",
+        "desc": "Choisissez la langue de votre page — avec prise en charge complète de l'arabe."
+      },
+      "themes": {
+        "title": "Thèmes et couleur",
+        "desc": "Thèmes Midnight, Noir ou Ivory avec votre couleur, photo, couverture et réseaux sociaux."
+      }
     },
     "how": {
       "title": "En ligne en trois étapes",
-      "s1": { "title": "Choisissez votre lien", "desc": "Choisissez le nom et l'URL de votre page, par exemple yoursite.com/votre-nom." },
-      "s2": { "title": "Ajoutez vos offres", "desc": "Collez votre lien affilié — nous détectons le magasin — puis ajoutez photos, prix et avis." },
-      "s3": { "title": "Partagez et gagnez", "desc": "Mettez votre lien dans votre bio et vos vidéos. Suivez chaque clic depuis votre tableau de bord." }
+      "s1": {
+        "title": "Choisissez votre lien",
+        "desc": "Choisissez le nom et l'URL de votre page, par exemple yoursite.com/votre-nom."
+      },
+      "s2": {
+        "title": "Ajoutez vos offres",
+        "desc": "Collez votre lien affilié — nous détectons le magasin — puis ajoutez photos, prix et avis."
+      },
+      "s3": {
+        "title": "Partagez et gagnez",
+        "desc": "Mettez votre lien dans votre bio et vos vidéos. Suivez chaque clic depuis votre tableau de bord."
+      }
     },
-    "cta": { "title": "Votre boutique de sélections en une minute", "subtitle": "Rejoignez les affiliés qui ont transformé une liste de liens en une page de confiance.", "button": "Créer ma page" }
+    "cta": {
+      "title": "Votre boutique de sélections en une minute",
+      "subtitle": "Rejoignez les affiliés qui ont transformé une liste de liens en une page de confiance.",
+      "button": "Créer ma page"
+    },
+    "owner": {
+      "hidden": "Cette page ou cette offre est masquée aux visiteurs. Vous voyez l’aperçu propriétaire.",
+      "preview": "Vous voyez votre page comme vos visiteurs",
+      "dashboard": "Tableau de bord"
+    },
+    "login": {
+      "title": "Bon retour",
+      "subtitle": "Connectez-vous pour gérer votre page et vos offres.",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "remember": "Se souvenir de moi",
+      "forgot": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "loading": "Connexion…",
+      "noAccount": "Nouveau ici ?",
+      "create": "Créer votre page",
+      "invalid": "E-mail ou mot de passe incorrect.",
+      "unknown": "Une erreur est survenue. Réessayez.",
+      "registered": "Votre compte est prêt. Connectez-vous pour continuer.",
+      "sideTitle": "Vos sélections. Votre lien. Vos commissions.",
+      "side1": "Une page de luxe à votre nom",
+      "side2": "Des pages d’avis avec boutons « Buy on Walmart »",
+      "side3": "Statistiques quotidiennes de vues et de clics"
+    }
   },
   "register": {
     "title": "Créez votre page affiliée",
@@ -62,13 +168,33 @@
   },
   "dash": {
     "nav": {
-      "overview": "Aperçu", "offers": "Mes offres", "newOffer": "Ajouter une offre", "design": "Design de la page", "account": "Compte",
-      "yourPage": "Votre page", "live": "En ligne", "hidden": "Masquée aux visiteurs", "view": "Voir la page", "admin": "Administration", "logout": "Déconnexion"
+      "overview": "Aperçu",
+      "offers": "Mes offres",
+      "newOffer": "Ajouter une offre",
+      "design": "Design de la page",
+      "account": "Compte",
+      "yourPage": "Votre page",
+      "live": "En ligne",
+      "hidden": "Masquée aux visiteurs",
+      "view": "Voir la page",
+      "admin": "Administration",
+      "logout": "Déconnexion"
     },
-    "common": { "copy": "Copier", "copied": "Copié", "save": "Enregistrer", "saved": "Enregistré", "add": "Ajouter", "error": "Une erreur est survenue. Réessayez." },
+    "common": {
+      "copy": "Copier",
+      "copied": "Copié",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "add": "Ajouter",
+      "error": "Une erreur est survenue. Réessayez."
+    },
     "slug": {
-      "checking": "Vérification…", "available": "Disponible", "taken": "Déjà pris", "reserved": "Ce nom est réservé",
-      "format": "3 à 40 caractères : lettres minuscules, chiffres et tirets", "chooseValid": "Choisissez un lien de page disponible."
+      "checking": "Vérification…",
+      "available": "Disponible",
+      "taken": "Déjà pris",
+      "reserved": "Ce nom est réservé",
+      "format": "3 à 40 caractères : lettres minuscules, chiffres et tirets",
+      "chooseValid": "Choisissez un lien de page disponible."
     },
     "onboarding": {
       "title": "Bienvenue {name} 👋",
@@ -83,7 +209,11 @@
       "yourLink": "Lien de votre page",
       "checkTitle": "Préparez votre page",
       "checkSubtitle": "Trois étapes rapides pour commencer à gagner.",
-      "check": { "offer": "Ajoutez votre première offre", "design": "Ajoutez une photo et une bio", "share": "Partagez votre lien" },
+      "check": {
+        "offer": "Ajoutez votre première offre",
+        "design": "Ajoutez une photo et une bio",
+        "share": "Partagez votre lien"
+      },
       "views30": "Vues · 30 jours",
       "clicks30": "Clics · 30 jours",
       "ctr": "Taux de clic",
@@ -97,8 +227,17 @@
     "offers": {
       "title": "Mes offres",
       "subtitle": "Gérez, ordonnez et publiez les offres de votre page.",
-      "filter": { "all": "Toutes", "PUBLISHED": "Publiées", "DRAFT": "Brouillons", "ARCHIVED": "Archivées" },
-      "status": { "PUBLISHED": "Publiée", "DRAFT": "Brouillon", "ARCHIVED": "Archivée" },
+      "filter": {
+        "all": "Toutes",
+        "PUBLISHED": "Publiées",
+        "DRAFT": "Brouillons",
+        "ARCHIVED": "Archivées"
+      },
+      "status": {
+        "PUBLISHED": "Publiée",
+        "DRAFT": "Brouillon",
+        "ARCHIVED": "Archivée"
+      },
       "search": "Rechercher…",
       "orderChanged": "Vous avez modifié l'ordre des offres.",
       "saveOrder": "Enregistrer l'ordre",
@@ -106,59 +245,414 @@
       "empty": "Ajoutez votre première offre — collez le lien, ajoutez des photos et un court avis.",
       "noMatch": "Aucune offre correspondante.",
       "confirmDelete": "Supprimer définitivement cette offre ?",
-      "actions": { "feature": "Mettre en vedette", "edit": "Modifier", "view": "Voir sur la page", "publish": "Publier", "unpublish": "Passer en brouillon", "duplicate": "Dupliquer", "archive": "Archiver", "delete": "Supprimer" },
-      "col": { "offer": "Offre", "views": "Vues", "clicks": "Clics" }
+      "actions": {
+        "feature": "Mettre en vedette",
+        "edit": "Modifier",
+        "view": "Voir sur la page",
+        "publish": "Publier",
+        "unpublish": "Passer en brouillon",
+        "duplicate": "Dupliquer",
+        "archive": "Archiver",
+        "delete": "Supprimer"
+      },
+      "col": {
+        "offer": "Offre",
+        "views": "Vues",
+        "clicks": "Clics"
+      }
     },
     "form": {
-      "newTitle": "Ajouter une offre", "editTitle": "Modifier l'offre", "saveDraft": "Enregistrer le brouillon", "publish": "Publier l'offre",
-      "previewTitle": "Titre du produit", "previewReview": "Votre avis court apparaît ici.",
+      "newTitle": "Ajouter une offre",
+      "editTitle": "Modifier l'offre",
+      "saveDraft": "Enregistrer le brouillon",
+      "publish": "Publier l'offre",
+      "previewTitle": "Titre du produit",
+      "previewReview": "Votre avis court apparaît ici.",
       "sec": {
-        "store": "Magasin et lien affilié", "storeHint": "Collez votre lien affilié — le magasin est détecté automatiquement si possible.",
-        "basics": "Informations", "media": "Photos et vidéo", "mediaHint": "Collez les URL des images (clic droit sur l'image → Copier l'adresse). La première image sert de couverture.",
-        "pricing": "Prix", "pricingHint": "Facultatif. Les prix changent souvent — le visiteur voit toujours le prix final sur le magasin.",
-        "review": "Avis", "specs": "Caractéristiques", "publish": "Publication"
+        "store": "Magasin et lien affilié",
+        "storeHint": "Collez votre lien affilié — le magasin est détecté automatiquement si possible.",
+        "basics": "Informations",
+        "media": "Photos et vidéo",
+        "mediaHint": "Collez les URL des images (clic droit sur l'image → Copier l'adresse). La première image sert de couverture.",
+        "pricing": "Prix",
+        "pricingHint": "Facultatif. Les prix changent souvent — le visiteur voit toujours le prix final sur le magasin.",
+        "review": "Avis",
+        "specs": "Caractéristiques",
+        "publish": "Publication"
       },
-      "affiliateUrl": "Lien affilié", "store": "Magasin", "otherStore": "Autre magasin", "storeNamePh": "Nom du magasin",
-      "buttonLabel": "Texte du bouton", "buttonLabelHint": "Laissez vide pour « Acheter sur » + nom du magasin.", "coupon": "Code promo",
-      "title": "Titre", "titlePh": "ex. Casque sans fil Sony WH-1000XM5", "subtitle": "Sous-titre", "subtitlePh": "Une phrase qui donne envie",
-      "slug": "Lien de l'offre", "category": "Catégorie", "categoryPh": "ex. Tech, Maison, Beauté", "badge": "Badge", "customBadge": "Personnalisé…",
-      "video": "Vidéo", "videoHint": "Lien YouTube ou Vimeo (facultatif).",
-      "price": "Prix", "compareAt": "Ancien prix", "currency": "Devise", "dealEnds": "Fin de l'offre",
-      "shortReview": "Avis court", "shortReviewHint": "Affiché sur la carte et en haut de la page d'avis.",
-      "rating": "Votre note", "noRating": "Retirer",
-      "pros": "Points forts", "prosPh": "Ajoutez un point fort puis Entrée", "cons": "Points faibles", "consPh": "Ajoutez un point faible puis Entrée",
-      "highlights": "Caractéristiques clés", "highlightsPh": "Ajoutez une caractéristique puis Entrée",
-      "fullReview": "Avis complet", "fullReviewHint": "Facultatif. Laissez une ligne vide entre les paragraphes.",
-      "verdict": "Verdict", "verdictPh": "À qui s'adresse ce produit, en une ou deux phrases.",
-      "featured": "En vedette", "featuredHint": "Affichée en haut de votre page.",
+      "affiliateUrl": "Lien affilié",
+      "store": "Magasin",
+      "otherStore": "Autre magasin",
+      "storeNamePh": "Nom du magasin",
+      "buttonLabel": "Texte du bouton",
+      "buttonLabelHint": "Laissez vide pour « Acheter sur » + nom du magasin.",
+      "coupon": "Code promo",
+      "title": "Titre",
+      "titlePh": "ex. Casque sans fil Sony WH-1000XM5",
+      "subtitle": "Sous-titre",
+      "subtitlePh": "Une phrase qui donne envie",
+      "slug": "Lien de l'offre",
+      "category": "Catégorie",
+      "categoryPh": "ex. Tech, Maison, Beauté",
+      "badge": "Badge",
+      "customBadge": "Personnalisé…",
+      "video": "Vidéo",
+      "videoHint": "Lien YouTube ou Vimeo (facultatif).",
+      "price": "Prix",
+      "compareAt": "Ancien prix",
+      "currency": "Devise",
+      "dealEnds": "Fin de l'offre",
+      "shortReview": "Avis court",
+      "shortReviewHint": "Affiché sur la carte et en haut de la page d'avis.",
+      "rating": "Votre note",
+      "noRating": "Retirer",
+      "pros": "Points forts",
+      "prosPh": "Ajoutez un point fort puis Entrée",
+      "cons": "Points faibles",
+      "consPh": "Ajoutez un point faible puis Entrée",
+      "highlights": "Caractéristiques clés",
+      "highlightsPh": "Ajoutez une caractéristique puis Entrée",
+      "fullReview": "Avis complet",
+      "fullReviewHint": "Facultatif. Laissez une ligne vide entre les paragraphes.",
+      "verdict": "Verdict",
+      "verdictPh": "À qui s'adresse ce produit, en une ou deux phrases.",
+      "featured": "En vedette",
+      "featuredHint": "Affichée en haut de votre page.",
       "preview": "Aperçu de la carte",
-      "imageInvalid": "Saisissez une URL d'image valide commençant par https://", "cover": "Couverture", "makeCover": "Définir comme couverture", "imagePh": "https://…/image.jpg",
-      "specLabel": "ex. Batterie", "specValue": "ex. 30 heures", "addSpec": "Ajouter une caractéristique"
+      "imageInvalid": "Saisissez une URL d'image valide commençant par https://",
+      "cover": "Couverture",
+      "makeCover": "Définir comme couverture",
+      "imagePh": "https://…/image.jpg",
+      "specLabel": "ex. Batterie",
+      "specValue": "ex. 30 heures",
+      "addSpec": "Ajouter une caractéristique"
     },
     "design": {
       "title": "Design de la page",
       "subtitle": "Votre identité, votre style et vos liens.",
       "slugConfirm": "Changer votre lien cassera les liens déjà partagés. Continuer ?",
-      "sec": { "identity": "Identité", "look": "Apparence et langue", "social": "Réseaux sociaux", "disclosure": "Mention d'affiliation", "seo": "Recherche et partage" },
-      "pageTitle": "Nom de la page", "slug": "Lien de la page",
+      "sec": {
+        "identity": "Identité",
+        "look": "Apparence et langue",
+        "social": "Réseaux sociaux",
+        "disclosure": "Mention d'affiliation",
+        "seo": "Recherche et partage"
+      },
+      "pageTitle": "Nom de la page",
+      "slug": "Lien de la page",
       "slugWarning": "Les anciens liens vers votre page ne fonctionneront plus après l'enregistrement.",
-      "tagline": "Accroche", "taglineHint": "ex. Des trouvailles testées pour une belle maison",
-      "bio": "Bio", "avatar": "URL de la photo de profil", "cover": "URL de l'image de couverture",
-      "theme": "Thème", "themes": { "midnight": "Midnight", "noir": "Noir", "ivory": "Ivory" },
+      "tagline": "Accroche",
+      "taglineHint": "ex. Des trouvailles testées pour une belle maison",
+      "bio": "Bio",
+      "avatar": "URL de la photo de profil",
+      "cover": "URL de l'image de couverture",
+      "theme": "Thème",
+      "themes": {
+        "midnight": "Midnight",
+        "noir": "Noir",
+        "ivory": "Ivory"
+      },
       "accent": "Couleur d'accent",
-      "language": "Langue de la page", "languageHint": "La langue vue par les visiteurs (boutons, libellés, mention).",
-      "languages": { "en": "English", "ar": "العربية", "fr": "Français" },
-      "socials": { "instagram": "Instagram", "tiktok": "TikTok", "youtube": "YouTube", "x": "X (Twitter)", "facebook": "Facebook", "pinterest": "Pinterest", "website": "Site web" },
-      "showDisclosure": "Afficher la mention", "showDisclosureHint": "Exigée par Amazon Associates et la FTC.",
-      "disclosureText": "Texte de la mention", "disclosureHint": "Laissez vide pour utiliser le texte par défaut.",
-      "seoTitle": "Titre SEO", "seoDescription": "Description SEO",
-      "published": "Page publique", "publishedHint": "Désactivez pour masquer votre page aux visiteurs."
+      "language": "Langue de la page",
+      "languageHint": "La langue vue par les visiteurs (boutons, libellés, mention).",
+      "languages": {
+        "en": "English",
+        "ar": "العربية",
+        "fr": "Français"
+      },
+      "socials": {
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "youtube": "YouTube",
+        "x": "X (Twitter)",
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "website": "Site web"
+      },
+      "showDisclosure": "Afficher la mention",
+      "showDisclosureHint": "Exigée par Amazon Associates et la FTC.",
+      "disclosureText": "Texte de la mention",
+      "disclosureHint": "Laissez vide pour utiliser le texte par défaut.",
+      "seoTitle": "Titre SEO",
+      "seoDescription": "Description SEO",
+      "published": "Page publique",
+      "publishedHint": "Désactivez pour masquer votre page aux visiteurs."
     },
     "account": {
-      "title": "Compte", "profile": "Profil", "firstName": "Prénom", "lastName": "Nom",
-      "password": "Mot de passe", "currentPassword": "Mot de passe actuel", "newPassword": "Nouveau mot de passe",
+      "title": "Compte",
+      "profile": "Profil",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "password": "Mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
       "passwordHint": "Utilisez majuscules, minuscules, chiffres et un symbole (!@#$%^&*).",
       "changePassword": "Changer le mot de passe"
+    }
+  },
+  "pages": {
+    "updated": "Dernière mise à jour : novembre 2026",
+    "about": {
+      "title": "À propos",
+      "eyebrow": "Entreprise",
+      "intro": "Nous créons des pages d’atterrissage élégantes pour les affiliés professionnels.",
+      "sections": [
+        {
+          "h": "Notre mission",
+          "p": "Les affiliés passent leur temps à trouver de bons produits et à écrire des avis honnêtes. Nous leur offrons une page premium à leur nom qui réunit toutes leurs sélections des plus grandes boutiques, avec des avis courts qui créent la confiance et augmentent les conversions."
+        },
+        {
+          "h": "Ce dont nous nous occupons",
+          "p": "Le design, la vitesse, l’affichage mobile, le référencement et le suivi des clics. Vous vous concentrez sur le choix des produits et la rédaction des avis."
+        },
+        {
+          "h": "Vos commissions restent les vôtres",
+          "p": "Les visiteurs sont envoyés directement vers votre lien d’affiliation. Nous ne remplaçons jamais votre tag de suivi et ne prenons aucune part de vos commissions."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "eyebrow": "Support",
+      "intro": "Tout ce qu’il faut savoir avant de commencer.",
+      "sections": [
+        {
+          "h": "Qu’est-ce que cette plateforme ?",
+          "p": "Une plateforme pour les affiliés. Vous créez une page de luxe à votre nom qui présente vos offres Amazon, Walmart, Target et d’autres boutiques. Chaque produit a une page d’avis et un bouton d’achat qui envoie le visiteur vers votre lien d’affiliation."
+        },
+        {
+          "h": "Comment obtenir le lien de ma page ?",
+          "p": "À l’inscription, vous choisissez le nom et le lien de votre page, par exemple yoursite.com/your-name. Vous pouvez le modifier ensuite dans Design de la page."
+        },
+        {
+          "h": "La plateforme prend-elle une part de ma commission ?",
+          "p": "Non. Les visiteurs vont directement vers le lien d’affiliation que vous avez ajouté, et la boutique vous paie selon son programme."
+        },
+        {
+          "h": "Puis-je voir mes clics ?",
+          "p": "Oui. Le tableau de bord affiche les vues, les clics et le taux de clic pour chaque offre et pour les 30 derniers jours."
+        },
+        {
+          "h": "Dois-je afficher une divulgation d’affiliation ?",
+          "p": "Les programmes comme Amazon Associates et les règles de la FTC l’exigent : une divulgation apparaît donc par défaut en bas de votre page, et vous pouvez modifier son texte."
+        },
+        {
+          "h": "Quelles langues sont prises en charge ?",
+          "p": "Votre page peut être en anglais, en arabe ou en français, avec une mise en page de droite à gauche complète pour l’arabe."
+        }
+      ]
+    },
+    "help": {
+      "title": "Centre d’aide",
+      "eyebrow": "Support",
+      "intro": "Des réponses rapides pour utiliser votre tableau de bord.",
+      "sections": [
+        {
+          "h": "Ajouter une offre",
+          "p": "Ouvrez votre tableau de bord et choisissez Ajouter une offre. Collez votre lien d’affiliation (la boutique est détectée automatiquement), ajoutez le titre, les photos et un avis court, puis publiez."
+        },
+        {
+          "h": "Ordonner vos offres",
+          "p": "Sur la page Offres, utilisez les flèches pour changer l’ordre puis enregistrez. Les offres marquées d’une étoile apparaissent en haut de votre page."
+        },
+        {
+          "h": "Personnaliser votre page",
+          "p": "Dans Design de la page, changez le thème, la couleur, l’avatar, la couverture, les réseaux sociaux et la langue de la page."
+        },
+        {
+          "h": "Lire vos statistiques",
+          "p": "La vue d’ensemble affiche les vues et clics quotidiens des 30 derniers jours et vos meilleures offres."
+        },
+        {
+          "h": "Besoin d’aide ?",
+          "p": "Contactez-nous depuis la page Contact et nous vous répondrons rapidement."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Conditions d’utilisation",
+      "eyebrow": "Légal",
+      "intro": "En utilisant la plateforme, vous acceptez ces conditions.",
+      "sections": [
+        {
+          "h": "Votre compte",
+          "p": "Vous êtes responsable des informations de votre compte et de la sécurité de votre mot de passe."
+        },
+        {
+          "h": "Votre contenu",
+          "p": "Vous devez publier des informations honnêtes sur les produits, respecter les conditions des programmes d’affiliation auxquels vous participez (Amazon Associates, Walmart Affiliates, Target Partners…) et afficher une divulgation d’affiliation."
+        },
+        {
+          "h": "Contenu interdit",
+          "p": "Il est interdit d’utiliser des marques ou des images sans droit, ou de publier un contenu trompeur ou illégal."
+        },
+        {
+          "h": "Suspension",
+          "p": "Nous pouvons suspendre ou fermer toute page ou tout compte qui enfreint ces conditions."
+        },
+        {
+          "h": "Modifications",
+          "p": "Nous pouvons mettre à jour ces conditions. Continuer à utiliser la plateforme signifie que vous acceptez la nouvelle version."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "eyebrow": "Légal",
+      "intro": "Nous respectons votre vie privée et protégeons vos données personnelles.",
+      "sections": [
+        {
+          "h": "Données conservées",
+          "p": "Nous conservons les données de votre compte (nom et e-mail) pour faire fonctionner votre tableau de bord."
+        },
+        {
+          "h": "Visiteurs des pages",
+          "p": "Nous enregistrons uniquement des statistiques agrégées (vues et clics quotidiens) sans stocker de données personnelles sur les visiteurs."
+        },
+        {
+          "h": "Boutiques externes",
+          "p": "Lorsqu’un visiteur clique sur un bouton d’achat, il est redirigé vers le site de la boutique, où s’applique la politique de confidentialité de celle-ci."
+        },
+        {
+          "h": "Vos droits",
+          "p": "Vous pouvez demander la suppression de vos données à tout moment en nous contactant."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Politique de cookies",
+      "eyebrow": "Légal",
+      "intro": "Nous utilisons le moins de cookies possible.",
+      "sections": [
+        {
+          "h": "Cookies essentiels",
+          "p": "Nous utilisons un cookie de session pour vous garder connecté au tableau de bord, et un cookie pour mémoriser votre langue."
+        },
+        {
+          "h": "Pas de cookies publicitaires",
+          "p": "Nous ne plaçons aucun cookie publicitaire ou de suivi sur les pages des affiliés."
+        },
+        {
+          "h": "Cookies des boutiques",
+          "p": "Lorsqu’un visiteur suit un lien d’affiliation, la boutique peut déposer ses propres cookies pour attribuer la vente à l’affilié. Ces cookies sont gérés par la boutique."
+        },
+        {
+          "h": "Gérer les cookies",
+          "p": "Vous pouvez supprimer ou bloquer les cookies dans votre navigateur. Bloquer les cookies essentiels vous déconnectera."
+        }
+      ]
+    },
+    "disclosure": {
+      "title": "Divulgation d’affiliation",
+      "eyebrow": "Légal",
+      "intro": "Comment fonctionnent les liens d’affiliation sur les pages hébergées ici.",
+      "sections": [
+        {
+          "h": "Les pages contiennent des liens d’affiliation",
+          "p": "Les pages créées sur la plateforme sont gérées par des affiliés indépendants. Lorsque vous achetez via leurs liens, ils peuvent toucher une commission sans coût supplémentaire pour vous."
+        },
+        {
+          "h": "Prix et disponibilité",
+          "p": "Les prix et la disponibilité sont fixés par la boutique et peuvent changer à tout moment. Vérifiez toujours le prix final sur le site de la boutique."
+        },
+        {
+          "h": "Avis indépendants",
+          "p": "Les avis reflètent l’opinion de chaque affilié. La plateforme ne vend aucun produit et n’est pas affiliée aux boutiques présentées."
+        },
+        {
+          "h": "Marques",
+          "p": "Les noms et logos des boutiques appartiennent à leurs propriétaires et servent uniquement à indiquer où le produit est vendu."
+        }
+      ]
+    },
+    "acceptableUse": {
+      "title": "Utilisation acceptable",
+      "eyebrow": "Légal",
+      "intro": "Des règles qui préservent la confiance des visiteurs et des boutiques.",
+      "sections": [
+        {
+          "h": "Soyez honnête",
+          "p": "Ne publiez pas de faux avis, de fausses réductions ni d’affirmations mensongères sur les produits."
+        },
+        {
+          "h": "Respectez les programmes",
+          "p": "Respectez les règles de chaque programme d’affiliation, y compris celles sur l’affichage des prix et des logos."
+        },
+        {
+          "h": "Produits autorisés",
+          "p": "Ne faites pas la promotion de produits illégaux, dangereux ou pour adultes, ni de ce que la boutique interdit."
+        },
+        {
+          "h": "Pas d’abus",
+          "p": "N’utilisez pas la plateforme pour du spam, de l’hameçonnage, des logiciels malveillants ou pour usurper l’identité d’une personne ou d’une marque."
+        }
+      ]
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "eyebrow": "Entreprise",
+      "intro": "Questions, retours ou idées de partenariat ? Écrivez-nous.",
+      "emailLabel": "E-mail",
+      "responseLabel": "Délai de réponse",
+      "response": "Généralement sous un jour ouvré",
+      "sections": [
+        {
+          "h": "Support",
+          "p": "Pour toute aide sur votre compte ou votre tableau de bord, écrivez-nous en indiquant le lien de votre page."
+        },
+        {
+          "h": "Signaler une page",
+          "p": "Si une page enfreint nos règles, envoyez-nous son lien et nous l’examinerons."
+        }
+      ]
+    },
+    "guide": {
+      "title": "Guide de l’affiliation",
+      "eyebrow": "Ressources",
+      "intro": "Lancez une page qui convertit en six étapes.",
+      "sections": [
+        {
+          "h": "1. Rejoignez des programmes",
+          "p": "Postulez à des programmes comme Amazon Associates, Walmart Affiliates et Target Partners. Chacun vous fournit des liens contenant votre tag de suivi."
+        },
+        {
+          "h": "2. Choisissez une niche",
+          "p": "Une page centrée sur une audience (tech, maison, beauté, sport…) inspire plus confiance qu’une page qui mélange tout."
+        },
+        {
+          "h": "3. Sélectionnez de bons produits",
+          "p": "Privilégiez les produits bien notés, au prix juste et disponibles. Moins de produits, mais meilleurs, convertissent mieux."
+        },
+        {
+          "h": "4. Écrivez des avis courts et honnêtes",
+          "p": "Expliquez à qui s’adresse le produit, listez de vrais avantages et inconvénients et donnez un verdict clair. L’honnêteté vend."
+        },
+        {
+          "h": "5. Partagez votre lien partout",
+          "p": "Placez le lien de votre page dans votre bio, vos descriptions de vidéos, vos publications et vos newsletters."
+        },
+        {
+          "h": "6. Mesurez et améliorez",
+          "p": "Consultez votre tableau de bord chaque semaine. Remontez vos meilleures offres et remplacez celles qui ne reçoivent pas de clics."
+        }
+      ]
+    },
+    "storesPage": {
+      "title": "Boutiques prises en charge",
+      "eyebrow": "Produit",
+      "intro": "Ajoutez des offres de ces boutiques, ou de n’importe quelle autre en saisissant son nom.",
+      "other": "Toute autre boutique",
+      "otherDesc": "Collez n’importe quel lien d’affiliation et saisissez le nom de la boutique.",
+      "cta": "Créer votre page"
+    },
+    "blog": {
+      "title": "Blog",
+      "eyebrow": "Ressources",
+      "intro": "Stratégies, conseils et actualités pour les affiliés.",
+      "empty": "Aucun article publié pour le moment",
+      "by": "Par",
+      "back": "Blog",
+      "read": "Lire l’article"
     }
   }
 }

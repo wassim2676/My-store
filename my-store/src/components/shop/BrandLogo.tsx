@@ -26,18 +26,21 @@ export default function BrandLogo({
   brand,
   size = 28,
   className = "",
+  fallback = "initial",
 }: {
   brand: BrandLogoData;
   size?: number;
   className?: string;
+  /** عند غياب الشعار: "initial" شارة بالحرف الأول، "name" اسم المتجر كنص بلونه (للبطاقات الداكنة) */
+  fallback?: "initial" | "name";
 }) {
   const accent = brand.accentColor || "#1D4ED8";
 
   if (brand.logoSvg) {
     return (
       <span
-        className={`inline-flex items-center justify-center shrink-0 ${className}`}
-        style={{ width: size, height: size }}
+        className={`inline-flex items-center justify-center shrink-0 [&_svg]:h-full [&_svg]:w-auto ${className}`}
+        style={{ height: size, minWidth: size, maxWidth: size * 5 }}
         role="img"
         aria-label={brand.name}
         // ⚠️ محتوى يُدخله الأدمن فقط من لوحة التحكم المحمية — ليس مدخلاً من الزوار
@@ -46,8 +49,12 @@ export default function BrandLogo({
     );
   }
 
-  // 🔤 شارة احتياطية بحرف أول من اسم العلامة التجارية + أيقونة متجر عامة
-  const initialBadge = (
+  // 🔤 بديل الشعار: اسم المتجر كنص، أو شارة بحرف أول + أيقونة متجر عامة
+  const initialBadge = fallback === "name" && brand.name ? (
+    <span className={`whitespace-nowrap font-bold tracking-tight ${className}`} style={{ fontSize: Math.max(12, size * 0.62), lineHeight: 1 }}>
+      {brand.name}
+    </span>
+  ) : (
     <span
       className={`inline-flex items-center justify-center rounded-lg font-black shrink-0 ${className}`}
       style={{ width: size, height: size, backgroundColor: `${accent}1A`, color: accent }}
@@ -68,8 +75,13 @@ export default function BrandLogo({
   if (!src) return initialBadge;
 
   return (
-    <span className={`relative inline-block shrink-0 ${className}`} style={{ width: size, height: size }}>
-      <BrandLogoImage key={src} src={src} alt={brand.name} fallback={initialBadge} />
-    </span>
+    <BrandLogoImage
+      key={src}
+      src={src}
+      alt={brand.name}
+      fallback={initialBadge}
+      className={`relative inline-block shrink-0 ${className}`}
+      size={size}
+    />
   );
 }

@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import MegaNavbar from "@/components/site/SiteNavbar";
-import MegaFooter from "@/components/site/SiteFooter";
+import { PageFrame } from "@/components/site/StaticPage";
+
+const DATE_LOCALE: Record<string, string> = { ar: "ar-MA", en: "en-US", fr: "fr-FR" };
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -11,36 +13,33 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   if (!post || post.status !== "PUBLISHED") notFound();
 
+  const [t, locale] = await Promise.all([getTranslations("pages.blog"), getLocale()]);
+
   // زيادة عدد المشاهدات (بدون انتظار — لا يؤثر على سرعة عرض الصفحة)
   prisma.post.update({ where: { id: post.id }, data: { views: { increment: 1 } } }).catch(() => {});
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <MegaNavbar />
-
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <nav className="text-sm text-slate-500 mb-6">
-          <Link href="/blog" className="hover:text-orange-600">المدونة</Link> / <span className="text-slate-800">{post.title}</span>
+    <PageFrame>
+      <article className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+        <nav className="mb-8 text-sm text-white/45">
+          <Link href="/blog" className="hover:text-amber-300">{t("back")}</Link> / <span className="text-white/75">{post.title}</span>
         </nav>
 
+        {post.category && <span className="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">{post.category}</span>}
+        <h1 className="mt-3 font-serif text-3xl font-semibold leading-tight sm:text-5xl">{post.title}</h1>
+        <p className="mt-4 text-sm text-white/45">
+          {t("by")} {post.authorName}
+          {post.publishedAt ? ` · ${new Date(post.publishedAt).toLocaleDateString(DATE_LOCALE[locale] ?? "en-US")}` : ""}
+        </p>
+
         {post.coverImage && (
-          <div className="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-slate-100">
+          <div className="relative mt-8 aspect-video overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.04]">
             <Image src={post.coverImage} alt={post.title} fill className="object-cover" sizes="768px" priority />
           </div>
         )}
 
-        {post.category && <span className="text-xs font-bold text-orange-600 uppercase">{post.category}</span>}
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 mb-3">{post.title}</h1>
-        <p className="text-sm text-slate-400 mb-8">
-          بقلم {post.authorName} · {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("ar-MA") : ""}
-        </p>
-
-        <article className="prose prose-slate max-w-none whitespace-pre-line leading-relaxed text-slate-700">
-          {post.content}
-        </article>
-      </main>
-
-      <MegaFooter />
-    </div>
+        <div className="mt-10 whitespace-pre-line text-[17px] leading-[1.85] text-white/70">{post.content}</div>
+      </article>
+    </PageFrame>
   );
 }

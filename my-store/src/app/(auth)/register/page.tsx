@@ -77,7 +77,7 @@ function RegisterForm() {
     <div className="min-h-screen bg-[#07090D] text-white relative overflow-hidden flex items-center justify-center px-4 py-12">
       <div className="pointer-events-none absolute -top-40 start-1/2 -translate-x-1/2 h-[520px] w-[820px] max-w-full rounded-full bg-amber-500/10 blur-[120px]" />
       <div className="absolute top-4 end-4 z-10">
-        <LanguageSwitcher variant="compact" />
+        <LanguageSwitcher variant="dark" />
       </div>
 
       <div className="relative w-full max-w-lg">

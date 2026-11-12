@@ -1,14 +1,7 @@
-import StaticPage from "@/components/site/StaticPage";
+import StaticPage, { contentMetadata } from "@/components/site/StaticPage";
 
-export const metadata = { title: "مركز المساعدة" };
+export const generateMetadata = () => contentMetadata("help");
 
 export default function Page() {
-  return (
-    <StaticPage title="مركز المساعدة">
-      <p><strong>إضافة عرض:</strong> من لوحة التحكم ← «إضافة عرض»، الصق رابط الأفلييت (نتعرّف على المتجر تلقائياً)، أضف العنوان والصور والمراجعة المختصرة ثم انشر.</p>
-      <p><strong>ترتيب العروض:</strong> من صفحة «العروض» استخدم أسهم الترتيب ثم «حفظ الترتيب». العروض المميّزة بنجمة تظهر في أعلى صفحتك.</p>
-      <p><strong>تخصيص الصفحة:</strong> من «تصميم الصفحة» غيّر الثيم واللون والصورة الشخصية والغلاف وروابط التواصل ولغة الصفحة.</p>
-      <p>لم تجد ما تبحث عنه؟ تواصل معنا عبر صفحة <a href="/contact">اتصل بنا</a>.</p>
-    </StaticPage>
-  );
+  return <StaticPage pageKey="help" />;
 }

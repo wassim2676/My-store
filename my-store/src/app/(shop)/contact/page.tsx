@@ -1,23 +1,27 @@
-import MegaNavbar from "@/components/site/SiteNavbar";
-import MegaFooter from "@/components/site/SiteFooter";
+import { getTranslations } from "next-intl/server";
+import { Clock, Mail } from "lucide-react";
+import StaticPage, { contentMetadata } from "@/components/site/StaticPage";
 
-export default function Page() {
+export const generateMetadata = () => contentMetadata("contact");
+
+const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "support@mystore.ma";
+
+export default async function Page() {
+  const t = await getTranslations("pages.contact");
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <MegaNavbar />
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-6">اتصل بنا</h1>
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 prose prose-slate max-w-none leading-relaxed text-slate-600 space-y-4">
-          <p>يسعدنا تواصلك معنا لأي استفسار أو ملاحظة:</p>
-          <ul>
-            <li>البريد الإلكتروني: support@mystore.ma</li>
-            <li>الهاتف: 212 5XX-XXXXXX+</li>
-            <li>العنوان: الدار البيضاء، المغرب</li>
-          </ul>
-          <p>فريق الدعم متواجد يومياً للرد على استفساراتكم في أسرع وقت ممكن.</p>
+    <StaticPage pageKey="contact">
+      <div className="mb-4 grid gap-4 sm:grid-cols-2">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="group rounded-2xl border border-amber-400/25 bg-amber-400/[0.05] p-6 transition hover:bg-amber-400/[0.09]">
+          <Mail className="h-5 w-5 text-amber-300" />
+          <p className="mt-4 text-xs uppercase tracking-[0.18em] text-white/40">{t("emailLabel")}</p>
+          <p className="mt-1 font-semibold text-white group-hover:text-amber-200" dir="ltr">{CONTACT_EMAIL}</p>
+        </a>
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6">
+          <Clock className="h-5 w-5 text-amber-300" />
+          <p className="mt-4 text-xs uppercase tracking-[0.18em] text-white/40">{t("responseLabel")}</p>
+          <p className="mt-1 font-semibold text-white">{t("response")}</p>
         </div>
-      </main>
-      <MegaFooter />
-    </div>
+      </div>
+    </StaticPage>
   );
 }

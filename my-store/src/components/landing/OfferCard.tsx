@@ -22,7 +22,10 @@ export interface OfferCardData {
   brand: StoreBrand | null;
 }
 
-// ==================== 💎 بطاقة عرض فخمة + شعار المتجر في الأسفل ====================
+/** الشعار يأخذ فلتر الثيم (أبيض على الخلفيات الداكنة) — للصور ولكود SVG الملصوق */
+export const LOGO_ON_CARD = "[&_img]:[filter:var(--lp-logo-filter)] [&_svg]:[filter:var(--lp-logo-filter)]";
+
+// ==================== 💎 بطاقة عرض فخمة + شعار المتجر في الأسفل (مباشرة على الخلفية) ====================
 export default function OfferCard({
   offer,
   pageSlug,
@@ -107,11 +110,8 @@ export default function OfferCard({
 
       {/* 🏬 شعار المتجر */}
       <div className="flex items-center justify-between gap-3 border-t border-[var(--lp-border)] bg-[var(--lp-surface2)] px-4 py-3">
-        <span className="flex min-w-0 items-center gap-2.5">
-          <span className="flex h-8 min-w-8 items-center justify-center rounded-lg bg-white px-1.5 shadow-sm">
-            <BrandLogo brand={store} size={22} />
-          </span>
-          <span className="truncate text-[12.5px] font-semibold text-[var(--lp-text)]">{store.name}</span>
+        <span className="flex min-w-0 items-center text-[var(--lp-text)] opacity-90 transition-opacity group-hover:opacity-100" title={store.name}>
+          <BrandLogo brand={store} size={22} fallback="name" className={LOGO_ON_CARD} />
         </span>
         <span className="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--lp-accent)]">
           {publicT(lang, "viewReview")}

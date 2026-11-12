@@ -1,15 +1,7 @@
-import StaticPage from "@/components/site/StaticPage";
+import StaticPage, { contentMetadata } from "@/components/site/StaticPage";
 
-export const metadata = { title: "الأسئلة الشائعة" };
+export const generateMetadata = () => contentMetadata("faq");
 
 export default function Page() {
-  return (
-    <StaticPage title="الأسئلة الشائعة">
-      <p><strong>ما هي هذه المنصة؟</strong><br />منصة للمسوّقين بالعمولة تتيح لك إنشاء صفحة هبوط فخمة باسمك تعرض فيها عروضك من Amazon وWalmart وTarget وغيرها، مع صفحة مراجعة لكل منتج وزر شراء يوجّه الزائر لرابط الأفلييت الخاص بك.</p>
-      <p><strong>كيف أحصل على رابط صفحتي؟</strong><br />عند التسجيل تختار اسم صفحتك ورابطها، مثلاً <span dir="ltr">yoursite.com/your-name</span>. يمكنك تغييره لاحقاً من «تصميم الصفحة» في لوحة التحكم.</p>
-      <p><strong>هل تأخذ المنصة جزءاً من عمولتي؟</strong><br />لا. الزائر يُحوَّل مباشرة إلى رابط الأفلييت الذي أضفته أنت، والعمولة تُدفع لك من المتجر وفق برنامجه.</p>
-      <p><strong>هل يمكنني معرفة عدد النقرات؟</strong><br />نعم، لوحة التحكم تعرض الزيارات والنقرات ونسبة النقر لكل عرض ولآخر 30 يوماً.</p>
-      <p><strong>هل يجب إظهار إفصاح التسويق بالعمولة؟</strong><br />برامج مثل Amazon Associates وقوانين FTC تشترط ذلك، لذا يظهر الإفصاح افتراضياً في أسفل صفحتك ويمكنك تعديل نصّه.</p>
-    </StaticPage>
-  );
+  return <StaticPage pageKey="faq" />;
 }

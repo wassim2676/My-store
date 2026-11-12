@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import "./globals.css";
 import Providers from "./providers";
 import { getDirection } from "@/i18n/config";
 import { SITE_NAME } from "@/lib/site";
 
-export const metadata: Metadata = {
-  metadataBase: process.env.NEXTAUTH_URL ? new URL(process.env.NEXTAUTH_URL) : undefined,
-  title: { default: `${SITE_NAME} — Affiliate landing pages`, template: `%s · ${SITE_NAME}` },
-  description: "صفحات هبوط فخمة للمسوّقين بالعمولة — اعرض عروضك من Amazon وWalmart وTarget في رابط واحد.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("platform.hero");
+  return {
+    metadataBase: process.env.NEXTAUTH_URL ? new URL(process.env.NEXTAUTH_URL) : undefined,
+    title: { default: `${SITE_NAME} — ${t("title")}`, template: `%s · ${SITE_NAME}` },
+    description: t("subtitle"),
+  };
+}
 
 export default async function RootLayout({
   children,

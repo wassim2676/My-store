@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { BarChart3, Check, Eye, EyeOff, Gem, Loader2, Lock, Mail, MousePointerClick, Sparkles } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
+
+const inputCls =
+  "block w-full ps-10 pe-3 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-white placeholder-white/35 focus:outline-none focus:ring-2 focus:ring-amber-400/60 focus:border-transparent transition-all disabled:opacity-50";
 
 // يحدد وجهة التوجيه الافتراضية بعد الدخول حسب دور المستخدم
 function getDefaultRedirect(role?: string) {
@@ -15,10 +18,19 @@ function getDefaultRedirect(role?: string) {
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#07090D]" />}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+// ==================== 🔐 تسجيل الدخول (نفس هوية صفحة التسجيل الداكنة) ====================
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status, update } = useSession();
-  const t = useTranslations("auth");
+  const t = useTranslations("platform.login");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +38,7 @@ export default function LoginPage() {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const justRegistered = searchParams.get("registered") === "true";
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -38,148 +51,163 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
-      const result = await signIn("credentials", {
-        email: email.trim(),
-        password: password.trim(),
-        redirect: false,
-      });
-
+      const result = await signIn("credentials", { email: email.trim(), password: password.trim(), redirect: false });
       if (result?.error) {
-        setError(t("error.invalidCredentials"));
+        setError(t("invalid"));
       } else if (result?.ok) {
         const updated = await update();
         const role = (updated as { user?: { role?: string } } | null)?.user?.role;
-        const callbackUrl = searchParams.get("callbackUrl") || getDefaultRedirect(role);
-        router.push(callbackUrl);
+        router.push(searchParams.get("callbackUrl") || getDefaultRedirect(role));
         router.refresh();
       } else {
-        setError(t("error.unknown"));
+        setError(t("unknown"));
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError(t("error.unknown"));
+      setError(t("unknown"));
     } finally {
       setLoading(false);
     }
   };
 
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-sky-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
-      </div>
-    );
-  }
+  const perks = [
+    { icon: Gem, text: t("side1") },
+    { icon: MousePointerClick, text: t("side2") },
+    { icon: BarChart3, text: t("side3") },
+  ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-sky-50 py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="absolute top-4 end-4 z-10">
-        <LanguageSwitcher variant="compact" />
+    <div className="relative grid min-h-screen overflow-hidden bg-[#07090D] text-white lg:grid-cols-2">
+      <div className="pointer-events-none absolute -top-40 left-1/4 h-[520px] w-[820px] max-w-full -translate-x-1/2 rounded-full bg-amber-500/10 blur-[120px]" />
+      <div className="absolute end-4 top-4 z-10">
+        <LanguageSwitcher variant="dark" />
       </div>
 
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <Link href="/">
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg mb-4 hover:scale-105 transition-transform">
-              <span className="text-white font-bold text-2xl">M</span>
-            </div>
-          </Link>
-          <h2 className="text-3xl font-bold text-gray-900">{t("loginTitle")}</h2>
-          <p className="mt-2 text-gray-600">{t("loginSubtitle")}</p>
-        </div>
+      {/* النموذج */}
+      <div className="relative flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-md">
+          <div className="mb-8 text-center lg:text-start">
+            <Link href="/" className="inline-flex items-center gap-2">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg shadow-amber-500/20">
+                <Sparkles className="h-5 w-5 text-black" />
+              </span>
+            </Link>
+            <h1 className="mt-6 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">{t("title")}</h1>
+            <p className="mt-2 text-white/60">{t("subtitle")}</p>
+          </div>
 
-        <form className="mt-8 space-y-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
+          {status === "loading" || status === "authenticated" ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="h-8 w-8 animate-spin text-amber-300" />
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5 rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur sm:p-8">
+              {justRegistered && !error && (
+                <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+                  <Check className="h-4 w-4 shrink-0" />
+                  {t("registered")}
+                </div>
+              )}
+              {error && <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>}
+
+              <div className="relative">
+                <Mail className="absolute start-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/35" />
+                <input
+                  type="email"
+                  autoComplete="email"
+                  required
+                  disabled={loading}
+                  className={inputCls}
+                  placeholder={t("email")}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="relative">
+                <Lock className="absolute start-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/35" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  disabled={loading}
+                  className={inputCls + " pe-10"}
+                  placeholder={t("password")}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute end-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 cursor-pointer"
+                  aria-label="toggle password"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex cursor-pointer items-center gap-2 text-white/60">
+                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-4 w-4 cursor-pointer accent-amber-500" />
+                  {t("remember")}
+                </label>
+                <Link href="/contact" className="font-medium text-amber-300 hover:text-amber-200">
+                  {t("forgot")}
+                </Link>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-gradient-to-r from-amber-300 to-amber-500 py-3.5 font-semibold text-black shadow-lg shadow-amber-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t("loading")}
+                  </span>
+                ) : (
+                  t("submit")
+                )}
+              </button>
+            </form>
           )}
 
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <Mail className="w-5 h-5 text-gray-400" />
-            </div>
-            <input
-              type="email"
-              autoComplete="email"
-              required
-              disabled={loading}
-              className="block w-full ps-10 pe-3 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all disabled:opacity-50"
-              placeholder={t("emailPlaceholder")}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <div className="relative">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <Lock className="w-5 h-5 text-gray-400" />
-              </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                required
-                disabled={loading}
-                className="block w-full ps-10 pe-10 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all disabled:opacity-50"
-                placeholder={t("passwordPlaceholder")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={loading}
-                className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-400 hover:text-gray-600 cursor-pointer disabled:opacity-50"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                disabled={loading}
-                className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded cursor-pointer disabled:opacity-50"
-              />
-              <span className="ms-2 text-sm text-gray-700">{t("rememberMe")}</span>
-            </label>
-            <a href="#" className="text-sm font-medium text-orange-600 hover:text-orange-500 transition-colors">
-              {t("forgotPassword")}
-            </a>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-3 px-4 rounded-xl text-white font-semibold bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl cursor-pointer"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-                {t("loadingLogin")}
-              </span>
-            ) : (
-              t("loginBtn")
-            )}
-          </button>
-        </form>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-white/55 lg:text-start">
             {t("noAccount")}{" "}
-            <Link href="/register" className="font-semibold text-orange-600 hover:text-orange-500 transition-colors">
-              {t("createOne")}
+            <Link href="/register" className="font-semibold text-amber-300 hover:text-amber-200">
+              {t("create")}
             </Link>
           </p>
         </div>
       </div>
+
+      {/* لوحة جانبية (شاشات كبيرة) */}
+      <aside className="relative hidden overflow-hidden border-s border-white/[0.06] bg-[radial-gradient(ellipse_90%_70%_at_50%_0%,rgba(200,162,74,0.16),transparent_70%)] lg:flex lg:items-center lg:justify-center">
+        <div className="max-w-md px-12">
+          <p className="font-serif text-4xl font-semibold leading-tight">{t("sideTitle")}</p>
+          <ul className="mt-10 space-y-5">
+            {perks.map(({ icon: Icon, text }) => (
+              <li key={text} className="flex items-center gap-4 text-white/75">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-400/[0.07] text-amber-300">
+                  <Icon className="h-5 w-5" />
+                </span>
+                {text}
+              </li>
+            ))}
+          </ul>
+
+          {/* بطاقة معاينة صغيرة */}
+          <div className="mt-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#121621] shadow-2xl">
+            <div className="m-2 mb-0 aspect-[16/9] rounded-xl bg-gradient-to-br from-white to-neutral-200" />
+            <div className="flex items-center justify-between px-4 py-3">
+              <span className="h-2.5 w-28 rounded-full bg-white/15" />
+              <span className="text-xs font-semibold text-[#C8A24A]">$249</span>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }

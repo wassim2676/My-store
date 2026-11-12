@@ -9,6 +9,9 @@ import ClaimLink from "@/components/site/ClaimLink";
 import BrandLogo from "@/components/shop/BrandLogo";
 import { getActiveBrands } from "@/lib/brands";
 
+/** الشعار باللون الأبيض فوق الخلفية الداكنة مباشرة (بلا إطار) */
+const WHITE_LOGO = "[&_img]:brightness-0 [&_img]:invert [&_svg]:brightness-0 [&_svg]:invert";
+
 // ==================== 🏠 الصفحة الرئيسية للمنصة (للمسوّقين بالعمولة) ====================
 export default async function Home() {
   const t = await getTranslations("platform");
@@ -69,11 +72,8 @@ export default async function Home() {
                     </p>
                   </div>
                   <div className="flex items-center justify-between border-t border-white/[0.08] bg-[#1A1F2C] px-4 py-3">
-                    <span className="flex items-center gap-2 text-xs font-semibold">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white">
-                        <BrandLogo brand={{ name: m.store, accentColor: m.color }} size={20} />
-                      </span>
-                      {m.store}
+                    <span className="flex items-center text-white/90" title={m.store}>
+                      <BrandLogo brand={{ name: m.store, accentColor: m.color }} size={20} fallback="name" className={WHITE_LOGO} />
                     </span>
                     <span className="text-[11px] font-semibold text-[#C8A24A]">{t("mock.read")}</span>
                   </div>
@@ -83,17 +83,39 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* 🏬 المتاجر المدعومة */}
+        {/* 🏬 المتاجر المدعومة — شريط شعارات متحرك */}
         {brands.length > 0 && (
-          <section className="border-y border-white/[0.06] bg-white/[0.015] py-10">
-            <p className="mb-6 text-center text-xs uppercase tracking-[0.2em] text-white/40">{t("stores.title")}</p>
-            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-3 px-4">
-              {brands.map((b) => (
-                <span key={b.id} className="flex items-center gap-2.5 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-2.5 text-sm text-white/75">
-                  <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-white px-1"><BrandLogo brand={b} size={20} /></span>
-                  {b.name}
-                </span>
-              ))}
+          <section className="relative border-y border-white/[0.06] bg-white/[0.012] py-12">
+            <div className="mx-auto mb-8 flex max-w-7xl items-center justify-center gap-4 px-4">
+              <span className="h-px w-10 bg-gradient-to-r from-transparent to-white/20 sm:w-20" />
+              <p className="text-center text-[11px] font-medium uppercase tracking-[0.25em] text-white/45">{t("stores.title")}</p>
+              <span className="h-px w-10 bg-gradient-to-l from-transparent to-white/20 sm:w-20" />
+            </div>
+
+            <div
+              dir="ltr"
+              className="group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+            >
+              <div className="flex w-max animate-marquee items-center group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+                {[0, 1].map((copy) => (
+                  <ul key={copy} className="flex shrink-0 items-center" aria-hidden={copy === 1}>
+                    {(brands.length < 6 ? [...brands, ...brands] : brands).map((b, i) => (
+                      <li key={`${b.id}-${i}`} className="flex h-12 items-center px-8 sm:px-11" title={b.name}>
+                        <span className="text-white/55 transition-colors duration-300 hover:text-white [&_img]:opacity-55 [&_img]:transition-opacity hover:[&_img]:opacity-100">
+                          <BrandLogo brand={b} size={26} fallback="name" className={WHITE_LOGO} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8 text-center">
+              <Link href="/stores" className="inline-flex items-center gap-1.5 text-xs font-medium text-white/45 transition hover:text-amber-300">
+                {t("stores.all")}
+                <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+              </Link>
             </div>
           </section>
         )}
