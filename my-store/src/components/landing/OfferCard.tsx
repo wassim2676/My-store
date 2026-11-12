@@ -45,10 +45,10 @@ export default function OfferCard({
   return (
     <Link
       href={`/${pageSlug}/${offer.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-[1.35rem] border border-[var(--lp-border)] bg-[var(--lp-surface)] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_20px_40px_-24px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--lp-accent)_45%,transparent)] hover:shadow-[0_30px_60px_-28px_color-mix(in_srgb,var(--lp-accent)_45%,transparent)]"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-[var(--lp-border)] bg-[var(--lp-surface)] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_20px_40px_-24px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--lp-accent)_45%,transparent)] hover:shadow-[0_30px_60px_-28px_color-mix(in_srgb,var(--lp-accent)_45%,transparent)]"
     >
       {/* 🖼️ الصورة */}
-      <div className={`relative m-2.5 mb-0 overflow-hidden rounded-2xl bg-white ${large ? "aspect-[5/4]" : "aspect-square"}`}>
+      <div className={`relative m-2.5 mb-0 overflow-hidden rounded-2xl bg-[var(--lp-card-img)] ${large ? "aspect-[5/4]" : "aspect-square"}`}>
         {offer.images[0] ? (
           <img
             src={offer.images[0]}
@@ -64,7 +64,7 @@ export default function OfferCard({
 
         <div className="absolute inset-x-2.5 top-2.5 flex items-start justify-between gap-2">
           {offer.badge ? (
-            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-black shadow-sm" style={{ background: "var(--lp-accent)" }}>
+            <span className="rounded-full px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-[var(--lp-accent-fg)] shadow-sm" style={{ background: "var(--lp-accent)" }}>
               {offer.badge}
             </span>
           ) : (

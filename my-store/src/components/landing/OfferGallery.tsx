@@ -10,10 +10,13 @@ export default function OfferGallery({
   offers,
   pageSlug,
   lang,
+  columns = 4,
 }: {
   offers: OfferCardData[];
   pageSlug: string;
   lang: string;
+  /** عدد الأعمدة على الشاشات الكبيرة (من إعدادات التصميم) */
+  columns?: 2 | 3 | 4;
 }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
@@ -45,7 +48,7 @@ export default function OfferGallery({
   const chip = (active: boolean) =>
     `shrink-0 rounded-full border px-4 py-1.5 text-[13px] font-medium transition cursor-pointer ${
       active
-        ? "border-transparent text-black"
+        ? "border-transparent text-[var(--lp-accent-fg)]"
         : "border-[var(--lp-border)] text-[var(--lp-muted)] hover:text-[var(--lp-text)]"
     }`;
 
@@ -90,7 +93,7 @@ export default function OfferGallery({
       {filtered.length === 0 ? (
         <p className="py-16 text-center text-[var(--lp-muted)]">{publicT(lang, "noResults")}</p>
       ) : (
-        <div className="grid grid-cols-1 gap-5 min-[480px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className={`grid grid-cols-1 gap-5 min-[480px]:grid-cols-2 ${columns === 2 ? "" : columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-3 xl:grid-cols-4"}`}>
           {filtered.map((o) => (
             <OfferCard key={o.id} offer={o} pageSlug={pageSlug} lang={lang} />
           ))}

@@ -116,7 +116,7 @@ export default async function OfferPage({ params }: Props) {
           <div className="flex flex-col gap-5 md:pt-4">
             <div className="flex flex-wrap items-center gap-2">
               {offer.badge && (
-                <span className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-black" style={{ background: "var(--lp-accent)" }}>
+                <span className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--lp-accent-fg)]" style={{ background: "var(--lp-accent)" }}>
                   {offer.badge}
                 </span>
               )}
@@ -272,7 +272,7 @@ export default async function OfferPage({ params }: Props) {
         )}
 
         {/* 🏁 الخلاصة */}
-        <section className="mt-16 overflow-hidden rounded-[2rem] border border-[color-mix(in_srgb,var(--lp-accent)_35%,transparent)] bg-[radial-gradient(ellipse_80%_100%_at_0%_0%,color-mix(in_srgb,var(--lp-accent)_14%,transparent),transparent_70%)] p-6 sm:p-10">
+        <section className="mt-16 overflow-hidden rounded-3xl border border-[color-mix(in_srgb,var(--lp-accent)_35%,transparent)] bg-[radial-gradient(ellipse_80%_100%_at_0%_0%,color-mix(in_srgb,var(--lp-accent)_14%,transparent),transparent_70%)] p-6 sm:p-10">
           <div className="grid items-center gap-8 md:grid-cols-[auto_1fr_minmax(0,320px)]">
             {offer.rating != null && offer.rating > 0 && (
               <div className="flex flex-col items-center">

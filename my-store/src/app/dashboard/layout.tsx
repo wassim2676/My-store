@@ -12,7 +12,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // حساب قديم لا يملك صفحة هبوط بعد → نطلب منه اختيار اسم صفحته أولاً
   if (!ctx.landingPage) {
-    return <Onboarding firstName={ctx.session.user.firstName ?? null} />;
+    return (
+      <Onboarding
+        firstName={ctx.session.user.firstName ?? null}
+        isAdmin={ctx.session.user.role === "ADMIN" || ctx.session.user.role === "SUPER_ADMIN"}
+      />
+    );
   }
 
   const user = ctx.session.user;

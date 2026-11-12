@@ -7,7 +7,13 @@ import {
   PAGE_LANGUAGES,
   PAGE_THEMES,
   SOCIAL_KEYS,
+  BG_STYLES,
+  FONT_STYLES,
+  RADIUS_STYLES,
+  BUTTON_STYLES,
+  CARD_IMAGE_STYLES,
   checkSlugFormat,
+  parseDesign,
   parseSpecs,
 } from "@/lib/landing";
 
@@ -20,20 +26,31 @@ export async function getMarketerSession() {
 }
 
 // ==================== ✅ مخططات التحقق ====================
-const httpUrl = z
-  .string()
-  .trim()
-  .max(2000)
-  .refine((v) => {
-    try {
-      const u = new URL(v);
-      return u.protocol === "https:" || u.protocol === "http:";
-    } catch {
-      return false;
-    }
-  }, "الرابط يجب أن يبدأ بـ https://");
+/** يضيف https:// تلقائياً إن نسيه المستخدم (مثل www.instagram.com/me) */
+const withProtocol = (v: unknown) => {
+  if (typeof v !== "string") return v;
+  const t = v.trim();
+  return t && !/^[a-z][a-z0-9+.-]*:\/\//i.test(t) ? `https://${t}` : t;
+};
 
-const optionalUrl = z.union([httpUrl, z.literal("")]).optional().nullable();
+/** رابط http(s) صالح بحد أقصى يطابق عمود قاعدة البيانات */
+const httpUrlMax = (max: number) =>
+  z.preprocess(
+    withProtocol,
+    z
+      .string()
+      .max(max, `الرابط طويل جداً (الحد ${max} حرف) — استخدم رابطاً أقصر للصورة`)
+      .refine((v) => {
+        try {
+          const u = new URL(v);
+          return (u.protocol === "https:" || u.protocol === "http:") && !!u.hostname.includes(".");
+        } catch {
+          return false;
+        }
+      }, "رابط غير صالح — يجب أن يبدأ بـ https://"),
+  );
+const httpUrl = httpUrlMax(2000);
+const optionalUrlMax = (max: number) => z.union([z.literal(""), httpUrlMax(max)]).optional().nullable();
 const optionalText = (max: number) => z.string().trim().max(max).optional().nullable();
 
 export const slugSchema = z
@@ -52,8 +69,8 @@ export const landingPageSchema = z.object({
   title: z.string().trim().min(2, "عنوان الصفحة قصير جداً").max(80),
   tagline: optionalText(160),
   bio: optionalText(2000),
-  avatarUrl: optionalUrl,
-  coverUrl: optionalUrl,
+  avatarUrl: optionalUrlMax(1000),
+  coverUrl: optionalUrlMax(1000),
   language: z.enum(PAGE_LANGUAGES).default("en"),
   theme: z.enum(PAGE_THEMES).default("midnight"),
   accentColor: z
@@ -61,7 +78,20 @@ export const landingPageSchema = z.object({
     .trim()
     .regex(/^#[0-9A-Fa-f]{6}$/, "صيغة اللون غير صحيحة")
     .default("#C8A24A"),
-  socialLinks: z.partialRecord(z.enum(SOCIAL_KEYS), z.union([httpUrl, z.literal("")])).optional().nullable(),
+  socialLinks: z.partialRecord(z.enum(SOCIAL_KEYS), z.union([z.literal(""), httpUrl])).optional().nullable(),
+  design: z
+    .object({
+      bgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+      background: z.enum(BG_STYLES).optional(),
+      font: z.enum(FONT_STYLES).optional(),
+      radius: z.enum(RADIUS_STYLES).optional(),
+      button: z.enum(BUTTON_STYLES).optional(),
+      columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional(),
+      cardImage: z.enum(CARD_IMAGE_STYLES).optional(),
+    })
+    .optional()
+    .nullable()
+    .transform((d) => parseDesign(d)),
   showDisclosure: z.boolean().default(true),
   disclosure: optionalText(1500),
   seoTitle: optionalText(70),
@@ -107,7 +137,7 @@ export const offerSchema = z
       .transform((arr) => arr.filter((s) => s.label && s.value)),
     verdict: optionalText(400),
     images: z.array(httpUrl).max(10).default([]),
-    videoUrl: optionalUrl,
+    videoUrl: optionalUrlMax(1000),
     affiliateUrl: httpUrl,
     buttonLabel: optionalText(60),
     couponCode: optionalText(60),
@@ -253,6 +283,7 @@ export function serializeLandingPage(p: LandingPage) {
     language: p.language,
     theme: p.theme,
     accentColor: p.accentColor,
+    design: parseDesign(p.design),
     socialLinks: (p.socialLinks as Record<string, string> | null) ?? {},
     showDisclosure: p.showDisclosure,
     disclosure: p.disclosure,

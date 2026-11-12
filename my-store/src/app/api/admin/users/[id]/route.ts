@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 // ==================== 🔐 مخططات التحقق (Zod Schemas) ====================
 
 const updateUserSchema = z.object({
-  role: z.enum(["USER", "ADMIN", "SUPER_ADMIN"]).optional(),
+  role: z.enum(["USER", "MARKETER", "SELLER", "ADMIN", "SUPER_ADMIN"]).optional(),
   isActive: z.boolean().optional(),
   firstName: z.string().min(1).max(50).optional(),
   lastName: z.string().min(1).max(50).optional(),

@@ -140,6 +140,84 @@
       "side1": "Une page de luxe à votre nom",
       "side2": "Des pages d’avis avec boutons « Buy on Walmart »",
       "side3": "Statistiques quotidiennes de vues et de clics"
+    },
+    "home": {
+      "trust": [
+        "Gratuit pour commencer",
+        "Vos commissions restent 100 % à vous",
+        "English · العربية · Français"
+      ],
+      "mockPage": {
+        "title": "Les trouvailles de Sarah",
+        "tagline": "Des produits testés pour une belle maison",
+        "all": "Tout",
+        "offers": "12 offres"
+      },
+      "tour": {
+        "eyebrow": "Comment ça convertit",
+        "title": "D’un lien à une vente",
+        "t1": {
+          "eyebrow": "Page d’atterrissage",
+          "title": "Une boutique, pas une liste de liens",
+          "desc": "Vos sélections en cartes premium avec logo de la boutique, prix, réduction et votre note.",
+          "points": [
+            "Sélections en vedette en haut",
+            "Recherche et filtres par boutique et catégorie",
+            "8 thèmes, couleurs et polices personnalisées"
+          ]
+        },
+        "t2": {
+          "eyebrow": "Pages d’avis",
+          "title": "Des avis qui font cliquer « Acheter »",
+          "desc": "Chaque produit a sa page avec votre avis court, ses avantages et inconvénients et un verdict clair.",
+          "points": [
+            "Note sur 5 et points forts",
+            "Codes promo et fin des offres",
+            "Bouton d’achat aux couleurs de la boutique"
+          ]
+        },
+        "t3": {
+          "eyebrow": "Statistiques",
+          "title": "Sachez exactement ce qui vend",
+          "desc": "Chaque clic vers une boutique est suivi pour miser sur ce qui marche.",
+          "points": [
+            "Vues et clics quotidiens",
+            "Taux de clic par offre",
+            "Meilleures offres en un coup d’œil"
+          ]
+        },
+        "score": "Notre note",
+        "pros": "Avantages",
+        "cons": "Inconvénients",
+        "pro1": "Excellente réduction de bruit",
+        "pro2": "30 h d’autonomie",
+        "con1": "Étui encombrant",
+        "buy": "Buy on Walmart",
+        "clicks": "Clics",
+        "ctr": "Taux de clic"
+      },
+      "compare": {
+        "title": "Pourquoi pas une simple page de liens ?",
+        "subtitle": "Les outils « lien en bio » listent des liens. Nous avons conçu une vitrine pour les affiliés.",
+        "us": "Nous",
+        "them": "Page de liens classique",
+        "rows": [
+          "Logo de la boutique sur chaque produit",
+          "Page d’avis pour chaque produit",
+          "Boutons type « Buy on Amazon »",
+          "Clics suivis par offre",
+          "Divulgation d’affiliation intégrée",
+          "Codes promo, prix et minuteurs"
+        ]
+      },
+      "faq": {
+        "title": "Vos questions",
+        "more": "Toutes les questions"
+      },
+      "final": {
+        "title": "Réservez votre lien avant les autres",
+        "subtitle": "Une minute suffit. Gratuit pour commencer."
+      }
     }
   },
   "register": {
@@ -333,10 +411,11 @@
       "slugConfirm": "Changer votre lien cassera les liens déjà partagés. Continuer ?",
       "sec": {
         "identity": "Identité",
-        "look": "Apparence et langue",
+        "look": "Couleurs et arrière-plan",
         "social": "Réseaux sociaux",
         "disclosure": "Mention d'affiliation",
-        "seo": "Recherche et partage"
+        "seo": "Recherche et partage",
+        "style": "Style"
       },
       "pageTitle": "Nom de la page",
       "slug": "Lien de la page",
@@ -348,9 +427,15 @@
       "cover": "URL de l'image de couverture",
       "theme": "Thème",
       "themes": {
-        "midnight": "Midnight",
+        "midnight": "Minuit",
         "noir": "Noir",
-        "ivory": "Ivory"
+        "ivory": "Ivoire",
+        "navy": "Marine",
+        "emerald": "Émeraude",
+        "bordeaux": "Bordeaux",
+        "pearl": "Perle",
+        "sand": "Sable",
+        "custom": "Personnalisé"
       },
       "accent": "Couleur d'accent",
       "language": "Langue de la page",
@@ -376,7 +461,51 @@
       "seoTitle": "Titre SEO",
       "seoDescription": "Description SEO",
       "published": "Page publique",
-      "publishedHint": "Désactivez pour masquer votre page aux visiteurs."
+      "publishedHint": "Désactivez pour masquer votre page aux visiteurs.",
+      "bgColor": "Couleur de fond",
+      "bgColorHint": "Choisissez n’importe quelle couleur : textes, cartes et bordures s’adaptent automatiquement.",
+      "background": "Style d’arrière-plan",
+      "backgrounds": {
+        "solid": "Uni",
+        "glow": "Halo",
+        "gradient": "Dégradé",
+        "grid": "Grille",
+        "dots": "Points"
+      },
+      "font": "Police des titres",
+      "fonts": {
+        "serif": "Playfair",
+        "elegant": "Cormorant",
+        "modern": "Manrope",
+        "sans": "Inter"
+      },
+      "radius": "Coins",
+      "radii": {
+        "sharp": "Nets",
+        "soft": "Doux",
+        "round": "Arrondis"
+      },
+      "button": "Boutons d’achat",
+      "buttons": {
+        "square": "Carrés",
+        "rounded": "Arrondis",
+        "pill": "Pilule"
+      },
+      "columns": "Offres par ligne (ordinateur)",
+      "cardImage": "Fond des photos produit",
+      "cardImages": {
+        "white": "Blanc",
+        "surface": "Couleur du thème"
+      },
+      "preview": "Aperçu en direct",
+      "previewEmpty": "Vos offres apparaîtront ici",
+      "devices": {
+        "desktop": "Ordinateur",
+        "mobile": "Mobile"
+      },
+      "unsaved": "Modifications non enregistrées",
+      "reset": "Réinitialiser le style",
+      "urlHint": "Collez un lien direct vers l’image (1000 caractères max)."
     },
     "account": {
       "title": "Compte",
@@ -653,6 +782,97 @@
       "by": "Par",
       "back": "Blog",
       "read": "Lire l’article"
+    }
+  },
+  "adm": {
+    "nav": {
+      "panel": "Admin",
+      "overview": "Vue d’ensemble",
+      "marketers": "Affiliés",
+      "offers": "Offres",
+      "stores": "Boutiques",
+      "users": "Utilisateurs",
+      "content": "Contenu et ventes",
+      "blog": "Blog",
+      "orders": "Commandes manuelles",
+      "toMarketer": "Mon tableau de bord",
+      "viewSite": "Voir le site",
+      "logout": "Déconnexion"
+    },
+    "overview": {
+      "title": "Vue d’ensemble de la plateforme",
+      "subtitle": "État de toutes les pages, offres et clics — 30 derniers jours.",
+      "marketers": "Pages",
+      "offers": "Offres",
+      "liveOf": "{live} en ligne",
+      "views30": "Vues · 30 jours",
+      "clicks30": "Clics · 30 jours",
+      "ctr": "Taux de clic",
+      "newUsers7": "Inscriptions · 7 jours",
+      "viewsChart": "Vues des pages (tous les affiliés)",
+      "clicksChart": "Clics vers les boutiques",
+      "signupsChart": "Nouvelles inscriptions",
+      "topPages": "Meilleures pages · 30 jours",
+      "topOffers": "Meilleures offres (depuis le début)",
+      "recent": "Derniers affiliés",
+      "byStore": "Offres par boutique",
+      "views": "vues",
+      "clicks": "clics",
+      "offersShort": "offres",
+      "hidden": "Masquée",
+      "otherStores": "Autres boutiques",
+      "viewAll": "Tout voir",
+      "manageStores": "Gérer les boutiques",
+      "noData": "Pas encore de données",
+      "footnote": "Les visites des propriétaires et des robots ne sont pas comptées."
+    },
+    "marketers": {
+      "title": "Affiliés",
+      "subtitle": "{count} pages sur la plateforme",
+      "search": "Rechercher nom, e-mail ou lien…",
+      "filters": {
+        "all": "Tous",
+        "live": "En ligne",
+        "hidden": "Masquées",
+        "suspended": "Suspendus"
+      },
+      "col": {
+        "page": "Page",
+        "marketer": "Affilié",
+        "offers": "Offres",
+        "views": "Vues",
+        "clicks": "Clics",
+        "joined": "Inscription",
+        "public": "Page visible",
+        "account": "Compte actif"
+      },
+      "viewOffers": "Offres",
+      "empty": "Aucun affilié ne correspond.",
+      "note": "Masquer une page la retire des visiteurs. Suspendre un compte masque la page et bloque la connexion."
+    },
+    "offers": {
+      "title": "Toutes les offres",
+      "subtitle": "Contrôlez le contenu publié par les affiliés et agissez en cas d’abus.",
+      "search": "Rechercher offre, boutique ou page…",
+      "status": {
+        "all": "Toutes",
+        "PUBLISHED": "Publiée",
+        "DRAFT": "Masquée",
+        "ARCHIVED": "Archivée"
+      },
+      "by": "par",
+      "views": "vues",
+      "clicks": "clics",
+      "open": "Ouvrir",
+      "empty": "Aucune offre ne correspond.",
+      "actions": {
+        "publish": "Publier",
+        "hide": "Masquer aux visiteurs",
+        "archive": "Archiver",
+        "delete": "Supprimer",
+        "confirmDelete": "Supprimer définitivement cette offre ? Action irréversible.",
+        "error": "L’action a échoué. Réessayez."
+      }
     }
   }
 }

@@ -1,470 +1,266 @@
-"use client";
-
-import { useEffect, useState, useCallback } from "react";
-import { 
-  ShoppingCart, DollarSign, Users, Package, TrendingUp, TrendingDown, 
-  Clock, CheckCircle, XCircle, AlertTriangle, RefreshCw, AlertCircle 
-} from "lucide-react";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { ArrowUpRight, Eye, Globe, MousePointerClick, Package, Percent, Store, UserPlus } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import DailyBars from "@/components/dashboard/DailyBars";
+import BrandLogo from "@/components/shop/BrandLogo";
 
-// ==================== 📦 تعريف الأنواع المتوافقة مع API ====================
+const DAYS = 30;
 
-interface DashboardStats {
-  summary: {
-    totalOrders: number;
-    revenue: number;
-    customers: number;
-    products: number;
-  };
-  orderBreakdown: {
-    pending: number;
-    confirmed: number;
-    processing: number;
-    shipped: number;
-    delivered: number;
-    cancelled: number;
-  };
-  alerts: {
-    lowStockProducts: number;
-    pendingOrdersCount: number;
-  };
-  trends: {
-    ordersLast30Days: number;
-    revenueLast30Days: number;
-  };
-  meta: {
-    period: string;
-    generatedAt: string;
-    currency: string;
-  };
-}
+// ==================== 📊 لوحة الأدمن: صحة المنصة كاملة ====================
+export default async function AdminOverview() {
+  const t = await getTranslations("adm.overview");
+  const locale = await getLocale();
+  const nf = new Intl.NumberFormat(locale);
 
-interface Order {
-  id: string;
-  orderNumber: number;
-  customerName?: string | null;
-  guestEmail?: string | null;
-  guestFirstName?: string | null;
-  guestLastName?: string | null;
-  phone?: string | null;
-  total: number | string;
-  currency?: string;
-  status: string;
-  callStatus?: string;
-  createdAt: string;
-  updatedAt?: string;
-  _count?: {
-    items?: number;
-  };
-}
+  const since = new Date();
+  since.setUTCHours(0, 0, 0, 0);
+  since.setUTCDate(since.getUTCDate() - (DAYS - 1));
+  const week = new Date(since);
+  week.setUTCDate(since.getUTCDate() + DAYS - 7);
 
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  details?: Array<{ field: string; message: string }>;
-}
+  const [
+    pagesTotal, pagesLive, offersByStatus, newUsers7, daily, signups, topPagesRaw, topOffers, recentPages, storeGroups, brands,
+  ] = await Promise.all([
+    prisma.landingPage.count(),
+    prisma.landingPage.count({ where: { isPublished: true } }),
+    prisma.offer.groupBy({ by: ["status"], _count: { _all: true } }),
+    prisma.user.count({ where: { createdAt: { gte: week } } }),
+    prisma.landingPageDailyStat.groupBy({ by: ["date"], where: { date: { gte: since } }, _sum: { views: true, clicks: true } }),
+    prisma.user.findMany({ where: { createdAt: { gte: since } }, select: { createdAt: true } }),
+    prisma.landingPageDailyStat.groupBy({
+      by: ["landingPageId"],
+      where: { date: { gte: since } },
+      _sum: { clicks: true, views: true },
+      orderBy: { _sum: { clicks: "desc" } },
+      take: 6,
+    }),
+    prisma.offer.findMany({
+      where: { clicks: { gt: 0 } },
+      orderBy: { clicks: "desc" },
+      take: 6,
+      select: { id: true, title: true, slug: true, clicks: true, views: true, storeName: true, brand: true, landingPage: { select: { slug: true, title: true } } },
+    }),
+    prisma.landingPage.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 6,
+      select: { id: true, slug: true, title: true, isPublished: true, createdAt: true, user: { select: { firstName: true, lastName: true, email: true } }, _count: { select: { offers: true } } },
+    }),
+    prisma.offer.groupBy({ by: ["brandId"], _count: { _all: true } }),
+    prisma.brand.findMany({ select: { id: true, name: true, logoSvg: true, logoUrl: true, accentColor: true } }),
+  ]);
 
-// ==================== 🎨 مكون بطاقة الإحصائيات ====================
+  // سلاسل 30 يوماً (الأيام الفارغة = 0)
+  const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+  const byDay = new Map(daily.map((d) => [dayKey(d.date), d._sum]));
+  const signupsByDay = new Map<string, number>();
+  for (const u of signups) signupsByDay.set(dayKey(u.createdAt), (signupsByDay.get(dayKey(u.createdAt)) ?? 0) + 1);
+  const days = Array.from({ length: DAYS }, (_, i) => {
+    const d = new Date(since);
+    d.setUTCDate(since.getUTCDate() + i);
+    return dayKey(d);
+  });
+  const viewsSeries = days.map((date) => ({ date, value: byDay.get(date)?.views ?? 0 }));
+  const clicksSeries = days.map((date) => ({ date, value: byDay.get(date)?.clicks ?? 0 }));
+  const signupSeries = days.map((date) => ({ date, value: signupsByDay.get(date) ?? 0 }));
+  const views30 = viewsSeries.reduce((a, s) => a + s.value, 0);
+  const clicks30 = clicksSeries.reduce((a, s) => a + s.value, 0);
+  const ctr = views30 ? (clicks30 / views30) * 100 : 0;
 
-function StatCard({ 
-  title, 
-  value, 
-  change, 
-  changeType, 
-  icon: Icon, 
-  color,
-  loading 
-}: { 
-  title: string; 
-  value: string | number; 
-  change?: number; 
-  changeType?: "up" | "down"; 
-  icon: React.ElementType; 
-  color: string;
-  loading?: boolean;
-}) {
-  return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center`}>
-          <Icon className="w-6 h-6" />
-        </div>
-        {change !== undefined && (
-          <div className={`flex items-center gap-1 text-sm font-medium ${
-            changeType === "up" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-          }`}>
-            {changeType === "up" ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-            {change > 0 ? "+" : ""}{change}%
-          </div>
-        )}
-      </div>
-      {loading ? (
-        <div className="space-y-2">
-          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-28 animate-pulse"></div>
-        </div>
-      ) : (
-        <>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{title}</p>
-        </>
-      )}
-    </div>
-  );
-}
+  const offerCount = (s: string) => offersByStatus.find((o) => o.status === s)?._count._all ?? 0;
+  const offersLive = offerCount("PUBLISHED");
+  const offersTotal = offersByStatus.reduce((a, o) => a + o._count._all, 0);
 
-// ==================== 🎨 مكون شارة الحالة ====================
+  // أفضل الصفحات (30 يوماً)
+  const topPageInfo = await prisma.landingPage.findMany({
+    where: { id: { in: topPagesRaw.map((p) => p.landingPageId) } },
+    select: { id: true, slug: true, title: true },
+  });
+  const topPages = topPagesRaw
+    .map((p) => ({ ...topPageInfo.find((i) => i.id === p.landingPageId), clicks: p._sum.clicks ?? 0, views: p._sum.views ?? 0 }))
+    .filter((p) => p.slug);
 
-function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-    PENDING: { label: "Pending", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", icon: Clock },
-    CONFIRMED: { label: "Confirmed", color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle },
-    PROCESSING: { label: "Processing", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", icon: Clock },
-    SHIPPED: { label: "Shipped", color: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400", icon: Clock },
-    DELIVERED: { label: "Delivered", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle },
-    CANCELLED: { label: "Cancelled", color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", icon: XCircle },
-    REFUNDED: { label: "Refunded", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400", icon: AlertTriangle },
-    RETURNED: { label: "Returned", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", icon: AlertTriangle },
-  };
+  // توزيع العروض حسب المتجر
+  const brandMap = new Map(brands.map((b) => [b.id, b]));
+  const stores = storeGroups
+    .map((g) => ({ brand: g.brandId ? brandMap.get(g.brandId) ?? null : null, count: g._count._all }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+  const storeMax = Math.max(1, ...stores.map((s) => s.count));
 
-  const { label, color, icon: Icon } = config[status] || { 
-    label: status, 
-    color: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400", 
-    icon: Clock 
-  };
-
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${color}`}>
-      <Icon className="w-3 h-3" />
-      {label}
-    </span>
-  );
-}
-
-// ==================== 🏠 المكون الرئيسي ====================
-
-export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
-
-  // 🔹 تنسيق العملة
-  const formatCurrency = useCallback((amount: number | string | null | undefined) => {
-    if (amount == null) return "0 MAD";
-    const num = typeof amount === "number" ? amount : parseFloat(String(amount));
-    if (isNaN(num)) return "0 MAD";
-    return new Intl.NumberFormat("en-US", { 
-      style: "currency", 
-      currency: "MAD", 
-      minimumFractionDigits: 0 
-    }).format(num);
-  }, []);
-
-  // 🔹 تنسيق التاريخ
-  const formatDate = useCallback((dateStr: string) => {
-    if (!dateStr) return "-";
-    try {
-      return new Date(dateStr).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return dateStr;
-    }
-  }, []);
-
-  // 🔹 استخراج اسم العميل
-  const getCustomerName = useCallback((order: Order) => {
-    if (order.customerName) return order.customerName;
-    const name = `${order.guestFirstName || ""} ${order.guestLastName || ""}`.trim();
-    if (name) return name;
-    if (order.guestEmail) return order.guestEmail;
-    return "Guest Customer";
-  }, []);
-
-  // 🔹 جلب بيانات لوحة التحكم
-  const fetchDashboardData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // جلب الإحصائيات
-      const statsRes = await fetch("/api/admin/stats", {
-        cache: "no-store", // منع الكاش لضمان بيانات حديثة
-        headers: { "Accept": "application/json" },
-      });
-
-      if (statsRes.ok) {
-        const statsData: ApiResponse<DashboardStats> = await statsRes.json();
-        if (statsData.success && statsData.data) {
-          setStats(statsData.data);
-        } else if (statsData.error) {
-          // عرض خطأ محدد فقط إذا كان هناك رسالة واضحة
-          if (statsData.error !== "Unauthorized") {
-            setError(statsData.error);
-          }
-        }
-      } else if (statsRes.status === 401) {
-        // لا تعرض خطأ للمستخدم - سيتم توجيهه تلقائياً عبر middleware
-        setError("Please log in as admin to view this page");
-      } else if (statsRes.status !== 404) {
-        // تجاهل 404 (قد يكون المسار غير موجود بعد)
-        setError("Unable to load statistics");
-      }
-
-      // جلب آخر الطلبات اليدوية
-      const ordersRes = await fetch("/api/admin/manual-orders?limit=5&status=all", {
-        cache: "no-store",
-        headers: { "Accept": "application/json" },
-      });
-
-      if (ordersRes.ok) {
-        const ordersData: ApiResponse<{ orders: Order[] }> = await ordersRes.json();
-        if (ordersData.success && Array.isArray(ordersData.data?.orders)) {
-          setRecentOrders(ordersData.data.orders);
-        }
-      }
-      // تجاهل أخطاء الطلبات بصمت - لا نريد إزعاج المستخدم
-
-    } catch (err) {
-      // تسجيل الخطأ للتطوير فقط، لا نعرضه للمستخدم
-      console.error("Dashboard fetch error:", err);
-      // لا نعرض خطأ "network" للمستخدم إلا بعد عدة محاولات
-      if (retryCount >= 2) {
-        setError("Connection issue. Please check your internet.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [retryCount]);
-
-  // 🔹 جلب البيانات عند التحميل
-  useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
-
-  // 🔹 إعادة المحاولة عند الخطأ (بحد أقصى 3 محاولات)
-  const handleRetry = () => {
-    if (retryCount < 3) {
-      setRetryCount(prev => prev + 1);
-      fetchDashboardData();
-    } else {
-      setRetryCount(0);
-      fetchDashboardData();
-    }
-  };
-
-  // 🔹 حالة التحميل الأولية
-  if (loading && !stats) {
-    return (
-      <div className="space-y-8">
-        <div>
-          <div className="h-8 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-          <div className="h-4 w-96 bg-gray-200 dark:bg-gray-700 rounded mt-2 animate-pulse"></div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <StatCard key={i} title="" value={0} icon={ShoppingCart} color="" loading />
-          ))}
-        </div>
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-            <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
-                    </div>
-                  </div>
-                  <div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
-            <div className="h-6 w-40 bg-gray-200 dark:bg-gray-700 rounded mb-4 animate-pulse"></div>
-            <div className="space-y-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                  </div>
-                  <div className="h-6 w-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const tiles = [
+    { label: t("marketers"), value: nf.format(pagesTotal), sub: t("liveOf", { live: nf.format(pagesLive) }), icon: Store, href: "/admin/marketers" },
+    { label: t("offers"), value: nf.format(offersTotal), sub: t("liveOf", { live: nf.format(offersLive) }), icon: Package, href: "/admin/offers" },
+    { label: t("views30"), value: nf.format(views30), icon: Eye },
+    { label: t("clicks30"), value: nf.format(clicks30), icon: MousePointerClick },
+    { label: t("ctr"), value: `${ctr.toFixed(1)}%`, icon: Percent },
+    { label: t("newUsers7"), value: nf.format(newUsers7), icon: UserPlus, href: "/admin/users" },
+  ];
 
   return (
     <div className="space-y-8">
-      
-      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Monitor your store's performance and recent activity.</p>
+        <h1 className="font-serif text-3xl font-semibold">{t("title")}</h1>
+        <p className="mt-1 text-white/55">{t("subtitle")}</p>
       </div>
 
-      {/* Error Alert - يظهر فقط عند وجود خطأ حقيقي */}
-      {error && (
-        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
-          </div>
-          <button
-            onClick={handleRetry}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors cursor-pointer"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Retry
-          </button>
-        </div>
-      )}
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Orders"
-          value={stats?.summary?.totalOrders ?? 0}
-          change={12.5}
-          changeType="up"
-          icon={ShoppingCart}
-          color="bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400"
-          loading={loading}
-        />
-        <StatCard
-          title="Total Revenue"
-          value={stats ? formatCurrency(stats.summary?.revenue) : "..."}
-          change={8.2}
-          changeType="up"
-          icon={DollarSign}
-          color="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
-          loading={loading}
-        />
-        <StatCard
-          title="Total Customers"
-          value={stats?.summary?.customers ?? 0}
-          change={5.1}
-          changeType="up"
-          icon={Users}
-          color="bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
-          loading={loading}
-        />
-        <StatCard
-          title="Active Products"
-          value={stats?.summary?.products ?? 0}
-          change={-2.4}
-          changeType="down"
-          icon={Package}
-          color="bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
-          loading={loading}
-        />
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        
-        {/* Recent Orders Table */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Manual Orders</h2>
-            <Link 
-              href="/admin/manual-orders" 
-              className="text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors cursor-pointer"
-            >
-              View all →
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        {tiles.map((tile) => {
+          const body = (
+            <>
+              <tile.icon className="h-4.5 w-4.5 text-sky-300" />
+              <p className="mt-4 text-2xl font-semibold tabular-nums">{tile.value}</p>
+              <p className="mt-1 text-xs text-white/50">{tile.label}</p>
+              {tile.sub && <p className="mt-0.5 text-[11px] text-white/35">{tile.sub}</p>}
+            </>
+          );
+          return tile.href ? (
+            <Link key={tile.label} href={tile.href} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 transition hover:border-sky-400/30">
+              {body}
             </Link>
-          </div>
-
-          {recentOrders.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-              <ShoppingCart className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p>No recent manual orders found</p>
-            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-800/50">
-                  <tr>
-                    <th className="px-4 py-3 rounded-l-lg">Order ID</th>
-                    <th className="px-4 py-3">Customer</th>
-                    <th className="px-4 py-3">Total</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3 rounded-r-lg">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentOrders.map((order) => (
-                    <tr 
-                      key={order.id} 
-                      className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
-                    >
-                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">
-                        #{order.orderNumber}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-gray-900 dark:text-white">{getCustomerName(order)}</div>
-                        {order.guestEmail && !order.customerName && (
-                          <div className="text-xs text-gray-500">{order.guestEmail}</div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 font-semibold text-gray-900 dark:text-white">
-                        {formatCurrency(order.total)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <StatusBadge status={order.status} />
-                      </td>
-                      <td className="px-4 py-3 text-gray-500">
-                        {formatDate(order.createdAt)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div key={tile.label} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+              {body}
             </div>
-          )}
-        </div>
-
-        {/* Order Status Breakdown */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Status Breakdown</h2>
-          <div className="space-y-4">
-            {[
-              { key: "pending", label: "Pending", color: "text-yellow-600 dark:text-yellow-400", bg: "bg-yellow-50 dark:bg-yellow-900/20" },
-              { key: "confirmed", label: "Confirmed", color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-900/20" },
-              { key: "processing", label: "Processing", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" },
-              { key: "cancelled", label: "Cancelled", color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-900/20" },
-            ].map((item) => (
-              <div 
-                key={item.key} 
-                className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${item.bg.replace("bg-", "bg-").replace("50", "500").replace("900/20", "500")}`}></div>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
-                </div>
-                <span className="text-lg font-bold text-gray-900 dark:text-white">
-                  {stats?.orderBreakdown?.[item.key as keyof typeof stats.orderBreakdown] ?? 0}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+          );
+        })}
       </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <DailyBars title={t("viewsChart")} total={nf.format(views30)} data={viewsSeries} color="#E5B54A" locale={locale} emptyLabel={t("noData")} />
+        <DailyBars title={t("clicksChart")} total={nf.format(clicks30)} data={clicksSeries} color="#5AA9E6" locale={locale} emptyLabel={t("noData")} />
+        <DailyBars title={t("signupsChart")} total={nf.format(signups.length)} data={signupSeries} color="#34D399" locale={locale} emptyLabel={t("noData")} />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* 🏆 أفضل الصفحات */}
+        <Panel title={t("topPages")} href="/admin/marketers" more={t("viewAll")}>
+          {topPages.length === 0 ? (
+            <Empty text={t("noData")} />
+          ) : (
+            <ul className="divide-y divide-white/[0.06]">
+              {topPages.map((p, i) => (
+                <li key={p.id} className="flex items-center gap-3 py-3">
+                  <span className="w-5 text-center text-xs text-white/35">{i + 1}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{p.title}</p>
+                    <a href={`/${p.slug}`} target="_blank" rel="noopener" className="text-xs text-white/40 hover:text-sky-300" dir="ltr">
+                      /{p.slug}
+                    </a>
+                  </div>
+                  <Metric label={t("views")} value={nf.format(p.views)} />
+                  <Metric label={t("clicks")} value={nf.format(p.clicks)} strong />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+
+        {/* 💎 أفضل العروض */}
+        <Panel title={t("topOffers")} href="/admin/offers" more={t("viewAll")}>
+          {topOffers.length === 0 ? (
+            <Empty text={t("noData")} />
+          ) : (
+            <ul className="divide-y divide-white/[0.06]">
+              {topOffers.map((o) => (
+                <li key={o.id} className="flex items-center gap-3 py-3">
+                  <span className="flex h-8 w-14 shrink-0 items-center justify-center rounded-md bg-white px-1">
+                    <BrandLogo brand={o.brand ?? { name: o.storeName || "Store" }} size={18} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <a href={`/${o.landingPage.slug}/${o.slug}`} target="_blank" rel="noopener" className="block truncate text-sm font-medium hover:text-sky-300">
+                      {o.title}
+                    </a>
+                    <p className="truncate text-xs text-white/40">{o.landingPage.title}</p>
+                  </div>
+                  <Metric label={t("clicks")} value={nf.format(o.clicks)} strong />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+
+        {/* 🆕 أحدث المسوّقين */}
+        <Panel title={t("recent")} href="/admin/marketers" more={t("viewAll")}>
+          {recentPages.length === 0 ? (
+            <Empty text={t("noData")} />
+          ) : (
+            <ul className="divide-y divide-white/[0.06]">
+              {recentPages.map((p) => (
+                <li key={p.id} className="flex items-center gap-3 py-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-400/10 font-serif text-amber-300">
+                    {p.title.slice(0, 1).toUpperCase()}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">
+                      {p.title}
+                      {!p.isPublished && <span className="ms-2 rounded-full bg-amber-400/10 px-2 py-0.5 text-[10px] text-amber-300">{t("hidden")}</span>}
+                    </p>
+                    <p className="truncate text-xs text-white/40">
+                      {[p.user.firstName, p.user.lastName].filter(Boolean).join(" ") || p.user.email} · {p._count.offers} {t("offersShort")}
+                    </p>
+                  </div>
+                  <span className="text-xs text-white/35">{new Intl.DateTimeFormat(locale, { month: "short", day: "numeric" }).format(p.createdAt)}</span>
+                  <a href={`/${p.slug}`} target="_blank" rel="noopener" className="rounded-lg p-1.5 text-white/40 hover:bg-white/5 hover:text-white" aria-label="open">
+                    <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+
+        {/* 🏬 العروض حسب المتجر */}
+        <Panel title={t("byStore")} href="/admin/brands" more={t("manageStores")}>
+          {stores.length === 0 ? (
+            <Empty text={t("noData")} />
+          ) : (
+            <ul className="space-y-3 pt-1">
+              {stores.map((s, i) => (
+                <li key={s.brand?.id ?? `other-${i}`} className="flex items-center gap-3">
+                  <span className="w-28 truncate text-sm text-white/75">{s.brand?.name ?? t("otherStores")}</span>
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.05]">
+                    <div className="h-full rounded-full bg-sky-400/80" style={{ width: `${(s.count / storeMax) * 100}%` }} />
+                  </div>
+                  <span className="w-10 text-end text-sm tabular-nums text-white/60">{nf.format(s.count)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
+
+      <p className="flex items-center gap-2 text-xs text-white/35">
+        <Globe className="h-3.5 w-3.5" />
+        {t("footnote")}
+      </p>
     </div>
   );
+}
+
+function Panel({ title, href, more, children }: { title: string; href: string; more: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="font-semibold">{title}</h2>
+        <Link href={href} className="text-xs text-sky-300 hover:text-sky-200">
+          {more}
+        </Link>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Metric({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+  return (
+    <div className="w-16 text-end">
+      <p className={`text-sm tabular-nums ${strong ? "font-semibold text-white" : "text-white/70"}`}>{value}</p>
+      <p className="text-[10px] text-white/35">{label}</p>
+    </div>
+  );
+}
+
+function Empty({ text }: { text: string }) {
+  return <p className="py-10 text-center text-sm text-white/35">{text}</p>;
 }

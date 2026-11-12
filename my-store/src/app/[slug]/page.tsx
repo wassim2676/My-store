@@ -6,7 +6,7 @@ import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getPublicLandingPage } from "@/lib/public-page";
 import { bumpDailyStat, isCountableRequest } from "@/lib/marketer";
-import { parseSocials, publicT } from "@/lib/landing";
+import { parseDesign, parseSocials, publicT } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
 import OfferCard from "@/components/landing/OfferCard";
 import OfferGallery from "@/components/landing/OfferGallery";
@@ -70,7 +70,7 @@ export default async function LandingPageView({ params }: Props) {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[color-mix(in_srgb,var(--lp-bg)_70%,transparent)] to-[var(--lp-bg)]" />
             </>
           ) : (
-            <div className="h-full w-full bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,color-mix(in_srgb,var(--lp-accent)_22%,transparent),transparent_70%)]" />
+            <div className="h-full w-full" />
           )}
         </div>
 
@@ -118,7 +118,7 @@ export default async function LandingPageView({ params }: Props) {
           </section>
         )}
 
-        <OfferGallery offers={offers} pageSlug={page.slug} lang={lang} />
+        <OfferGallery offers={offers} pageSlug={page.slug} lang={lang} columns={parseDesign(page.design).columns} />
       </main>
     </LandingShell>
   );

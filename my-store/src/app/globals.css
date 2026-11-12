@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* الوضع الداكن يتبع الصنف .dark (غلاف لوحة الأدمن) بدل إعداد النظام */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -30,4 +33,17 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ==================== 🎨 صفحات هبوط المسوّقين ====================
+   الغلاف يحمل data-lp ومتغيرات themeStyle(). هذه القواعد (خارج طبقات Tailwind فتغلبها)
+   تجعل الخط والزوايا تتبع إعدادات المسوّق في كل المكوّنات دون تعديل كل صنف. */
+[data-lp] .font-serif {
+  font-family: var(--lp-font-heading);
+}
+[data-lp] .rounded-3xl {
+  border-radius: var(--lp-radius-lg);
+}
+[data-lp] .rounded-2xl {
+  border-radius: var(--lp-radius-md);
 }

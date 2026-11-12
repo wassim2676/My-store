@@ -10,7 +10,7 @@ export default function OfferImages({ images, alt }: { images: string[]; alt: st
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative aspect-square overflow-hidden rounded-3xl border border-[var(--lp-border)] bg-white">
+      <div className="relative aspect-square overflow-hidden rounded-3xl border border-[var(--lp-border)] bg-[var(--lp-card-img)]">
         {current ? (
           <img src={current} alt={alt} className="h-full w-full object-contain p-8" />
         ) : (
@@ -26,7 +26,7 @@ export default function OfferImages({ images, alt }: { images: string[]; alt: st
               key={src + i}
               type="button"
               onClick={() => setActive(i)}
-              className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 bg-white transition cursor-pointer ${
+              className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 bg-[var(--lp-card-img)] transition cursor-pointer ${
                 i === active ? "border-[var(--lp-accent)]" : "border-transparent opacity-70 hover:opacity-100"
               }`}
               aria-label={`${alt} ${i + 1}`}

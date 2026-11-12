@@ -1,3 +1,4 @@
+import { parseDesign } from "@/lib/landing";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getMarketerSession, serializeOffer } from "@/lib/marketer";
@@ -25,7 +26,7 @@ export default async function EditOfferPage({ params }: { params: Promise<{ id: 
       key={offer.id}
       brands={brands}
       offer={serializeOffer(offer)}
-      page={{ slug: page.slug, theme: page.theme, accentColor: page.accentColor, language: page.language }}
+      page={{ slug: page.slug, theme: page.theme, accentColor: page.accentColor, language: page.language, design: parseDesign(page.design) }}
     />
   );
 }

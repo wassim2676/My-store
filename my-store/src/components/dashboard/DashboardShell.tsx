@@ -128,8 +128,19 @@ export default function DashboardShell({
             <Menu className="h-5 w-5" />
           </button>
           <div className="hidden lg:block" />
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher variant="compact" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* 🔁 التبديل إلى لوحة الأدمن — ظاهر دائماً على الكمبيوتر والهاتف (للأدمن فقط) */}
+            {isAdmin && (
+              <Link
+                href="/admin/dashboard"
+                className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-200 hover:bg-sky-400/20 sm:px-4 sm:text-sm"
+                title={t("nav.admin")}
+              >
+                <ShieldCheck className="h-4 w-4" />
+                <span className="hidden min-[400px]:inline">{t("nav.admin")}</span>
+              </Link>
+            )}
+            <LanguageSwitcher variant="dark" />
           </div>
         </header>
         <main className="flex-1 px-4 py-6 sm:px-8 sm:py-8">{children}</main>

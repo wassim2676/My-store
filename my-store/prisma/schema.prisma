@@ -619,6 +619,7 @@ model LandingPage {
   language       String   @default("en") @db.VarChar(5)        // en | ar | fr — لغة واجهة الصفحة للزوار
   theme          String   @default("midnight") @db.VarChar(20) // midnight | ivory | noir
   accentColor    String   @default("#C8A24A") @db.VarChar(20)
+  design         Json?    // خيارات التصميم: لون خلفية حر، نمط الخلفية، الخط، الزوايا، الأزرار، الأعمدة
 
   // 🌐 روابط التواصل { instagram, tiktok, youtube, x, facebook, pinterest, website }
   socialLinks    Json?

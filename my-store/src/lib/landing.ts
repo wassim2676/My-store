@@ -4,9 +4,6 @@ import type { CSSProperties } from "react";
 export const PAGE_LANGUAGES = ["en", "ar", "fr"] as const;
 export type PageLanguage = (typeof PAGE_LANGUAGES)[number];
 
-export const PAGE_THEMES = ["midnight", "noir", "ivory"] as const;
-export type PageTheme = (typeof PAGE_THEMES)[number];
-
 export const SOCIAL_KEYS = ["instagram", "tiktok", "youtube", "x", "facebook", "pinterest", "website"] as const;
 export type SocialKey = (typeof SOCIAL_KEYS)[number];
 export type SocialLinks = Partial<Record<SocialKey, string>>;
@@ -26,34 +23,70 @@ export interface ThemeTokens {
   isDark: boolean;
 }
 
-export const THEMES: Record<PageTheme, ThemeTokens> = {
-  midnight: {
-    bg: "#0B0E14",
-    surface: "#121621",
-    surface2: "#1A1F2C",
-    text: "#F3EFE6",
-    muted: "#9AA1AE",
-    border: "rgba(255,255,255,0.08)",
-    isDark: true,
-  },
-  noir: {
-    bg: "#050505",
-    surface: "#0E0E0E",
-    surface2: "#171717",
-    text: "#F5F5F4",
-    muted: "#A3A3A3",
-    border: "rgba(255,255,255,0.09)",
-    isDark: true,
-  },
-  ivory: {
-    bg: "#F8F5EF",
-    surface: "#FFFFFF",
-    surface2: "#F2EDE3",
-    text: "#1C1A17",
-    muted: "#6F6A61",
-    border: "#E8E1D3",
-    isDark: false,
-  },
+/** ثيمات جاهزة + "custom" (لون خلفية حر تُشتق منه بقية الألوان تلقائياً) */
+export const PRESET_THEMES = ["midnight", "noir", "navy", "emerald", "bordeaux", "ivory", "pearl", "sand"] as const;
+export const PAGE_THEMES = [...PRESET_THEMES, "custom"] as const;
+export type PresetTheme = (typeof PRESET_THEMES)[number];
+export type PageTheme = (typeof PAGE_THEMES)[number];
+
+// ---- أدوات ألوان صغيرة (hex فقط) ----
+const HEX = /^#[0-9a-f]{6}$/i;
+export const isHexColor = (v: unknown): v is string => typeof v === "string" && HEX.test(v);
+function hexToRgb(hex: string): [number, number, number] {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function rgbToHex([r, g, b]: [number, number, number]): string {
+  return (
+    "#" +
+    [r, g, b]
+      .map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, "0"))
+      .join("")
+      .toUpperCase()
+  );
+}
+/** يمزج لونين: ratio = نسبة اللون الثاني */
+export function mixHex(a: string, b: string, ratio: number): string {
+  const x = hexToRgb(a);
+  const y = hexToRgb(b);
+  return rgbToHex([x[0] + (y[0] - x[0]) * ratio, x[1] + (y[1] - x[1]) * ratio, x[2] + (y[2] - x[2]) * ratio]);
+}
+/** السطوع النسبي (0 داكن جداً ← 1 فاتح جداً) */
+export function luminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex).map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** يشتق ألوان الصفحة كاملة من لون خلفية واحد (نص مقروء + أسطح + حدود) */
+export function deriveTokens(bg: string): ThemeTokens {
+  const base = isHexColor(bg) ? bg.toUpperCase() : "#0B0E14";
+  // نختار لون النص الأعلى تبايناً فعلياً (لا عتبة سطوع ثابتة) — مهم للألوان المتوسطة كالأخضر والأزرق
+  const L = luminance(base);
+  const isDark = 1.05 / (L + 0.05) >= (L + 0.05) / 0.05;
+  const text = isDark ? "#FFFFFF" : "#141414";
+  return {
+    bg: base,
+    surface: isDark ? mixHex(base, "#FFFFFF", 0.05) : mixHex(base, "#FFFFFF", 0.65),
+    surface2: isDark ? mixHex(base, "#FFFFFF", 0.09) : mixHex(base, "#000000", 0.04),
+    text,
+    muted: mixHex(text, base, 0.28),
+    border: isDark ? "rgba(255,255,255,0.09)" : mixHex(base, "#000000", 0.1),
+    isDark,
+  };
+}
+
+export const THEMES: Record<PresetTheme, ThemeTokens> = {
+  midnight: { bg: "#0B0E14", surface: "#121621", surface2: "#1A1F2C", text: "#F3EFE6", muted: "#9AA1AE", border: "rgba(255,255,255,0.08)", isDark: true },
+  noir: { bg: "#050505", surface: "#0E0E0E", surface2: "#171717", text: "#F5F5F4", muted: "#A3A3A3", border: "rgba(255,255,255,0.09)", isDark: true },
+  navy: { bg: "#0A1428", surface: "#101D36", surface2: "#172745", text: "#EEF2FA", muted: "#97A3BC", border: "rgba(255,255,255,0.09)", isDark: true },
+  emerald: { bg: "#071A14", surface: "#0D241C", surface2: "#143026", text: "#EEF6F1", muted: "#93AE9F", border: "rgba(255,255,255,0.09)", isDark: true },
+  bordeaux: { bg: "#1A0A10", surface: "#241018", surface2: "#311622", text: "#F8EEF1", muted: "#B5949F", border: "rgba(255,255,255,0.09)", isDark: true },
+  ivory: { bg: "#F8F5EF", surface: "#FFFFFF", surface2: "#F2EDE3", text: "#1C1A17", muted: "#6F6A61", border: "#E8E1D3", isDark: false },
+  pearl: { bg: "#F4F5F7", surface: "#FFFFFF", surface2: "#ECEEF2", text: "#15171C", muted: "#646A76", border: "#E1E4EA", isDark: false },
+  sand: { bg: "#EFE6D8", surface: "#F8F2E8", surface2: "#E6DAC7", text: "#2A2219", muted: "#7A6B58", border: "#DCCDB5", isDark: false },
 };
 
 export function isPageTheme(v: unknown): v is PageTheme {
@@ -64,9 +97,92 @@ export function isPageLanguage(v: unknown): v is PageLanguage {
   return typeof v === "string" && (PAGE_LANGUAGES as readonly string[]).includes(v);
 }
 
-/** متغيرات CSS تُطبَّق على غلاف الصفحة العامة */
-export function themeStyle(theme: string, accent: string): CSSProperties {
-  const t = THEMES[isPageTheme(theme) ? theme : "midnight"];
+// ==================== 🧩 خيارات التصميم الإضافية (عمود design JSON) ====================
+export const BG_STYLES = ["solid", "glow", "gradient", "grid", "dots"] as const;
+export const FONT_STYLES = ["serif", "elegant", "modern", "sans"] as const;
+export const RADIUS_STYLES = ["sharp", "soft", "round"] as const;
+export const BUTTON_STYLES = ["square", "rounded", "pill"] as const;
+export const GRID_COLUMNS = [2, 3, 4] as const;
+export const CARD_IMAGE_STYLES = ["white", "surface"] as const;
+
+export interface PageDesign {
+  bgColor: string; // يُستخدم مع الثيم "custom"
+  background: (typeof BG_STYLES)[number];
+  font: (typeof FONT_STYLES)[number];
+  radius: (typeof RADIUS_STYLES)[number];
+  button: (typeof BUTTON_STYLES)[number];
+  columns: (typeof GRID_COLUMNS)[number];
+  cardImage: (typeof CARD_IMAGE_STYLES)[number];
+}
+
+export const DEFAULT_DESIGN: PageDesign = {
+  bgColor: "#0B0E14",
+  background: "glow",
+  font: "serif",
+  radius: "round",
+  button: "rounded",
+  columns: 4,
+  cardImage: "white",
+};
+
+function pick<T extends string | number>(list: readonly T[], v: unknown, fallback: T): T {
+  return (list as readonly unknown[]).includes(v) ? (v as T) : fallback;
+}
+
+/** يقرأ قيمة design من قاعدة البيانات بأمان (أي قيمة ناقصة/خاطئة → الافتراضي) */
+export function parseDesign(raw: unknown): PageDesign {
+  const o = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  return {
+    bgColor: isHexColor(o.bgColor) ? o.bgColor.toUpperCase() : DEFAULT_DESIGN.bgColor,
+    background: pick(BG_STYLES, o.background, DEFAULT_DESIGN.background),
+    font: pick(FONT_STYLES, o.font, DEFAULT_DESIGN.font),
+    radius: pick(RADIUS_STYLES, o.radius, DEFAULT_DESIGN.radius),
+    button: pick(BUTTON_STYLES, o.button, DEFAULT_DESIGN.button),
+    columns: pick(GRID_COLUMNS, o.columns, DEFAULT_DESIGN.columns),
+    cardImage: pick(CARD_IMAGE_STYLES, o.cardImage, DEFAULT_DESIGN.cardImage),
+  };
+}
+
+/** ألوان الثيم الفعلية (الجاهز أو المشتق من لون الخلفية الحر) */
+export function resolveTokens(theme: string, design?: Partial<PageDesign> | null): ThemeTokens {
+  if (theme === "custom") return deriveTokens(design?.bgColor || DEFAULT_DESIGN.bgColor);
+  return THEMES[(PRESET_THEMES as readonly string[]).includes(theme) ? (theme as PresetTheme) : "midnight"];
+}
+
+const RADIUS = { sharp: ["6px", "4px"], soft: ["14px", "10px"], round: ["24px", "16px"] } as const;
+const BUTTON_RADIUS = { square: "6px", rounded: "14px", pill: "999px" } as const;
+const FONT_VARS = {
+  serif: "var(--font-lp-playfair), Georgia, serif",
+  elegant: "var(--font-lp-cormorant), Georgia, serif",
+  modern: "var(--font-lp-manrope), system-ui, sans-serif",
+  sans: "var(--font-lp-inter), system-ui, sans-serif",
+} as const;
+
+/** خلفية الصفحة حسب النمط المختار */
+export function backgroundImage(style: PageDesign["background"], t: ThemeTokens, accent: string): string | undefined {
+  const line = t.isDark ? "rgba(255,255,255,0.045)" : "rgba(0,0,0,0.055)";
+  const dot = t.isDark ? "rgba(255,255,255,0.11)" : "rgba(0,0,0,0.12)";
+  switch (style) {
+    case "glow":
+      return `radial-gradient(ellipse 80% 55% at 50% -5%, color-mix(in srgb, ${accent} 20%, transparent), transparent 70%)`;
+    case "gradient":
+      return `linear-gradient(180deg, color-mix(in srgb, ${accent} 16%, ${t.bg}) 0%, ${t.bg} 55%)`;
+    case "grid":
+      return `linear-gradient(${line} 1px, transparent 1px), linear-gradient(90deg, ${line} 1px, transparent 1px)`;
+    case "dots":
+      return `radial-gradient(${dot} 1px, transparent 1px)`;
+    default:
+      return undefined;
+  }
+}
+
+const bgIsTopOnly = (s: PageDesign["background"]) => s === "glow" || s === "gradient";
+
+/** متغيرات CSS تُطبَّق على غلاف الصفحة العامة والمعاينات (مع data-lp لتفعيل قواعد globals.css) */
+export function themeStyle(theme: string, accent: string, designInput?: Partial<PageDesign> | null): CSSProperties {
+  const design = { ...DEFAULT_DESIGN, ...(designInput ?? {}) };
+  const t = resolveTokens(theme, design);
+  const a = isHexColor(accent) ? accent : "#C8A24A";
   return {
     "--lp-bg": t.bg,
     "--lp-surface": t.surface,
@@ -74,11 +190,23 @@ export function themeStyle(theme: string, accent: string): CSSProperties {
     "--lp-text": t.text,
     "--lp-muted": t.muted,
     "--lp-border": t.border,
-    "--lp-accent": accent || "#C8A24A",
-    // الشعارات تظهر مباشرة على البطاقة: بيضاء في الثيمات الداكنة (كثير منها نصّه داكن)، بألوانها في Ivory
+    "--lp-accent": a,
+    "--lp-accent-fg": readableText(a),
+    // الشعارات تظهر مباشرة على البطاقة: بيضاء في الثيمات الداكنة (كثير منها نصّه داكن)، بألوانها في الفاتحة
     "--lp-logo-filter": t.isDark ? "brightness(0) invert(1)" : "none",
+    "--lp-radius-lg": RADIUS[design.radius][0],
+    "--lp-radius-md": RADIUS[design.radius][1],
+    "--lp-btn-radius": BUTTON_RADIUS[design.button],
+    "--lp-font-heading": FONT_VARS[design.font],
+    "--lp-card-img": design.cardImage === "white" ? "#FFFFFF" : t.surface2,
     backgroundColor: t.bg,
+    backgroundImage: backgroundImage(design.background, t, a),
+    // التوهج والتدرّج يغطيان أعلى الصفحة فقط (لا يتمددان مع طول الصفحة)
+    backgroundSize:
+      design.background === "grid" ? "44px 44px" : design.background === "dots" ? "22px 22px" : bgIsTopOnly(design.background) ? "100% 900px" : undefined,
+    backgroundRepeat: bgIsTopOnly(design.background) ? "no-repeat" : undefined,
     color: t.text,
+    colorScheme: t.isDark ? "dark" : "light",
   } as CSSProperties;
 }
 

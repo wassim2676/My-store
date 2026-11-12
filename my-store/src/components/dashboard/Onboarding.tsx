@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, ShieldCheck } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { toSlug } from "@/lib/landing";
 
 // ==================== 👋 اختيار اسم صفحة الهبوط (للحسابات التي لا تملك صفحة بعد) ====================
-export default function Onboarding({ firstName }: { firstName: string | null }) {
+export default function Onboarding({ firstName, isAdmin = false }: { firstName: string | null; isAdmin?: boolean }) {
   const t = useTranslations("dash");
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -40,7 +41,16 @@ export default function Onboarding({ firstName }: { firstName: string | null }) 
   };
 
   return (
-    <div className="min-h-screen bg-[#07090D] text-white flex items-center justify-center px-4">
+    <div className="relative min-h-screen bg-[#07090D] text-white flex items-center justify-center px-4">
+      {isAdmin && (
+        <Link
+          href="/admin/dashboard"
+          className="absolute end-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-4 py-1.5 text-sm font-semibold text-sky-200 hover:bg-sky-400/20"
+        >
+          <ShieldCheck className="h-4 w-4" />
+          {t("nav.admin")}
+        </Link>
+      )}
       <form onSubmit={submit} className="w-full max-w-lg rounded-3xl border border-white/10 bg-white/[0.03] p-8 space-y-5">
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600">
           <Sparkles className="h-5 w-5 text-black" />

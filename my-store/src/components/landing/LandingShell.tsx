@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { EyeOff, PenLine, ShieldCheck, Sparkles } from "lucide-react";
-import { pageDir, publicT, themeStyle } from "@/lib/landing";
+import { pageDir, parseDesign, publicT, themeStyle } from "@/lib/landing";
+import { landingFontVars } from "./fonts";
 import { getDirection } from "@/i18n/config";
 import { SITE_NAME } from "@/lib/site";
 import type { LandingPage } from "@prisma/client";
@@ -22,7 +23,13 @@ export default async function LandingShell({
   // شريط المالك بلغة واجهة المنصة (لغة المسوّق)، لا بلغة الصفحة
   const [t, uiLocale] = isOwner ? await Promise.all([getTranslations("platform.owner"), getLocale()]) : [null, "en"];
   return (
-    <div lang={lang} dir={pageDir(lang)} style={themeStyle(page.theme, page.accentColor)} className="min-h-screen antialiased">
+    <div
+      data-lp
+      lang={lang}
+      dir={pageDir(lang)}
+      style={themeStyle(page.theme, page.accentColor, parseDesign(page.design))}
+      className={`min-h-screen antialiased ${landingFontVars}`}
+    >
       {isOwner && t && (
         <div className="sticky top-0 z-40 border-b border-white/10 bg-black/85 text-white backdrop-blur" dir={getDirection(uiLocale)}>
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 text-xs">

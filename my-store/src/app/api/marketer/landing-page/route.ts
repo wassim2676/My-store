@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getPrismaErrorCode } from "@/lib/api-utils";
 import { getMarketerSession, landingPageSchema, serializeLandingPage } from "@/lib/marketer";
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
   try {
     const page = await prisma.$transaction(async (tx) => {
       const created = await tx.landingPage.create({
-        data: { ...d, userId: ctx.userId, socialLinks: cleanSocials(d.socialLinks) },
+        data: { ...d, userId: ctx.userId, socialLinks: cleanSocials(d.socialLinks), design: { ...d.design } as Prisma.InputJsonObject },
       });
       // ترقية الحسابات القديمة (مشتري/بائع) إلى مسوّق
       await tx.user.updateMany({
@@ -65,6 +66,7 @@ export async function PATCH(request: NextRequest) {
         seoTitle: d.seoTitle || null,
         seoDescription: d.seoDescription || null,
         socialLinks: cleanSocials(d.socialLinks),
+        design: { ...d.design } as Prisma.InputJsonObject,
       },
     });
     revalidatePath(`/${oldSlug}`, "layout");

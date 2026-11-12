@@ -140,6 +140,84 @@
       "side1": "Luxury landing page with your name",
       "side2": "Review pages with “Buy on Walmart” buttons",
       "side3": "Daily views and click analytics"
+    },
+    "home": {
+      "trust": [
+        "Free to start",
+        "Your commissions stay 100% yours",
+        "English · العربية · Français"
+      ],
+      "mockPage": {
+        "title": "Sarah’s Home Finds",
+        "tagline": "Tested picks for a beautiful home",
+        "all": "All",
+        "offers": "12 offers"
+      },
+      "tour": {
+        "eyebrow": "How it converts",
+        "title": "From one link to a sale",
+        "t1": {
+          "eyebrow": "Landing page",
+          "title": "A boutique, not a list of links",
+          "desc": "Your picks displayed as premium cards with the store logo, price, discount and your rating.",
+          "points": [
+            "Featured picks at the top",
+            "Search and filters by store and category",
+            "8 themes, custom colors and fonts"
+          ]
+        },
+        "t2": {
+          "eyebrow": "Review pages",
+          "title": "Reviews that make people click “Buy”",
+          "desc": "Every product gets its own page with your short review, pros and cons and a clear verdict.",
+          "points": [
+            "Score out of 5 and key highlights",
+            "Coupon codes and deal end dates",
+            "Buy button in the store’s colors"
+          ]
+        },
+        "t3": {
+          "eyebrow": "Analytics",
+          "title": "Know exactly what sells",
+          "desc": "Every click to a store is tracked so you can double down on what works.",
+          "points": [
+            "Daily views and clicks",
+            "Click-through rate per offer",
+            "Top offers at a glance"
+          ]
+        },
+        "score": "Our score",
+        "pros": "Pros",
+        "cons": "Cons",
+        "pro1": "Excellent noise cancelling",
+        "pro2": "30-hour battery",
+        "con1": "Case is bulky",
+        "buy": "Buy on Walmart",
+        "clicks": "Clicks",
+        "ctr": "CTR"
+      },
+      "compare": {
+        "title": "Why not a simple link page?",
+        "subtitle": "Link-in-bio tools list links. We built a storefront for affiliate marketers.",
+        "us": "Us",
+        "them": "Typical link page",
+        "rows": [
+          "Store logo on every product",
+          "Review page for each product",
+          "“Buy on Amazon” style buttons",
+          "Clicks tracked per offer",
+          "Affiliate disclosure built in",
+          "Coupons, prices and deal timers"
+        ]
+      },
+      "faq": {
+        "title": "Questions, answered",
+        "more": "See all questions"
+      },
+      "final": {
+        "title": "Claim your link before someone else does",
+        "subtitle": "It takes one minute. Free to start."
+      }
     }
   },
   "register": {
@@ -333,10 +411,11 @@
       "slugConfirm": "Changing your link will break links you already shared. Continue?",
       "sec": {
         "identity": "Identity",
-        "look": "Look & language",
+        "look": "Colors & background",
         "social": "Social links",
         "disclosure": "Affiliate disclosure",
-        "seo": "Search & sharing"
+        "seo": "Search & sharing",
+        "style": "Style"
       },
       "pageTitle": "Page name",
       "slug": "Page link",
@@ -350,7 +429,13 @@
       "themes": {
         "midnight": "Midnight",
         "noir": "Noir",
-        "ivory": "Ivory"
+        "ivory": "Ivory",
+        "navy": "Navy",
+        "emerald": "Emerald",
+        "bordeaux": "Bordeaux",
+        "pearl": "Pearl",
+        "sand": "Sand",
+        "custom": "Custom"
       },
       "accent": "Accent color",
       "language": "Page language",
@@ -376,7 +461,51 @@
       "seoTitle": "SEO title",
       "seoDescription": "SEO description",
       "published": "Page is public",
-      "publishedHint": "Turn off to hide your page from visitors."
+      "publishedHint": "Turn off to hide your page from visitors.",
+      "bgColor": "Background color",
+      "bgColorHint": "Pick any color. Text, cards and borders adapt automatically for readability.",
+      "background": "Background style",
+      "backgrounds": {
+        "solid": "Solid",
+        "glow": "Glow",
+        "gradient": "Gradient",
+        "grid": "Grid",
+        "dots": "Dots"
+      },
+      "font": "Heading font",
+      "fonts": {
+        "serif": "Playfair",
+        "elegant": "Cormorant",
+        "modern": "Manrope",
+        "sans": "Inter"
+      },
+      "radius": "Corners",
+      "radii": {
+        "sharp": "Sharp",
+        "soft": "Soft",
+        "round": "Round"
+      },
+      "button": "Buy buttons",
+      "buttons": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "pill": "Pill"
+      },
+      "columns": "Offers per row (desktop)",
+      "cardImage": "Product photo background",
+      "cardImages": {
+        "white": "White",
+        "surface": "Theme color"
+      },
+      "preview": "Live preview",
+      "previewEmpty": "Your offers will appear here",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile"
+      },
+      "unsaved": "You have unsaved changes",
+      "reset": "Reset style",
+      "urlHint": "Paste a direct image link (up to 1000 characters)."
     },
     "account": {
       "title": "Account",
@@ -653,6 +782,97 @@
       "by": "By",
       "back": "Blog",
       "read": "Read article"
+    }
+  },
+  "adm": {
+    "nav": {
+      "panel": "Admin",
+      "overview": "Overview",
+      "marketers": "Marketers",
+      "offers": "Offers",
+      "stores": "Stores",
+      "users": "Users",
+      "content": "Content & sales",
+      "blog": "Blog",
+      "orders": "Manual orders",
+      "toMarketer": "My dashboard",
+      "viewSite": "View site",
+      "logout": "Log out"
+    },
+    "overview": {
+      "title": "Platform overview",
+      "subtitle": "Health of every landing page, offer and click — last 30 days.",
+      "marketers": "Landing pages",
+      "offers": "Offers",
+      "liveOf": "{live} live",
+      "views30": "Views · 30 days",
+      "clicks30": "Clicks · 30 days",
+      "ctr": "Click-through rate",
+      "newUsers7": "New sign-ups · 7 days",
+      "viewsChart": "Page views (all marketers)",
+      "clicksChart": "Clicks to stores",
+      "signupsChart": "New sign-ups",
+      "topPages": "Top pages · 30 days",
+      "topOffers": "Top offers (all time)",
+      "recent": "Newest marketers",
+      "byStore": "Offers by store",
+      "views": "views",
+      "clicks": "clicks",
+      "offersShort": "offers",
+      "hidden": "Hidden",
+      "otherStores": "Other stores",
+      "viewAll": "View all",
+      "manageStores": "Manage stores",
+      "noData": "No data yet",
+      "footnote": "Visits by page owners and bots are not counted."
+    },
+    "marketers": {
+      "title": "Marketers",
+      "subtitle": "{count} landing pages on the platform",
+      "search": "Search name, email or link…",
+      "filters": {
+        "all": "All",
+        "live": "Live",
+        "hidden": "Hidden",
+        "suspended": "Suspended"
+      },
+      "col": {
+        "page": "Page",
+        "marketer": "Marketer",
+        "offers": "Offers",
+        "views": "Views",
+        "clicks": "Clicks",
+        "joined": "Joined",
+        "public": "Page public",
+        "account": "Account active"
+      },
+      "viewOffers": "Offers",
+      "empty": "No marketers match this search.",
+      "note": "Hiding a page removes it from visitors. Suspending an account hides the page and blocks login."
+    },
+    "offers": {
+      "title": "All offers",
+      "subtitle": "Review content published by marketers and act on anything that breaks the rules.",
+      "search": "Search offer, store or page…",
+      "status": {
+        "all": "All",
+        "PUBLISHED": "Published",
+        "DRAFT": "Hidden",
+        "ARCHIVED": "Archived"
+      },
+      "by": "by",
+      "views": "views",
+      "clicks": "clicks",
+      "open": "Open",
+      "empty": "No offers match these filters.",
+      "actions": {
+        "publish": "Publish",
+        "hide": "Hide from visitors",
+        "archive": "Archive",
+        "delete": "Delete",
+        "confirmDelete": "Delete this offer permanently? This cannot be undone.",
+        "error": "The action failed. Please try again."
+      }
     }
   }
 }

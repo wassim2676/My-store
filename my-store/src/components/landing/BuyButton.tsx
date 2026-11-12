@@ -25,7 +25,7 @@ export default function BuyButton({
       href={`/go/${offerId}`}
       target="_blank"
       rel="nofollow sponsored noopener"
-      className={`group flex w-full items-center justify-center gap-3 rounded-2xl font-bold shadow-lg transition hover:brightness-110 active:scale-[0.99] ${
+      className={`group flex w-full items-center justify-center gap-3 rounded-[var(--lp-btn-radius)] font-bold shadow-lg transition hover:brightness-110 active:scale-[0.99] ${
         size === "lg" ? "px-6 py-4 text-base" : "px-5 py-3 text-sm"
       }`}
       style={{ backgroundColor: bg, color: fg, boxShadow: `0 18px 40px -18px ${bg}` }}
