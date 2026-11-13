@@ -8,7 +8,7 @@ import { AlertTriangle, Check, ExternalLink, Loader2, Monitor, RotateCcw, Save, 
 import SlugField, { type SlugStatus } from "./SlugField";
 import { Toggle } from "./OfferForm";
 import OfferCard, { type OfferCardData } from "@/components/landing/OfferCard";
-import { landingFontVars } from "@/components/landing/fonts";
+import LandingFonts from "@/components/landing/LandingFonts";
 import {
   BG_STYLES, BUTTON_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, FONT_STYLES, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
   RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, type PageDesign,
@@ -181,7 +181,8 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
           >
             <div>
               <p className="mb-2 text-sm text-white/70">{t("design.font")}</p>
-              <div className={`grid grid-cols-2 gap-2 sm:grid-cols-4 ${landingFontVars}`}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <LandingFonts />
                 {FONT_STYLES.map((v) => (
                   <button
                     type="button"
@@ -392,7 +393,7 @@ function PreviewPage({
   const cols = design.columns === 2 ? "grid-cols-2" : design.columns === 3 ? "grid-cols-3" : "grid-cols-4";
   const socialCount = Object.values(socials).filter(Boolean).length;
   return (
-    <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className={`min-h-[900px] ${landingFontVars}`}>
+    <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className="min-h-[900px]">
       <header className="relative overflow-hidden">
         {f.coverUrl && (
           <div className="absolute inset-0">

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import BrandLogo from "@/components/shop/BrandLogo";
-import { landingFontVars } from "@/components/landing/fonts";
+import LandingFonts from "@/components/landing/LandingFonts";
 import OfferCard from "@/components/landing/OfferCard";
 import { CURRENCIES, OFFER_BADGES, themeStyle, toSlug, pageDir, type PageDesign } from "@/lib/landing";
 import type { SerializedOffer } from "@/lib/marketer";
@@ -386,7 +386,8 @@ export default function OfferForm({
 
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
             <h3 className="mb-3 text-sm font-semibold">{t("form.preview")}</h3>
-            <div data-lp style={themeStyle(page.theme, page.accentColor, page.design)} dir={pageDir(page.language)} className={`rounded-2xl p-4 pointer-events-none ${landingFontVars}`}>
+            <div data-lp style={themeStyle(page.theme, page.accentColor, page.design)} dir={pageDir(page.language)} className={`rounded-2xl p-4 pointer-events-none`}>
+              <LandingFonts />
               <OfferCard offer={preview} pageSlug={page.slug} lang={page.language} />
             </div>
           </div>

@@ -151,11 +151,12 @@ export function resolveTokens(theme: string, design?: Partial<PageDesign> | null
 
 const RADIUS = { sharp: ["6px", "4px"], soft: ["14px", "10px"], round: ["24px", "16px"] } as const;
 const BUTTON_RADIUS = { square: "6px", rounded: "14px", pill: "999px" } as const;
+// الخطوط تُحمَّل من Google Fonts عبر <LandingFonts />
 const FONT_VARS = {
-  serif: "var(--font-lp-playfair), Georgia, serif",
-  elegant: "var(--font-lp-cormorant), Georgia, serif",
-  modern: "var(--font-lp-manrope), system-ui, sans-serif",
-  sans: "var(--font-lp-inter), system-ui, sans-serif",
+  serif: "'Playfair Display', Georgia, serif",
+  elegant: "'Cormorant Garamond', Georgia, serif",
+  modern: "'Manrope', system-ui, sans-serif",
+  sans: "'Inter', system-ui, sans-serif",
 } as const;
 
 /** خلفية الصفحة حسب النمط المختار */
