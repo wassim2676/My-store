@@ -27,12 +27,15 @@ export default function BrandLogo({
   size = 28,
   className = "",
   fallback = "initial",
+  squareScale = 1,
 }: {
   brand: BrandLogoData;
   size?: number;
   className?: string;
   /** عند غياب الشعار: "initial" شارة بالحرف الأول، "name" اسم المتجر كنص بلونه (للبطاقات الداكنة) */
   fallback?: "initial" | "name";
+  /** تكبير الشعارات المربّعة في الأماكن التي تتسع لذلك (شريط الشعارات، البطاقات) */
+  squareScale?: number;
 }) {
   const accent = brand.accentColor || "#1D4ED8";
 
@@ -82,6 +85,7 @@ export default function BrandLogo({
       fallback={initialBadge}
       className={`relative inline-block shrink-0 ${className}`}
       size={size}
+      squareScale={squareScale}
     />
   );
 }

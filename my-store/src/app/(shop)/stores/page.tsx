@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ArrowRight, Plus } from "lucide-react";
 import BrandLogo from "@/components/shop/BrandLogo";
+import { WHITE_LOGO } from "@/components/shop/logo-classes";
 import { PageFrame, PageHeader } from "@/components/site/StaticPage";
 import { getActiveBrands } from "@/lib/brands";
 
@@ -26,7 +27,7 @@ export default async function StoresPage() {
               className="group flex aspect-[4/3] flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 transition hover:border-white/15 hover:bg-white/[0.04]"
             >
               <span className="flex h-10 items-center text-white opacity-75 transition group-hover:opacity-100">
-                <BrandLogo brand={b} size={32} fallback="name" className="[&_img]:brightness-0 [&_img]:invert [&_svg]:brightness-0 [&_svg]:invert" />
+                <BrandLogo brand={b} size={32} fallback="name" className={WHITE_LOGO} squareScale={1.4} />
               </span>
               <span className="text-xs font-medium text-white/45">{b.name}</span>
             </div>

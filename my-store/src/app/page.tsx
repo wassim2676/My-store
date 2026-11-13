@@ -7,10 +7,9 @@ import SiteNavbar from "@/components/site/SiteNavbar";
 import SiteFooter from "@/components/site/SiteFooter";
 import ClaimLink from "@/components/site/ClaimLink";
 import BrandLogo from "@/components/shop/BrandLogo";
+import { WHITE_LOGO } from "@/components/shop/logo-classes";
 import { getActiveBrands } from "@/lib/brands";
 
-/** الشعار باللون الأبيض فوق الخلفية الداكنة مباشرة (بلا إطار) */
-const WHITE_LOGO = "[&_img]:brightness-0 [&_img]:invert [&_svg]:brightness-0 [&_svg]:invert";
 
 // ==================== 🏠 الصفحة الرئيسية للمنصة (للمسوّقين بالعمولة) ====================
 export default async function Home() {
@@ -145,7 +144,7 @@ export default async function Home() {
                     {(brands.length < 6 ? [...brands, ...brands] : brands).map((b, i) => (
                       <li key={`${b.id}-${i}`} className="flex h-12 items-center px-8 sm:px-11" title={b.name}>
                         <span className="text-white/55 transition-colors duration-300 hover:text-white [&_img]:opacity-55 [&_img]:transition-opacity hover:[&_img]:opacity-100">
-                          <BrandLogo brand={b} size={26} fallback="name" className={WHITE_LOGO} />
+                          <BrandLogo brand={b} size={26} fallback="name" className={WHITE_LOGO} squareScale={1.6} />
                         </span>
                       </li>
                     ))}

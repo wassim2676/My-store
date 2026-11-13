@@ -13,7 +13,7 @@ interface Brand {
   accentColor: string;
   buyLabel: string | null;
   isActive: boolean;
-  _count?: { products: number };
+  _count?: { offers: number };
 }
 
 const EMPTY_FORM = {
@@ -143,16 +143,14 @@ export default function AdminBrandsPage() {
           {brands.map((b) => (
             <div key={b.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <span
-                    className="w-11 h-11 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: `${b.accentColor}1A` }}
-                  >
-                    <BrandLogo brand={b} size={28} />
+                <div className="flex min-w-0 items-center gap-3">
+                  {/* صندوق ثابت المقاس: الشعارات العريضة (amazon, Walmart...) لا تتجاوز حدوده ولا تغطي الاسم */}
+                  <span className="flex h-12 w-[7.5rem] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white px-2.5 shadow-sm">
+                    <BrandLogo brand={b} size={20} />
                   </span>
                   <div>
                     <p className="font-bold text-gray-900 dark:text-white leading-tight">{b.name}</p>
-                    <p className="text-xs text-gray-400">{b._count?.products ?? 0} منتج</p>
+                    <p className="text-xs text-gray-400">{b._count?.offers ?? 0} عرض</p>
                   </div>
                 </div>
                 {!b.isActive && (
@@ -283,10 +281,7 @@ export default function AdminBrandsPage() {
 
               {/* معاينة مباشرة */}
               <div className="rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-4 flex items-center gap-3">
-                <span
-                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: `${/^#[0-9A-Fa-f]{3,8}$/.test(form.accentColor) ? form.accentColor : "#1D4ED8"}1A` }}
-                >
+                <span className="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white px-3 shadow-sm">
                   <BrandLogo
                     brand={{
                       name: form.name || "علامة تجارية",
@@ -294,7 +289,7 @@ export default function AdminBrandsPage() {
                       logoUrl: form.logoUrl,
                       accentColor: form.accentColor,
                     }}
-                    size={30}
+                    size={24}
                   />
                 </span>
                 <div>

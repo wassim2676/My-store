@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { ArrowUpRight, ImageOff } from "lucide-react";
 import BrandLogo from "@/components/shop/BrandLogo";
+import { THEME_LOGO } from "@/components/shop/logo-classes";
 import Stars from "./Stars";
 import { discountPercent, formatPrice, publicT, resolveStore, type StoreBrand } from "@/lib/landing";
 
@@ -22,8 +23,6 @@ export interface OfferCardData {
   brand: StoreBrand | null;
 }
 
-/** الشعار يأخذ فلتر الثيم (أبيض على الخلفيات الداكنة) — للصور ولكود SVG الملصوق */
-export const LOGO_ON_CARD = "[&_img]:[filter:var(--lp-logo-filter)] [&_svg]:[filter:var(--lp-logo-filter)]";
 
 // ==================== 💎 بطاقة عرض فخمة + شعار المتجر في الأسفل (مباشرة على الخلفية) ====================
 export default function OfferCard({
@@ -111,7 +110,7 @@ export default function OfferCard({
       {/* 🏬 شعار المتجر */}
       <div className="flex items-center justify-between gap-3 border-t border-[var(--lp-border)] bg-[var(--lp-surface2)] px-4 py-3">
         <span className="flex min-w-0 items-center text-[var(--lp-text)] opacity-90 transition-opacity group-hover:opacity-100" title={store.name}>
-          <BrandLogo brand={store} size={22} fallback="name" className={LOGO_ON_CARD} />
+          <BrandLogo brand={store} size={22} fallback="name" className={THEME_LOGO} squareScale={1.35} />
         </span>
         <span className="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--lp-accent)]">
           {publicT(lang, "viewReview")}
