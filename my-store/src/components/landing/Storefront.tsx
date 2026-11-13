@@ -4,9 +4,10 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import OfferCard, { type OfferCardData } from "./OfferCard";
 import ShareButton from "./ShareButton";
+import CategoryMenu from "./CategoryMenu";
 import SocialLinksRow from "./SocialLinksRow";
 import { publicT, type SocialLinks } from "@/lib/landing";
 
@@ -43,9 +44,14 @@ export function LandingNavbar({
   store,
   onStore,
   mode = "live",
+  categoryCounts,
+  total,
 }: {
   page: Pick<StorefrontPage, "slug" | "title" | "avatarUrl" | "language">;
   categories: string[];
+  /** عدد العروض لكل فئة (يظهر في القائمة) */
+  categoryCounts?: Record<string, number>;
+  total?: number;
   stores?: string[];
   query?: string;
   onQuery?: (v: string) => void;
@@ -103,29 +109,18 @@ export function LandingNavbar({
             e.preventDefault();
             if (mode === "link") goTo(draft, linkCategory);
           }}
-          className="group flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-[var(--lp-btn-radius)] border border-[var(--lp-border)] bg-[var(--lp-surface)] transition focus-within:border-[var(--lp-accent)] focus-within:ring-2 focus-within:ring-[color-mix(in_srgb,var(--lp-accent)_35%,transparent)] lg:flex-1"
+          className="group relative flex h-11 w-full min-w-0 items-stretch rounded-[var(--lp-btn-radius)] border border-[var(--lp-border)] bg-[var(--lp-surface)] transition focus-within:border-[var(--lp-accent)] focus-within:ring-2 focus-within:ring-[color-mix(in_srgb,var(--lp-accent)_35%,transparent)] lg:flex-1"
         >
           {categories.length > 0 && (
-            <label className="relative hidden shrink-0 items-center border-e border-[var(--lp-border)] bg-[var(--lp-surface2)] sm:flex">
-              <select
-                value={currentCategory ?? ""}
-                onChange={(e) => {
-                  const v = e.target.value || null;
-                  if (mode === "live") onCategory?.(v);
-                  else setLinkCategory(v);
-                }}
-                aria-label={publicT(lang, "allCategories")}
-                className="h-full max-w-[11rem] cursor-pointer appearance-none bg-transparent ps-4 pe-9 text-[13px] font-medium text-[var(--lp-text)] focus:outline-none"
-              >
-                <option value="">{publicT(lang, "allCategories")}</option>
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute end-3 h-3.5 w-3.5 text-[var(--lp-muted)]" />
-            </label>
+            <div className="hidden sm:flex">
+              <CategoryMenu
+                value={currentCategory}
+                onChange={(v) => (mode === "live" ? onCategory?.(v) : setLinkCategory(v))}
+                options={categories.map((c) => ({ value: c, label: c, count: categoryCounts?.[c] }))}
+                allLabel={publicT(lang, "allCategories")}
+                allCount={total}
+              />
+            </div>
           )}
           <input
             type="search"
@@ -142,7 +137,7 @@ export function LandingNavbar({
           )}
           <button
             type="submit"
-            className="flex w-14 shrink-0 items-center justify-center bg-[var(--lp-accent)] text-[var(--lp-accent-fg)] transition hover:brightness-110 cursor-pointer"
+            className="flex w-14 shrink-0 items-center justify-center rounded-e-[calc(var(--lp-btn-radius)-1px)] bg-[var(--lp-accent)] text-[var(--lp-accent-fg)] transition hover:brightness-110 cursor-pointer"
             aria-label={publicT(lang, "search")}
           >
             <Search className="h-5 w-5" />
@@ -219,6 +214,11 @@ export default function Storefront({
     () => Array.from(new Set(offers.map((o) => o.brand?.name || o.storeName).filter((s): s is string => !!s))),
     [offers]
   );
+  const categoryCounts = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const o of offers) if (o.category) m[o.category] = (m[o.category] ?? 0) + 1;
+    return m;
+  }, [offers]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -248,6 +248,8 @@ export default function Storefront({
         onCategory={setCategory}
         store={store}
         onStore={setStore}
+        categoryCounts={categoryCounts}
+        total={offers.length}
       />
 
       {/* 📝 عن الصفحة */}
