@@ -474,12 +474,6 @@
         "dots": "نقاط"
       },
       "font": "خط العناوين",
-      "fonts": {
-        "serif": "Playfair",
-        "elegant": "Cormorant",
-        "modern": "Manrope",
-        "sans": "Inter"
-      },
       "radius": "الزوايا",
       "radii": {
         "sharp": "حادة",
@@ -515,7 +509,21 @@
         "accent": "لون التمييز"
       },
       "navHint": "النصوص وخانة البحث والأزرار تتكيّف تلقائياً لتبقى مقروءة.",
-      "navColor": "لون الشريط"
+      "navColor": "لون الشريط",
+      "headingFont": "خط العناوين",
+      "bodyFont": "خط النصوص",
+      "fontSearch": "ابحث في {n} خطاً…",
+      "fontNone": "لا توجد خطوط مطابقة لبحثك",
+      "fontCount": "{n, plural, one {خط واحد} two {خطان} few {# خطوط} other {# خطاً}}",
+      "fontCats": {
+        "all": "الكل",
+        "serif": "كلاسيكي (Serif)",
+        "sans": "عصري (Sans)",
+        "display": "عناوين بارزة",
+        "handwriting": "خط اليد",
+        "mono": "أحادي المسافة",
+        "arabic": "عربي"
+      }
     },
     "account": {
       "title": "الحساب",

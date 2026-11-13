@@ -1,4 +1,5 @@
 // ==================== 🔗 أدوات مشتركة لصفحات هبوط المسوّقين (آمنة للعميل والخادم) ====================
+import { fontStack, getFont } from "./fonts";
 import type { CSSProperties } from "react";
 
 export const PAGE_LANGUAGES = ["en", "ar", "fr"] as const;
@@ -127,7 +128,18 @@ export function isPageLanguage(v: unknown): v is PageLanguage {
 
 // ==================== 🧩 خيارات التصميم الإضافية (عمود design JSON) ====================
 export const BG_STYLES = ["solid", "glow", "gradient", "grid", "dots"] as const;
-export const FONT_STYLES = ["serif", "elegant", "modern", "sans"] as const;
+/** القيم القديمة للخط (قبل مكتبة الخطوط) → اسم الخط الفعلي */
+const LEGACY_FONTS: Record<string, string> = {
+  serif: "Playfair Display",
+  elegant: "Cormorant Garamond",
+  modern: "Manrope",
+  sans: "Inter",
+};
+/** اسم خط من المكتبة (أو قيمة قديمة) → اسم خط صالح، وإلا البديل */
+export function resolveFontName(v: unknown, fallback: string): string {
+  const name = typeof v === "string" ? (LEGACY_FONTS[v] ?? v) : "";
+  return getFont(name) ? name : fallback;
+}
 export const RADIUS_STYLES = ["sharp", "soft", "round"] as const;
 export const BUTTON_STYLES = ["square", "rounded", "pill"] as const;
 export const GRID_COLUMNS = [2, 3, 4] as const;
@@ -138,7 +150,8 @@ export const NAV_STYLES = ["theme", "glass", "solid", "accent"] as const;
 export interface PageDesign {
   bgColor: string; // يُستخدم مع الثيم "custom"
   background: (typeof BG_STYLES)[number];
-  font: (typeof FONT_STYLES)[number];
+  font: string; // خط العناوين (اسم من مكتبة الخطوط)
+  bodyFont: string; // خط النصوص
   radius: (typeof RADIUS_STYLES)[number];
   button: (typeof BUTTON_STYLES)[number];
   columns: (typeof GRID_COLUMNS)[number];
@@ -150,7 +163,8 @@ export interface PageDesign {
 export const DEFAULT_DESIGN: PageDesign = {
   bgColor: "#0B0E14",
   background: "glow",
-  font: "serif",
+  font: "Playfair Display",
+  bodyFont: "Inter",
   radius: "round",
   button: "rounded",
   columns: 4,
@@ -169,7 +183,8 @@ export function parseDesign(raw: unknown): PageDesign {
   return {
     bgColor: isHexColor(o.bgColor) ? o.bgColor.toUpperCase() : DEFAULT_DESIGN.bgColor,
     background: pick(BG_STYLES, o.background, DEFAULT_DESIGN.background),
-    font: pick(FONT_STYLES, o.font, DEFAULT_DESIGN.font),
+    font: resolveFontName(o.font, DEFAULT_DESIGN.font),
+    bodyFont: resolveFontName(o.bodyFont, DEFAULT_DESIGN.bodyFont),
     radius: pick(RADIUS_STYLES, o.radius, DEFAULT_DESIGN.radius),
     button: pick(BUTTON_STYLES, o.button, DEFAULT_DESIGN.button),
     columns: pick(GRID_COLUMNS, o.columns, DEFAULT_DESIGN.columns),
@@ -187,13 +202,6 @@ export function resolveTokens(theme: string, design?: Partial<PageDesign> | null
 
 const RADIUS = { sharp: ["6px", "4px"], soft: ["14px", "10px"], round: ["24px", "16px"] } as const;
 const BUTTON_RADIUS = { square: "6px", rounded: "14px", pill: "999px" } as const;
-// الخطوط تُحمَّل من Google Fonts عبر <LandingFonts />
-const FONT_VARS = {
-  serif: "'Playfair Display', Georgia, serif",
-  elegant: "'Cormorant Garamond', Georgia, serif",
-  modern: "'Manrope', system-ui, sans-serif",
-  sans: "'Inter', system-ui, sans-serif",
-} as const;
 
 /** خلفية الصفحة حسب النمط المختار */
 export function backgroundImage(style: PageDesign["background"], t: ThemeTokens, accent: string): string | undefined {
@@ -263,7 +271,9 @@ export function themeStyle(theme: string, accent: string, designInput?: Partial<
     "--lp-radius-lg": RADIUS[design.radius][0],
     "--lp-radius-md": RADIUS[design.radius][1],
     "--lp-btn-radius": BUTTON_RADIUS[design.button],
-    "--lp-font-heading": FONT_VARS[design.font],
+    // الخطوط تُحمَّل من Google Fonts عبر <LandingFonts fonts={...} />
+    "--lp-font-heading": fontStack(design.font),
+    "--lp-font-body": fontStack(design.bodyFont),
     "--lp-card-img": design.cardImage === "white" ? "#FFFFFF" : t.surface2,
     backgroundColor: t.bg,
     backgroundImage: backgroundImage(design.background, t, a),

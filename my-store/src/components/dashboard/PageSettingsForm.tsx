@@ -11,8 +11,9 @@ import type { OfferCardData } from "@/components/landing/OfferCard";
 import Storefront from "@/components/landing/Storefront";
 import LandingFonts from "@/components/landing/LandingFonts";
 import LandingFooter from "@/components/landing/LandingFooter";
+import FontPicker from "./FontPicker";
 import {
-  BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, FONT_STYLES, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
+  BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
   RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, type PageDesign,
 } from "@/lib/landing";
 import type { SerializedLandingPage } from "@/lib/marketer";
@@ -54,6 +55,8 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState("");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  // معاينة حية للخط عند المرور عليه في المنتقي (دون حفظه)
+  const [fontHover, setFontHover] = useState<{ key: "font" | "bodyFont"; family: string } | null>(null);
 
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => {
     setF((s) => ({ ...s, [k]: v }));
@@ -218,24 +221,22 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
               </button>
             }
           >
-            <div>
-              <p className="mb-2 text-sm text-white/70">{t("design.font")}</p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                <LandingFonts />
-                {FONT_STYLES.map((v) => (
-                  <button
-                    type="button"
-                    key={v}
-                    onClick={() => setD("font", v)}
-                    className={`rounded-xl border px-3 py-3 text-start transition cursor-pointer ${design.font === v ? "border-amber-400 bg-amber-400/[0.06]" : "border-white/10 hover:border-white/25"}`}
-                  >
-                    <span className="block text-xl leading-none" style={{ fontFamily: themeStyle("midnight", "#000000", { font: v })["--lp-font-heading" as keyof React.CSSProperties] as string }}>
-                      Aa
-                    </span>
-                    <span className="mt-1.5 block text-xs text-white/55">{t(`design.fonts.${v}`)}</span>
-                  </button>
-                ))}
-              </div>
+            {/* 🔤 الخطوط: مكتبة كاملة مع بحث وتصنيفات ومعاينة حية */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FontPicker
+                label={t("design.headingFont")}
+                value={design.font}
+                onChange={(v) => setD("font", v)}
+                onPreview={(v) => setFontHover(v ? { key: "font", family: v } : null)}
+                preferArabic={f.language === "ar"}
+              />
+              <FontPicker
+                label={t("design.bodyFont")}
+                value={design.bodyFont}
+                onChange={(v) => setD("bodyFont", v)}
+                onPreview={(v) => setFontHover(v ? { key: "bodyFont", family: v } : null)}
+                preferArabic={f.language === "ar"}
+              />
             </div>
             <Segmented label={t("design.radius")} value={design.radius} options={RADIUS_STYLES.map((v) => ({ value: v, label: t(`design.radii.${v}`) }))} onChange={(v) => setD("radius", v)} />
             <Segmented label={t("design.button")} value={design.button} options={BUTTON_STYLES.map((v) => ({ value: v, label: t(`design.buttons.${v}`) }))} onChange={(v) => setD("button", v)} />
@@ -368,7 +369,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
             </div>
           </div>
           <ScaledPreview device={device}>
-            <PreviewPage f={f} slug={savedSlug} design={design} socials={socials} offers={sampleOffers} />
+            <PreviewPage f={f} slug={savedSlug} design={fontHover ? { ...design, [fontHover.key]: fontHover.family } : design} socials={socials} offers={sampleOffers} />
           </ScaledPreview>
         </aside>
       </div>
@@ -553,7 +554,7 @@ function PreviewPage({
   return (
     // flow-root: يمنع هوامش العناصر الأخيرة من الخروج خارج الخلفية (كان يظهر شريط أسود أسفل المعاينة)
     <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className="flow-root min-h-[900px]">
-      <LandingFonts />
+      <LandingFonts fonts={[design.font, design.bodyFont]} />
       <Storefront
         page={{
           slug,

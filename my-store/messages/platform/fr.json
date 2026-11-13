@@ -474,12 +474,6 @@
         "dots": "Points"
       },
       "font": "Police des titres",
-      "fonts": {
-        "serif": "Playfair",
-        "elegant": "Cormorant",
-        "modern": "Manrope",
-        "sans": "Inter"
-      },
       "radius": "Coins",
       "radii": {
         "sharp": "Nets",
@@ -515,7 +509,21 @@
         "accent": "Couleur d’accent"
       },
       "navHint": "Textes, champ de recherche et boutons s’adaptent automatiquement pour rester lisibles.",
-      "navColor": "Couleur de la barre"
+      "navColor": "Couleur de la barre",
+      "headingFont": "Police des titres",
+      "bodyFont": "Police du texte",
+      "fontSearch": "Rechercher parmi {n} polices…",
+      "fontNone": "Aucune police ne correspond",
+      "fontCount": "{n, plural, one {# police} other {# polices}}",
+      "fontCats": {
+        "all": "Toutes",
+        "serif": "Serif",
+        "sans": "Sans serif",
+        "display": "Affichage",
+        "handwriting": "Manuscrite",
+        "mono": "Monospace",
+        "arabic": "Arabe"
+      }
     },
     "account": {
       "title": "Compte",

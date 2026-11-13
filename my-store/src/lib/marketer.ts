@@ -9,7 +9,6 @@ import {
   PAGE_THEMES,
   SOCIAL_KEYS,
   BG_STYLES,
-  FONT_STYLES,
   RADIUS_STYLES,
   BUTTON_STYLES,
   CARD_IMAGE_STYLES,
@@ -92,7 +91,8 @@ export const landingPageSchema = z.object({
     .object({
       bgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
       background: z.enum(BG_STYLES).optional(),
-      font: z.enum(FONT_STYLES).optional(),
+      font: z.string().max(60).optional(),
+      bodyFont: z.string().max(60).optional(),
       radius: z.enum(RADIUS_STYLES).optional(),
       button: z.enum(BUTTON_STYLES).optional(),
       columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional(),

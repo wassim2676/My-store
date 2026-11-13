@@ -474,12 +474,6 @@
         "dots": "Dots"
       },
       "font": "Heading font",
-      "fonts": {
-        "serif": "Playfair",
-        "elegant": "Cormorant",
-        "modern": "Manrope",
-        "sans": "Inter"
-      },
       "radius": "Corners",
       "radii": {
         "sharp": "Sharp",
@@ -515,7 +509,21 @@
         "accent": "Accent color"
       },
       "navHint": "Text, search field and buttons adapt automatically to stay readable.",
-      "navColor": "Bar color"
+      "navColor": "Bar color",
+      "headingFont": "Heading font",
+      "bodyFont": "Body text font",
+      "fontSearch": "Search {n} fonts…",
+      "fontNone": "No fonts match your search",
+      "fontCount": "{n, plural, one {# font} other {# fonts}}",
+      "fontCats": {
+        "all": "All",
+        "serif": "Serif",
+        "sans": "Sans serif",
+        "display": "Display",
+        "handwriting": "Handwriting",
+        "mono": "Monospace",
+        "arabic": "Arabic"
+      }
     },
     "account": {
       "title": "Account",

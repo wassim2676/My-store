@@ -20,6 +20,7 @@ export default async function LandingShell({
   children: React.ReactNode;
 }) {
   const lang = page.language;
+  const design = parseDesign(page.design);
   // شريط المالك بلغة واجهة المنصة (لغة المسوّق)، لا بلغة الصفحة
   const [t, uiLocale] = isOwner ? await Promise.all([getTranslations("platform.owner"), getLocale()]) : [null, "en"];
   return (
@@ -27,10 +28,10 @@ export default async function LandingShell({
       data-lp
       lang={lang}
       dir={pageDir(lang)}
-      style={themeStyle(page.theme, page.accentColor, parseDesign(page.design))}
+      style={themeStyle(page.theme, page.accentColor, design)}
       className="min-h-screen antialiased"
     >
-      <LandingFonts />
+      <LandingFonts fonts={[design.font, design.bodyFont]} />
       {isOwner && t && (
         <div className="relative z-50 border-b border-white/10 bg-black text-white" dir={getDirection(uiLocale)}>
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 text-xs">
