@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -23,7 +23,6 @@ export default function RegisterPage() {
 
 // ==================== 🧑‍💼 تسجيل مسوّق: الحساب + اسم ورابط صفحة الهبوط ====================
 function RegisterForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("register");
 
@@ -60,12 +59,9 @@ function RegisterForm() {
         return;
       }
       const login = await signIn("credentials", { email: form.email.trim(), password: form.password, redirect: false });
-      if (login?.ok) {
-        router.push("/dashboard?welcome=1");
-        router.refresh();
-      } else {
-        router.push("/login?registered=true");
-      }
+      // تحميل كامل واحد: الجلسة الجديدة تصل لكل المكوّنات دون سباق تنقّلات
+      window.location.assign(login?.ok ? "/dashboard?welcome=1" : "/login?registered=true");
+      return;
     } catch {
       setError(t("errors.unknown"));
     } finally {

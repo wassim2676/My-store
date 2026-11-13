@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { z } from "zod";
 import type { Offer, Brand, LandingPage } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -18,12 +19,13 @@ import {
 } from "@/lib/landing";
 
 // ==================== 🔐 جلسة المسوّق ====================
-export async function getMarketerSession() {
+// cache: الـ layout والصفحة داخل نفس الطلب يشتركان في نتيجة واحدة (استعلام واحد بدل اثنين)
+export const getMarketerSession = cache(async () => {
   const session = await auth();
   if (!session?.user?.id) return null;
   const landingPage = await prisma.landingPage.findUnique({ where: { userId: session.user.id } });
   return { session, userId: session.user.id, landingPage };
-}
+});
 
 // ==================== ✅ مخططات التحقق ====================
 /** يضيف https:// تلقائياً إن نسيه المستخدم (مثل www.instagram.com/me) */

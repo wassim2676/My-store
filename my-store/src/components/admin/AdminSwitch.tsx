@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 /**
@@ -26,20 +26,24 @@ export default function AdminSwitch({
   const [on, setOn] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [, startTransition] = useTransition();
 
+  // تبديل فوري في الواجهة، ثم الطلب؛ نرجع للحالة السابقة إن فشل. تحديث الأرقام يتم في الخلفية.
   const toggle = async () => {
+    const next = !on;
+    setOn(next);
     setBusy(true);
     setFailed(false);
     try {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [field]: !on }),
+        body: JSON.stringify({ [field]: next }),
       });
       if (!res.ok) throw new Error();
-      setOn(!on);
-      router.refresh();
+      startTransition(() => router.refresh());
     } catch {
+      setOn(!next);
       setFailed(true);
     } finally {
       setBusy(false);

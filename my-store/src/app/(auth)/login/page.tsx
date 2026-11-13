@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { BarChart3, Check, Eye, EyeOff, Gem, Loader2, Lock, Mail, MousePointerClick, Sparkles } from "lucide-react";
@@ -17,6 +17,13 @@ function getDefaultRedirect(role?: string) {
   return "/dashboard";
 }
 
+/** callbackUrl مسموح فقط إن كان مساراً داخل الموقع (منع التحويل إلى مواقع خارجية) */
+function safeCallback(value: string | null): string | null {
+  if (!value || !value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) return null;
+  if (value.startsWith("/login") || value.startsWith("/register")) return null;
+  return value;
+}
+
 export default function LoginPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#07090D]" />}>
@@ -27,9 +34,8 @@ export default function LoginPage() {
 
 // ==================== 🔐 تسجيل الدخول (نفس هوية صفحة التسجيل الداكنة) ====================
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const t = useTranslations("platform.login");
 
   const [email, setEmail] = useState("");
@@ -38,14 +44,17 @@ function LoginForm() {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const justRegistered = searchParams.get("registered") === "true";
 
+  const callback = safeCallback(searchParams.get("callbackUrl"));
+
+  // زائر لديه جلسة بالفعل (نادر: proxy يحوّله قبل الوصول هنا) → وجهته مرة واحدة
   useEffect(() => {
-    if (status === "authenticated") {
-      const callbackUrl = searchParams.get("callbackUrl") || getDefaultRedirect(session?.user?.role);
-      router.replace(callbackUrl);
+    if (status === "authenticated" && !loading && !redirecting) {
+      window.location.replace(callback || getDefaultRedirect(session?.user?.role));
     }
-  }, [status, router, searchParams, session]);
+  }, [status, session, callback, loading, redirecting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,10 +65,10 @@ function LoginForm() {
       if (result?.error) {
         setError(t("invalid"));
       } else if (result?.ok) {
-        const updated = await update();
-        const role = (updated as { user?: { role?: string } } | null)?.user?.role;
-        router.push(searchParams.get("callbackUrl") || getDefaultRedirect(role));
-        router.refresh();
+        // تحميل كامل واحد للوجهة: جلسة جديدة في كل مكان، بلا سباق بين عدة تنقّلات
+        setRedirecting(true);
+        const s = await fetch("/api/auth/session", { cache: "no-store" }).then((r) => r.json()).catch(() => null);
+        window.location.assign(callback || getDefaultRedirect(s?.user?.role));
       } else {
         setError(t("unknown"));
       }
@@ -159,10 +168,10 @@ function LoginForm() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || redirecting}
                 className="w-full rounded-xl bg-gradient-to-r from-amber-300 to-amber-500 py-3.5 font-semibold text-black shadow-lg shadow-amber-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
-                {loading ? (
+                {loading || redirecting ? (
                   <span className="inline-flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     {t("loading")}

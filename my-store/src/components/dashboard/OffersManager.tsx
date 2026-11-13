@@ -62,15 +62,22 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
     }
   };
 
+  // تحديث متفائل: الواجهة تتغيّر فوراً، ونرجع للحالة السابقة إن فشل الطلب
   const patch = async (id: string, body: Record<string, unknown>) => {
+    const before = offers;
+    setOffers((list) => list.map((o) => (o.id === id ? { ...o, ...body } : o)));
+    setMenu(null);
     const data = await call(id, { method: "PATCH", body: JSON.stringify(body) });
     if (data?.data) setOffers((list) => list.map((o) => (o.id === id ? data.data : o)));
+    else setOffers(before);
   };
 
   const remove = async (id: string) => {
     if (!confirm(t("offers.confirmDelete"))) return;
+    const before = offers;
+    setOffers((list) => list.filter((o) => o.id !== id));
     const data = await call(id, { method: "DELETE" });
-    if (data) setOffers((list) => list.filter((o) => o.id !== id));
+    if (!data) setOffers(before);
   };
 
   const duplicate = async (id: string) => {

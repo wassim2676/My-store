@@ -14,7 +14,7 @@ interface UserData {
   firstName?: string | null;
   lastName?: string | null;
   phone?: string | null;
-  role: "USER" | "ADMIN" | "SUPER_ADMIN";
+  role: "USER" | "MARKETER" | "ADMIN" | "SUPER_ADMIN";
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
@@ -34,7 +34,7 @@ interface Pagination {
 
 interface Filters {
   search: string;
-  role: "all" | "USER" | "ADMIN" | "SUPER_ADMIN";
+  role: "all" | "USER" | "MARKETER" | "ADMIN" | "SUPER_ADMIN";
   status: "all" | "active" | "inactive";
   dateFrom: string;
   dateTo: string;
@@ -49,9 +49,10 @@ interface ApiResponse<T> {
 }
 
 // ==================== 🎨 ثوابت الواجهة ====================
-const ROLE_OPTIONS: { value: "all" | "USER" | "ADMIN" | "SUPER_ADMIN"; label: string; color: string; icon: any }[] = [
+const ROLE_OPTIONS: { value: "all" | "USER" | "MARKETER" | "ADMIN" | "SUPER_ADMIN"; label: string; color: string; icon: any }[] = [
   { value: "all", label: "All Roles", color: "bg-gray-100 text-gray-700", icon: null },
-  { value: "USER", label: "Customer", color: "bg-blue-100 text-blue-700", icon: User },
+  { value: "USER", label: "User", color: "bg-blue-100 text-blue-700", icon: User },
+  { value: "MARKETER", label: "Marketer", color: "bg-amber-100 text-amber-700", icon: User },
   { value: "ADMIN", label: "Admin", color: "bg-purple-100 text-purple-700", icon: Shield },
   { value: "SUPER_ADMIN", label: "Super Admin", color: "bg-red-100 text-red-700", icon: Shield },
 ];

@@ -47,3 +47,9 @@ body {
 [data-lp] .rounded-2xl {
   border-radius: var(--lp-radius-md);
 }
+
+/* شريط التقدّم في هيكل التحميل */
+@keyframes skeleton-bar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}

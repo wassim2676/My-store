@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     const where: any = {};
 
     // فلترة حسب الدور (Role)
-    if (role && ["USER", "ADMIN", "SUPER_ADMIN"].includes(role)) {
+    if (role && ["USER", "MARKETER", "ADMIN", "SUPER_ADMIN"].includes(role)) {
       where.role = role;
     }
 
