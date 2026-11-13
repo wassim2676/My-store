@@ -1,6 +1,6 @@
 import { ExternalLink } from "lucide-react";
 import BrandLogo from "@/components/shop/BrandLogo";
-import { publicT, readableText, type StoreBrand } from "@/lib/landing";
+import { bestTextOn, isHexColor, publicT, type StoreBrand } from "@/lib/landing";
 
 // ==================== 🛒 زر "الشراء من {المتجر}" — يمر عبر /go للتتبع ثم يحوّل لرابط الأفلييت ====================
 export default function BuyButton({
@@ -19,16 +19,16 @@ export default function BuyButton({
   size?: "lg" | "md";
 }) {
   const bg = store.accentColor || fallbackColor;
-  const fg = readableText(bg);
+  const fg = bestTextOn(isHexColor(bg) ? bg : "#C8A24A");
   return (
     <a
       href={`/go/${offerId}`}
       target="_blank"
       rel="nofollow sponsored noopener"
-      className={`group flex w-full items-center justify-center gap-3 rounded-[var(--lp-btn-radius)] font-bold shadow-lg transition hover:brightness-110 active:scale-[0.99] ${
+      className={`group flex w-full items-center justify-center gap-3 rounded-[var(--lp-btn-radius)] font-bold transition hover:brightness-110 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--lp-accent-ink)] ${
         size === "lg" ? "px-6 py-4 text-base" : "px-5 py-3 text-sm"
       }`}
-      style={{ backgroundColor: bg, color: fg, boxShadow: `0 18px 40px -18px ${bg}` }}
+      style={{ backgroundColor: bg, color: fg }}
     >
       <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-white px-1">
         <BrandLogo brand={store} size={20} />

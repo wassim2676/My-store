@@ -49,7 +49,7 @@ export default async function OfferPage({ params }: Props) {
 
   const { page, offer, offers, isOwner } = data;
   const lang = page.language;
-  const store = resolveStore(offer.brand, offer.storeName);
+  const store = resolveStore(offer.brand, offer.storeName, offer.storeLogo);
 
   const h = await headers();
   if (!isOwner && isCountableRequest(h)) {
@@ -126,7 +126,7 @@ export default async function OfferPage({ params }: Props) {
                 </span>
               )}
               {offer.category && (
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--lp-accent)]">{offer.category}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--lp-accent-ink)]">{offer.category}</span>
               )}
             </div>
 
@@ -182,7 +182,7 @@ export default async function OfferPage({ params }: Props) {
             <div className="grid gap-3 sm:grid-cols-2">
               {offer.highlights.map((hl, i) => (
                 <div key={i} className="flex items-start gap-3 rounded-2xl border border-[var(--lp-border)] bg-[var(--lp-surface)] p-4">
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[var(--lp-accent)]" />
+                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[var(--lp-accent-ink)]" />
                   <span className="text-[15px]">{hl}</span>
                 </div>
               ))}
@@ -279,7 +279,7 @@ export default async function OfferPage({ params }: Props) {
             {offer.rating != null && offer.rating > 0 && (
               <div className="flex flex-col items-center">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--lp-muted)]">{publicT(lang, "ourScore")}</span>
-                <span className="font-serif text-6xl font-semibold text-[var(--lp-accent)]">{offer.rating.toFixed(1)}</span>
+                <span className="font-serif text-6xl font-semibold text-[var(--lp-accent-ink)]">{offer.rating.toFixed(1)}</span>
                 <Stars value={offer.rating} size={14} />
               </div>
             )}
@@ -309,7 +309,7 @@ export default async function OfferPage({ params }: Props) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--lp-accent)]">
+    <h2 className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--lp-accent-ink)]">
       <span className="h-px w-8 bg-[var(--lp-accent)]" />
       {children}
     </h2>

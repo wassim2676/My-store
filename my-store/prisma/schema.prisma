@@ -107,6 +107,7 @@ model User {
 
   // 🔗 صفحة الهبوط الخاصة بالمسوّق بالعمولة (واحدة لكل حساب)
   landingPage   LandingPage?
+  media         Media[]
 
   // NextAuth relations
   accounts      Account[]
@@ -653,6 +654,7 @@ model Offer {
   brand         Brand?      @relation(fields: [brandId], references: [id], onDelete: SetNull)
   brandId       String?
   storeName     String?     @db.VarChar(80)
+  storeLogo     String?     @db.VarChar(500) // شعار متجر حر (رفع SVG/PNG أو رابط) عندما لا يكون من قائمة المنصات
 
   title         String      @db.VarChar(200)
   slug          String      @db.VarChar(120)
@@ -758,4 +760,17 @@ model AffiliateProduct {
   @@index([brandId])
   @@index([isFeatured])
   @@index([createdAt])
+}
+// ==================== 🖼️ ملفات يرفعها المسوّقون (صور العروض، الصورة الشخصية، شعارات المتاجر) ====================
+// تُخزَّن في قاعدة البيانات (بعد ضغطها في المتصفح إلى WebP) وتُقدَّم من /api/media/{id} مع كاش طويل
+model Media {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  mime      String   @db.VarChar(60)
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }

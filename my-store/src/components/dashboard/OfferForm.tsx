@@ -5,11 +5,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  ArrowLeft, Check, ImagePlus, Link2, Loader2, Plus, Save, Star, Trash2, X, Wand2,
+  ArrowLeft, Check, Link2, Loader2, Plus, Save, Star, Trash2, X, Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import BrandLogo from "@/components/shop/BrandLogo";
 import LandingFonts from "@/components/landing/LandingFonts";
+import { ImageDropzone, SingleImageField } from "./ImageUpload";
 import OfferCard from "@/components/landing/OfferCard";
 import { CURRENCIES, OFFER_BADGES, themeStyle, toSlug, pageDir, type PageDesign } from "@/lib/landing";
 import type { SerializedOffer } from "@/lib/marketer";
@@ -62,6 +63,7 @@ export default function OfferForm({
     subtitle: offer?.subtitle ?? "",
     brandId: offer?.brandId ?? (offer?.storeName ? OTHER : ""),
     storeName: offer?.storeName ?? "",
+    storeLogo: offer?.storeLogo ?? "",
     affiliateUrl: offer?.affiliateUrl ?? "",
     buttonLabel: offer?.buttonLabel ?? "",
     couponCode: offer?.couponCode ?? "",
@@ -118,6 +120,7 @@ export default function OfferForm({
       status,
       brandId: f.brandId && f.brandId !== OTHER ? f.brandId : null,
       storeName: f.brandId === OTHER ? f.storeName : null,
+      storeLogo: f.brandId === OTHER ? f.storeLogo || null : null,
       rating: f.rating > 0 ? f.rating : null,
       price: f.price || null,
       compareAt: f.compareAt || null,
@@ -167,6 +170,7 @@ export default function OfferForm({
     badge: f.badge || null,
     isFeatured: f.isFeatured,
     storeName: f.brandId === OTHER ? f.storeName || "Store" : null,
+    storeLogo: f.brandId === OTHER ? f.storeLogo || null : null,
     brand: selectedBrand,
   };
 
@@ -245,7 +249,14 @@ export default function OfferForm({
                 </button>
               </div>
               {f.brandId === OTHER && (
-                <input required value={f.storeName} onChange={(e) => set("storeName", e.target.value)} maxLength={80} placeholder={t("form.storeNamePh")} className={field + " mt-3"} />
+                <div className="mt-3 space-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+                  <input required value={f.storeName} onChange={(e) => set("storeName", e.target.value)} maxLength={80} placeholder={t("form.storeNamePh")} className={field} />
+                  <div>
+                    <p className="mb-2 text-sm text-white/70">{t("media.storeLogo")}</p>
+                    <SingleImageField value={f.storeLogo} onChange={(v) => set("storeLogo", v)} aspect="logo" maxDim={600} accept="image/svg+xml,image/png,image/webp,.svg" checker />
+                    <p className="mt-1.5 text-xs text-white/40">{t("media.storeLogoHint")}</p>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -494,62 +505,29 @@ function ListEditor({
 
 function ImagesEditor({ images, onChange }: { images: string[]; onChange: (v: string[]) => void }) {
   const t = useTranslations("dash");
-  const [draft, setDraft] = useState("");
-  const [err, setErr] = useState("");
-  const add = () => {
-    const urls = draft.split(/\s+/).map((u) => u.trim()).filter(Boolean);
-    const valid = urls.filter((u) => /^https?:\/\/\S+$/i.test(u));
-    if (!valid.length) return setErr(t("form.imageInvalid"));
-    onChange([...images, ...valid].slice(0, 10));
-    setDraft("");
-    setErr("");
-  };
   return (
-    <div>
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
-        {images.map((src, i) => (
-          <div key={src + i} className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-white">
-            <img src={src} alt="" className="h-full w-full object-contain p-2" />
-            {i === 0 && <span className="absolute start-1.5 top-1.5 rounded bg-black/75 px-1.5 py-0.5 text-[10px] text-white">{t("form.cover")}</span>}
-            <div className="absolute inset-x-0 bottom-0 flex justify-center gap-1 bg-gradient-to-t from-black/70 p-1.5 opacity-0 transition group-hover:opacity-100">
-              {i > 0 && (
-                <button type="button" onClick={() => onChange([src, ...images.filter((_, j) => j !== i)])} className="rounded bg-white/90 p-1 text-black cursor-pointer" title={t("form.makeCover")}>
-                  <Wand2 className="h-3.5 w-3.5" />
+    <div className="space-y-3">
+      {images.length > 0 && (
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+          {images.map((src, i) => (
+            <div key={src + i} className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-white">
+              <img src={src} alt="" className="h-full w-full object-contain p-2" />
+              {i === 0 && <span className="absolute start-1.5 top-1.5 rounded bg-black/75 px-1.5 py-0.5 text-[10px] text-white">{t("form.cover")}</span>}
+              <div className="absolute inset-x-0 bottom-0 flex justify-center gap-1 bg-gradient-to-t from-black/70 p-1.5 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
+                {i > 0 && (
+                  <button type="button" onClick={() => onChange([src, ...images.filter((_, j) => j !== i)])} className="rounded bg-white/90 p-1 text-black cursor-pointer" title={t("form.makeCover")}>
+                    <Wand2 className="h-3.5 w-3.5" />
+                  </button>
+                )}
+                <button type="button" onClick={() => onChange(images.filter((_, j) => j !== i))} className="rounded bg-rose-500 p-1 text-white cursor-pointer" aria-label="remove">
+                  <Trash2 className="h-3.5 w-3.5" />
                 </button>
-              )}
-              <button type="button" onClick={() => onChange(images.filter((_, j) => j !== i))} className="rounded bg-rose-500 p-1 text-white cursor-pointer" aria-label="remove">
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
+              </div>
             </div>
-          </div>
-        ))}
-        {images.length === 0 && (
-          <div className="col-span-3 flex aspect-[3/1] items-center justify-center rounded-xl border border-dashed border-white/15 text-white/30 sm:col-span-5 sm:aspect-[5/1]">
-            <ImagePlus className="h-6 w-6" />
-          </div>
-        )}
-      </div>
-      {images.length < 10 && (
-        <div className="mt-3 flex gap-2">
-          <input
-            dir="ltr"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                add();
-              }
-            }}
-            placeholder={t("form.imagePh")}
-            className={field}
-          />
-          <button type="button" onClick={add} className="shrink-0 rounded-xl border border-white/10 px-4 text-sm text-white/80 hover:bg-white/5 cursor-pointer">
-            {t("common.add")}
-          </button>
+          ))}
         </div>
       )}
-      {err && <p className="mt-1.5 text-xs text-rose-300">{err}</p>}
+      <ImageDropzone remaining={10 - images.length} onAdd={(urls) => urls.length && onChange([...images, ...urls].slice(0, 10))} />
     </div>
   );
 }

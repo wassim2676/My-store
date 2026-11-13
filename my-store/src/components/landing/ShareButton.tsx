@@ -29,7 +29,7 @@ export default function ShareButton({ title, lang, variant = "pill" }: { title: 
         onClick={share}
         title={publicT(lang, copied ? "copied" : "share")}
         aria-label={publicT(lang, "share")}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--lp-border)] text-[var(--lp-muted)] transition hover:border-[var(--lp-accent)] hover:text-[var(--lp-accent)] cursor-pointer"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--lp-nav-border)] text-[var(--lp-nav-muted)] transition hover:border-[var(--lp-nav-btn)] hover:bg-[color-mix(in_srgb,var(--lp-nav-text)_7%,transparent)] hover:text-[var(--lp-nav-text)] cursor-pointer"
       >
         {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
       </button>

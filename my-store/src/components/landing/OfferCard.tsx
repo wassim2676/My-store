@@ -20,6 +20,7 @@ export interface OfferCardData {
   badge: string | null;
   isFeatured: boolean;
   storeName: string | null;
+  storeLogo?: string | null;
   brand: StoreBrand | null;
 }
 
@@ -36,7 +37,7 @@ export default function OfferCard({
   lang: string;
   large?: boolean;
 }) {
-  const store = resolveStore(offer.brand, offer.storeName);
+  const store = resolveStore(offer.brand, offer.storeName, offer.storeLogo);
   const discount = discountPercent(offer.price, offer.compareAt);
   const price = formatPrice(offer.price, offer.currency, lang);
   const compareAt = discount ? formatPrice(offer.compareAt, offer.currency, lang) : null;
@@ -80,7 +81,7 @@ export default function OfferCard({
       {/* 📝 المحتوى */}
       <div className="flex flex-1 flex-col gap-2 px-4 pb-4 pt-3.5">
         {offer.category && (
-          <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[var(--lp-accent)]">{offer.category}</span>
+          <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[var(--lp-accent-ink)]">{offer.category}</span>
         )}
         <h3 className={`font-serif font-semibold leading-snug text-[var(--lp-text)] line-clamp-2 ${large ? "text-xl" : "text-[15.5px]"}`}>
           {offer.title}
@@ -112,7 +113,7 @@ export default function OfferCard({
         <span className="flex min-w-0 items-center text-[var(--lp-text)] opacity-90 transition-opacity group-hover:opacity-100" title={store.name}>
           <BrandLogo brand={store} size={22} fallback="name" className={THEME_LOGO} squareScale={1.35} />
         </span>
-        <span className="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--lp-accent)]">
+        <span className="flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--lp-accent-ink)]">
           {publicT(lang, "viewReview")}
           <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100" />
         </span>

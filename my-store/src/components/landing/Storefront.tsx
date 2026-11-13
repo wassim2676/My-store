@@ -23,10 +23,10 @@ export interface StorefrontPage {
 
 const gridCols = (columns: 2 | 3 | 4) =>
   columns === 2
-    ? "grid-cols-1 min-[480px]:grid-cols-2"
+    ? "grid-cols-1 @min-[480px]:grid-cols-2"
     : columns === 3
-      ? "grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
-      : "grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
+      ? "grid-cols-1 @min-[480px]:grid-cols-2 @min-[1024px]:grid-cols-3 @min-[1536px]:grid-cols-4"
+      : "grid-cols-1 @min-[480px]:grid-cols-2 @min-[768px]:grid-cols-3 @min-[1280px]:grid-cols-4 @min-[1536px]:grid-cols-5";
 
 // ==================== 🧭 شريط تنقل صفحة الهبوط ====================
 /**
@@ -79,25 +79,25 @@ export function LandingNavbar({
   const chip = (active: boolean) =>
     `shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition cursor-pointer ${
       active
-        ? "border-transparent bg-[var(--lp-accent)] text-[var(--lp-accent-fg)]"
-        : "border-[var(--lp-border)] text-[var(--lp-muted)] hover:border-[color-mix(in_srgb,var(--lp-text)_25%,transparent)] hover:text-[var(--lp-text)]"
+        ? "border-transparent bg-[var(--lp-nav-btn)] text-[var(--lp-nav-btn-fg)]"
+        : "border-[var(--lp-nav-border)] text-[var(--lp-nav-muted)] hover:border-[color-mix(in_srgb,var(--lp-nav-text)_40%,transparent)] hover:bg-[color-mix(in_srgb,var(--lp-nav-text)_7%,transparent)] hover:text-[var(--lp-nav-text)]"
     }`;
   const hasFilterRow = categories.length > 0 || stores.length > 1;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[var(--lp-border)] bg-[color-mix(in_srgb,var(--lp-bg)_88%,transparent)] backdrop-blur-xl">
-      <div className="flex w-full flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:px-8">
+    <header className="@container sticky top-0 z-40 w-full border-b border-[var(--lp-nav-border)] bg-[var(--lp-nav-bg)] text-[var(--lp-nav-text)] [backdrop-filter:var(--lp-nav-blur)] [-webkit-backdrop-filter:var(--lp-nav-blur)]">
+      <div className="flex w-full flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 @min-[640px]:px-6 @min-[1024px]:flex-nowrap @min-[1024px]:px-8">
         {/* الهوية: الشعار + الاسم + المشاركة */}
-        <div className="flex min-w-0 flex-1 items-center gap-3 lg:flex-none">
+        <div className="flex min-w-0 flex-1 items-center gap-3 @min-[1024px]:flex-none">
           <Link href={`/${page.slug}`} className="flex min-w-0 items-center gap-3">
             {page.avatarUrl ? (
-              <img src={page.avatarUrl} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-[var(--lp-accent)] ring-offset-2 ring-offset-[var(--lp-bg)]" />
+              <img src={page.avatarUrl} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-[var(--lp-nav-btn)] ring-offset-2 ring-offset-[var(--lp-nav-bg)]" />
             ) : (
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--lp-accent)] font-serif text-lg font-semibold text-[var(--lp-accent-fg)]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--lp-nav-btn)] font-serif text-lg font-semibold text-[var(--lp-nav-btn-fg)]">
                 {page.title.trim().slice(0, 1).toUpperCase()}
               </span>
             )}
-            <span className="truncate font-serif text-lg font-semibold tracking-tight sm:text-xl">{page.title}</span>
+            <span className="truncate font-serif text-lg font-semibold tracking-tight @min-[640px]:text-xl">{page.title}</span>
           </Link>
           <ShareButton title={page.title} lang={lang} variant="icon" />
         </div>
@@ -109,10 +109,10 @@ export function LandingNavbar({
             e.preventDefault();
             if (mode === "link") goTo(draft, linkCategory);
           }}
-          className="group relative flex h-11 w-full min-w-0 items-stretch rounded-[var(--lp-btn-radius)] border border-[var(--lp-border)] bg-[var(--lp-surface)] transition focus-within:border-[var(--lp-accent)] focus-within:ring-2 focus-within:ring-[color-mix(in_srgb,var(--lp-accent)_35%,transparent)] lg:flex-1"
+          className="group relative flex h-11 w-full min-w-0 items-stretch rounded-[var(--lp-btn-radius)] border border-[var(--lp-nav-border)] bg-[var(--lp-nav-field)] transition focus-within:border-[var(--lp-nav-btn)] focus-within:ring-2 focus-within:ring-[color-mix(in_srgb,var(--lp-nav-btn)_35%,transparent)] @min-[1024px]:flex-1"
         >
           {categories.length > 0 && (
-            <div className="hidden sm:flex">
+            <div className="hidden @min-[640px]:flex">
               <CategoryMenu
                 value={currentCategory}
                 onChange={(v) => (mode === "live" ? onCategory?.(v) : setLinkCategory(v))}
@@ -128,16 +128,16 @@ export function LandingNavbar({
             onChange={(e) => (mode === "live" ? onQuery?.(e.target.value) : setDraft(e.target.value))}
             placeholder={publicT(lang, "searchIn", { name: page.title })}
             aria-label={publicT(lang, "search")}
-            className="min-w-0 flex-1 bg-transparent px-4 text-[15px] text-[var(--lp-text)] placeholder:text-[var(--lp-muted)] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+            className="min-w-0 flex-1 bg-transparent px-4 text-[15px] text-[var(--lp-nav-text)] placeholder:text-[var(--lp-nav-muted)] focus:outline-none [&::-webkit-search-cancel-button]:hidden"
           />
           {value && mode === "live" && (
-            <button type="button" onClick={() => onQuery?.("")} className="px-2 text-[var(--lp-muted)] hover:text-[var(--lp-text)] cursor-pointer" aria-label={publicT(lang, "clear")}>
+            <button type="button" onClick={() => onQuery?.("")} className="px-2 text-[var(--lp-nav-muted)] hover:text-[var(--lp-nav-text)] cursor-pointer" aria-label={publicT(lang, "clear")}>
               <X className="h-4 w-4" />
             </button>
           )}
           <button
             type="submit"
-            className="flex w-14 shrink-0 items-center justify-center rounded-e-[calc(var(--lp-btn-radius)-1px)] bg-[var(--lp-accent)] text-[var(--lp-accent-fg)] transition hover:brightness-110 cursor-pointer"
+            className="flex w-14 shrink-0 items-center justify-center rounded-e-[calc(var(--lp-btn-radius)-1px)] bg-[var(--lp-nav-btn)] text-[var(--lp-nav-btn-fg)] transition hover:brightness-110 cursor-pointer"
             aria-label={publicT(lang, "search")}
           >
             <Search className="h-5 w-5" />
@@ -147,8 +147,8 @@ export function LandingNavbar({
 
       {/* سطر الفلاتر */}
       {hasFilterRow && (
-        <div className="flex w-full items-center gap-2 overflow-x-auto border-t border-[var(--lp-border)] px-4 py-2.5 [scrollbar-width:none] sm:px-6 lg:px-8 [&::-webkit-scrollbar]:hidden">
-          <SlidersHorizontal className="me-1 h-4 w-4 shrink-0 text-[var(--lp-muted)]" />
+        <div className="flex w-full items-center gap-2 overflow-x-auto border-t border-[var(--lp-nav-border)] px-4 py-2.5 [scrollbar-width:none] @min-[640px]:px-6 @min-[1024px]:px-8 [&::-webkit-scrollbar]:hidden">
+          <SlidersHorizontal className="me-1 h-4 w-4 shrink-0 text-[var(--lp-nav-muted)]" />
           {mode === "live" ? (
             <>
               <button type="button" className={chip(!category && !store)} onClick={() => { onCategory?.(null); onStore?.(null); }}>
@@ -161,7 +161,7 @@ export function LandingNavbar({
               ))}
               {stores.length > 1 && (
                 <>
-                  <span className="mx-1 h-5 w-px shrink-0 bg-[var(--lp-border)]" />
+                  <span className="mx-1 h-5 w-px shrink-0 bg-[var(--lp-nav-border)]" />
                   {stores.map((s) => (
                     <button key={s} type="button" className={chip(store === s)} onClick={() => onStore?.(store === s ? null : s)}>
                       {s}
@@ -237,7 +237,7 @@ export default function Storefront({
   const hasAbout = !!(page.tagline || page.bio || Object.values(socials).some(Boolean));
 
   return (
-    <>
+    <div className="@container w-full">
       <LandingNavbar
         page={page}
         categories={categories}
@@ -260,36 +260,36 @@ export default function Storefront({
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--lp-bg)] via-[color-mix(in_srgb,var(--lp-bg)_75%,transparent)] to-[color-mix(in_srgb,var(--lp-bg)_40%,transparent)]" />
           </div>
         )}
-        <div className="relative flex w-full flex-col gap-5 px-4 py-8 sm:px-6 md:flex-row md:items-end md:justify-between lg:px-8 lg:py-10">
+        <div className="relative flex w-full flex-col gap-5 px-4 py-8 @min-[640px]:px-6 @min-[768px]:flex-row @min-[768px]:items-end @min-[768px]:justify-between @min-[1024px]:px-8 @min-[1024px]:py-10">
           <div className="max-w-3xl">
             {page.tagline ? (
-              <h1 className="font-serif text-2xl font-semibold leading-tight sm:text-4xl">{page.tagline}</h1>
+              <h1 className="font-serif text-2xl font-semibold leading-tight @min-[640px]:text-4xl">{page.tagline}</h1>
             ) : (
-              <h1 className="font-serif text-2xl font-semibold leading-tight sm:text-4xl">{page.title}</h1>
+              <h1 className="font-serif text-2xl font-semibold leading-tight @min-[640px]:text-4xl">{page.title}</h1>
             )}
             {page.bio && <p className="mt-3 max-w-2xl whitespace-pre-line text-[15px] leading-relaxed text-[var(--lp-muted)]">{page.bio}</p>}
             {!hasAbout && <p className="mt-2 text-sm text-[var(--lp-muted)]">{countLabel}</p>}
           </div>
-          <div className="flex shrink-0 flex-col items-start gap-3 md:items-end">
-            <SocialLinksRow links={socials} className="justify-start md:justify-end" />
+          <div className="flex shrink-0 flex-col items-start gap-3 @min-[768px]:items-end">
+            <SocialLinksRow links={socials} className="justify-start @min-[768px]:justify-end" />
             {hasAbout && <span className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--lp-muted)]">{countLabel}</span>}
           </div>
         </div>
       </section>
 
       {/* 🛒 البطاقات */}
-      <main className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <main className="w-full px-4 py-8 @min-[640px]:px-6 @min-[1024px]:px-8">
         {offers.length === 0 ? (
           <p className="py-24 text-center text-[var(--lp-muted)]">{publicT(lang, "noOffers")}</p>
         ) : (
           <>
             {showFeatured && (
               <section className="mb-10">
-                <h2 className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--lp-accent)]">
+                <h2 className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--lp-accent-ink)]">
                   <span className="h-px w-8 bg-[var(--lp-accent)]" />
                   {publicT(lang, "featured")}
                 </h2>
-                <div className={`grid gap-5 ${featured.length === 1 ? "max-w-md" : featured.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
+                <div className={`grid gap-5 ${featured.length === 1 ? "max-w-md" : featured.length === 2 ? "@min-[768px]:grid-cols-2" : "@min-[768px]:grid-cols-3"}`}>
                   {featured.map((o) => (
                     <OfferCard key={o.id} offer={o} pageSlug={page.slug} lang={lang} large />
                   ))}
@@ -307,7 +307,7 @@ export default function Storefront({
                     setCategory(null);
                     setStore(null);
                   }}
-                  className="inline-flex items-center gap-1.5 text-[var(--lp-accent)] hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-[var(--lp-accent-ink)] hover:underline cursor-pointer"
                 >
                   <X className="h-3.5 w-3.5" />
                   {publicT(lang, "clear")}
@@ -327,6 +327,6 @@ export default function Storefront({
           </>
         )}
       </main>
-    </>
+    </div>
   );
 }

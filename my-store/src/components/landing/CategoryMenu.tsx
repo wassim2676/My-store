@@ -110,13 +110,13 @@ export default function CategoryMenu({
         aria-expanded={open}
         aria-controls={`${id}-list`}
         aria-activedescendant={open ? `${id}-opt-${active}` : undefined}
-        className={`flex h-full max-w-[13rem] items-center gap-2 rounded-s-[calc(var(--lp-btn-radius)-1px)] border-e border-[var(--lp-border)] bg-[var(--lp-surface2)] ps-4 pe-3 text-[13px] font-medium text-[var(--lp-text)] transition hover:bg-[color-mix(in_srgb,var(--lp-surface2)_80%,var(--lp-text))] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--lp-accent)] cursor-pointer ${
-          value ? "text-[var(--lp-accent)]" : ""
+        className={`flex h-full max-w-[13rem] items-center gap-2 rounded-s-[calc(var(--lp-btn-radius)-1px)] border-e border-[var(--lp-nav-border)] bg-[var(--lp-nav-field2)] ps-4 pe-3 text-[13px] font-medium text-[var(--lp-nav-text)] transition hover:bg-[color-mix(in_srgb,var(--lp-nav-field2)_86%,var(--lp-nav-text))] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--lp-accent)] cursor-pointer ${
+          value ? "font-semibold" : ""
         }`}
       >
         <LayoutGrid className="h-3.5 w-3.5 shrink-0 opacity-70" />
         <span className="truncate">{current.label}</span>
-        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-[var(--lp-muted)] transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-[var(--lp-nav-muted)] transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -140,13 +140,13 @@ export default function CategoryMenu({
                 onMouseDown={(e) => e.preventDefault()} // لا نفقد التركيز من الزر
                 onClick={() => choose(i)}
                 className={`flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition-colors ${
-                  i === active ? "bg-[var(--lp-surface2)]" : ""
-                } ${selected ? "font-semibold text-[var(--lp-accent)]" : "text-[var(--lp-text)]"}`}
+                  i === active ? "bg-[var(--lp-hover)]" : ""
+                } ${selected ? "font-semibold text-[var(--lp-accent-ink)]" : "text-[var(--lp-text)]"}`}
               >
                 <span className="flex h-4 w-4 shrink-0 items-center justify-center">{selected && <Check className="h-4 w-4" />}</span>
                 <span className="min-w-0 flex-1 truncate">{item.label}</span>
                 {typeof item.count === "number" && (
-                  <span className="rounded-full bg-[var(--lp-surface2)] px-2 py-0.5 text-[11px] font-medium tabular-nums text-[var(--lp-muted)]">{item.count}</span>
+                  <span className="rounded-full bg-[var(--lp-hover-strong)] px-2 py-0.5 text-[11px] font-medium tabular-nums text-[var(--lp-muted)]">{item.count}</span>
                 )}
               </li>
             );

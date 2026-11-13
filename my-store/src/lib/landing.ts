@@ -60,6 +60,34 @@ export function luminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
+/** نسبة التباين بين لونين (WCAG): 1 → 21 */
+export function contrastRatio(a: string, b: string): number {
+  const [x, y] = [luminance(a), luminance(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+}
+
+/** أفضل لون نص (أبيض أو شبه أسود) فوق خلفية معيّنة */
+export function bestTextOn(bg: string): string {
+  return contrastRatio("#FFFFFF", bg) >= contrastRatio("#141414", bg) ? "#FFFFFF" : "#141414";
+}
+
+/**
+ * يعدّل لوناً تدريجياً (نحو الأبيض أو الأسود) حتى يحقق تبايناً كافياً مع كل الخلفيات المعطاة.
+ * مثال: لون تمييز داكن على صفحة داكنة يُفتَّح قليلاً حين يُستخدم كنص، فلا يبدو "منطفئاً".
+ */
+export function ensureContrast(color: string, backgrounds: string[], min = 4.5): string {
+  const bgs = backgrounds.filter(isHexColor);
+  if (!isHexColor(color) || bgs.length === 0) return color;
+  const ok = (c: string) => bgs.every((b) => contrastRatio(c, b) >= min);
+  if (ok(color)) return color.toUpperCase();
+  const target = luminance(bgs[0]) < 0.5 ? "#FFFFFF" : "#000000";
+  for (let i = 1; i <= 20; i++) {
+    const c = mixHex(color, target, i * 0.05);
+    if (ok(c)) return c;
+  }
+  return bestTextOn(bgs[0]);
+}
+
 /** يشتق ألوان الصفحة كاملة من لون خلفية واحد (نص مقروء + أسطح + حدود) */
 export function deriveTokens(bg: string): ThemeTokens {
   const base = isHexColor(bg) ? bg.toUpperCase() : "#0B0E14";
@@ -104,6 +132,8 @@ export const RADIUS_STYLES = ["sharp", "soft", "round"] as const;
 export const BUTTON_STYLES = ["square", "rounded", "pill"] as const;
 export const GRID_COLUMNS = [2, 3, 4] as const;
 export const CARD_IMAGE_STYLES = ["white", "surface"] as const;
+/** شريط التنقل: يتبع الصفحة، زجاجي، لون حر، أو لون التمييز */
+export const NAV_STYLES = ["theme", "glass", "solid", "accent"] as const;
 
 export interface PageDesign {
   bgColor: string; // يُستخدم مع الثيم "custom"
@@ -113,6 +143,8 @@ export interface PageDesign {
   button: (typeof BUTTON_STYLES)[number];
   columns: (typeof GRID_COLUMNS)[number];
   cardImage: (typeof CARD_IMAGE_STYLES)[number];
+  nav: (typeof NAV_STYLES)[number];
+  navColor: string; // يُستخدم مع nav = "solid"
 }
 
 export const DEFAULT_DESIGN: PageDesign = {
@@ -123,6 +155,8 @@ export const DEFAULT_DESIGN: PageDesign = {
   button: "rounded",
   columns: 4,
   cardImage: "white",
+  nav: "theme",
+  navColor: "#111111",
 };
 
 function pick<T extends string | number>(list: readonly T[], v: unknown, fallback: T): T {
@@ -140,6 +174,8 @@ export function parseDesign(raw: unknown): PageDesign {
     button: pick(BUTTON_STYLES, o.button, DEFAULT_DESIGN.button),
     columns: pick(GRID_COLUMNS, o.columns, DEFAULT_DESIGN.columns),
     cardImage: pick(CARD_IMAGE_STYLES, o.cardImage, DEFAULT_DESIGN.cardImage),
+    nav: pick(NAV_STYLES, o.nav, DEFAULT_DESIGN.nav),
+    navColor: isHexColor(o.navColor) ? o.navColor.toUpperCase() : DEFAULT_DESIGN.navColor,
   };
 }
 
@@ -183,16 +219,45 @@ const bgIsTopOnly = (s: PageDesign["background"]) => s === "glow" || s === "grad
 export function themeStyle(theme: string, accent: string, designInput?: Partial<PageDesign> | null): CSSProperties {
   const design = { ...DEFAULT_DESIGN, ...(designInput ?? {}) };
   const t = resolveTokens(theme, design);
-  const a = isHexColor(accent) ? accent : "#C8A24A";
+  const a = isHexColor(accent) ? accent.toUpperCase() : "#C8A24A";
+
+  // 🎯 ألوان ذكية: كل نص يحقق تبايناً مقروءاً مع الخلفية والبطاقات مهما كانت الألوان المختارة
+  const surfaces = [t.bg, t.surface];
+  const accentInk = ensureContrast(a, surfaces, 4.5); // لون التمييز عندما يُستخدم كنص/أيقونة
+  const muted = ensureContrast(t.muted, surfaces, 4.5);
+  const towardText = (c: string, r: number) => (isHexColor(c) ? mixHex(c, t.text, r) : c);
+  const hover = towardText(t.surface, 0.07); // خلفية المرور: فرق واضح دون أن يكون فاقعاً
+  const hoverStrong = towardText(t.surface, 0.13);
+  const borderStrong = towardText(t.bg, 0.24);
+  // زر/شارة بلون التمييز فوق الخلفية: إن كان قريباً جداً من لون الصفحة نضيف حداً يفصله
+  const accentEdge = contrastRatio(a, t.bg) < 1.6 ? borderStrong : "transparent";
+
+  // 🧭 شريط التنقل
+  const nav = navTokens(design, t, a);
+
   return {
     "--lp-bg": t.bg,
     "--lp-surface": t.surface,
     "--lp-surface2": t.surface2,
     "--lp-text": t.text,
-    "--lp-muted": t.muted,
+    "--lp-muted": muted,
     "--lp-border": t.border,
+    "--lp-border-strong": borderStrong,
+    "--lp-hover": hover,
+    "--lp-hover-strong": hoverStrong,
     "--lp-accent": a,
-    "--lp-accent-fg": readableText(a),
+    "--lp-accent-ink": accentInk,
+    "--lp-accent-fg": bestTextOn(a),
+    "--lp-accent-edge": accentEdge,
+    "--lp-nav-bg": nav.bg,
+    "--lp-nav-text": nav.text,
+    "--lp-nav-muted": nav.muted,
+    "--lp-nav-border": nav.border,
+    "--lp-nav-field": nav.field,
+    "--lp-nav-field2": nav.field2,
+    "--lp-nav-btn": nav.btn,
+    "--lp-nav-btn-fg": nav.btnFg,
+    "--lp-nav-blur": nav.blur,
     // الشعارات تظهر مباشرة على البطاقة: بيضاء في الثيمات الداكنة (كثير منها نصّه داكن)، بألوانها في الفاتحة
     "--lp-logo-filter": t.isDark ? "brightness(0) invert(1)" : "none",
     "--lp-radius-lg": RADIUS[design.radius][0],
@@ -209,6 +274,55 @@ export function themeStyle(theme: string, accent: string, designInput?: Partial<
     color: t.text,
     colorScheme: t.isDark ? "dark" : "light",
   } as CSSProperties;
+}
+
+/** ألوان شريط التنقل حسب النمط المختار (النص والحقول تُشتق تلقائياً لتبقى مقروءة) */
+function navTokens(design: PageDesign, t: ThemeTokens, accent: string) {
+  const fromColor = (color: string) => {
+    const d = deriveTokens(color);
+    const btn = ensureContrast(accent, [color], 1.8) === accent.toUpperCase() ? accent : d.text;
+    return {
+      bg: d.bg,
+      text: d.text,
+      muted: ensureContrast(d.muted, [d.bg], 4.5),
+      border: d.isDark ? "rgba(255,255,255,0.12)" : mixHex(d.bg, "#000000", 0.12),
+      field: d.isDark ? mixHex(d.bg, "#FFFFFF", 0.1) : "#FFFFFF",
+      field2: d.isDark ? mixHex(d.bg, "#FFFFFF", 0.16) : mixHex(d.bg, "#000000", 0.06),
+      btn,
+      btnFg: bestTextOn(btn),
+      blur: "none",
+    };
+  };
+  switch (design.nav) {
+    case "solid":
+      return fromColor(design.navColor);
+    case "accent":
+      return fromColor(accent);
+    case "glass":
+      return {
+        bg: `color-mix(in srgb, ${t.surface} 55%, transparent)`,
+        text: t.text,
+        muted: ensureContrast(t.muted, [t.bg, t.surface], 4.5),
+        border: t.border,
+        field: `color-mix(in srgb, ${t.bg} 70%, transparent)`,
+        field2: `color-mix(in srgb, ${t.surface2} 80%, transparent)`,
+        btn: accent,
+        btnFg: bestTextOn(accent),
+        blur: "blur(18px) saturate(1.4)",
+      };
+    default:
+      return {
+        bg: `color-mix(in srgb, ${t.bg} 88%, transparent)`,
+        text: t.text,
+        muted: ensureContrast(t.muted, [t.bg, t.surface], 4.5),
+        border: t.border,
+        field: t.surface,
+        field2: t.surface2,
+        btn: accent,
+        btnFg: bestTextOn(accent),
+        blur: "blur(20px)",
+      };
+  }
 }
 
 // ==================== 🔤 قاموس واجهة الزوار (حسب لغة الصفحة التي اختارها المسوّق) ====================
@@ -421,9 +535,14 @@ export interface StoreBrand {
 }
 
 /** اسم المتجر المعروض: علامة من القائمة أو اسم حر كتبه المسوّق */
-export function resolveStore(brand: StoreBrand | null | undefined, storeName: string | null | undefined): StoreBrand {
+export function resolveStore(
+  brand: StoreBrand | null | undefined,
+  storeName: string | null | undefined,
+  storeLogo?: string | null
+): StoreBrand {
   if (brand) return brand;
-  return { name: storeName?.trim() || "Store", accentColor: null };
+  // متجر حر: الاسم الذي كتبه المسوّق + شعاره المرفوع (إن وُجد)
+  return { name: storeName?.trim() || "Store", accentColor: null, logoUrl: storeLogo || null };
 }
 
 /** يحوّل رابط يوتيوب/فيميو إلى رابط تضمين، وإلا null */

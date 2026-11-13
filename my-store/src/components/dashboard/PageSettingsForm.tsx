@@ -6,16 +6,18 @@ import { useTranslations } from "next-intl";
 import { AlertTriangle, Check, ExternalLink, Loader2, Monitor, RotateCcw, Save, Smartphone } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { Toggle } from "./OfferForm";
+import { SingleImageField } from "./ImageUpload";
 import type { OfferCardData } from "@/components/landing/OfferCard";
 import Storefront from "@/components/landing/Storefront";
 import LandingFonts from "@/components/landing/LandingFonts";
 import {
-  BG_STYLES, BUTTON_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, FONT_STYLES, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
+  BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, FONT_STYLES, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
   RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, type PageDesign,
 } from "@/lib/landing";
 import type { SerializedLandingPage } from "@/lib/marketer";
 
 const ACCENTS = ["#C8A24A", "#E8C27A", "#D4AF37", "#B76E79", "#9B87F5", "#5AA9E6", "#34D399", "#F97362", "#F5F5F4", "#111111"];
+const NAV_SWATCHES = ["#111111", "#FFFFFF", "#0B1F3A", "#1F3A2E", "#3B0D1C", "#2E1F47", "#F4EDE2", "#E8EEF5", "#C8A24A", "#0071CE"];
 const BG_SWATCHES = ["#0B0E14", "#1B1B1F", "#14213D", "#0F2A24", "#2B0F1A", "#2E1F47", "#FAF7F2", "#EEF2F6", "#F3E9DC", "#E9F1EC"];
 
 const field =
@@ -162,6 +164,42 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
             />
           </Card>
 
+          {/* 🧭 شريط التنقل */}
+          <Card title={t("design.sec.navbar")}>
+            <div>
+              <p className="mb-2 text-sm text-white/70">{t("design.navStyle")}</p>
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                {NAV_STYLES.map((v) => {
+                  const st = themeStyle(f.theme, f.accentColor, { ...design, nav: v }) as Record<string, string>;
+                  return (
+                    <button
+                      type="button"
+                      key={v}
+                      onClick={() => setD("nav", v)}
+                      className={`overflow-hidden rounded-xl border-2 text-start transition cursor-pointer ${design.nav === v ? "border-amber-400" : "border-transparent hover:border-white/20"}`}
+                    >
+                      <div className="p-2" style={{ background: st.backgroundColor }}>
+                        <div className="flex items-center gap-1.5 rounded-md px-1.5 py-1.5" style={{ background: st["--lp-nav-bg"], border: `1px solid ${st["--lp-nav-border"]}` }}>
+                          <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: st["--lp-nav-btn"] }} />
+                          <span className="h-2.5 flex-1 rounded-full" style={{ background: st["--lp-nav-field"], border: `1px solid ${st["--lp-nav-border"]}` }} />
+                          <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: st["--lp-nav-btn"] }} />
+                        </div>
+                      </div>
+                      <p className="truncate bg-white/[0.04] px-2.5 py-1.5 text-[11px]">{t(`design.navStyles.${v}`)}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-xs text-white/40">{t("design.navHint")}</p>
+            </div>
+            {design.nav === "solid" && (
+              <div className="rounded-xl border border-amber-400/20 bg-amber-400/[0.04] p-4">
+                <p className="mb-2 text-sm text-white/80">{t("design.navColor")}</p>
+                <ColorRow value={design.navColor} swatches={NAV_SWATCHES} onChange={(c) => setD("navColor", c)} />
+              </div>
+            )}
+          </Card>
+
           {/* ✍️ الأسلوب */}
           <Card
             title={t("design.sec.style")}
@@ -235,13 +273,15 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
             <L text={t("design.bio")} hint={`${f.bio.length}/2000`}>
               <textarea rows={4} maxLength={2000} value={f.bio} onChange={(e) => set("bio", e.target.value)} className={field + " resize-y"} />
             </L>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <L text={t("design.avatar")} hint={t("design.urlHint")}>
-                <input dir="ltr" maxLength={1000} value={f.avatarUrl} onChange={(e) => set("avatarUrl", e.target.value)} placeholder="https://…" className={field} />
-              </L>
-              <L text={t("design.cover")} hint={t("design.urlHint")}>
-                <input dir="ltr" maxLength={1000} value={f.coverUrl} onChange={(e) => set("coverUrl", e.target.value)} placeholder="https://…" className={field} />
-              </L>
+            <div className="grid gap-5">
+              <div className="space-y-1.5">
+                <span className="text-sm text-white/70">{t("design.avatar")}</span>
+                <SingleImageField value={f.avatarUrl} onChange={(v) => set("avatarUrl", v)} aspect="square" maxDim={600} />
+              </div>
+              <div className="space-y-1.5">
+                <span className="text-sm text-white/70">{t("design.cover")}</span>
+                <SingleImageField value={f.coverUrl} onChange={(v) => set("coverUrl", v)} aspect="wide" maxDim={2000} />
+              </div>
             </div>
             <L text={t("design.language")} hint={t("design.languageHint")}>
               <select value={f.language} onChange={(e) => set("language", e.target.value)} className={field + " bg-[#0E1118]"}>
@@ -326,7 +366,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
               ))}
             </div>
           </div>
-          <ScaledPreview width={device === "desktop" ? 1200 : 390} maxHeight={device === "desktop" ? 620 : 700}>
+          <ScaledPreview device={device}>
             <PreviewPage f={f} slug={savedSlug} design={design} socials={socials} offers={sampleOffers} />
           </ScaledPreview>
         </aside>
@@ -338,7 +378,8 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
 // ==================== 👁️ المعاينة ====================
 
 /** يرسم المحتوى بعرض حقيقي (1200 أو 390) ثم يصغّره ليناسب العمود */
-function ScaledPreview({ width, maxHeight, children }: { width: number; maxHeight: number; children: React.ReactNode }) {
+function ScaledPreview({ device, children }: { device: "desktop" | "mobile"; children: React.ReactNode }) {
+  const width = device === "desktop" ? 1200 : 390;
   const outer = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.4);
@@ -349,28 +390,52 @@ function ScaledPreview({ width, maxHeight, children }: { width: number; maxHeigh
     const i = inner.current;
     if (!o || !i) return;
     const ro = new ResizeObserver(() => {
-      setScale(Math.min(1, o.clientWidth / width));
+      // الهاتف: هامش للإطار، ولا نكبّر فوق الحجم الحقيقي
+      const avail = device === "mobile" ? o.clientWidth - 48 : o.clientWidth;
+      setScale(Math.min(device === "mobile" ? 0.92 : 1, avail / width));
       setInnerH(i.offsetHeight);
     });
     ro.observe(o);
     ro.observe(i);
     return () => ro.disconnect();
-  }, [width]);
+  }, [width, device]);
+
+  // المحتوى بعرضه الحقيقي ثم يُصغَّر؛ الحاوية بارتفاع المحتوى بعد التصغير (transform لا يغيّر التخطيط)
+  const content = (
+    <div className="relative overflow-hidden" style={{ width: width * scale, height: innerH * scale }}>
+      <div ref={inner} className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ width, transform: `scale(${scale})` }}>
+        {children}
+      </div>
+    </div>
+  );
+
+  if (device === "mobile") {
+    const screenH = 760 * scale;
+    return (
+      <div ref={outer} className="flex justify-center rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_70%)] py-6">
+        {/* 📱 إطار هاتف */}
+        <div className="relative rounded-[2.6rem] border-[10px] border-[#1d1d20] bg-black shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9),inset_0_0_0_1px_rgba(255,255,255,0.08)]">
+          {/* الحافة العلوية مع الكاميرا — فوق الشاشة لا فوق المحتوى */}
+          <div className="flex h-7 items-center justify-center rounded-t-[1.9rem] bg-black">
+            <span className="h-[18px] w-[86px] rounded-full bg-[#1d1d20]" />
+          </div>
+          <div className="overflow-y-auto overflow-x-hidden rounded-b-[1.9rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ height: screenH }} dir="ltr">
+            {content}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-2xl">
       <div className="flex items-center gap-1.5 border-b border-white/10 bg-white/[0.03] px-3 py-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-        <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-        <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/70" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]/70" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]/70" />
       </div>
-      <div ref={outer} className="overflow-y-auto overflow-x-hidden" style={{ maxHeight }}>
-        {/* حاوية بارتفاع المحتوى بعد التصغير (transform لا يغيّر الارتفاع في التخطيط) */}
-        <div className="relative mx-auto overflow-hidden" style={{ width: width * scale, height: innerH * scale }}>
-          <div ref={inner} className="pointer-events-none absolute start-0 top-0 origin-top-left rtl:origin-top-right" style={{ width, transform: `scale(${scale})` }}>
-            {children}
-          </div>
-        </div>
+      <div ref={outer} className="max-h-[640px] overflow-y-auto overflow-x-hidden" dir="ltr">
+        {content}
       </div>
     </div>
   );

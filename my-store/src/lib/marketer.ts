@@ -13,6 +13,7 @@ import {
   RADIUS_STYLES,
   BUTTON_STYLES,
   CARD_IMAGE_STYLES,
+  NAV_STYLES,
   checkSlugFormat,
   parseDesign,
   parseSpecs,
@@ -52,6 +53,12 @@ const httpUrlMax = (max: number) =>
       }, "رابط غير صالح — يجب أن يبدأ بـ https://"),
   );
 const httpUrl = httpUrlMax(2000);
+
+/** ملف مرفوع على المنصة نفسها (/api/media/{id}) */
+const mediaPath = z.string().trim().regex(/^\/api\/media\/[a-z0-9]{20,40}$/);
+/** صورة: ملف مرفوع أو رابط خارجي */
+const imageRef = (max = 2000) => z.union([mediaPath, httpUrlMax(max)]);
+const optionalImage = (max: number) => z.union([z.literal(""), mediaPath, httpUrlMax(max)]).optional().nullable();
 const optionalUrlMax = (max: number) => z.union([z.literal(""), httpUrlMax(max)]).optional().nullable();
 const optionalText = (max: number) => z.string().trim().max(max).optional().nullable();
 
@@ -71,8 +78,8 @@ export const landingPageSchema = z.object({
   title: z.string().trim().min(2, "عنوان الصفحة قصير جداً").max(80),
   tagline: optionalText(160),
   bio: optionalText(2000),
-  avatarUrl: optionalUrlMax(1000),
-  coverUrl: optionalUrlMax(1000),
+  avatarUrl: optionalImage(1000),
+  coverUrl: optionalImage(1000),
   language: z.enum(PAGE_LANGUAGES).default("en"),
   theme: z.enum(PAGE_THEMES).default("midnight"),
   accentColor: z
@@ -90,6 +97,8 @@ export const landingPageSchema = z.object({
       button: z.enum(BUTTON_STYLES).optional(),
       columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).optional(),
       cardImage: z.enum(CARD_IMAGE_STYLES).optional(),
+      nav: z.enum(NAV_STYLES).optional(),
+      navColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
     })
     .optional()
     .nullable()
@@ -127,6 +136,7 @@ export const offerSchema = z
     subtitle: optionalText(200),
     brandId: z.string().trim().optional().nullable(),
     storeName: optionalText(80),
+    storeLogo: optionalImage(500),
     shortReview: z.string().trim().min(10, "اكتب مراجعة مختصرة (10 أحرف على الأقل)").max(700),
     review: optionalText(20000),
     pros: stringList(12, 200),
@@ -138,7 +148,7 @@ export const offerSchema = z
       .default([])
       .transform((arr) => arr.filter((s) => s.label && s.value)),
     verdict: optionalText(400),
-    images: z.array(httpUrl).max(10).default([]),
+    images: z.array(imageRef()).max(10).default([]),
     videoUrl: optionalUrlMax(1000),
     affiliateUrl: httpUrl,
     buttonLabel: optionalText(60),
@@ -174,6 +184,7 @@ export function offerDataFromInput(d: OfferInput) {
     subtitle: d.subtitle || null,
     brandId: d.brandId || null,
     storeName: d.brandId ? null : d.storeName || null,
+    storeLogo: d.brandId ? null : d.storeLogo || null,
     shortReview: d.shortReview,
     review: d.review || null,
     pros: d.pros,
@@ -257,6 +268,7 @@ export function serializeOffer(o: OfferWithBrand) {
     clicks: o.clicks,
     brandId: o.brandId,
     storeName: o.storeName,
+    storeLogo: o.storeLogo,
     brand: o.brand
       ? {
           id: o.brand.id,

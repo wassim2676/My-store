@@ -52,7 +52,7 @@ export default async function LandingShell({
         <div className="mx-auto max-w-4xl px-4 py-10 text-center">
           {page.showDisclosure && (
             <div className="mx-auto mb-8 max-w-2xl rounded-2xl border border-[var(--lp-border)] bg-[var(--lp-surface)] p-5 text-start">
-              <p className="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--lp-accent)]">
+              <p className="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--lp-accent-ink)]">
                 <ShieldCheck className="h-4 w-4" />
                 {publicT(lang, "disclosureTitle")}
               </p>
@@ -61,7 +61,7 @@ export default async function LandingShell({
           )}
           <p className="text-xs text-[var(--lp-muted)]">
             © {new Date().getFullYear()} {page.title} · {publicT(lang, "poweredBy")}{" "}
-            <Link href="/" className="font-semibold text-[var(--lp-text)] hover:text-[var(--lp-accent)]">
+            <Link href="/" className="font-semibold text-[var(--lp-text)] hover:text-[var(--lp-accent-ink)]">
               {SITE_NAME}
             </Link>
           </p>

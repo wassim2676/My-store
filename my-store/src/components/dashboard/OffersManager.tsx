@@ -168,7 +168,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
         <ul className="space-y-2">
           {visible.map((o) => {
             const index = offers.indexOf(o);
-            const store = resolveStore(o.brand, o.storeName);
+            const store = resolveStore(o.brand, o.storeName, o.storeLogo);
             return (
               <li key={o.id} className={`flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-3 sm:gap-4 ${busy === o.id ? "opacity-60" : ""}`}>
                 {canReorder && (

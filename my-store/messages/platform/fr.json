@@ -415,7 +415,8 @@
         "social": "Réseaux sociaux",
         "disclosure": "Mention d'affiliation",
         "seo": "Recherche et partage",
-        "style": "Style"
+        "style": "Style",
+        "navbar": "Barre de navigation"
       },
       "pageTitle": "Nom de la page",
       "slug": "Lien de la page",
@@ -423,8 +424,8 @@
       "tagline": "Accroche",
       "taglineHint": "ex. Des trouvailles testées pour une belle maison",
       "bio": "Bio",
-      "avatar": "URL de la photo de profil",
-      "cover": "URL de l'image de couverture",
+      "avatar": "Photo de profil",
+      "cover": "Image de couverture",
       "theme": "Thème",
       "themes": {
         "midnight": "Minuit",
@@ -505,7 +506,16 @@
       },
       "unsaved": "Modifications non enregistrées",
       "reset": "Réinitialiser le style",
-      "urlHint": "Collez un lien direct vers l’image (1000 caractères max)."
+      "urlHint": "Collez un lien direct vers l’image (1000 caractères max).",
+      "navStyle": "Style de la barre",
+      "navStyles": {
+        "theme": "Comme la page",
+        "glass": "Verre",
+        "solid": "Couleur perso",
+        "accent": "Couleur d’accent"
+      },
+      "navHint": "Textes, champ de recherche et boutons s’adaptent automatiquement pour rester lisibles.",
+      "navColor": "Couleur de la barre"
     },
     "account": {
       "title": "Compte",
@@ -517,6 +527,29 @@
       "newPassword": "Nouveau mot de passe",
       "passwordHint": "Utilisez majuscules, minuscules, chiffres et un symbole (!@#$%^&*).",
       "changePassword": "Changer le mot de passe"
+    },
+    "media": {
+      "dropTitle": "Glissez-déposez vos images ici, collez-les (Ctrl+V), ou",
+      "browse": "parcourez votre appareil",
+      "dropHint": "PNG, JPG, WebP, GIF ou SVG · jusqu’à {n} de plus",
+      "uploading": "Envoi…",
+      "urlPh": "…ou collez le lien d’une image (https://…)",
+      "add": "Ajouter",
+      "upload": "Importer",
+      "remove": "Supprimer",
+      "uploaded": "Importé ✓ — collez un lien ici pour remplacer",
+      "singleHint": "Cliquez, déposez ou collez une image",
+      "storeLogo": "Logo de la boutique (facultatif)",
+      "storeLogoHint": "Un SVG ou PNG à fond transparent rend le mieux. Il apparaît sur les cartes et les boutons d’achat.",
+      "errors": {
+        "type": "Type de fichier non pris en charge. Utilisez PNG, JPG, WebP, GIF ou SVG.",
+        "too_large": "Fichier trop volumineux (3 Mo max, SVG 400 Ko).",
+        "svg_unsafe": "Ce SVG contient des scripts et ne peut pas être utilisé.",
+        "quota": "Vous avez atteint la limite d’importation.",
+        "network": "Échec de l’envoi. Vérifiez votre connexion et réessayez.",
+        "unauthorized": "Votre session a expiré. Reconnectez-vous.",
+        "url": "Saisissez un lien d’image valide commençant par https://"
+      }
     }
   },
   "pages": {

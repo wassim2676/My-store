@@ -415,7 +415,8 @@
         "social": "Social links",
         "disclosure": "Affiliate disclosure",
         "seo": "Search & sharing",
-        "style": "Style"
+        "style": "Style",
+        "navbar": "Navigation bar"
       },
       "pageTitle": "Page name",
       "slug": "Page link",
@@ -423,8 +424,8 @@
       "tagline": "Tagline",
       "taglineHint": "e.g. Tested picks for a beautiful home",
       "bio": "Bio",
-      "avatar": "Profile photo URL",
-      "cover": "Cover image URL",
+      "avatar": "Profile photo",
+      "cover": "Cover image",
       "theme": "Theme",
       "themes": {
         "midnight": "Midnight",
@@ -505,7 +506,16 @@
       },
       "unsaved": "You have unsaved changes",
       "reset": "Reset style",
-      "urlHint": "Paste a direct image link (up to 1000 characters)."
+      "urlHint": "Paste a direct image link (up to 1000 characters).",
+      "navStyle": "Bar style",
+      "navStyles": {
+        "theme": "Match page",
+        "glass": "Glass",
+        "solid": "Custom color",
+        "accent": "Accent color"
+      },
+      "navHint": "Text, search field and buttons adapt automatically to stay readable.",
+      "navColor": "Bar color"
     },
     "account": {
       "title": "Account",
@@ -517,6 +527,29 @@
       "newPassword": "New password",
       "passwordHint": "Use uppercase and lowercase letters, numbers and a symbol (!@#$%^&*).",
       "changePassword": "Change password"
+    },
+    "media": {
+      "dropTitle": "Drag & drop images here, paste them (Ctrl+V), or",
+      "browse": "browse your device",
+      "dropHint": "PNG, JPG, WebP, GIF or SVG · up to {n} more",
+      "uploading": "Uploading…",
+      "urlPh": "…or paste an image link (https://…)",
+      "add": "Add",
+      "upload": "Upload",
+      "remove": "Remove",
+      "uploaded": "Uploaded ✓ — paste a link here to replace",
+      "singleHint": "Click, drop or paste an image",
+      "storeLogo": "Store logo (optional)",
+      "storeLogoHint": "SVG or PNG with a transparent background looks best. It appears on cards and buy buttons.",
+      "errors": {
+        "type": "Unsupported file type. Use PNG, JPG, WebP, GIF or SVG.",
+        "too_large": "This file is too large (max 3 MB, SVG 400 KB).",
+        "svg_unsafe": "This SVG contains scripts and can't be used.",
+        "quota": "You have reached the upload limit.",
+        "network": "Upload failed. Check your connection and try again.",
+        "unauthorized": "Your session expired. Please log in again.",
+        "url": "Enter a valid image link starting with https://"
+      }
     }
   },
   "pages": {
