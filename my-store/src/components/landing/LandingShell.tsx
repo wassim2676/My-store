@@ -32,7 +32,7 @@ export default async function LandingShell({
     >
       <LandingFonts />
       {isOwner && t && (
-        <div className="sticky top-0 z-40 border-b border-white/10 bg-black/85 text-white backdrop-blur" dir={getDirection(uiLocale)}>
+        <div className="relative z-50 border-b border-white/10 bg-black text-white" dir={getDirection(uiLocale)}>
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 text-xs">
             <span className="flex items-center gap-2 text-white/70">
               {hiddenNotice ? <EyeOff className="h-3.5 w-3.5 text-amber-300" /> : <Sparkles className="h-3.5 w-3.5 text-amber-300" />}

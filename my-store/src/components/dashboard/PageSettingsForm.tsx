@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @next/next/no-img-element -- معاينة صور خارجية */
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -7,7 +6,8 @@ import { useTranslations } from "next-intl";
 import { AlertTriangle, Check, ExternalLink, Loader2, Monitor, RotateCcw, Save, Smartphone } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { Toggle } from "./OfferForm";
-import OfferCard, { type OfferCardData } from "@/components/landing/OfferCard";
+import type { OfferCardData } from "@/components/landing/OfferCard";
+import Storefront from "@/components/landing/Storefront";
 import LandingFonts from "@/components/landing/LandingFonts";
 import {
   BG_STYLES, BUTTON_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, FONT_STYLES, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
@@ -327,7 +327,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
             </div>
           </div>
           <ScaledPreview width={device === "desktop" ? 1200 : 390} maxHeight={device === "desktop" ? 620 : 700}>
-            <PreviewPage f={f} design={design} socials={socials} offers={sampleOffers} emptyLabel={t("design.previewEmpty")} />
+            <PreviewPage f={f} slug={savedSlug} design={design} socials={socials} offers={sampleOffers} />
           </ScaledPreview>
         </aside>
       </div>
@@ -378,90 +378,41 @@ function ScaledPreview({ width, maxHeight, children }: { width: number; maxHeigh
 
 function PreviewPage({
   f,
+  slug,
   design,
   socials,
   offers,
-  emptyLabel,
 }: {
   f: { title: string; tagline: string; bio: string; avatarUrl: string; coverUrl: string; language: string; theme: string; accentColor: string; showDisclosure: boolean; disclosure: string };
+  slug: string;
   design: PageDesign;
   socials: Record<string, string>;
   offers: SampleOffer[];
-  emptyLabel: string;
 }) {
   const lang = f.language;
-  const cols = design.columns === 2 ? "grid-cols-2" : design.columns === 3 ? "grid-cols-3" : "grid-cols-4";
-  const socialCount = Object.values(socials).filter(Boolean).length;
+  // نفس مكوّن الصفحة العامة تماماً — ما تراه هنا هو ما يراه الزوار
   return (
     <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className="min-h-[900px]">
-      <header className="relative overflow-hidden">
-        {f.coverUrl && (
-          <div className="absolute inset-0">
-            <img src={f.coverUrl} alt="" className="h-full w-full object-cover opacity-60" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[color-mix(in_srgb,var(--lp-bg)_70%,transparent)] to-[var(--lp-bg)]" />
-          </div>
-        )}
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-4 pb-12 pt-16 text-center">
-          <div className="rounded-full p-[3px]" style={{ background: "linear-gradient(135deg, var(--lp-accent), transparent 70%)" }}>
-            {f.avatarUrl ? (
-              <img src={f.avatarUrl} alt="" className="h-24 w-24 rounded-full border-4 border-[var(--lp-bg)] object-cover" />
-            ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[var(--lp-bg)] bg-[var(--lp-surface2)] font-serif text-4xl text-[var(--lp-accent)]">
-                {f.title.trim().slice(0, 1).toUpperCase()}
-              </div>
-            )}
-          </div>
-          <h1 className="mt-6 font-serif text-5xl font-semibold tracking-tight">{f.title || "—"}</h1>
-          {f.tagline && <p className="mt-3 text-lg text-[var(--lp-accent)]">{f.tagline}</p>}
-          {f.bio && <p className="mt-4 max-w-xl whitespace-pre-line text-[15px] leading-relaxed text-[var(--lp-muted)]">{f.bio}</p>}
-          {socialCount > 0 && (
-            <div className="mt-6 flex gap-2">
-              {Array.from({ length: socialCount }).map((_, i) => (
-                <span key={i} className="h-10 w-10 rounded-full border border-[var(--lp-border)] bg-[var(--lp-surface)]" />
-              ))}
-            </div>
-          )}
+      <LandingFonts />
+      <Storefront
+        page={{
+          slug,
+          title: f.title || "—",
+          tagline: f.tagline || null,
+          bio: f.bio || null,
+          avatarUrl: f.avatarUrl || null,
+          coverUrl: f.coverUrl || null,
+          language: lang,
+        }}
+        offers={offers}
+        socials={socials}
+        columns={design.columns}
+      />
+      {f.showDisclosure && (
+        <div className="mx-auto mb-10 max-w-2xl rounded-2xl border border-[var(--lp-border)] bg-[var(--lp-surface)] p-5 text-[13px] text-[var(--lp-muted)]">
+          {f.disclosure || publicT(lang, "disclosureDefault")}
         </div>
-      </header>
-
-      <main className="mx-auto max-w-7xl px-4 pb-16">
-        <div className="mb-6 flex gap-2">
-          <span className="rounded-full px-4 py-1.5 text-[13px] font-medium text-[var(--lp-accent-fg)]" style={{ background: "var(--lp-accent)" }}>
-            {publicT(lang, "allOffers")}
-          </span>
-          <span className="rounded-full border border-[var(--lp-border)] px-4 py-1.5 text-[13px] text-[var(--lp-muted)]">Amazon</span>
-        </div>
-        {offers.length > 0 ? (
-          <div className={`grid gap-5 ${cols}`}>
-            {offers.map((o) => (
-              <OfferCard key={o.id} offer={o} pageSlug="preview" lang={lang} />
-            ))}
-          </div>
-        ) : (
-          <div className={`grid gap-5 ${cols}`}>
-            {Array.from({ length: design.columns }).map((_, i) => (
-              <div key={i} className="overflow-hidden rounded-3xl border border-[var(--lp-border)] bg-[var(--lp-surface)]">
-                <div className="m-2.5 aspect-square rounded-2xl bg-[var(--lp-card-img)]" />
-                <div className="space-y-2 p-4">
-                  <div className="h-3 w-3/4 rounded-full bg-[var(--lp-text)] opacity-40" />
-                  <div className="h-3 w-1/3 rounded-full" style={{ background: "var(--lp-accent)" }} />
-                </div>
-              </div>
-            ))}
-            <p className="col-span-full pt-2 text-center text-sm text-[var(--lp-muted)]">{emptyLabel}</p>
-          </div>
-        )}
-        <div className="mx-auto mt-10 max-w-sm">
-          <span className="flex items-center justify-center rounded-[var(--lp-btn-radius)] px-6 py-4 font-bold" style={{ background: "var(--lp-accent)", color: "var(--lp-accent-fg)" }}>
-            {publicT(lang, "buyOn", { store: "Amazon" })}
-          </span>
-        </div>
-        {f.showDisclosure && (
-          <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-[var(--lp-border)] bg-[var(--lp-surface)] p-5 text-[13px] text-[var(--lp-muted)]">
-            {f.disclosure || publicT(lang, "disclosureDefault")}
-          </div>
-        )}
-      </main>
+      )}
     </div>
   );
 }

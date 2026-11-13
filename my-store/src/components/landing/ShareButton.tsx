@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Share2, Check } from "lucide-react";
 import { publicT } from "@/lib/landing";
 
-export default function ShareButton({ title, lang }: { title: string; lang: string }) {
+export default function ShareButton({ title, lang, variant = "pill" }: { title: string; lang: string; variant?: "pill" | "icon" }) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
@@ -21,6 +21,20 @@ export default function ShareButton({ title, lang }: { title: string; lang: stri
       /* أُلغيت المشاركة */
     }
   };
+
+  if (variant === "icon") {
+    return (
+      <button
+        type="button"
+        onClick={share}
+        title={publicT(lang, copied ? "copied" : "share")}
+        aria-label={publicT(lang, "share")}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--lp-border)] text-[var(--lp-muted)] transition hover:border-[var(--lp-accent)] hover:text-[var(--lp-accent)] cursor-pointer"
+      >
+        {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+      </button>
+    );
+  }
 
   return (
     <button

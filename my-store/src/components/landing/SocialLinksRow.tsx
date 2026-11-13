@@ -11,11 +11,11 @@ const LABELS: Record<string, string> = {
   website: "Website",
 };
 
-export default function SocialLinksRow({ links }: { links: SocialLinks }) {
+export default function SocialLinksRow({ links, className = "justify-center" }: { links: SocialLinks; className?: string }) {
   const entries = SOCIAL_KEYS.filter((k) => links[k]);
   if (entries.length === 0) return null;
   return (
-    <div className="flex flex-wrap justify-center gap-2">
+    <div className={`flex flex-wrap gap-2 ${className}`}>
       {entries.map((key) => (
         <a
           key={key}

@@ -12,7 +12,7 @@ import LandingShell from "@/components/landing/LandingShell";
 import OfferImages from "@/components/landing/OfferImages";
 import OfferCard from "@/components/landing/OfferCard";
 import CouponCopy from "@/components/landing/CouponCopy";
-import ShareButton from "@/components/landing/ShareButton";
+import { LandingNavbar } from "@/components/landing/Storefront";
 import BuyButton from "@/components/landing/BuyButton";
 import Stars from "@/components/landing/Stars";
 import BrandLogo from "@/components/shop/BrandLogo";
@@ -100,13 +100,18 @@ export default async function OfferPage({ params }: Props) {
     <LandingShell page={page} isOwner={isOwner} hiddenNotice={!page.isPublished || offer.status !== "PUBLISHED"}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
-      <div className="mx-auto max-w-6xl px-4 pt-6">
-        <div className="flex items-center justify-between gap-3">
+      <LandingNavbar
+        mode="link"
+        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: page.language }}
+        categories={Array.from(new Set(offers.map((o) => o.category).filter((c): c is string => !!c)))}
+      />
+
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3">
           <Link href={`/${page.slug}`} className="inline-flex items-center gap-2 text-sm text-[var(--lp-muted)] hover:text-[var(--lp-text)]">
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
             {publicT(lang, "backTo", { name: page.title })}
           </Link>
-          <ShareButton title={offer.title} lang={lang} />
         </div>
 
         {/* 🛍️ رأس العرض */}
@@ -131,11 +136,8 @@ export default async function OfferPage({ params }: Props) {
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
-              <span className="flex items-center gap-2.5 rounded-xl border border-[var(--lp-border)] bg-[var(--lp-surface)] px-3 py-2">
-                <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-white px-1">
-                  <BrandLogo brand={store} size={20} />
-                </span>
-                <span className="text-sm font-semibold">{store.name}</span>
+              <span className="flex h-11 items-center rounded-xl border border-[var(--lp-border)] bg-white px-3 text-neutral-900" title={store.name}>
+                <BrandLogo brand={store} size={22} fallback="name" />
               </span>
               {offer.rating != null && offer.rating > 0 && (
                 <span className="flex items-center gap-2">

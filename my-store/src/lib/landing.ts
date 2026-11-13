@@ -214,6 +214,13 @@ export function themeStyle(theme: string, accent: string, designInput?: Partial<
 // ==================== 🔤 قاموس واجهة الزوار (حسب لغة الصفحة التي اختارها المسوّق) ====================
 const DICT = {
   en: {
+    searchIn: "Search {name}",
+    allCategories: "All categories",
+    allStores: "All stores",
+    results: "{n} results",
+    resultOne: "1 result",
+    offerOne: "pick",
+    clear: "Clear filters",
     buyOn: "Buy on {store}",
     shopAt: "Shop at {store}",
     checkPrice: "Check price on {store}",
@@ -247,6 +254,13 @@ const DICT = {
     video: "Watch the video",
   },
   ar: {
+    searchIn: "ابحث في {name}",
+    allCategories: "كل الفئات",
+    allStores: "كل المتاجر",
+    results: "{n} نتيجة",
+    resultOne: "نتيجة واحدة",
+    offerOne: "عرض",
+    clear: "مسح الفلاتر",
     buyOn: "الشراء من {store}",
     shopAt: "تسوّق من {store}",
     checkPrice: "اعرف السعر على {store}",
@@ -280,6 +294,13 @@ const DICT = {
     video: "شاهد الفيديو",
   },
   fr: {
+    searchIn: "Rechercher dans {name}",
+    allCategories: "Toutes les catégories",
+    allStores: "Toutes les boutiques",
+    results: "{n} résultats",
+    resultOne: "1 résultat",
+    offerOne: "sélection",
+    clear: "Effacer les filtres",
     buyOn: "Acheter sur {store}",
     shopAt: "Voir sur {store}",
     checkPrice: "Voir le prix sur {store}",
