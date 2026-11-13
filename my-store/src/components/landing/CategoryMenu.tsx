@@ -145,7 +145,8 @@ export default function CategoryMenu({
               >
                 <span className="flex h-4 w-4 shrink-0 items-center justify-center">{selected && <Check className="h-4 w-4" />}</span>
                 <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                {typeof item.count === "number" && (
+                {/* العدّاد فقط أمام "كل الفئات" (إجمالي العروض) — لا عدّادات أمام كل فئة */}
+                {item.value === null && typeof item.count === "number" && (
                   <span className="rounded-full bg-[var(--lp-hover-strong)] px-2 py-0.5 text-[11px] font-medium tabular-nums text-[var(--lp-muted)]">{item.count}</span>
                 )}
               </li>

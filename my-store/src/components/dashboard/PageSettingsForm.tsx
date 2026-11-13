@@ -10,6 +10,7 @@ import { SingleImageField } from "./ImageUpload";
 import type { OfferCardData } from "@/components/landing/OfferCard";
 import Storefront from "@/components/landing/Storefront";
 import LandingFonts from "@/components/landing/LandingFonts";
+import LandingFooter from "@/components/landing/LandingFooter";
 import {
   BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, FONT_STYLES, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
   RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, type PageDesign,
@@ -419,9 +420,7 @@ function ScaledPreview({ device, children }: { device: "desktop" | "mobile"; chi
           <div className="flex h-7 items-center justify-center rounded-t-[1.9rem] bg-black">
             <span className="h-[18px] w-[86px] rounded-full bg-[#1d1d20]" />
           </div>
-          <div className="overflow-y-auto overflow-x-hidden rounded-b-[1.9rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" style={{ height: screenH }} dir="ltr">
-            {content}
-          </div>
+          <TouchScreen height={screenH}>{content}</TouchScreen>
         </div>
       </div>
     );
@@ -436,6 +435,101 @@ function ScaledPreview({ device, children }: { device: "desktop" | "mobile"; chi
       </div>
       <div ref={outer} className="max-h-[640px] overflow-y-auto overflow-x-hidden" dir="ltr">
         {content}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 📱 شاشة الهاتف في المعاينة: الفأرة تصبح دائرة كإصبع يلمس الشاشة،
+ * والسحب يمرّر المحتوى مع زخم (inertia) كهاتف حقيقي. عجلة الفأرة تعمل كالمعتاد.
+ * على الأجهزة اللمسية الحقيقية يبقى التمرير الأصلي للمتصفح.
+ */
+function TouchScreen({ height, children }: { height: number; children: React.ReactNode }) {
+  const scroller = useRef<HTMLDivElement>(null);
+  const dot = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ startY: number; startTop: number; lastY: number; lastT: number; v: number } | null>(null);
+  const raf = useRef(0);
+  const [hover, setHover] = useState(false);
+  const [pressed, setPressed] = useState(false);
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+
+  const placeDot = (e: React.PointerEvent) => {
+    const el = scroller.current;
+    const d = dot.current;
+    if (!el || !d) return;
+    const r = el.getBoundingClientRect();
+    d.style.transform = `translate3d(${e.clientX - r.left}px, ${e.clientY - r.top}px, 0)`;
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    e.preventDefault(); // لا تحديد للنص أثناء السحب
+    cancelAnimationFrame(raf.current);
+    e.currentTarget.setPointerCapture(e.pointerId);
+    const now = performance.now();
+    drag.current = { startY: e.clientY, startTop: e.currentTarget.scrollTop, lastY: e.clientY, lastT: now, v: 0 };
+    setPressed(true);
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    placeDot(e);
+    const g = drag.current;
+    if (!g) return;
+    const now = performance.now();
+    e.currentTarget.scrollTop = g.startTop - (e.clientY - g.startY);
+    const dt = Math.max(1, now - g.lastT);
+    g.v = 0.8 * ((e.clientY - g.lastY) / dt) + 0.2 * g.v; // سرعة ملساء (px/ms)
+    g.lastY = e.clientY;
+    g.lastT = now;
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const g = drag.current;
+    if (!g) return;
+    drag.current = null;
+    setPressed(false);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    // زخم بعد الإفلات: يتباطأ تدريجياً، ويُلغى إن توقّف الإصبع قبل الإفلات
+    let v = performance.now() - g.lastT > 90 ? 0 : g.v;
+    const el = e.currentTarget;
+    let last = performance.now();
+    const step = (t: number) => {
+      const dt = Math.min(32, t - last);
+      last = t;
+      if (Math.abs(v) < 0.02) return;
+      el.scrollTop -= v * dt;
+      v *= Math.pow(0.95, dt / 16);
+      raf.current = requestAnimationFrame(step);
+    };
+    raf.current = requestAnimationFrame(step);
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-b-[1.9rem]" style={{ height }}>
+      <div
+        ref={scroller}
+        dir="ltr"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onPointerEnter={(e) => e.pointerType === "mouse" && (placeDot(e), setHover(true))}
+        onPointerLeave={() => setHover(false)}
+        onWheel={() => cancelAnimationFrame(raf.current)}
+        className="h-full cursor-none select-none overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {children}
+      </div>
+      {/* 👆 مؤشر الإصبع */}
+      <div ref={dot} aria-hidden className={`pointer-events-none absolute left-0 top-0 z-10 transition-opacity duration-150 ${hover ? "opacity-100" : "opacity-0"}`}>
+        <span
+          className={`block h-9 w-9 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/80 shadow-[0_0_0_1px_rgba(0,0,0,0.18),0_6px_16px_rgba(0,0,0,0.3)] transition-[scale,background-color] duration-150 ${
+            pressed ? "scale-[0.82] bg-white/45" : "bg-white/25"
+          }`}
+        />
       </div>
     </div>
   );
@@ -457,7 +551,8 @@ function PreviewPage({
   const lang = f.language;
   // نفس مكوّن الصفحة العامة تماماً — ما تراه هنا هو ما يراه الزوار
   return (
-    <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className="min-h-[900px]">
+    // flow-root: يمنع هوامش العناصر الأخيرة من الخروج خارج الخلفية (كان يظهر شريط أسود أسفل المعاينة)
+    <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className="flow-root min-h-[900px]">
       <LandingFonts />
       <Storefront
         page={{
@@ -473,11 +568,7 @@ function PreviewPage({
         socials={socials}
         columns={design.columns}
       />
-      {f.showDisclosure && (
-        <div className="mx-auto mb-10 max-w-2xl rounded-2xl border border-[var(--lp-border)] bg-[var(--lp-surface)] p-5 text-[13px] text-[var(--lp-muted)]">
-          {f.disclosure || publicT(lang, "disclosureDefault")}
-        </div>
-      )}
+      <LandingFooter lang={lang} title={f.title || "—"} showDisclosure={f.showDisclosure} disclosure={f.disclosure} />
     </div>
   );
 }
