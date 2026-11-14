@@ -194,7 +194,11 @@
         "con1": "Case is bulky",
         "buy": "Buy on Walmart",
         "clicks": "Clicks",
-        "ctr": "CTR"
+        "ctr": "CTR",
+        "buyOn": "Buy on {store}",
+        "anyStore": "Or any store you want",
+        "prev": "Previous",
+        "next": "Next"
       },
       "compare": {
         "title": "Why not a simple link page?",

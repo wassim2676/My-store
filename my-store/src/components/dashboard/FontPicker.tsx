@@ -3,6 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Check, ChevronDown, Search, X } from "lucide-react";
+import { loadStylesheet } from "@/components/landing/ClientFonts";
 import { ARABIC_SAMPLE, FONT_CATEGORIES, FONTS, fontPreviewHref, fontStack, getFont, type FontCategory } from "@/lib/fonts";
 
 type Tab = "all" | FontCategory;
@@ -36,7 +37,6 @@ export default function FontPicker({
 }) {
   const t = useTranslations("dash.design");
   const [open, setOpen] = useState(false);
-  const [everOpened, setEverOpened] = useState(false);
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<Tab>("all");
   const [active, setActive] = useState(0);
@@ -64,7 +64,7 @@ export default function FontPicker({
   };
 
   const openPicker = () => {
-    setEverOpened(true);
+    PREVIEW_HREFS.forEach(loadStylesheet); // معاينات أسماء الخطوط: تُحمَّل عند أول فتح فقط (بضعة كيلوبايتات)
     setQuery("");
     setTab("all");
     setActive(Math.max(0, filterFonts("", "all").findIndex((f) => f.family === value)));
@@ -127,7 +127,6 @@ export default function FontPicker({
   return (
     <div ref={root} className="relative">
       {/* معاينات أسماء الخطوط: تُحمَّل عند أول فتح فقط، ببضعة كيلوبايتات */}
-      {everOpened && PREVIEW_HREFS.map((href) => <link key={href} rel="stylesheet" href={href} precedence="default" />)}
 
       <p className="mb-2 text-sm text-white/70">{label}</p>
       <button

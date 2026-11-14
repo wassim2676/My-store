@@ -9,7 +9,7 @@ import { Toggle } from "./OfferForm";
 import { SingleImageField } from "./ImageUpload";
 import type { OfferCardData } from "@/components/landing/OfferCard";
 import Storefront from "@/components/landing/Storefront";
-import LandingFonts from "@/components/landing/LandingFonts";
+import ClientFonts from "@/components/landing/ClientFonts";
 import LandingFooter from "@/components/landing/LandingFooter";
 import FontPicker from "./FontPicker";
 import {
@@ -554,7 +554,7 @@ function PreviewPage({
   return (
     // flow-root: يمنع هوامش العناصر الأخيرة من الخروج خارج الخلفية (كان يظهر شريط أسود أسفل المعاينة)
     <div data-lp dir={pageDir(lang)} lang={lang} style={themeStyle(f.theme, f.accentColor, design)} className="flow-root min-h-[900px]">
-      <LandingFonts fonts={[design.font, design.bodyFont]} />
+      <ClientFonts fonts={[design.font, design.bodyFont]} />
       <Storefront
         page={{
           slug,

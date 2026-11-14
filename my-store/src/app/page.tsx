@@ -6,6 +6,8 @@ import {
 import SiteNavbar from "@/components/site/SiteNavbar";
 import SiteFooter from "@/components/site/SiteFooter";
 import ClaimLink from "@/components/site/ClaimLink";
+import TourCarousel from "@/components/site/TourCarousel";
+import BrandCycleButton from "@/components/site/BrandCycleButton";
 import BrandLogo from "@/components/shop/BrandLogo";
 import { WHITE_LOGO } from "@/components/shop/logo-classes";
 import { getActiveBrands } from "@/lib/brands";
@@ -33,6 +35,13 @@ export default async function Home() {
     { store: "Walmart", color: "#0071CE", title: t("mock.p2"), price: "$89", old: null, badge: null, rating: 4 },
     { store: "Target", color: "#CC0000", title: t("mock.p3"), price: "$59", old: "$79", badge: "Trending", rating: 5 },
   ];
+  // متاجر المنصة الفعلية (من لوحة الأدمن) لعروض الصفحة الرئيسية، مع بديل ثابت إن تعذّر الاتصال
+  const tourBrands = (brands.length ? brands : mock.map((m) => ({ name: m.store, accentColor: m.color, logoSvg: null, logoUrl: null }))).map((b) => ({
+    name: b.name,
+    logoSvg: b.logoSvg,
+    logoUrl: b.logoUrl,
+    accentColor: b.accentColor,
+  }));
   const trust = t.raw("home.trust") as string[];
   const compareRows = t.raw("home.compare.rows") as string[];
   // صفحة الروابط العادية: ✗ لا يوجد، ~ جزئي
@@ -170,20 +179,7 @@ export default async function Home() {
 
           <div className="mt-16 space-y-20 lg:space-y-28">
             <TourRow n="01" eyebrow={t("home.tour.t1.eyebrow")} title={t("home.tour.t1.title")} desc={t("home.tour.t1.desc")} points={t.raw("home.tour.t1.points") as string[]}>
-              <div className="grid grid-cols-2 gap-3 rounded-3xl border border-white/[0.08] bg-[#0B0E14] p-4">
-                {mock.slice(0, 2).concat(mock.slice(0, 2)).map((m, i) => (
-                  <div key={i} className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#121621]">
-                    <div className="m-1.5 aspect-square rounded-xl bg-gradient-to-br from-white to-neutral-200" />
-                    <div className="space-y-1.5 p-3">
-                      <div className="h-2 w-3/4 rounded-full bg-white/25" />
-                      <div className="h-2 w-1/3 rounded-full bg-[#C8A24A]" />
-                    </div>
-                    <div className="border-t border-white/[0.07] bg-[#1A1F2C] px-3 py-2 text-white/90">
-                      <BrandLogo brand={{ name: m.store, accentColor: m.color }} size={14} fallback="name" className={WHITE_LOGO} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <TourCarousel brands={tourBrands} prevLabel={t("home.tour.prev")} nextLabel={t("home.tour.next")} />
             </TourRow>
 
             <TourRow reverse n="02" eyebrow={t("home.tour.t2.eyebrow")} title={t("home.tour.t2.title")} desc={t("home.tour.t2.desc")} points={t.raw("home.tour.t2.points") as string[]}>
@@ -213,12 +209,7 @@ export default async function Home() {
                   <span className="flex items-center gap-1.5 text-amber-200"><Tag className="h-3.5 w-3.5" />SAVE20</span>
                   <span className="text-white/40">−20%</span>
                 </div>
-                <span className="flex items-center justify-center gap-2 rounded-2xl bg-[#0071CE] px-5 py-3.5 font-bold text-white" dir="ltr">
-                  <span className="flex h-6 items-center rounded-md bg-white px-1">
-                    <BrandLogo brand={{ name: "Walmart", accentColor: "#0071CE" }} size={16} />
-                  </span>
-                  {t("home.tour.buy")}
-                </span>
+                <BrandCycleButton brands={tourBrands} buyTemplate={t.raw("home.tour.buyOn") as string} anyStore={t("home.tour.anyStore")} />
               </div>
             </TourRow>
 

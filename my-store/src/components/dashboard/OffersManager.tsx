@@ -194,7 +194,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
                   </div>
                   <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/45">
                     <span className="flex items-center gap-1.5">
-                      <span className="flex h-5 min-w-5 items-center justify-center rounded bg-white px-0.5"><BrandLogo brand={store} size={14} /></span>
+                      <span className="flex h-5 w-12 shrink-0 items-center justify-center overflow-hidden rounded bg-white px-1"><BrandLogo brand={store} size={13} className="max-w-full! [&_svg]:max-w-full" /></span>
                       {store.name}
                     </span>
                     <span className="flex items-center gap-1"><Eye className="h-3.5 w-3.5" />{o.views}</span>

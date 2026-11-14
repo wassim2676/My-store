@@ -194,7 +194,11 @@
         "con1": "Étui encombrant",
         "buy": "Buy on Walmart",
         "clicks": "Clics",
-        "ctr": "Taux de clic"
+        "ctr": "Taux de clic",
+        "buyOn": "Acheter sur {store}",
+        "anyStore": "Ou n’importe quelle boutique",
+        "prev": "Précédent",
+        "next": "Suivant"
       },
       "compare": {
         "title": "Pourquoi pas une simple page de liens ?",

@@ -164,8 +164,8 @@ export default async function AdminOverview() {
             <ul className="divide-y divide-white/[0.06]">
               {topOffers.map((o) => (
                 <li key={o.id} className="flex items-center gap-3 py-3">
-                  <span className="flex h-8 w-14 shrink-0 items-center justify-center rounded-md bg-white px-1">
-                    <BrandLogo brand={o.brand ?? { name: o.storeName || "Store" }} size={18} />
+                  <span className="flex h-8 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white px-1.5">
+                    <BrandLogo brand={o.brand ?? { name: o.storeName || "Store" }} size={18} className="max-w-full! [&_svg]:max-w-full" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <a href={`/${o.landingPage.slug}/${o.slug}`} target="_blank" rel="noopener" className="block truncate text-sm font-medium hover:text-sky-300">

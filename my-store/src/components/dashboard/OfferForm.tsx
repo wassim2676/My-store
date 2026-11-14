@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import BrandLogo from "@/components/shop/BrandLogo";
-import LandingFonts from "@/components/landing/LandingFonts";
+import ClientFonts from "@/components/landing/ClientFonts";
 import { ImageDropzone, SingleImageField } from "./ImageUpload";
 import OfferCard from "@/components/landing/OfferCard";
 import { CURRENCIES, OFFER_BADGES, parseDesign, themeStyle, toSlug, pageDir, type PageDesign } from "@/lib/landing";
@@ -234,8 +234,11 @@ export default function OfferForm({
                       f.brandId === b.id ? "border-amber-400 bg-amber-400/10" : "border-white/10 hover:border-white/25"
                     }`}
                   >
-                    <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-white px-1"><BrandLogo brand={b} size={20} /></span>
-                    <span className="truncate">{b.name}</span>
+                    {/* إطار ثابت للشعار: الشعارات العريضة (Sephora/AliExpress) تُصغَّر داخله بدل أن تخرج منه */}
+                    <span className="flex h-8 w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-white px-1.5">
+                      <BrandLogo brand={b} size={18} className="max-w-full! [&_svg]:max-w-full" />
+                    </span>
+                    <span className="min-w-0 truncate">{b.name}</span>
                   </button>
                 ))}
                 <button
@@ -399,7 +402,7 @@ export default function OfferForm({
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
             <h3 className="mb-3 text-sm font-semibold">{t("form.preview")}</h3>
             <div data-lp style={themeStyle(page.theme, page.accentColor, pageDesign)} dir={pageDir(page.language)} className={`rounded-2xl p-4 pointer-events-none`}>
-              <LandingFonts fonts={[pageDesign.font, pageDesign.bodyFont]} />
+              <ClientFonts fonts={[pageDesign.font, pageDesign.bodyFont]} />
               <OfferCard offer={preview} pageSlug={page.slug} lang={page.language} />
             </div>
           </div>
