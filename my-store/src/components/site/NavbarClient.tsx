@@ -59,7 +59,7 @@ export default function NavbarClient({ siteName, loggedIn, labels: l }: { siteNa
             <span className="flex h-7 w-7 items-center justify-center rounded-[9px] bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 shadow-[0_0_20px_-6px_rgba(245,180,60,0.75)]">
               <Sparkles className="h-3.5 w-3.5 text-black" />
             </span>
-            <span className="font-serif text-[21px] leading-none">{siteName}</span>
+            <span className="font-serif text-[18px] leading-none">{siteName}</span>
           </Link>
 
           {/* روابط سطح المكتب — في الوسط، ممتدة بلا إطار داخلي سميك */}

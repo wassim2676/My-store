@@ -52,7 +52,7 @@ export default function DashboardShell({
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-300 to-amber-600">
               <Sparkles className="h-4.5 w-4.5 text-black" />
             </span>
-            <span className="font-serif text-[22px] leading-none">{SITE_NAME}</span>
+            <span className="font-serif text-[19px] leading-none">{SITE_NAME}</span>
           </Link>
           <button onClick={() => setOpen(false)} className="lg:hidden rounded-lg p-2 text-white/60 hover:bg-white/5 cursor-pointer" aria-label="close">
             <X className="h-5 w-5" />

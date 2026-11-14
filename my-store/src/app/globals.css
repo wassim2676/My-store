@@ -11,11 +11,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* 🔤 خطوط المنصة: Geist للنصوص والواجهة (خط Vercel)، Instrument Serif للعناوين الأنيقة.
-     العربية: IBM Plex Sans Arabic للنصوص و Noto Kufi Arabic للعناوين (تُحمَّل في layout.tsx) */
-  --font-sans: "Geist", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif: "Instrument Serif", "Noto Kufi Arabic", ui-serif, Georgia, serif;
-  --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* 🔤 خطوط المنصة (على طريقة Envato/Linear): Inter للنصوص والواجهة، Inter Tight للعناوين —
+     غروتسك عريض ومتراص يعطي حضوراً قوياً واحترافياً. العربية: IBM Plex Sans Arabic / Noto Kufi Arabic */
+  --font-sans: "Inter", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Inter Tight", "Noto Kufi Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --animate-marquee: marquee 38s linear infinite;
 }
 
@@ -41,11 +41,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* عناوين المنصة: Instrument Serif بوزن واحد — نمنع التسميك المزيّف ونضبط التباعد ليبدو تحريرياً أنيقاً */
-.font-serif {
-  font-synthesis-weight: none;
-  /* الخط ضيّق بطبيعته: نلغي tracking-tight حتى لا تلتصق الحروف (القواعد خارج الطبقات تغلب أصناف Tailwind) */
-  letter-spacing: 0.004em;
+/* عناوين المنصة: Inter Tight عريض ومتراص (كعناوين Envato) — القواعد خارج الطبقات تغلب أصناف Tailwind */
+.font-serif:not([data-lp] *) {
+  font-weight: 700;
+  /* تراصّ يتناسب مع الحجم: خفيف في العناوين الصغيرة (~-0.01em عند 16px) وقوي في الكبيرة (~-0.035em) */
+  letter-spacing: max(-0.026em, calc(-0.16px - (1em - 16px) * 0.03));
+}
+:lang(ar) .font-serif:not([data-lp] *) {
+  letter-spacing: 0;
 }
 
 /* ==================== 🎨 صفحات هبوط المسوّقين ====================

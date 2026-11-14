@@ -60,7 +60,7 @@ export default async function SiteFooter() {
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600">
                 <Sparkles className="h-4 w-4 text-black" />
               </span>
-              <span className="font-serif text-[22px] leading-none">{SITE_NAME}</span>
+              <span className="font-serif text-[19px] leading-none">{SITE_NAME}</span>
             </Link>
             <p className="mt-5 text-sm leading-relaxed text-white/50">{f("tagline")}</p>
             <Link

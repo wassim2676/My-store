@@ -7,8 +7,7 @@ import { getDirection } from "@/i18n/config";
 import { SITE_NAME } from "@/lib/site";
 
 const PLATFORM_FONTS = [
-  "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap",
-  "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap",
+  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800&display=swap",
 ];
 const PLATFORM_FONTS_AR = [
   "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@500;600;700&display=swap",
