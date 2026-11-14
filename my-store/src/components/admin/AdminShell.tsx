@@ -53,7 +53,7 @@ export default function AdminShell({ user, children }: { user: { name: string; e
               <ShieldCheck className="h-4.5 w-4.5 text-white" />
             </span>
             <span className="leading-tight">
-              <span className="block font-serif text-lg font-semibold tracking-tight">{SITE_NAME}</span>
+              <span className="block font-serif text-[22px] leading-none">{SITE_NAME}</span>
               <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-sky-300/80">{t("panel")}</span>
             </span>
           </Link>

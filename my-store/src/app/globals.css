@@ -11,8 +11,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* 🔤 خطوط المنصة: Geist للنصوص والواجهة (خط Vercel)، Instrument Serif للعناوين الأنيقة.
+     العربية: IBM Plex Sans Arabic للنصوص و Noto Kufi Arabic للعناوين (تُحمَّل في layout.tsx) */
+  --font-sans: "Geist", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Instrument Serif", "Noto Kufi Arabic", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
   --animate-marquee: marquee 38s linear infinite;
 }
 
@@ -32,7 +35,17 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* عناوين المنصة: Instrument Serif بوزن واحد — نمنع التسميك المزيّف ونضبط التباعد ليبدو تحريرياً أنيقاً */
+.font-serif {
+  font-synthesis-weight: none;
+  /* الخط ضيّق بطبيعته: نلغي tracking-tight حتى لا تلتصق الحروف (القواعد خارج الطبقات تغلب أصناف Tailwind) */
+  letter-spacing: 0.004em;
 }
 
 /* ==================== 🎨 صفحات هبوط المسوّقين ====================
