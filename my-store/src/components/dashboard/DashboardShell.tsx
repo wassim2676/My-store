@@ -47,7 +47,7 @@ export default function DashboardShell({
           open ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full lg:translate-x-0!"
         }`}
       >
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-300 to-amber-600">
               <Sparkles className="h-4.5 w-4.5 text-black" />
@@ -123,7 +123,7 @@ export default function DashboardShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[#07090D]/85 px-4 py-3 backdrop-blur sm:px-8">
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 h-16 border-b border-white/[0.06] bg-[#07090D]/85 px-4 backdrop-blur sm:px-8">
           <button onClick={() => setOpen(true)} className="lg:hidden rounded-lg p-2 text-white/70 hover:bg-white/5 cursor-pointer" aria-label="menu">
             <Menu className="h-5 w-5" />
           </button>

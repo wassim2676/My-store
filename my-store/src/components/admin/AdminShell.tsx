@@ -47,7 +47,7 @@ export default function AdminShell({ user, children }: { user: { name: string; e
           open ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full lg:translate-x-0!"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-5">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] px-6">
           <Link href="/admin/dashboard" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-300 to-indigo-600">
               <ShieldCheck className="h-4.5 w-4.5 text-white" />
@@ -109,7 +109,7 @@ export default function AdminShell({ user, children }: { user: { name: string; e
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-white/[0.06] bg-[#07090D]/85 px-4 py-3 backdrop-blur sm:px-8">
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 h-16 border-b border-white/[0.06] bg-[#07090D]/85 px-4 backdrop-blur sm:px-8">
           <div className="flex items-center gap-2">
             <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-white/70 hover:bg-white/5 lg:hidden cursor-pointer" aria-label="menu">
               <Menu className="h-5 w-5" />

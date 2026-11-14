@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import BrandLogo, { type BrandLogoData } from "@/components/shop/BrandLogo";
 import { WHITE_LOGO } from "@/components/shop/logo-classes";
+import Dots from "@/components/shared/Dots";
 
 /**
  * 🎠 شريط بطاقات أفقي للصفحة الرئيسية: بطاقتان في الكمبيوتر، تمرير جانبي سلس مع التقاط (snap)،
@@ -43,6 +44,13 @@ export default function TourCarousel({ brands, prevLabel, nextLabel }: { brands:
     el.scrollBy({ left: dir * el.clientWidth * (rtl ? -1 : 1), behavior: "smooth" });
   };
 
+  const goTo = (i: number) => {
+    const el = track.current;
+    if (!el) return;
+    const rtl = getComputedStyle(el).direction === "rtl";
+    el.scrollTo({ left: i * el.clientWidth * (rtl ? -1 : 1), behavior: "smooth" });
+  };
+
   const arrow = "flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/80 transition hover:border-white/25 hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-30 cursor-pointer";
 
   return (
@@ -73,11 +81,7 @@ export default function TourCarousel({ brands, prevLabel, nextLabel }: { brands:
 
       {/* التحكم: نقاط التقدّم + الأسهم */}
       <div className="mt-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5" aria-hidden>
-          {Array.from({ length: pages }).map((_, i) => (
-            <span key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === page ? "w-6 bg-amber-400" : "w-1.5 bg-white/20"}`} />
-          ))}
-        </div>
+        <Dots count={pages} active={page} onSelect={goTo} label={nextLabel} />
         <div className="flex gap-2">
           <button type="button" onClick={() => go(-1)} disabled={atStart} aria-label={prevLabel} className={arrow}>
             <ChevronLeft className="h-4 w-4 rtl:rotate-180" />

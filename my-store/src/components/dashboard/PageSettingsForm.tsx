@@ -107,7 +107,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
   return (
     <form onSubmit={submit} className="mx-auto max-w-[1400px]">
       {/* شريط علوي ثابت: العنوان + الحفظ */}
-      <div className="sticky top-[57px] z-20 -mx-4 mb-6 flex flex-col gap-3 border-b border-white/[0.06] bg-[#07090D]/90 px-4 py-4 backdrop-blur sm:-mx-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <div className="sticky top-16 z-20 -mx-4 mb-6 flex flex-col gap-3 border-b border-white/[0.06] bg-[#07090D]/90 px-4 py-4 backdrop-blur sm:-mx-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div>
           <h1 className="font-serif text-2xl font-semibold sm:text-3xl">{t("design.title")}</h1>
           <p className="mt-0.5 text-sm text-white/50">{dirty ? <span className="text-amber-300">{t("design.unsaved")}</span> : t("design.subtitle")}</p>
@@ -351,7 +351,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
         </div>
 
         {/* 👁️ معاينة حية بالحجم الحقيقي (مصغّرة) */}
-        <aside className="xl:sticky xl:top-[150px] xl:self-start">
+        <aside className="xl:sticky xl:top-[157px] xl:self-start">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm font-medium text-white/70">{t("design.preview")}</p>
             <div className="flex rounded-lg border border-white/10 p-0.5">
