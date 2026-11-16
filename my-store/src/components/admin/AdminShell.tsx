@@ -108,7 +108,8 @@ export default function AdminShell({ user, children }: { user: { name: string; e
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* overflow-x-clip: لا تمرير أفقي للصفحة أبداً على الهاتف (clip لا يكسر الشريط الثابت sticky) */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-x-clip">
         <header className="sticky top-0 z-30 flex items-center justify-between gap-3 h-16 border-b border-white/[0.06] bg-[#07090D]/85 px-4 backdrop-blur sm:px-8">
           <div className="flex items-center gap-2">
             <button onClick={() => setOpen(true)} className="rounded-lg p-2 text-white/70 hover:bg-white/5 lg:hidden cursor-pointer" aria-label="menu">
@@ -136,7 +137,7 @@ export default function AdminShell({ user, children }: { user: { name: string; e
             <LanguageSwitcher variant="dark" />
           </div>
         </header>
-        <main className="flex-1 px-4 py-6 sm:px-8 sm:py-8">
+        <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 [&_.grid>*]:min-w-0">
           <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
       </div>

@@ -126,7 +126,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
 
       {error && <p className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</p>}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <div className="space-y-6">
           {/* 🎨 الألوان */}
           <Card title={t("design.sec.look")}>

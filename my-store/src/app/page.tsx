@@ -52,7 +52,8 @@ export default async function Home() {
     <div className="min-h-screen overflow-x-hidden bg-[#07090D] text-white antialiased">
       <SiteNavbar />
 
-      <main>
+      {/* عناصر الشبكات تتقلّص لعرض الشاشة (الشريط الأفقي للبطاقات كان يمطّ العمود خارج الهاتف) */}
+      <main className="[&_.grid>*]:min-w-0">
         {/* 🌟 Hero */}
         <section className="relative">
           <div className="pointer-events-none absolute -top-48 left-1/2 h-[700px] w-[1100px] max-w-[170vw] -translate-x-1/2 rounded-full bg-amber-500/[0.12] blur-[140px]" />
