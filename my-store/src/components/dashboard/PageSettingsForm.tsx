@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizedApiError } from "@/lib/api-error";
 import { AlertTriangle, Check, ExternalLink, Loader2, Monitor, RotateCcw, Save, Smartphone } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { Toggle } from "./OfferForm";
@@ -29,6 +30,9 @@ type SampleOffer = OfferCardData;
 
 export default function PageSettingsForm({ initial, sampleOffers }: { initial: SerializedLandingPage; sampleOffers: SampleOffer[] }) {
   const t = useTranslations("dash");
+  const locale = useLocale();
+  const apiError = (status: number, msg: unknown) =>
+    localizedApiError(msg, status, locale, { invalid: t("common.errors.invalid"), conflict: t("common.errors.conflict"), unauthorized: t("common.errors.unauthorized"), generic: t("common.error") });
   const router = useRouter();
   const [f, setF] = useState({
     title: initial.title,
@@ -88,7 +92,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
         body: JSON.stringify({ ...f, design, socialLinks: socials }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || t("common.error"));
+      if (!res.ok) throw new Error(apiError(res.status, data.error));
       setSavedSlug(data.data.slug);
       setSaved(true);
       setDirty(false);

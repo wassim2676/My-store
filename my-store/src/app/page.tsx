@@ -59,11 +59,7 @@ export default async function Home() {
           <div className="pointer-events-none absolute -top-48 left-1/2 h-[700px] w-[1100px] max-w-[170vw] -translate-x-1/2 rounded-full bg-amber-500/[0.12] blur-[140px]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_70%_55%_at_50%_20%,black,transparent)]" />
           <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-16 text-center sm:pt-24">
-            <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/25 bg-amber-400/[0.06] px-4 py-1.5 text-xs font-medium text-amber-200">
-              <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
-              {t("hero.badge")}
-            </span>
-            <h1 className="mx-auto mt-6 max-w-4xl bg-gradient-to-b from-white via-white to-white/60 bg-clip-text font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
+            <h1 className="mx-auto max-w-4xl bg-gradient-to-b from-white via-white to-white/60 bg-clip-text font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
               {t("hero.title")}
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/60">{t("hero.subtitle")}</p>

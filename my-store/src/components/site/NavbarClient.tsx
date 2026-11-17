@@ -155,9 +155,9 @@ export default function NavbarClient({ siteName, loggedIn, labels: l }: { siteNa
                   ))}
                 </div>
               </div>
-              <div className="flex items-center justify-between gap-3 border-t border-white/[0.06] pt-3">
-                <LanguageSwitcher variant="dark" />
-                <div className="flex gap-2">
+              <LanguageSwitcher variant="segmented" />
+              <div className="flex items-center gap-3 border-t border-white/[0.06] pt-3">
+                <div className="flex flex-1 gap-2 [&>a]:flex-1 [&>a]:text-center">
                   {loggedIn ? (
                     <Link href="/dashboard" onClick={() => setOpen(false)} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
                       {l.dashboard}

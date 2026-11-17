@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizedApiError } from "@/lib/api-error";
 import { Loader2, Sparkles, ShieldCheck } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { toSlug } from "@/lib/landing";
@@ -11,6 +12,9 @@ import { toSlug } from "@/lib/landing";
 // ==================== 👋 اختيار اسم صفحة الهبوط (للحسابات التي لا تملك صفحة بعد) ====================
 export default function Onboarding({ firstName, isAdmin = false }: { firstName: string | null; isAdmin?: boolean }) {
   const t = useTranslations("dash");
+  const locale = useLocale();
+  const apiError = (status: number, msg: unknown) =>
+    localizedApiError(msg, status, locale, { invalid: t("common.errors.invalid"), conflict: t("common.errors.conflict"), unauthorized: t("common.errors.unauthorized"), generic: t("common.error") });
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -31,7 +35,7 @@ export default function Onboarding({ firstName, isAdmin = false }: { firstName: 
         body: JSON.stringify({ title, slug }),
       });
       const data = await res.json();
-      if (!res.ok) return setError(data.error || t("common.error"));
+      if (!res.ok) return setError(apiError(res.status, data.error));
       router.refresh();
     } catch {
       setError(t("common.error"));

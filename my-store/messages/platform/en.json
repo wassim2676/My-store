@@ -145,7 +145,7 @@
       "trust": [
         "Free to start",
         "Your commissions stay 100% yours",
-        "English · العربية · Français"
+        "English · Arabic · Français"
       ],
       "mockPage": {
         "title": "Sarah’s Home Finds",
@@ -245,7 +245,9 @@
       "passwordShort": "Password must be at least 8 characters.",
       "slugInvalid": "Choose an available page link.",
       "terms": "Please accept the terms to continue.",
-      "unknown": "Something went wrong. Please try again."
+      "unknown": "Something went wrong. Please try again.",
+      "invalid": "Please check your information and try again.",
+      "conflict": "This email or page link is already in use."
     }
   },
   "dash": {
@@ -260,7 +262,8 @@
       "hidden": "Hidden from visitors",
       "view": "View page",
       "admin": "Admin panel",
-      "logout": "Log out"
+      "logout": "Log out",
+      "audience": "Audience"
     },
     "common": {
       "copy": "Copy",
@@ -268,7 +271,12 @@
       "save": "Save changes",
       "saved": "Saved",
       "add": "Add",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "errors": {
+        "invalid": "Some information is invalid. Please check the fields and try again.",
+        "conflict": "This name or link is already taken. Choose another one.",
+        "unauthorized": "Your session expired. Please log in again."
+      }
     },
     "slug": {
       "checking": "Checking…",
@@ -447,7 +455,7 @@
       "languageHint": "The language visitors see (buttons, labels, disclosure).",
       "languages": {
         "en": "English",
-        "ar": "العربية",
+        "ar": "Arabic",
         "fr": "Français"
       },
       "socials": {
@@ -561,6 +569,93 @@
         "network": "Upload failed. Check your connection and try again.",
         "unauthorized": "Your session expired. Please log in again.",
         "url": "Enter a valid image link starting with https://"
+      }
+    },
+    "audience": {
+      "title": "Audience & link protection",
+      "subtitle": "Decide who reaches your affiliate links — and keep bots away from them.",
+      "save": "Save",
+      "saved": "Saved",
+      "stats": {
+        "clicks": "Clicks to stores",
+        "clicksHint": "Real visitors · last 30 days",
+        "bots": "Bots filtered",
+        "botsHint": "Sent to the clean store link",
+        "geo": "Blocked by country",
+        "geoHint": "Never reached your affiliate link"
+      },
+      "flow": {
+        "human": "Real visitor in your audience",
+        "humanText": "Goes straight to your affiliate link — the click is counted.",
+        "bot": "Bot or link-preview crawler",
+        "botText": "Gets the plain product page without your affiliate ID. No fake clicks.",
+        "geo": "Visitor outside your audience",
+        "geoText": "Sees a neutral page or the destination you choose."
+      },
+      "geo": {
+        "title": "Country targeting",
+        "subtitle": "Applies to every offer and every store on your page.",
+        "modes": {
+          "all": "All countries",
+          "allow": "Only these countries",
+          "block": "All except these"
+        },
+        "modesHint": {
+          "all": "Everyone can reach your affiliate links.",
+          "allow": "Best when your program only pays for some countries (e.g. Amazon US).",
+          "block": "Exclude countries that bring low-quality or invalid traffic."
+        },
+        "quickAdd": "Quick add:",
+        "presets": {
+          "us": "United States",
+          "northAmerica": "US & Canada",
+          "english": "English-speaking",
+          "eu": "European Union",
+          "gcc": "Gulf (GCC)"
+        },
+        "selectedAllow": "{n, plural, =0 {No countries allowed yet} one {# allowed country} other {# allowed countries}}",
+        "selectedBlock": "{n, plural, =0 {No countries excluded yet} one {# excluded country} other {# excluded countries}}",
+        "clear": "Clear all",
+        "remove": "Remove",
+        "none": "Add at least one country, otherwise this rule stays off.",
+        "search": "Search {n} countries…",
+        "noResults": "No country matches your search",
+        "you": "You’re visiting from {country} —",
+        "youUnknown": "Your location can’t be detected here —",
+        "youAllowed": "you would reach the affiliate link.",
+        "youBlocked": "you would be blocked."
+      },
+      "blocked": {
+        "title": "Visitors outside your audience",
+        "subtitle": "Where to send people from countries you don’t target.",
+        "actions": {
+          "page": "Neutral page",
+          "redirect": "Redirect to my link"
+        },
+        "actionsHint": {
+          "page": "A clean “not available in your region” page in your page’s colors, with a link back to your picks.",
+          "redirect": "Send them anywhere you want — another offer, your blog, a local store."
+        },
+        "url": "Destination link",
+        "urlHint": "Use a link that doesn’t contain the affiliate ID of a program that excludes these countries."
+      },
+      "bots": {
+        "title": "Bot & crawler protection",
+        "subtitle": "Recommended — keeps your affiliate accounts safe.",
+        "p1": "Link-preview crawlers from social networks never see your affiliate link.",
+        "p2": "They’re sent to the store’s clean product page without your tag or click ID, so no fake clicks hit your affiliate account.",
+        "p3": "Search engines, AI crawlers, SEO tools, scripts and headless browsers are filtered too.",
+        "p4": "Real people using in-app browsers (Instagram, TikTok, Facebook…) still reach your link normally.",
+        "covered": "Covered",
+        "offWarning": "Without protection, bots and preview crawlers open your affiliate link and can create invalid clicks on your account."
+      },
+      "errors": {
+        "invalid": "Please check your settings and try again.",
+        "invalid_url": "Enter a valid link starting with https://",
+        "no_countries": "Choose at least one country for this rule.",
+        "network": "Couldn’t save. Check your connection and try again.",
+        "unauthorized": "Your session expired. Please log in again.",
+        "no_page": "Create your page first."
       }
     }
   },
@@ -917,6 +1012,314 @@
         "delete": "Delete",
         "confirmDelete": "Delete this offer permanently? This cannot be undone.",
         "error": "The action failed. Please try again."
+      }
+    },
+    "blog": {
+      "title": "Articles",
+      "new": "New article",
+      "close": "Close",
+      "fTitle": "Article title",
+      "fCategory": "Category",
+      "fCover": "Cover image link",
+      "fExcerpt": "Short excerpt",
+      "fContent": "Article content",
+      "publishNow": "Publish immediately",
+      "saving": "Saving…",
+      "save": "Save article",
+      "saveError": "Couldn’t save the article. Check the fields and try again.",
+      "confirmDelete": "Delete this article permanently?",
+      "empty": "No articles yet.",
+      "noCategory": "Uncategorized",
+      "views": "{n, plural, one {# view} other {# views}}",
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "brands": {
+      "title": "Stores",
+      "subtitle": "Add each store’s logo (Walmart, Target, Amazon…) to use it on affiliate offers and buy buttons.",
+      "add": "Add store",
+      "empty": "No stores yet. Add your first store.",
+      "offers": "{n, plural, one {# offer} other {# offers}}",
+      "disabled": "Disabled",
+      "edit": "Edit",
+      "delete": "Delete",
+      "editTitle": "Edit store",
+      "newTitle": "New store",
+      "name": "Store name",
+      "namePh": "e.g. Walmart",
+      "svg": "SVG logo code (paste the full code)",
+      "svgHint": "Without a logo, the first letter of the store name is shown as a badge.",
+      "logoUrl": "Or logo image link (optional, instead of SVG)",
+      "color": "Brand color",
+      "active": "Active and visible to visitors",
+      "buyLabel": "Custom buy-button text (optional)",
+      "buyLabelPh": "e.g. Shop now on {name}",
+      "previewName": "Store",
+      "preview": "Logo preview",
+      "previewHint": "This is how it appears on offer cards and buy buttons",
+      "save": "Save",
+      "cancel": "Cancel",
+      "nameRequired": "The store name is required",
+      "duplicate": "A store with this name already exists",
+      "failed": "The operation failed",
+      "network": "Connection error. Try again.",
+      "confirmDelete": "Delete the store “{name}”?",
+      "deleteInUse": "This store is used by offers and can’t be deleted.",
+      "deleteFailed": "Couldn’t delete the store"
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "View and manage registered users • {n} total",
+      "export": "Export CSV",
+      "search": "Search by name, email or phone…",
+      "filters": "Filters",
+      "filtersActive": "Active",
+      "role": "Role",
+      "statusLabel": "Status",
+      "hasOrders": "Orders",
+      "all": "All",
+      "withOrders": "With orders",
+      "noOrders": "No orders",
+      "joinedFrom": "Joined from",
+      "joinedTo": "Joined to",
+      "reset": "Reset filters",
+      "apply": "Apply filters",
+      "retry": "Retry",
+      "noResults": "No users found",
+      "empty": "No users yet",
+      "noResultsHint": "Try adjusting your filters.",
+      "emptyHint": "Users appear here after they sign up.",
+      "col": {
+        "user": "User",
+        "role": "Role",
+        "status": "Status",
+        "orders": "Orders",
+        "joined": "Joined",
+        "actions": "Actions"
+      },
+      "roles": {
+        "all": "All roles",
+        "USER": "User",
+        "MARKETER": "Marketer",
+        "ADMIN": "Admin",
+        "SUPER_ADMIN": "Super admin"
+      },
+      "status": {
+        "all": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "clickActivate": "Click to activate",
+      "clickDeactivate": "Click to deactivate",
+      "more": "More actions",
+      "edit": "Edit",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "delete": "Delete",
+      "deleteTitle": "Delete user",
+      "deleteConfirm": "Are you sure you want to delete <b>{name}</b>?",
+      "deleteOrders": "This user has {n, plural, one {# order} other {# orders}}. Deleting may affect order history.",
+      "cancel": "Cancel",
+      "deletePermanently": "Delete permanently",
+      "updating": "Updating…",
+      "unknown": "Unknown",
+      "pageOf": "Page {page} of {total}",
+      "first": "« First",
+      "prev": "‹ Previous",
+      "next": "Next ›",
+      "last": "Last »",
+      "errors": {
+        "load": "Couldn’t load users.",
+        "network": "Connection problem. Check your internet.",
+        "unauthorized": "Admin access required.",
+        "update": "Couldn’t update the user.",
+        "delete": "Couldn’t delete the user."
+      }
+    },
+    "orders": {
+      "title": "Manual orders",
+      "subtitle": "Customer requests • {orders} orders • {sources} sources",
+      "leads": "Unconfirmed leads",
+      "exportExcel": "Export Excel",
+      "refresh": "Refresh",
+      "chooseSource": "Choose an order source:",
+      "sourcesCount": "{n, plural, one {# source} other {# sources}}",
+      "emptyTitle": "No orders yet",
+      "emptyHint": "Sources appear here after the first order arrives.",
+      "ordersCount": "{n, plural, one {# order} other {# orders}}",
+      "sourceCard": "Source",
+      "revenue": "Revenue",
+      "pending": "Pending",
+      "success": "Success",
+      "lastOrder": "Last order",
+      "viewOrders": "View orders →",
+      "backToSources": "Back to sources",
+      "filtered": "{n} filtered",
+      "search": "Search by name, phone, email or order #…",
+      "retry": "Retry",
+      "noResults": "No orders found",
+      "noResultsHint": "Try adjusting your filters.",
+      "voice": "Voice",
+      "collapse": "Collapse",
+      "expand": "Show details",
+      "customerDetails": "Customer details",
+      "notProvided": "Not provided",
+      "voiceAttached": "Voice order attached",
+      "voiceLoading": "Loading recording…",
+      "voiceCopied": "Link copied — paste it in a new tab",
+      "voiceCopy": "Copy recording link (fallback)",
+      "voiceError": "Couldn’t load the recording. Close and reopen the card.",
+      "productDetails": "Product details",
+      "customerNote": "Customer note",
+      "adminNotes": "Admin notes",
+      "source": "Source",
+      "editOrder": "Edit order",
+      "delete": "Delete",
+      "savingChanges": "Saving changes…",
+      "editTitle": "Edit order #{n}",
+      "cancel": "Cancel",
+      "saveChanges": "Save changes",
+      "deleteTitle": "Delete this order?",
+      "deleteHint": "This action is permanent and can’t be undone.",
+      "deleteNow": "Yes, delete",
+      "filters": "Filters",
+      "filtersActive": "Active",
+      "all": "All",
+      "other": "Other",
+      "reset": "Reset filters",
+      "apply": "Apply filters",
+      "direct": "Direct",
+      "pageOf": "Page {page} of {total}",
+      "first": "« First",
+      "prev": "‹ Previous",
+      "next": "Next ›",
+      "last": "Last »",
+      "types": {
+        "order": "Order",
+        "call": "Call",
+        "payment": "Payment"
+      },
+      "order": {
+        "all": "All orders",
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "PROCESSING": "Processing",
+        "SHIPPED": "Shipped",
+        "DELIVERED": "Delivered",
+        "CANCELLED": "Cancelled",
+        "REFUNDED": "Refunded",
+        "RETURNED": "Returned"
+      },
+      "call": {
+        "all": "All calls",
+        "NOT_CALLED": "Not called",
+        "CALLED_SUCCESS": "Called ✓",
+        "CALL_FAILED": "Failed ✗",
+        "CALL_LATER": "Call later ⏰"
+      },
+      "payment": {
+        "all": "All payments",
+        "PENDING": "Pending",
+        "PAID": "Paid ✓",
+        "FAILED": "Failed ✗",
+        "REFUNDED": "Refunded"
+      },
+      "f": {
+        "orderStatus": "Order status",
+        "callStatus": "Call status",
+        "paymentStatus": "Payment status",
+        "city": "City",
+        "country": "Country",
+        "productType": "Product",
+        "dateFrom": "From",
+        "dateTo": "To",
+        "minTotal": "Min total (MAD)",
+        "maxTotal": "Max total (MAD)",
+        "quantity": "Quantity",
+        "unitPrice": "Unit price",
+        "totalPrice": "Total",
+        "paymentMethod": "Payment method"
+      },
+      "e": {
+        "customerName": "Customer name",
+        "phone": "Phone",
+        "email": "Email",
+        "country": "Country",
+        "city": "City",
+        "sourcePage": "Source page",
+        "address": "Address",
+        "productType": "Product",
+        "quantity": "Quantity",
+        "unitPrice": "Unit price",
+        "adminNotes": "Admin notes",
+        "totalAuto": "Total (calculated)"
+      },
+      "sources": {
+        "erovia": "Erovia product page",
+        "home": "Home page",
+        "blog": "Blog",
+        "marketplace": "Marketplace",
+        "direct": "Direct / unknown"
+      },
+      "toast": {
+        "statusUpdated": "✅ Status updated",
+        "updateFailed": "Update failed",
+        "updateError": "Error while updating the status",
+        "saved": "✅ Changes saved",
+        "saveFailed": "Couldn’t save the changes",
+        "saveError": "Error while saving",
+        "deleted": "✅ Order deleted",
+        "deleteFailed": "Couldn’t delete the order",
+        "deleteError": "Error while deleting",
+        "exported": "✅ Excel file exported — opens directly in Google Sheets"
+      },
+      "xls": {
+        "orderNumber": "Order #",
+        "fullName": "Full name",
+        "phone": "Phone",
+        "email": "Email",
+        "city": "City",
+        "address": "Address",
+        "country": "Country",
+        "product": "Product / bundle",
+        "quantity": "Quantity",
+        "unitPrice": "Unit price",
+        "total": "Total",
+        "paymentMethod": "Payment method",
+        "paymentStatus": "Payment status",
+        "orderStatus": "Order status",
+        "callStatus": "Call status",
+        "source": "Source",
+        "date": "Order date",
+        "customerNote": "Customer note",
+        "adminNotes": "Admin notes",
+        "sheet": "Orders"
+      },
+      "errors": {
+        "load": "Couldn’t load orders.",
+        "network": "Connection problem. Check your internet.",
+        "unauthorized": "Admin access required."
+      }
+    },
+    "leads": {
+      "close": "Close",
+      "back": "Back to orders",
+      "title": "Unconfirmed leads",
+      "subtitle": "Visitors who entered their phone number but didn’t press “Confirm order” — {n, plural, one {# lead} other {# leads}}",
+      "refresh": "Refresh",
+      "empty": "No unconfirmed leads right now — all clear ✨",
+      "hasConfirmed": "Has a confirmed order",
+      "duplicate": "Duplicate ({n}×)",
+      "confirm": "Confirm as real order",
+      "call": "Call",
+      "confirmDismiss": "Dismiss this lead permanently? This can’t be undone.",
+      "toast": {
+        "loadFailed": "Couldn’t load data. Refresh the page.",
+        "confirmed": "✅ Confirmed as a real order — see the main orders page",
+        "failed": "The action failed",
+        "network": "Server connection error",
+        "dismissed": "Lead dismissed",
+        "dismissFailed": "Couldn’t delete — the order may be protected"
       }
     }
   }

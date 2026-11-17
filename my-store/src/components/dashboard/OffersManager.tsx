@@ -4,7 +4,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizedApiError } from "@/lib/api-error";
 import {
   ArrowDown, ArrowUp, Copy, Eye, EyeOff, ExternalLink, MoreHorizontal, PenLine, PlusCircle, Search, Star, Trash2, Archive, MousePointerClick, Loader2,
 } from "lucide-react";
@@ -16,6 +17,9 @@ type Filter = "all" | "PUBLISHED" | "DRAFT" | "ARCHIVED";
 
 export default function OffersManager({ initialOffers, pageSlug }: { initialOffers: SerializedOffer[]; pageSlug: string }) {
   const t = useTranslations("dash");
+  const locale = useLocale();
+  const apiError = (status: number, msg: unknown) =>
+    localizedApiError(msg, status, locale, { invalid: t("common.errors.invalid"), conflict: t("common.errors.conflict"), unauthorized: t("common.errors.unauthorized"), generic: t("common.error") });
   const router = useRouter();
   const [offers, setOffers] = useState(initialOffers);
   const [filter, setFilter] = useState<Filter>("all");
@@ -51,7 +55,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || t("common.error"));
+      if (!res.ok) throw new Error(apiError(res.status, data.error));
       return data;
     } catch (e) {
       setError(e instanceof Error ? e.message : t("common.error"));

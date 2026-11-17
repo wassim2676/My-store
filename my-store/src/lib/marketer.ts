@@ -2,6 +2,7 @@ import { cache } from "react";
 import { z } from "zod";
 import type { Offer, Brand, LandingPage } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { classifyVisitor } from "@/lib/traffic";
 import { auth } from "@/lib/auth";
 import {
   CURRENCIES,
@@ -215,7 +216,7 @@ function todayUtc(): Date {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 }
 
-export async function bumpDailyStat(landingPageId: string, field: "views" | "clicks") {
+export async function bumpDailyStat(landingPageId: string, field: "views" | "clicks" | "botHits" | "geoBlocked") {
   const date = todayUtc();
   await prisma.landingPageDailyStat.upsert({
     where: { landingPageId_date: { landingPageId, date } },
@@ -224,13 +225,9 @@ export async function bumpDailyStat(landingPageId: string, field: "views" | "cli
   });
 }
 
-/** يتجاهل الزيارات من الروبوتات ومن طلبات الجلب المسبق */
+/** يتجاهل الزيارات من الروبوتات ومن طلبات الجلب المسبق (نفس كاشف /go — src/lib/traffic.ts) */
 export function isCountableRequest(h: Headers): boolean {
-  const ua = h.get("user-agent") || "";
-  if (!ua || /bot|crawl|spider|slurp|preview|facebookexternalhit|embedly|whatsapp|telegram/i.test(ua)) return false;
-  if (h.get("next-router-prefetch") || h.get("purpose") === "prefetch" || h.get("sec-purpose")?.includes("prefetch"))
-    return false;
-  return true;
+  return classifyVisitor(h) === "human";
 }
 
 // ==================== 🔁 تحويل للعميل (Decimal → number) ====================

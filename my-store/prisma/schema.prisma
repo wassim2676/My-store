@@ -625,6 +625,9 @@ model LandingPage {
   // 🌐 روابط التواصل { instagram, tiktok, youtube, x, facebook, pinterest, website }
   socialLinks    Json?
 
+  // 🛡️ الجمهور وحماية روابط الأفلييت { geoMode, countries, blockAction, redirectUrl, botProtection } — انظر src/lib/traffic.ts
+  audience       Json?
+
   // ⚖️ إفصاح الأفلييت (مطلوب قانونياً عند Amazon/FTC)
   showDisclosure Boolean  @default(true)
   disclosure     String?  @db.Text
@@ -713,6 +716,8 @@ model LandingPageDailyStat {
   date          DateTime    @db.Date
   views         Int         @default(0)
   clicks        Int         @default(0)
+  botHits       Int         @default(0) // روبوتات/زواحف حُوّلت للرابط النظيف بدل رابط الأفلييت
+  geoBlocked    Int         @default(0) // زوار من دول مستبعدة لم يصلوا لرابط الأفلييت
 
   @@unique([landingPageId, date])
 }

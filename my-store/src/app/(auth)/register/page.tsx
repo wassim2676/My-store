@@ -4,7 +4,8 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizedApiError } from "@/lib/api-error";
 import { Eye, EyeOff, Mail, Lock, User, Sparkles, Loader2 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import SlugField, { type SlugStatus } from "@/components/dashboard/SlugField";
@@ -25,6 +26,7 @@ export default function RegisterPage() {
 function RegisterForm() {
   const searchParams = useSearchParams();
   const t = useTranslations("register");
+  const locale = useLocale();
 
   const initialSlug = toSlug(searchParams.get("slug") || "");
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", pageTitle: "", slug: initialSlug });
@@ -55,7 +57,7 @@ function RegisterForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || t("errors.unknown"));
+        setError(localizedApiError(data.error, res.status, locale, { invalid: t("errors.invalid"), conflict: t("errors.conflict"), unauthorized: t("errors.unknown"), generic: t("errors.unknown") }));
         return;
       }
       const login = await signIn("credentials", { email: form.email.trim(), password: form.password, redirect: false });

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import * as XLSX from "xlsx";
 import type { LucideIcon } from "lucide-react";
 import { 
@@ -131,22 +132,24 @@ function Toast({ message, type, onClose }: { message: string; type: ToastType; o
 
 // ==================== 🎨 مكون شارة الحالة ====================
 function StatusBadge({ status, type }: { status: string; type: "order" | "call" | "payment" }) {
+  const t = useTranslations("adm.orders");
   const options = type === "order" ? ORDER_STATUS_OPTIONS : type === "call" ? CALL_STATUS_OPTIONS : PAYMENT_STATUS_OPTIONS;
   const option = options.find(o => o.value === status) || options[0];
   const Icon = option.icon;
   // ✅ بادئة توضيحية (Order/Call/Payment) لتمييز كل بادج فوراً دون التباس (خصوصاً بما أن "Pending" تتكرر في أكثر من نوع)
-  const typeLabel = type === "order" ? "Order" : type === "call" ? "Call" : "Payment";
+  const typeLabel = t(`types.${type}`);
 
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${option.color} dark:bg-opacity-30`}>
       {Icon && <Icon className="w-3 h-3" />}
-      <span className="opacity-60 font-normal">{typeLabel}:</span> {option.label}
+      <span className="opacity-60 font-normal">{typeLabel}:</span> {t(`${type}.${option.value}`)}
     </span>
   );
 }
 
 // ==================== 🎨 مكون الترقيم الاحترافي ====================
 function Pagination({ pagination, onPageChange }: { pagination: Pagination; onPageChange: (page: number) => void }) {
+  const t = useTranslations("adm.orders");
   const { page, totalPages, hasPrev, hasNext } = pagination;
   
   const getPageNumbers = () => {
@@ -166,16 +169,15 @@ function Pagination({ pagination, onPageChange }: { pagination: Pagination; onPa
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-800">
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        Page <span className="font-medium text-gray-900 dark:text-white">{page}</span> of{" "}
-        <span className="font-medium text-gray-900 dark:text-white">{totalPages}</span>
+        {t("pageOf", { page, total: totalPages })}
       </p>
       
       <div className="flex items-center gap-1">
         <button onClick={() => onPageChange(1)} disabled={!hasPrev} className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
-          « First
+          {t("first")}
         </button>
         <button onClick={() => onPageChange(page - 1)} disabled={!hasPrev} className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
-          ‹ Prev
+          {t("prev")}
         </button>
         {getPageNumbers().map((num, idx) => (
           num === "..." ? (
@@ -187,10 +189,10 @@ function Pagination({ pagination, onPageChange }: { pagination: Pagination; onPa
           )
         ))}
         <button onClick={() => onPageChange(page + 1)} disabled={!hasNext} className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
-          Next ›
+          {t("next")}
         </button>
         <button onClick={() => onPageChange(totalPages)} disabled={!hasNext} className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
-          Last »
+          {t("last")}
         </button>
       </div>
     </div>
@@ -206,6 +208,7 @@ function FilterPanel({ filters, onFilterChange, onReset, cities, countries, prod
   countries: string[];
   productTypes: string[];
 }) {
+  const t = useTranslations("adm.orders");
   const [isOpen, setIsOpen] = useState(false);
   
   const hasActiveFilters = useMemo(() => {
@@ -219,9 +222,9 @@ function FilterPanel({ filters, onFilterChange, onReset, cities, countries, prod
       <button onClick={() => setIsOpen(!isOpen)} className="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer">
         <div className="flex items-center gap-2">
           <Filter className="w-5 h-5 text-gray-500" />
-          <span className="font-medium text-gray-900 dark:text-white">Filters</span>
+          <span className="font-medium text-gray-900 dark:text-white">{t("filters")}</span>
           {hasActiveFilters && (
-            <span className="px-2 py-0.5 text-xs font-medium bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400 rounded-full">Active</span>
+            <span className="px-2 py-0.5 text-xs font-medium bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400 rounded-full">{t("filtersActive")}</span>
           )}
         </div>
         <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
@@ -231,65 +234,65 @@ function FilterPanel({ filters, onFilterChange, onReset, cities, countries, prod
         <div className="p-4 pt-0 border-t border-gray-100 dark:border-gray-800">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Order Status</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.orderStatus")}</label>
               <select value={filters.status} onChange={(e) => onFilterChange("status", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
-                {ORDER_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                {ORDER_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{t(`order.${opt.value}`)}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Call Status</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.callStatus")}</label>
               <select value={filters.callStatus} onChange={(e) => onFilterChange("callStatus", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
-                {CALL_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                {CALL_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{t(`call.${opt.value}`)}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Payment Status</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.paymentStatus")}</label>
               <select value={filters.paymentStatus} onChange={(e) => onFilterChange("paymentStatus", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
-                {PAYMENT_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                {PAYMENT_STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{t(`payment.${opt.value}`)}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">City</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.city")}</label>
               <select value={filters.city} onChange={(e) => onFilterChange("city", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
-                {cities.map(city => <option key={city} value={city}>{city}</option>)}
+                {cities.map(city => <option key={city} value={city}>{city === "All" ? t("all") : city === "Other" ? t("other") : city}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Country</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.country")}</label>
               <select value={filters.country} onChange={(e) => onFilterChange("country", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
-                {countries.map(country => <option key={country} value={country}>{country}</option>)}
+                {countries.map(country => <option key={country} value={country}>{country === "All" ? t("all") : country === "Other" ? t("other") : country}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Product Type</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.productType")}</label>
               <select value={filters.productType} onChange={(e) => onFilterChange("productType", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
-                {productTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                {productTypes.map(type => <option key={type} value={type}>{type === "All" ? t("all") : type === "Other" ? t("other") : type}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Date From</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.dateFrom")}</label>
               <input type="date" value={filters.dateFrom} onChange={(e) => onFilterChange("dateFrom", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-text" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Date To</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.dateTo")}</label>
               <input type="date" value={filters.dateTo} onChange={(e) => onFilterChange("dateTo", e.target.value)} className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-text" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Min Total (MAD)</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.minTotal")}</label>
               <input type="number" value={filters.minTotal} onChange={(e) => onFilterChange("minTotal", e.target.value)} placeholder="0" min="0" className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-text" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Max Total (MAD)</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">{t("f.maxTotal")}</label>
               <input type="number" value={filters.maxTotal} onChange={(e) => onFilterChange("maxTotal", e.target.value)} placeholder="10000" min="0" className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-text" />
             </div>
           </div>
           
           <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
             <button onClick={onReset} disabled={!hasActiveFilters} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-              Reset Filters
+              {t("reset")}
             </button>
             <button onClick={() => setIsOpen(false)} className="px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-lg transition-colors cursor-pointer">
-              Apply Filters
+              {t("apply")}
             </button>
           </div>
         </div>
@@ -300,6 +303,8 @@ function FilterPanel({ filters, onFilterChange, onReset, cities, countries, prod
 
 // ==================== 🏠 المكون الرئيسي ====================
 export default function ManualOrdersPage() {
+  const t = useTranslations("adm.orders");
+  const locale = useLocale();
   const [orders, setOrders] = useState<ManualOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -376,15 +381,15 @@ export default function ManualOrdersPage() {
       
       if (response.ok && result.success) {
         setOrders(result.data.orders || []);
-      } else if (result.error && response.status !== 404) {
-        setError(result.error);
+      } else if (response.status !== 404) {
+        setError(response.status === 401 || response.status === 403 ? t("errors.unauthorized") : t("errors.load"));
       }
-    } catch (err) {
-      setError("Connection issue. Please check your internet.");
+    } catch {
+      setError(t("errors.network"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- تحميل أولي عند فتح الصفحة
@@ -479,13 +484,13 @@ export default function ManualOrdersPage() {
       
       if (response.ok) {
         setOrders(prev => prev.map(o => o.id === id ? { ...o, [field]: value } as ManualOrder : o));
-        setToast({ message: "✅ تم تحديث الحالة بنجاح", type: "success" });
+        setToast({ message: t("toast.statusUpdated"), type: "success" });
       } else {
         const res = await response.json();
-        setToast({ message: res.error || "فشل التحديث", type: "error" });
+        setToast({ message: t("toast.updateFailed"), type: "error" });
       }
     } catch (err) {
-      setToast({ message: "خطأ أثناء تحديث الحالة", type: "error" });
+      setToast({ message: t("toast.updateError"), type: "error" });
     } finally {
       setUpdatingId(null);
     }
@@ -507,12 +512,12 @@ export default function ManualOrdersPage() {
       if (response.ok) {
         setOrders(prev => prev.map(o => o.id === editingOrder.id ? editingOrder : o));
         setEditingOrder(null);
-        setToast({ message: "✅ تم حفظ التعديلات بنجاح", type: "success" });
+        setToast({ message: t("toast.saved"), type: "success" });
       } else {
-        setToast({ message: "فشل في حفظ التعديلات", type: "error" });
+        setToast({ message: t("toast.saveFailed"), type: "error" });
       }
     } catch (err) {
-      setToast({ message: "حدث خطأ أثناء تعديل البيانات", type: "error" });
+      setToast({ message: t("toast.saveError"), type: "error" });
     } finally {
       setUpdatingId(null);
     }
@@ -529,12 +534,12 @@ export default function ManualOrdersPage() {
       if (response.ok) {
         setOrders(prev => prev.filter(o => o.id !== id));
         setDeletingId(null);
-        setToast({ message: "✅ تم حذف الطلب بنجاح", type: "success" });
+        setToast({ message: t("toast.deleted"), type: "success" });
       } else {
-        setToast({ message: "فشل في حذف الطلب", type: "error" });
+        setToast({ message: t("toast.deleteFailed"), type: "error" });
       }
     } catch (err) {
-      setToast({ message: "حدث خطأ أثناء الحذف", type: "error" });
+      setToast({ message: t("toast.deleteError"), type: "error" });
     } finally {
       setUpdatingId(null);
     }
@@ -544,25 +549,25 @@ export default function ManualOrdersPage() {
     // ✅ تصدير كملف Excel حقيقي (.xlsx) — يُفتح بدقة كاملة في Google Sheets (File > Import)
     // بدون أي مشاكل ترميز عربي (على عكس CSV الخام الذي كان يظهر "مبعثراً" في إكسل/جوجل شيتس)
     const rows = filteredOrders.map((o) => ({
-      "رقم الطلب": `#${o.orderNumber}`,
-      "الاسم الكامل": o.customerName,
-      "الهاتف": o.phone,
-      "البريد الإلكتروني": o.email || "",
-      "المدينة": o.city,
-      "العنوان بالتفصيل": o.address,
-      "الدولة": o.country,
-      "المنتج / الباقة": o.productType,
-      "الكمية": o.quantity,
-      "سعر الوحدة": o.unitPrice,
-      "الإجمالي": o.totalPrice,
-      "طريقة الدفع": o.paymentMethod,
-      "حالة الدفع": o.paymentStatus,
-      "حالة الطلب": o.status,
-      "حالة الاتصال": o.callStatus,
-      "مصدر الطلب": o.sourcePage || "مباشر",
-      "تاريخ الطلب": new Date(o.createdAt).toLocaleString("ar-MA"),
-      "ملاحظات العميل": o.customerNote || "",
-      "ملاحظات الأدمن": o.adminNotes || "",
+      [t("xls.orderNumber")]: `#${o.orderNumber}`,
+      [t("xls.fullName")]: o.customerName,
+      [t("xls.phone")]: o.phone,
+      [t("xls.email")]: o.email || "",
+      [t("xls.city")]: o.city,
+      [t("xls.address")]: o.address,
+      [t("xls.country")]: o.country,
+      [t("xls.product")]: o.productType,
+      [t("xls.quantity")]: o.quantity,
+      [t("xls.unitPrice")]: o.unitPrice,
+      [t("xls.total")]: o.totalPrice,
+      [t("xls.paymentMethod")]: o.paymentMethod,
+      [t("xls.paymentStatus")]: o.paymentStatus,
+      [t("xls.orderStatus")]: o.status,
+      [t("xls.callStatus")]: o.callStatus,
+      [t("xls.source")]: o.sourcePage || t("direct"),
+      [t("xls.date")]: new Date(o.createdAt).toLocaleString(locale),
+      [t("xls.customerNote")]: o.customerNote || "",
+      [t("xls.adminNotes")]: o.adminNotes || "",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(rows);
@@ -594,22 +599,22 @@ export default function ManualOrdersPage() {
     worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
 
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "الطلبات");
+    XLSX.utils.book_append_sheet(workbook, worksheet, t("xls.sheet"));
 
     const fileName = `orders-${selectedSource || "all"}-${new Date().toISOString().split("T")[0]}.xlsx`;
     XLSX.writeFile(workbook, fileName);
 
-    setToast({ message: "✅ تم تصدير ملف Excel بنجاح — يفتح مباشرة في Google Sheets", type: "success" });
-  }, [filteredOrders, selectedSource]);
+    setToast({ message: t("toast.exported"), type: "success" });
+  }, [filteredOrders, selectedSource, t, locale]);
 
   // عرض اسم المصدر بشكل جميل
   const getSourceDisplayName = (source: string) => {
     const names: Record<string, string> = {
-      "/product/erovia": "Erovia Product Page",
-      "/": "Homepage",
-      "/blog": "Blog Page",
-      "/marketplace": "Marketplace",
-      "Direct / Unknown": "Direct / Unknown",
+      "/product/erovia": t("sources.erovia"),
+      "/": t("sources.home"),
+      "/blog": t("sources.blog"),
+      "/marketplace": t("sources.marketplace"),
+      "Direct / Unknown": t("sources.direct"),
     };
     return names[source] || source;
   };
@@ -642,9 +647,9 @@ export default function ManualOrdersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manual Orders</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Manage customer requests • {orders.length} total orders • {Object.keys(sourceGroups).length} sources
+            {t("subtitle", { orders: orders.length, sources: Object.keys(sourceGroups).length })}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -652,9 +657,9 @@ export default function ManualOrdersPage() {
             href="/admin/manual-orders/leads"
             className="relative flex items-center gap-2 px-4 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 rounded-lg font-medium hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors cursor-pointer"
           >
-            <AlertTriangle className="w-4 h-4" /> طلبات مبدئية
+            <AlertTriangle className="w-4 h-4" /> {t("leads")}
             {leadsCount > 0 && (
-              <span className="absolute -top-2 -left-2 min-w-[20px] h-5 px-1 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">
+              <span className="absolute -top-2 -start-2 min-w-[20px] h-5 px-1 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center">
                 {leadsCount}
               </span>
             )}
@@ -664,7 +669,7 @@ export default function ManualOrdersPage() {
               onClick={handleExportExcel}
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
             >
-              <Download className="w-4 h-4" /> تصدير Excel
+              <Download className="w-4 h-4" /> {t("exportExcel")}
             </button>
           )}
           <button
@@ -672,7 +677,7 @@ export default function ManualOrdersPage() {
             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
-            Refresh
+            {t("refresh")}
           </button>
         </div>
       </div>
@@ -681,8 +686,8 @@ export default function ManualOrdersPage() {
       {!selectedSource ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">اختر مصدر الطلبات:</h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{Object.keys(sourceGroups).length} مصدر متاح</span>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{t("chooseSource")}</h2>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{t("sourcesCount", { n: Object.keys(sourceGroups).length })}</span>
           </div>
           
           {Object.keys(sourceGroups).length === 0 ? (
@@ -690,8 +695,8 @@ export default function ManualOrdersPage() {
               <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Layers className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">لا توجد طلبات بعد</h3>
-              <p className="text-gray-500 dark:text-gray-400">ستظهر المصادر هنا بعد استلام أول طلب من الموقع.</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t("emptyTitle")}</h3>
+              <p className="text-gray-500 dark:text-gray-400">{t("emptyHint")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -713,11 +718,11 @@ export default function ManualOrdersPage() {
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                           {getSourceDisplayName(sourceName)}
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{data.count} {data.count === 1 ? "order" : "orders"}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t("ordersCount", { n: data.count })}</p>
                       </div>
                     </div>
                     <span className="text-xs font-semibold bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 px-2.5 py-1 rounded-full">
-                      Source Card
+                      {t("sourceCard")}
                     </span>
                   </div>
 
@@ -726,7 +731,7 @@ export default function ManualOrdersPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                         <DollarSign className="w-3.5 h-3.5" />
-                        Revenue
+                        {t("revenue")}
                       </div>
                       <p className="font-bold text-gray-900 dark:text-white text-sm">
                         {formatCurrency(data.totalSales)}
@@ -735,7 +740,7 @@ export default function ManualOrdersPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                         <Clock className="w-3.5 h-3.5" />
-                        Pending
+                        {t("pending")}
                       </div>
                       <p className="font-bold text-orange-600 dark:text-orange-400 text-sm">
                         {data.pendingOrders}
@@ -744,7 +749,7 @@ export default function ManualOrdersPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                         <TrendingUp className="w-3.5 h-3.5" />
-                        Success
+                        {t("success")}
                       </div>
                       <p className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                         {data.successRate}%
@@ -753,7 +758,7 @@ export default function ManualOrdersPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
                         <Calendar className="w-3.5 h-3.5" />
-                        Last Order
+                        {t("lastOrder")}
                       </div>
                       <p className="font-bold text-gray-900 dark:text-white text-xs">
                         {formatDate(data.lastOrderDate)}
@@ -763,7 +768,7 @@ export default function ManualOrdersPage() {
 
                   {/* زر عرض الطلبات */}
                   <button className="w-full mt-4 py-2.5 bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 rounded-lg font-medium hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors text-sm group-hover:bg-sky-600 group-hover:text-white">
-                    View Orders →
+                    {t("viewOrders")}
                   </button>
                 </div>
               ))}
@@ -785,7 +790,7 @@ export default function ManualOrdersPage() {
             }}
             className="inline-flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium cursor-pointer transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> العودة لكروت المصادر الرئيسية
+            <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t("backToSources")}
           </button>
 
           {/* شريط معلومات المصدر الحالي */}
@@ -797,25 +802,25 @@ export default function ManualOrdersPage() {
                   {getSourceDisplayName(selectedSource)}
                 </span>
                 <span className="text-xs text-sky-700 dark:text-sky-400">
-                  {sourceGroups[selectedSource]?.count || 0} طلب • {formatCurrency(sourceGroups[selectedSource]?.totalSales || 0)}
+                  {t("ordersCount", { n: sourceGroups[selectedSource]?.count || 0 })} • {formatCurrency(sourceGroups[selectedSource]?.totalSales || 0)}
                 </span>
               </div>
             </div>
             <span className="text-xs bg-sky-600 text-white px-3 py-1 rounded-full font-medium">
-              {filteredOrders.length} طلب مفلتر
+              {t("filtered", { n: filteredOrders.length })}
             </span>
           </div>
 
           {/* محرك البحث */}
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input 
               type="text" 
-              placeholder="Search by name, phone, email, or order #..." 
+              placeholder={t("search")}
               value={filters.search}
               onChange={(e) => setFilters(p => ({ ...p, search: e.target.value }))}
               onKeyDown={(e) => e.key === "Enter" && setFilters(p => ({ ...p }))}
-              className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all cursor-text" 
+              className="w-full ps-12 pe-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all cursor-text" 
             />
           </div>
 
@@ -840,7 +845,7 @@ export default function ManualOrdersPage() {
                 <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
               </div>
               <button onClick={() => fetchOrders()} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors cursor-pointer">
-                <RefreshCw className="w-4 h-4" /> Retry
+                <RefreshCw className="w-4 h-4" /> {t("retry")}
               </button>
             </div>
           )}
@@ -852,8 +857,8 @@ export default function ManualOrdersPage() {
                 <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Package className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No orders found</h3>
-                <p className="text-gray-500 dark:text-gray-400">Try adjusting your filters to find what you&apos;re looking for.</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t("noResults")}</h3>
+                <p className="text-gray-500 dark:text-gray-400">{t("noResultsHint")}</p>
               </div>
             ) : (
               filteredOrders.map((order, index) => (
@@ -880,7 +885,7 @@ export default function ManualOrdersPage() {
                           <StatusBadge status={order.paymentStatus} type="payment" />
                           {order.hasVoiceNote && (
                             <span className="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
-                              <Mic className="w-3 h-3" /> صوتي
+                              <Mic className="w-3 h-3" /> {t("voice")}
                             </span>
                           )}
                         </div>
@@ -901,7 +906,7 @@ export default function ManualOrdersPage() {
                       </div>
                       <button 
                         className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
-                        aria-label={expandedId === order.id ? "Collapse" : "Expand details"}
+                        aria-label={expandedId === order.id ? t("collapse") : t("expand")}
                       >
                         {expandedId === order.id ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                       </button>
@@ -916,7 +921,7 @@ export default function ManualOrdersPage() {
                         {/* Customer Details */}
                         <div className="space-y-4">
                           <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-                            <User className="w-4 h-4" /> Customer Details
+                            <User className="w-4 h-4" /> {t("customerDetails")}
                           </h4>
                           <div className="space-y-3 text-sm">
                             <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
@@ -926,7 +931,7 @@ export default function ManualOrdersPage() {
                                   {order.email}
                                 </a>
                               ) : (
-                                <span className="text-gray-400 italic">Not provided</span>
+                                <span className="text-gray-400 italic">{t("notProvided")}</span>
                               )}
                             </div>
                             <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
@@ -945,11 +950,11 @@ export default function ManualOrdersPage() {
                           {order.hasVoiceNote && (
                             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                               <h5 className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                <Mic className="w-4 h-4 text-emerald-500" /> طلب صوتي مرفق
+                                <Mic className="w-4 h-4 text-emerald-500" /> {t("voiceAttached")}
                               </h5>
                               {loadingVoiceId === order.id ? (
                                 <div className="flex items-center gap-2 text-sm text-gray-400">
-                                  <Loader2 className="w-4 h-4 animate-spin" /> جارٍ تحميل التسجيل...
+                                  <Loader2 className="w-4 h-4 animate-spin" /> {t("voiceLoading")}
                                 </div>
                               ) : order.voiceNoteBase64 ? (
                                 <div className="space-y-2.5">
@@ -966,17 +971,17 @@ export default function ManualOrdersPage() {
                                   >
                                     {copiedVoiceId === order.id ? (
                                       <>
-                                        <Check className="w-3.5 h-3.5 text-emerald-500" /> تم نسخ الرابط — الصقه في تبويب جديد
+                                        <Check className="w-3.5 h-3.5 text-emerald-500" /> {t("voiceCopied")}
                                       </>
                                     ) : (
                                       <>
-                                        <Copy className="w-3.5 h-3.5" /> نسخ رابط التسجيل (بديل مضمون)
+                                        <Copy className="w-3.5 h-3.5" /> {t("voiceCopy")}
                                       </>
                                     )}
                                   </button>
                                 </div>
                               ) : (
-                                <p className="text-sm text-gray-400 italic">تعذّر تحميل التسجيل، أغلق البطاقة وأعد فتحها</p>
+                                <p className="text-sm text-gray-400 italic">{t("voiceError")}</p>
                               )}
                             </div>
                           )}
@@ -984,23 +989,23 @@ export default function ManualOrdersPage() {
                           {/* Product Details */}
                           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                             <h5 className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                              <Package className="w-4 h-4" /> Product Details
+                              <Package className="w-4 h-4" /> {t("productDetails")}
                             </h5>
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <p className="text-gray-500 dark:text-gray-400">Product Type</p>
+                                <p className="text-gray-500 dark:text-gray-400">{t("f.productType")}</p>
                                 <p className="font-medium text-gray-900 dark:text-white">{order.productType}</p>
                               </div>
                               <div>
-                                <p className="text-gray-500 dark:text-gray-400">Quantity</p>
+                                <p className="text-gray-500 dark:text-gray-400">{t("f.quantity")}</p>
                                 <p className="font-medium text-gray-900 dark:text-white">{order.quantity}</p>
                               </div>
                               <div>
-                                <p className="text-gray-500 dark:text-gray-400">Unit Price</p>
+                                <p className="text-gray-500 dark:text-gray-400">{t("f.unitPrice")}</p>
                                 <p className="font-medium text-gray-900 dark:text-white">{formatCurrency(order.unitPrice)}</p>
                               </div>
                               <div>
-                                <p className="text-gray-500 dark:text-gray-400">Total Price</p>
+                                <p className="text-gray-500 dark:text-gray-400">{t("f.totalPrice")}</p>
                                 <p className="font-bold text-sky-600 dark:text-sky-400">{formatCurrency(order.totalPrice)}</p>
                               </div>
                             </div>
@@ -1009,7 +1014,7 @@ export default function ManualOrdersPage() {
                           {order.customerNote && (
                             <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg text-sm">
                               <p className="text-yellow-800 dark:text-yellow-200">
-                                <span className="font-medium">📝 Customer Note:</span> {order.customerNote}
+                                <span className="font-medium">📝 {t("customerNote")}:</span> {order.customerNote}
                               </p>
                             </div>
                           )}
@@ -1019,7 +1024,7 @@ export default function ManualOrdersPage() {
                         <div className="space-y-4">
                           <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
-                              <Phone className="w-3 h-3" /> Call Status
+                              <Phone className="w-3 h-3" /> {t("f.callStatus")}
                             </label>
                             <select 
                               value={order.callStatus} 
@@ -1028,14 +1033,14 @@ export default function ManualOrdersPage() {
                               className="w-full px-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {CALL_STATUS_OPTIONS.filter(o => o.value !== "all").map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                <option key={opt.value} value={opt.value}>{t(`call.${opt.value}`)}</option>
                               ))}
                             </select>
                           </div>
 
                           <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
-                              <Package className="w-3 h-3" /> Order Status
+                              <Package className="w-3 h-3" /> {t("f.orderStatus")}
                             </label>
                             <select 
                               value={order.status} 
@@ -1044,14 +1049,14 @@ export default function ManualOrdersPage() {
                               className="w-full px-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {ORDER_STATUS_OPTIONS.filter(o => o.value !== "all").map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                <option key={opt.value} value={opt.value}>{t(`order.${opt.value}`)}</option>
                               ))}
                             </select>
                           </div>
                           
                           <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
-                              <CreditCard className="w-3 h-3" /> Payment Status
+                              <CreditCard className="w-3 h-3" /> {t("f.paymentStatus")}
                             </label>
                             <select 
                               value={order.paymentStatus} 
@@ -1060,13 +1065,13 @@ export default function ManualOrdersPage() {
                               className="w-full px-3 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               {PAYMENT_STATUS_OPTIONS.filter(o => o.value !== "all").map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                <option key={opt.value} value={opt.value}>{t(`payment.${opt.value}`)}</option>
                               ))}
                             </select>
                           </div>
                           
                           <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Payment Method</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{t("f.paymentMethod")}</p>
                             <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
                               {order.paymentMethod === "COD" ? "💵" : "💳"} {order.paymentMethod}
                             </p>
@@ -1075,7 +1080,7 @@ export default function ManualOrdersPage() {
                           {order.adminNotes && (
                             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm">
                               <p className="text-blue-800 dark:text-blue-200">
-                                <span className="font-medium">🔧 Admin Notes:</span> {order.adminNotes}
+                                <span className="font-medium">🔧 {t("adminNotes")}:</span> {order.adminNotes}
                               </p>
                             </div>
                           )}
@@ -1083,7 +1088,7 @@ export default function ManualOrdersPage() {
                           {order.sourcePage && (
                             <div className="p-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg text-sm">
                               <p className="text-purple-800 dark:text-purple-200">
-                                <span className="font-medium">📍 Source:</span> {order.sourcePage}
+                                <span className="font-medium">📍 {t("source")}:</span> {order.sourcePage}
                               </p>
                             </div>
                           )}
@@ -1095,21 +1100,21 @@ export default function ManualOrdersPage() {
                               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors cursor-pointer text-sm font-medium"
                             >
                               <Edit className="w-4 h-4" />
-                              Edit Order
+                              {t("editOrder")}
                             </button>
                             <button
                               onClick={() => setDeletingId(order.id)}
                               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors cursor-pointer text-sm font-medium"
                             >
                               <Trash2 className="w-4 h-4" />
-                              Delete
+                              {t("delete")}
                             </button>
                           </div>
                           
                           {updatingId === order.id && (
                             <div className="flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400">
                               <Loader2 className="w-4 h-4 animate-spin" />
-                              Saving changes...
+                              {t("savingChanges")}
                             </div>
                           )}
                         </div>
@@ -1134,13 +1139,13 @@ export default function ManualOrdersPage() {
               <X className="w-4 h-4" />
             </button>
             <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white pb-2 border-b border-gray-200 dark:border-gray-800">
-              Edit Order #{editingOrder.orderNumber}
+              {t("editTitle", { n: editingOrder.orderNumber })}
             </h3>
             
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Customer Name *</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.customerName")} *</label>
                   <input 
                     type="text" required
                     value={editingOrder.customerName}
@@ -1149,7 +1154,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Phone *</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.phone")} *</label>
                   <input 
                     type="text" required
                     value={editingOrder.phone}
@@ -1158,7 +1163,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Email</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.email")}</label>
                   <input 
                     type="email"
                     value={editingOrder.email || ""}
@@ -1167,7 +1172,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Country *</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.country")} *</label>
                   <input 
                     type="text" required
                     value={editingOrder.country}
@@ -1176,7 +1181,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">City *</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.city")} *</label>
                   <input 
                     type="text" required
                     value={editingOrder.city}
@@ -1185,7 +1190,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Source Page</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.sourcePage")}</label>
                   <input 
                     type="text"
                     value={editingOrder.sourcePage || ""}
@@ -1194,7 +1199,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Address *</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.address")} *</label>
                   <input 
                     type="text" required
                     value={editingOrder.address}
@@ -1203,7 +1208,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Product Type *</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.productType")} *</label>
                   <input 
                     type="text" required
                     value={editingOrder.productType}
@@ -1213,7 +1218,7 @@ export default function ManualOrdersPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Quantity *</label>
+                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.quantity")} *</label>
                     <input 
                       type="number" required min="1"
                       value={editingOrder.quantity}
@@ -1225,7 +1230,7 @@ export default function ManualOrdersPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Unit Price *</label>
+                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.unitPrice")} *</label>
                     <input 
                       type="number" required step="0.01"
                       value={editingOrder.unitPrice}
@@ -1238,7 +1243,7 @@ export default function ManualOrdersPage() {
                   </div>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Admin Notes</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.adminNotes")}</label>
                   <textarea
                     value={editingOrder.adminNotes || ""}
                     onChange={e => setEditingOrder({...editingOrder, adminNotes: e.target.value})}
@@ -1247,7 +1252,7 @@ export default function ManualOrdersPage() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Total (Auto-calculated)</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{t("e.totalAuto")}</label>
                   <div className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg font-bold text-emerald-600 dark:text-emerald-400 border border-gray-200 dark:border-gray-700">
                     {formatCurrency(editingOrder.totalPrice)}
                   </div>
@@ -1259,14 +1264,14 @@ export default function ManualOrdersPage() {
                   type="button" onClick={() => setEditingOrder(null)}
                   className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button 
                   type="submit" disabled={updatingId === editingOrder.id}
                   className="px-4 py-2 text-sm font-medium text-white bg-sky-600 rounded-lg hover:bg-sky-700 flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {updatingId === editingOrder.id && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Save Changes
+                  {t("saveChanges")}
                 </button>
               </div>
             </form>
@@ -1281,20 +1286,20 @@ export default function ManualOrdersPage() {
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-8 h-8 text-red-500" />
             </div>
-            <h4 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Delete this order?</h4>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">This action is permanent and cannot be undone.</p>
+            <h4 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">{t("deleteTitle")}</h4>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{t("deleteHint")}</p>
             <div className="flex items-center justify-center gap-3">
               <button 
                 onClick={() => setDeletingId(null)}
                 className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               >
-                Cancel
+                {t("cancel")}
               </button>
               <button 
                 onClick={() => handleDeleteOrder(deletingId)}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
               >
-                Yes, Delete Now
+                {t("deleteNow")}
               </button>
             </div>
           </div>

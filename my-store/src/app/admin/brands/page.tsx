@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Plus, Pencil, Trash2, X, Save, Loader2, AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import BrandLogo from "@/components/shop/BrandLogo";
 
 interface Brand {
@@ -26,6 +27,7 @@ const EMPTY_FORM = {
 };
 
 export default function AdminBrandsPage() {
+  const t = useTranslations("adm.brands");
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -74,7 +76,7 @@ export default function AdminBrandsPage() {
   const handleSave = async () => {
     setError("");
     if (!form.name.trim()) {
-      setError("اسم العلامة التجارية مطلوب");
+      setError(t("nameRequired"));
       return;
     }
     setSaving(true);
@@ -94,24 +96,24 @@ export default function AdminBrandsPage() {
       });
       const json = await res.json();
       if (!json.success) {
-        setError(json.error || "فشلت العملية");
+        setError(res.status === 409 ? t("duplicate") : t("failed"));
         return;
       }
       setModalOpen(false);
       fetchBrands();
     } catch {
-      setError("خطأ في الاتصال بالخادم");
+      setError(t("network"));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (b: Brand) => {
-    if (!confirm(`هل تريد حذف العلامة التجارية "${b.name}"؟`)) return;
+    if (!confirm(t("confirmDelete", { name: b.name }))) return;
     const res = await fetch(`/api/admin/brands/${b.id}`, { method: "DELETE" });
     const json = await res.json();
     if (!json.success) {
-      alert(json.error || "فشل الحذف");
+      alert(res.status === 409 ? t("deleteInUse") : t("deleteFailed"));
       return;
     }
     fetchBrands();
@@ -121,14 +123,14 @@ export default function AdminBrandsPage() {
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">العلامات التجارية</h1>
-          <p className="text-sm text-gray-500 mt-1">أضف شعار SVG الخاص بكل متجر (Walmart, Target, Amazon...) واستخدمه في منتجات الأفلييت.</p>
+          <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{t("title")}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={openCreate}
           className="flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2.5 rounded-xl cursor-pointer transition-colors"
         >
-          <Plus className="w-4 h-4" /> إضافة علامة تجارية
+          <Plus className="w-4 h-4" /> {t("add")}
         </button>
       </div>
 
@@ -137,7 +139,7 @@ export default function AdminBrandsPage() {
           <Loader2 className="w-6 h-6 animate-spin text-sky-600" />
         </div>
       ) : brands.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">لا توجد علامات تجارية بعد. أضف أول علامة تجارية.</div>
+        <div className="text-center py-20 text-gray-400">{t("empty")}</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {brands.map((b) => (
@@ -150,11 +152,11 @@ export default function AdminBrandsPage() {
                   </span>
                   <div>
                     <p className="font-bold text-gray-900 dark:text-white leading-tight">{b.name}</p>
-                    <p className="text-xs text-gray-400">{b._count?.offers ?? 0} عرض</p>
+                    <p className="text-xs text-gray-400">{t("offers", { n: b._count?.offers ?? 0 })}</p>
                   </div>
                 </div>
                 {!b.isActive && (
-                  <span className="text-[11px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 px-2 py-0.5 rounded-md">معطّلة</span>
+                  <span className="text-[11px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 px-2 py-0.5 rounded-md">{t("disabled")}</span>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -162,13 +164,13 @@ export default function AdminBrandsPage() {
                   onClick={() => openEdit(b)}
                   className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold text-sky-600 bg-sky-50 dark:bg-sky-900/20 hover:bg-sky-100 rounded-lg py-2 cursor-pointer"
                 >
-                  <Pencil className="w-3.5 h-3.5" /> تعديل
+                  <Pencil className="w-3.5 h-3.5" /> {t("edit")}
                 </button>
                 <button
                   onClick={() => handleDelete(b)}
                   className="flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 rounded-lg py-2 cursor-pointer"
                 >
-                  <Trash2 className="w-3.5 h-3.5" /> حذف
+                  <Trash2 className="w-3.5 h-3.5" /> {t("delete")}
                 </button>
               </div>
             </div>
@@ -184,7 +186,7 @@ export default function AdminBrandsPage() {
           >
             <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-800">
               <h2 className="font-bold text-lg text-gray-900 dark:text-white">
-                {editingId ? "تعديل العلامة التجارية" : "علامة تجارية جديدة"}
+                {editingId ? t("editTitle") : t("newTitle")}
               </h2>
               <button onClick={() => setModalOpen(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer">
                 <X className="w-5 h-5" />
@@ -199,18 +201,18 @@ export default function AdminBrandsPage() {
               )}
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">اسم العلامة التجارية *</label>
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">{t("name")} *</label>
                 <input
                   value={form.name}
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                  placeholder="مثال: Walmart"
+                  placeholder={t("namePh")}
                   className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  كود شعار SVG (الصق كود الشعار كاملاً)
+                  {t("svg")}
                 </label>
                 <textarea
                   value={form.logoSvg}
@@ -220,12 +222,12 @@ export default function AdminBrandsPage() {
                   dir="ltr"
                   className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg px-3 py-2.5 text-xs font-mono focus:ring-2 focus:ring-sky-500 outline-none"
                 />
-                <p className="text-xs text-gray-400 mt-1">إن لم تضع شعار SVG، سيظهر حرف أول اسم العلامة التجارية كشارة بديلة.</p>
+                <p className="text-xs text-gray-400 mt-1">{t("svgHint")}</p>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  أو رابط صورة الشعار (اختياري بدل SVG)
+                  {t("logoUrl")}
                 </label>
                 <input
                   value={form.logoUrl}
@@ -238,7 +240,7 @@ export default function AdminBrandsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">لون العلامة التجارية</label>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">{t("color")}</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="color"
@@ -262,19 +264,19 @@ export default function AdminBrandsPage() {
                       onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
                       className="w-4 h-4 cursor-pointer"
                     />
-                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300">مفعّلة وظاهرة للزوار</span>
+                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{t("active")}</span>
                   </label>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">
-                  نص زر الشراء المخصص (اختياري)
+                  {t("buyLabel")}
                 </label>
                 <input
                   value={form.buyLabel}
                   onChange={(e) => setForm((f) => ({ ...f, buyLabel: e.target.value }))}
-                  placeholder={`مثال: اذهب للشراء من ${form.name || "Walmart"}`}
+                  placeholder={t("buyLabelPh", { name: form.name || "Walmart" })}
                   className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none"
                 />
               </div>
@@ -284,7 +286,7 @@ export default function AdminBrandsPage() {
                 <span className="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white px-3 shadow-sm">
                   <BrandLogo
                     brand={{
-                      name: form.name || "علامة تجارية",
+                      name: form.name || t("previewName"),
                       logoSvg: form.logoSvg,
                       logoUrl: form.logoUrl,
                       accentColor: form.accentColor,
@@ -293,8 +295,8 @@ export default function AdminBrandsPage() {
                   />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">معاينة الشعار</p>
-                  <p className="text-xs text-gray-400">هكذا سيظهر في بطاقات المنتجات وزر الشراء</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">{t("preview")}</p>
+                  <p className="text-xs text-gray-400">{t("previewHint")}</p>
                 </div>
               </div>
             </div>
@@ -306,13 +308,13 @@ export default function AdminBrandsPage() {
                 className="flex-1 flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl cursor-pointer transition-colors"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                حفظ
+                {t("save")}
               </button>
               <button
                 onClick={() => setModalOpen(false)}
                 className="px-5 py-3 font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl cursor-pointer"
               >
-                إلغاء
+                {t("cancel")}
               </button>
             </div>
           </div>

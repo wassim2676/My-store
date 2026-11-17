@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import {
   ArrowRight, Phone, MapPin, Package, Clock, RefreshCw, Loader2,
   AlertTriangle, CheckCircle2, Trash2, Copy, User, X,
@@ -29,14 +30,15 @@ type ToastType = "success" | "error";
 
 // ==================== 🔔 Toast بسيط ====================
 function Toast({ message, type, onClose }: { message: string; type: ToastType; onClose: () => void }) {
+  const t = useTranslations("adm.leads");
   useEffect(() => {
-    const t = setTimeout(onClose, 4000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(onClose, 4000);
+    return () => clearTimeout(timer);
   }, [onClose]);
   return (
-    <div className={`fixed top-4 left-4 z-[90] ${type === "success" ? "bg-emerald-600" : "bg-red-600"} text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm`}>
+    <div className={`fixed top-4 start-4 z-[90] ${type === "success" ? "bg-emerald-600" : "bg-red-600"} text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm`}>
       <p className="text-sm font-medium flex-1">{message}</p>
-      <button onClick={onClose} className="text-white/80 hover:text-white cursor-pointer" aria-label="إغلاق">
+      <button onClick={onClose} className="text-white/80 hover:text-white cursor-pointer" aria-label={t("close")}>
         <X className="w-4 h-4" />
       </button>
     </div>
@@ -44,6 +46,7 @@ function Toast({ message, type, onClose }: { message: string; type: ToastType; o
 }
 
 export default function LeadsPage() {
+  const t = useTranslations("adm.leads");
   const [allOrders, setAllOrders] = useState<ManualOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -56,11 +59,11 @@ export default function LeadsPage() {
       const data = await res.json();
       if (data.success) setAllOrders(data.data.orders);
     } catch {
-      setToast({ message: "تعذر جلب البيانات، حاول تحديث الصفحة", type: "error" });
+      setToast({ message: t("toast.loadFailed"), type: "error" });
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- تحميل أولي عند فتح الصفحة
@@ -100,12 +103,12 @@ export default function LeadsPage() {
       });
       if (res.ok) {
         setAllOrders((prev) => prev.map((o) => (o.id === id ? { ...o, isLead: false } : o)));
-        setToast({ message: "✅ تم تأكيده كطلب حقيقي — انتقل للوحة الطلبات الرئيسية", type: "success" });
+        setToast({ message: t("toast.confirmed"), type: "success" });
       } else {
-        setToast({ message: "تعذر تنفيذ العملية", type: "error" });
+        setToast({ message: t("toast.failed"), type: "error" });
       }
     } catch {
-      setToast({ message: "خطأ في الاتصال بالخادم", type: "error" });
+      setToast({ message: t("toast.network"), type: "error" });
     } finally {
       setBusyId(null);
     }
@@ -113,18 +116,18 @@ export default function LeadsPage() {
 
   // ✅ تجاهل/حذف الطلب المبدئي نهائياً
   const handleDismiss = async (id: string) => {
-    if (!confirm("تجاهل هذا الطلب المبدئي نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")) return;
+    if (!confirm(t("confirmDismiss"))) return;
     setBusyId(id);
     try {
       const res = await fetch(`/api/manual-orders/${id}`, { method: "DELETE" });
       if (res.ok) {
         setAllOrders((prev) => prev.filter((o) => o.id !== id));
-        setToast({ message: "تم تجاهل الطلب المبدئي", type: "success" });
+        setToast({ message: t("toast.dismissed"), type: "success" });
       } else {
-        setToast({ message: "تعذر الحذف — قد يكون الطلب محمياً", type: "error" });
+        setToast({ message: t("toast.dismissFailed"), type: "error" });
       }
     } catch {
-      setToast({ message: "خطأ في الاتصال بالخادم", type: "error" });
+      setToast({ message: t("toast.network"), type: "error" });
     } finally {
       setBusyId(null);
     }
@@ -139,21 +142,21 @@ export default function LeadsPage() {
         <div className="flex items-center justify-between gap-4 mb-6">
           <div>
             <Link href="/admin/manual-orders" className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-2">
-              <ArrowRight className="w-4 h-4" /> العودة للوحة الطلبات
+              <ArrowRight className="w-4 h-4 ltr:rotate-180" /> {t("back")}
             </Link>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
               <AlertTriangle className="w-7 h-7 text-amber-500" />
-              الطلبات المبدئية غير المؤكَّدة
+              {t("title")}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-              زوار أكملوا رقم هاتفهم لكن لم يضغطوا زر "تأكيد الطلب" — {leads.length} طلب حالياً
+              {t("subtitle", { n: leads.length })}
             </p>
           </div>
           <button
             onClick={fetchAll}
             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer flex-shrink-0"
           >
-            <RefreshCw className="w-4 h-4" /> تحديث
+            <RefreshCw className="w-4 h-4" /> {t("refresh")}
           </button>
         </div>
 
@@ -165,7 +168,7 @@ export default function LeadsPage() {
         ) : leads.length === 0 ? (
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-12 text-center">
             <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-            <p className="text-gray-500 dark:text-gray-400">لا توجد طلبات مبدئية غير مؤكَّدة حالياً — كل شيء نظيف ✨</p>
+            <p className="text-gray-500 dark:text-gray-400">{t("empty")}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -201,7 +204,7 @@ export default function LeadsPage() {
                         }`}
                       >
                         <Copy className="w-3 h-3" />
-                        {confirmedElsewhere ? "لديه طلب حقيقي مؤكَّد" : `مكرر (${occurrences}×)`}
+                        {confirmedElsewhere ? t("hasConfirmed") : t("duplicate", { n: occurrences })}
                       </span>
                     )}
                   </div>
@@ -228,13 +231,13 @@ export default function LeadsPage() {
                       className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60 cursor-pointer"
                     >
                       {busyId === lead.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                      تأكيد كطلب حقيقي
+                      {t("confirm")}
                     </button>
                     <a
                       href={`tel:${lead.phone}`}
                       className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-400 text-sm font-semibold rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors"
                     >
-                      <Phone className="w-4 h-4" /> اتصال
+                      <Phone className="w-4 h-4" /> {t("call")}
                     </a>
                     <button
                       onClick={() => handleDismiss(lead.id)}

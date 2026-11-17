@@ -3,7 +3,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizedApiError } from "@/lib/api-error";
 import {
   ArrowLeft, Check, Link2, Loader2, Plus, Save, Star, Trash2, X, Wand2,
 } from "lucide-react";
@@ -54,6 +55,9 @@ export default function OfferForm({
   page: { slug: string; theme: string; accentColor: string; language: string; design?: Partial<PageDesign> | null };
 }) {
   const t = useTranslations("dash");
+  const locale = useLocale();
+  const apiError = (status: number, msg: unknown) =>
+    localizedApiError(msg, status, locale, { invalid: t("common.errors.invalid"), conflict: t("common.errors.conflict"), unauthorized: t("common.errors.unauthorized"), generic: t("common.error") });
   const router = useRouter();
   const isEdit = !!offer;
 
@@ -139,7 +143,7 @@ export default function OfferForm({
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || t("common.error"));
+      if (!res.ok) throw new Error(apiError(res.status, data.error));
       if (isEdit) {
         setF((s) => ({ ...s, status, slug: data.data.slug }));
         setSaved(true);

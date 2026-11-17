@@ -92,7 +92,7 @@ export default async function OfferPage({ params }: Props) {
         }
       : {}),
     ...(offer.price != null
-      ? { offers: { "@type": "Offer", price: offer.price, priceCurrency: offer.currency, url: offer.affiliateUrl } }
+      ? { offers: { "@type": "Offer", price: offer.price, priceCurrency: offer.currency, url: `/${page.slug}/${offer.slug}` } }
       : {}),
   };
 

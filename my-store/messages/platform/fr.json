@@ -145,7 +145,7 @@
       "trust": [
         "Gratuit pour commencer",
         "Vos commissions restent 100 % à vous",
-        "English · العربية · Français"
+        "English · Arabic · Français"
       ],
       "mockPage": {
         "title": "Les trouvailles de Sarah",
@@ -245,7 +245,9 @@
       "passwordShort": "Le mot de passe doit contenir au moins 8 caractères.",
       "slugInvalid": "Choisissez un lien de page disponible.",
       "terms": "Veuillez accepter les conditions pour continuer.",
-      "unknown": "Une erreur est survenue. Réessayez."
+      "unknown": "Une erreur est survenue. Réessayez.",
+      "invalid": "Vérifiez vos informations et réessayez.",
+      "conflict": "Cet e-mail ou ce lien de page est déjà utilisé."
     }
   },
   "dash": {
@@ -260,7 +262,8 @@
       "hidden": "Masquée aux visiteurs",
       "view": "Voir la page",
       "admin": "Administration",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "audience": "Audience"
     },
     "common": {
       "copy": "Copier",
@@ -268,7 +271,12 @@
       "save": "Enregistrer",
       "saved": "Enregistré",
       "add": "Ajouter",
-      "error": "Une erreur est survenue. Réessayez."
+      "error": "Une erreur est survenue. Réessayez.",
+      "errors": {
+        "invalid": "Certaines informations sont invalides. Vérifiez les champs et réessayez.",
+        "conflict": "Ce nom ou ce lien est déjà pris. Choisissez-en un autre.",
+        "unauthorized": "Votre session a expiré. Reconnectez-vous."
+      }
     },
     "slug": {
       "checking": "Vérification…",
@@ -447,7 +455,7 @@
       "languageHint": "La langue vue par les visiteurs (boutons, libellés, mention).",
       "languages": {
         "en": "English",
-        "ar": "العربية",
+        "ar": "Arabic",
         "fr": "Français"
       },
       "socials": {
@@ -561,6 +569,93 @@
         "network": "Échec de l’envoi. Vérifiez votre connexion et réessayez.",
         "unauthorized": "Votre session a expiré. Reconnectez-vous.",
         "url": "Saisissez un lien d’image valide commençant par https://"
+      }
+    },
+    "audience": {
+      "title": "Audience et protection des liens",
+      "subtitle": "Choisissez qui accède à vos liens affiliés — et tenez les robots à l’écart.",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "stats": {
+        "clicks": "Clics vers les boutiques",
+        "clicksHint": "Vrais visiteurs · 30 derniers jours",
+        "bots": "Robots filtrés",
+        "botsHint": "Envoyés vers le lien propre de la boutique",
+        "geo": "Bloqués par pays",
+        "geoHint": "N’ont jamais atteint votre lien affilié"
+      },
+      "flow": {
+        "human": "Vrai visiteur de votre audience",
+        "humanText": "Va directement vers votre lien affilié — le clic est compté.",
+        "bot": "Robot ou aperçu de lien",
+        "botText": "Reçoit la page produit simple, sans votre identifiant affilié. Aucun faux clic.",
+        "geo": "Visiteur hors de votre audience",
+        "geoText": "Voit une page neutre ou la destination de votre choix."
+      },
+      "geo": {
+        "title": "Ciblage par pays",
+        "subtitle": "S’applique à toutes les offres et toutes les boutiques de votre page.",
+        "modes": {
+          "all": "Tous les pays",
+          "allow": "Uniquement ces pays",
+          "block": "Tous sauf ces pays"
+        },
+        "modesHint": {
+          "all": "Tout le monde peut accéder à vos liens affiliés.",
+          "allow": "Idéal si votre programme ne paie que certains pays (ex. Amazon US).",
+          "block": "Excluez les pays qui envoient un trafic faible ou invalide."
+        },
+        "quickAdd": "Ajout rapide :",
+        "presets": {
+          "us": "États-Unis",
+          "northAmerica": "États-Unis et Canada",
+          "english": "Pays anglophones",
+          "eu": "Union européenne",
+          "gcc": "Pays du Golfe"
+        },
+        "selectedAllow": "{n, plural, =0 {Aucun pays autorisé pour l’instant} one {# pays autorisé} other {# pays autorisés}}",
+        "selectedBlock": "{n, plural, =0 {Aucun pays exclu pour l’instant} one {# pays exclu} other {# pays exclus}}",
+        "clear": "Tout effacer",
+        "remove": "Retirer",
+        "none": "Ajoutez au moins un pays, sinon cette règle reste désactivée.",
+        "search": "Rechercher parmi {n} pays…",
+        "noResults": "Aucun pays ne correspond",
+        "you": "Vous visitez depuis {country} —",
+        "youUnknown": "Votre position n’est pas détectable ici —",
+        "youAllowed": "vous accéderiez au lien affilié.",
+        "youBlocked": "vous seriez bloqué."
+      },
+      "blocked": {
+        "title": "Visiteurs hors de votre audience",
+        "subtitle": "Où envoyer les visiteurs des pays que vous ne ciblez pas.",
+        "actions": {
+          "page": "Page neutre",
+          "redirect": "Rediriger vers mon lien"
+        },
+        "actionsHint": {
+          "page": "Une page sobre « non disponible dans votre région » aux couleurs de votre page, avec un lien vers vos sélections.",
+          "redirect": "Envoyez-les où vous voulez — une autre offre, votre blog, une boutique locale."
+        },
+        "url": "Lien de destination",
+        "urlHint": "Utilisez un lien sans l’identifiant affilié d’un programme qui exclut ces pays."
+      },
+      "bots": {
+        "title": "Protection contre les robots",
+        "subtitle": "Recommandée — protège vos comptes affiliés.",
+        "p1": "Les robots d’aperçu des réseaux sociaux ne voient jamais votre lien affilié.",
+        "p2": "Ils sont envoyés vers la page produit propre de la boutique, sans votre tag ni click ID : aucun faux clic sur votre compte.",
+        "p3": "Moteurs de recherche, robots d’IA, outils SEO, scripts et navigateurs automatisés sont aussi filtrés.",
+        "p4": "Les vraies personnes dans les navigateurs intégrés (Instagram, TikTok, Facebook…) accèdent normalement à votre lien.",
+        "covered": "Couverts",
+        "offWarning": "Sans protection, robots et aperçus ouvrent votre lien affilié et peuvent créer des clics invalides sur votre compte."
+      },
+      "errors": {
+        "invalid": "Vérifiez vos réglages et réessayez.",
+        "invalid_url": "Saisissez un lien valide commençant par https://",
+        "no_countries": "Choisissez au moins un pays pour cette règle.",
+        "network": "Échec de l’enregistrement. Vérifiez votre connexion.",
+        "unauthorized": "Votre session a expiré. Reconnectez-vous.",
+        "no_page": "Créez d’abord votre page."
       }
     }
   },
@@ -917,6 +1012,314 @@
         "delete": "Supprimer",
         "confirmDelete": "Supprimer définitivement cette offre ? Action irréversible.",
         "error": "L’action a échoué. Réessayez."
+      }
+    },
+    "blog": {
+      "title": "Articles",
+      "new": "Nouvel article",
+      "close": "Fermer",
+      "fTitle": "Titre de l’article",
+      "fCategory": "Catégorie",
+      "fCover": "Lien de l’image de couverture",
+      "fExcerpt": "Court extrait",
+      "fContent": "Contenu de l’article",
+      "publishNow": "Publier immédiatement",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer l’article",
+      "saveError": "Impossible d’enregistrer l’article. Vérifiez les champs.",
+      "confirmDelete": "Supprimer définitivement cet article ?",
+      "empty": "Aucun article pour l’instant.",
+      "noCategory": "Sans catégorie",
+      "views": "{n, plural, one {# vue} other {# vues}}",
+      "published": "Publié",
+      "draft": "Brouillon"
+    },
+    "brands": {
+      "title": "Boutiques",
+      "subtitle": "Ajoutez le logo de chaque boutique (Walmart, Target, Amazon…) pour les offres et les boutons d’achat.",
+      "add": "Ajouter une boutique",
+      "empty": "Aucune boutique. Ajoutez la première.",
+      "offers": "{n, plural, one {# offre} other {# offres}}",
+      "disabled": "Désactivée",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "editTitle": "Modifier la boutique",
+      "newTitle": "Nouvelle boutique",
+      "name": "Nom de la boutique",
+      "namePh": "ex. Walmart",
+      "svg": "Code SVG du logo (collez le code complet)",
+      "svgHint": "Sans logo, la première lettre du nom s’affiche en badge.",
+      "logoUrl": "Ou lien de l’image du logo (facultatif, au lieu du SVG)",
+      "color": "Couleur de la marque",
+      "active": "Active et visible pour les visiteurs",
+      "buyLabel": "Texte personnalisé du bouton d’achat (facultatif)",
+      "buyLabelPh": "ex. Acheter sur {name}",
+      "previewName": "Boutique",
+      "preview": "Aperçu du logo",
+      "previewHint": "Voici comment il apparaît sur les cartes et les boutons d’achat",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "nameRequired": "Le nom de la boutique est obligatoire",
+      "duplicate": "Une boutique porte déjà ce nom",
+      "failed": "L’opération a échoué",
+      "network": "Erreur de connexion. Réessayez.",
+      "confirmDelete": "Supprimer la boutique « {name} » ?",
+      "deleteInUse": "Cette boutique est utilisée par des offres et ne peut pas être supprimée.",
+      "deleteFailed": "Impossible de supprimer la boutique"
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "subtitle": "Voir et gérer les utilisateurs inscrits • {n} au total",
+      "export": "Exporter CSV",
+      "search": "Rechercher par nom, e-mail ou téléphone…",
+      "filters": "Filtres",
+      "filtersActive": "Actifs",
+      "role": "Rôle",
+      "statusLabel": "Statut",
+      "hasOrders": "Commandes",
+      "all": "Tous",
+      "withOrders": "Avec commandes",
+      "noOrders": "Sans commande",
+      "joinedFrom": "Inscrit depuis",
+      "joinedTo": "Inscrit jusqu’au",
+      "reset": "Réinitialiser",
+      "apply": "Appliquer",
+      "retry": "Réessayer",
+      "noResults": "Aucun utilisateur trouvé",
+      "empty": "Aucun utilisateur",
+      "noResultsHint": "Essayez d’ajuster vos filtres.",
+      "emptyHint": "Les utilisateurs apparaissent ici après leur inscription.",
+      "col": {
+        "user": "Utilisateur",
+        "role": "Rôle",
+        "status": "Statut",
+        "orders": "Commandes",
+        "joined": "Inscription",
+        "actions": "Actions"
+      },
+      "roles": {
+        "all": "Tous les rôles",
+        "USER": "Utilisateur",
+        "MARKETER": "Affilié",
+        "ADMIN": "Admin",
+        "SUPER_ADMIN": "Super admin"
+      },
+      "status": {
+        "all": "Tous les statuts",
+        "active": "Actif",
+        "inactive": "Désactivé"
+      },
+      "clickActivate": "Cliquer pour activer",
+      "clickDeactivate": "Cliquer pour désactiver",
+      "more": "Plus d’actions",
+      "edit": "Modifier",
+      "activate": "Activer",
+      "deactivate": "Désactiver",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer l’utilisateur",
+      "deleteConfirm": "Voulez-vous vraiment supprimer <b>{name}</b> ?",
+      "deleteOrders": "Cet utilisateur a {n, plural, one {# commande} other {# commandes}}. La suppression peut affecter l’historique.",
+      "cancel": "Annuler",
+      "deletePermanently": "Supprimer définitivement",
+      "updating": "Mise à jour…",
+      "unknown": "Inconnu",
+      "pageOf": "Page {page} sur {total}",
+      "first": "« Première",
+      "prev": "‹ Précédente",
+      "next": "Suivante ›",
+      "last": "Dernière »",
+      "errors": {
+        "load": "Impossible de charger les utilisateurs.",
+        "network": "Problème de connexion. Vérifiez internet.",
+        "unauthorized": "Accès administrateur requis.",
+        "update": "Impossible de mettre à jour l’utilisateur.",
+        "delete": "Impossible de supprimer l’utilisateur."
+      }
+    },
+    "orders": {
+      "title": "Commandes manuelles",
+      "subtitle": "Demandes clients • {orders} commandes • {sources} sources",
+      "leads": "Prospects non confirmés",
+      "exportExcel": "Exporter Excel",
+      "refresh": "Actualiser",
+      "chooseSource": "Choisissez une source :",
+      "sourcesCount": "{n, plural, one {# source} other {# sources}}",
+      "emptyTitle": "Aucune commande",
+      "emptyHint": "Les sources apparaissent ici après la première commande.",
+      "ordersCount": "{n, plural, one {# commande} other {# commandes}}",
+      "sourceCard": "Source",
+      "revenue": "Chiffre d’affaires",
+      "pending": "En attente",
+      "success": "Réussite",
+      "lastOrder": "Dernière commande",
+      "viewOrders": "Voir les commandes →",
+      "backToSources": "Retour aux sources",
+      "filtered": "{n} filtrée(s)",
+      "search": "Rechercher par nom, téléphone, e-mail ou n° de commande…",
+      "retry": "Réessayer",
+      "noResults": "Aucune commande trouvée",
+      "noResultsHint": "Essayez d’ajuster vos filtres.",
+      "voice": "Vocal",
+      "collapse": "Réduire",
+      "expand": "Afficher les détails",
+      "customerDetails": "Client",
+      "notProvided": "Non renseigné",
+      "voiceAttached": "Commande vocale jointe",
+      "voiceLoading": "Chargement de l’enregistrement…",
+      "voiceCopied": "Lien copié — collez-le dans un nouvel onglet",
+      "voiceCopy": "Copier le lien (secours)",
+      "voiceError": "Impossible de charger l’enregistrement. Fermez et rouvrez la carte.",
+      "productDetails": "Produit",
+      "customerNote": "Note du client",
+      "adminNotes": "Notes admin",
+      "source": "Source",
+      "editOrder": "Modifier",
+      "delete": "Supprimer",
+      "savingChanges": "Enregistrement…",
+      "editTitle": "Modifier la commande #{n}",
+      "cancel": "Annuler",
+      "saveChanges": "Enregistrer",
+      "deleteTitle": "Supprimer cette commande ?",
+      "deleteHint": "Cette action est définitive.",
+      "deleteNow": "Oui, supprimer",
+      "filters": "Filtres",
+      "filtersActive": "Actifs",
+      "all": "Tous",
+      "other": "Autre",
+      "reset": "Réinitialiser",
+      "apply": "Appliquer",
+      "direct": "Direct",
+      "pageOf": "Page {page} sur {total}",
+      "first": "« Première",
+      "prev": "‹ Précédente",
+      "next": "Suivante ›",
+      "last": "Dernière »",
+      "types": {
+        "order": "Commande",
+        "call": "Appel",
+        "payment": "Paiement"
+      },
+      "order": {
+        "all": "Toutes les commandes",
+        "PENDING": "En attente",
+        "CONFIRMED": "Confirmée",
+        "PROCESSING": "En préparation",
+        "SHIPPED": "Expédiée",
+        "DELIVERED": "Livrée",
+        "CANCELLED": "Annulée",
+        "REFUNDED": "Remboursée",
+        "RETURNED": "Retournée"
+      },
+      "call": {
+        "all": "Tous les appels",
+        "NOT_CALLED": "Non appelé",
+        "CALLED_SUCCESS": "Appelé ✓",
+        "CALL_FAILED": "Échec ✗",
+        "CALL_LATER": "Rappeler ⏰"
+      },
+      "payment": {
+        "all": "Tous les paiements",
+        "PENDING": "En attente",
+        "PAID": "Payé ✓",
+        "FAILED": "Échec ✗",
+        "REFUNDED": "Remboursé"
+      },
+      "f": {
+        "orderStatus": "Statut commande",
+        "callStatus": "Statut appel",
+        "paymentStatus": "Statut paiement",
+        "city": "Ville",
+        "country": "Pays",
+        "productType": "Produit",
+        "dateFrom": "Du",
+        "dateTo": "Au",
+        "minTotal": "Total min (MAD)",
+        "maxTotal": "Total max (MAD)",
+        "quantity": "Quantité",
+        "unitPrice": "Prix unitaire",
+        "totalPrice": "Total",
+        "paymentMethod": "Mode de paiement"
+      },
+      "e": {
+        "customerName": "Nom du client",
+        "phone": "Téléphone",
+        "email": "E-mail",
+        "country": "Pays",
+        "city": "Ville",
+        "sourcePage": "Page source",
+        "address": "Adresse",
+        "productType": "Produit",
+        "quantity": "Quantité",
+        "unitPrice": "Prix unitaire",
+        "adminNotes": "Notes admin",
+        "totalAuto": "Total (calculé)"
+      },
+      "sources": {
+        "erovia": "Page produit Erovia",
+        "home": "Accueil",
+        "blog": "Blog",
+        "marketplace": "Marketplace",
+        "direct": "Direct / inconnu"
+      },
+      "toast": {
+        "statusUpdated": "✅ Statut mis à jour",
+        "updateFailed": "Échec de la mise à jour",
+        "updateError": "Erreur lors de la mise à jour",
+        "saved": "✅ Modifications enregistrées",
+        "saveFailed": "Impossible d’enregistrer",
+        "saveError": "Erreur lors de l’enregistrement",
+        "deleted": "✅ Commande supprimée",
+        "deleteFailed": "Impossible de supprimer la commande",
+        "deleteError": "Erreur lors de la suppression",
+        "exported": "✅ Fichier Excel exporté — s’ouvre directement dans Google Sheets"
+      },
+      "xls": {
+        "orderNumber": "N° commande",
+        "fullName": "Nom complet",
+        "phone": "Téléphone",
+        "email": "E-mail",
+        "city": "Ville",
+        "address": "Adresse",
+        "country": "Pays",
+        "product": "Produit / pack",
+        "quantity": "Quantité",
+        "unitPrice": "Prix unitaire",
+        "total": "Total",
+        "paymentMethod": "Mode de paiement",
+        "paymentStatus": "Statut paiement",
+        "orderStatus": "Statut commande",
+        "callStatus": "Statut appel",
+        "source": "Source",
+        "date": "Date",
+        "customerNote": "Note client",
+        "adminNotes": "Notes admin",
+        "sheet": "Commandes"
+      },
+      "errors": {
+        "load": "Impossible de charger les commandes.",
+        "network": "Problème de connexion. Vérifiez internet.",
+        "unauthorized": "Accès administrateur requis."
+      }
+    },
+    "leads": {
+      "close": "Fermer",
+      "back": "Retour aux commandes",
+      "title": "Prospects non confirmés",
+      "subtitle": "Visiteurs ayant saisi leur téléphone sans cliquer sur « Confirmer » — {n, plural, one {# prospect} other {# prospects}}",
+      "refresh": "Actualiser",
+      "empty": "Aucun prospect non confirmé — tout est propre ✨",
+      "hasConfirmed": "A une commande confirmée",
+      "duplicate": "Doublon ({n}×)",
+      "confirm": "Confirmer comme vraie commande",
+      "call": "Appeler",
+      "confirmDismiss": "Ignorer définitivement ce prospect ? Action irréversible.",
+      "toast": {
+        "loadFailed": "Impossible de charger les données. Actualisez la page.",
+        "confirmed": "✅ Confirmé comme vraie commande — voir les commandes",
+        "failed": "L’action a échoué",
+        "network": "Erreur de connexion au serveur",
+        "dismissed": "Prospect ignoré",
+        "dismissFailed": "Suppression impossible — la commande est peut-être protégée"
       }
     }
   }

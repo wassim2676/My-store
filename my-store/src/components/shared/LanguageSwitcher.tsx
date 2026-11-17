@@ -14,7 +14,7 @@ export default function LanguageSwitcher({
   variant = "default",
   dropUp = false,
 }: {
-  variant?: "default" | "compact" | "dark";
+  variant?: "default" | "compact" | "dark" | "segmented";
   dropUp?: boolean;
 }) {
   const currentLocale = useLocale() as Locale;
@@ -47,6 +47,33 @@ export default function LanguageSwitcher({
     startTransition(() => {
       router.refresh();
     });
+  }
+
+  // 📱 أزرار ظاهرة كلها (لقوائم الهاتف): لا قائمة منسدلة قد تُقص داخل حاوية قابلة للتمرير
+  if (variant === "segmented") {
+    return (
+      <div className="flex w-full gap-1 rounded-xl border border-white/[0.08] bg-white/[0.03] p-1" role="radiogroup" aria-label="Language">
+        {locales.map((locale) => {
+          const on = locale === currentLocale;
+          return (
+            <button
+              key={locale}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              disabled={isPending}
+              onClick={() => changeLocale(locale)}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[13px] font-medium transition-colors cursor-pointer disabled:opacity-60 ${
+                on ? "bg-white text-black" : "text-white/65 hover:bg-white/[0.06] hover:text-white"
+              }`}
+            >
+              {on && <Check className="h-3.5 w-3.5" />}
+              {localeInfo[locale].nativeLabel}
+            </button>
+          );
+        })}
+      </div>
+    );
   }
 
   return (

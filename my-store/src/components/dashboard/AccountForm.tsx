@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizedApiError } from "@/lib/api-error";
 import { Check, Loader2 } from "lucide-react";
 
 const field =
@@ -10,6 +11,9 @@ const field =
 
 export default function AccountForm({ initial }: { initial: { firstName: string; lastName: string; email: string } }) {
   const t = useTranslations("dash");
+  const locale = useLocale();
+  const apiError = (status: number, msg: unknown) =>
+    localizedApiError(msg, status, locale, { invalid: t("common.errors.invalid"), conflict: t("common.errors.conflict"), unauthorized: t("common.errors.unauthorized"), generic: t("common.error") });
   const { update } = useSession();
   const [profile, setProfile] = useState({ firstName: initial.firstName, lastName: initial.lastName });
   const [pw, setPw] = useState({ currentPassword: "", newPassword: "" });
@@ -22,7 +26,7 @@ export default function AccountForm({ initial }: { initial: { firstName: string;
     try {
       const res = await fetch(url, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || t("common.error"));
+      if (!res.ok) throw new Error(apiError(res.status, data.error));
       setMsg({ kind: "ok", text: t("common.saved"), scope });
       return true;
     } catch (e) {
