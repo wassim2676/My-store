@@ -546,7 +546,24 @@
       "currentPassword": "Current password",
       "newPassword": "New password",
       "passwordHint": "Use uppercase and lowercase letters, numbers and a symbol (!@#$%^&*).",
-      "changePassword": "Change password"
+      "changePassword": "Change password",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "name": "Name",
+      "email": "Email",
+      "lockedHint": "Your details are locked to prevent accidental changes. Click Edit to change them.",
+      "emailConfirmHint": "Your email is how you log in. Enter your current password to confirm this change.",
+      "passwordChanged": "Password changed",
+      "errors": {
+        "wrong_password": "Your current password is incorrect.",
+        "email_taken": "This email is already used by another account.",
+        "invalid_email": "Enter a valid email address.",
+        "same_email": "This is already your email.",
+        "no_password": "This account has no password. Set one first, then change your email.",
+        "invalid": "Please check your information and try again.",
+        "unauthorized": "Your session expired. Please log in again.",
+        "server": "Something went wrong. Please try again."
+      }
     },
     "media": {
       "dropTitle": "Drag & drop images here, paste them (Ctrl+V), or",
@@ -641,7 +658,7 @@
       },
       "bots": {
         "title": "Bot & crawler protection",
-        "subtitle": "Recommended — keeps your affiliate accounts safe.",
+        "subtitle": "Keeps your affiliate accounts safe.",
         "p1": "Link-preview crawlers from social networks never see your affiliate link.",
         "p2": "They’re sent to the store’s clean product page without your tag or click ID, so no fake clicks hit your affiliate account.",
         "p3": "Search engines, AI crawlers, SEO tools, scripts and headless browsers are filtered too.",
@@ -656,7 +673,23 @@
         "network": "Couldn’t save. Check your connection and try again.",
         "unauthorized": "Your session expired. Please log in again.",
         "no_page": "Create your page first."
+      },
+      "rec": "Recommended",
+      "tips": {
+        "bots": "Social networks and crawlers open every link they see. Without protection those visits land on your affiliate link and can look like invalid clicks to Amazon, Walmart and other programs.",
+        "neutral": "Safest choice: blocked visitors never reach any affiliate link, so you can’t send traffic a program doesn’t pay for — or forbids.",
+        "geo_allow": "Use this when your program only pays for some countries — e.g. Amazon.com pays for US buyers only. Everyone else is kept away from your link.",
+        "geo_block": "Use this to exclude countries that bring low-quality or invalid traffic while keeping everyone else.",
+        "botsStat": "Visits from bots, link-preview crawlers and scripts. They were sent to the store’s clean page — none of them touched your affiliate link.",
+        "geoStat": "Real visitors from countries outside your audience. They saw your neutral page or your custom destination instead of the affiliate link."
       }
+    },
+    "rec": {
+      "label": "Recommended",
+      "navTheme": "Follows your page colors automatically and always stays readable — even when you switch themes later.",
+      "cardImage": "Most store product photos are shot on white. A white frame blends them seamlessly so your page looks like a premium catalog.",
+      "disclosure": "Amazon Associates, Walmart and the FTC require a clear affiliate disclosure. Hiding it can get your affiliate account suspended.",
+      "affiliateLink": "Your link is never shown in your page’s code. Visitors go through a protected redirect, and bots only get the plain product page."
     }
   },
   "pages": {

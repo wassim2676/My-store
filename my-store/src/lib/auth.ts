@@ -136,10 +136,13 @@ export const authConfig: NextAuthConfig = {
         token.isActive = user.isActive;
       }
 
+      // تحديث الجلسة من الواجهة (update): نغيّر فقط الحقول المرسلة، ولا نمسح الباقي
       if (trigger === "update" && session?.user) {
-        token.firstName = session.user.firstName;
-        token.lastName = session.user.lastName;
-        token.phone = session.user.phone;
+        const u = session.user;
+        if (u.firstName !== undefined) token.firstName = u.firstName;
+        if (u.lastName !== undefined) token.lastName = u.lastName;
+        if (u.phone !== undefined) token.phone = u.phone;
+        if (typeof u.email === "string" && u.email) token.email = u.email;
       }
 
       return token;

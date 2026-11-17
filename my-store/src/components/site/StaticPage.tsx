@@ -35,7 +35,7 @@ export function PageHeader({ eyebrow, title, intro, note }: { eyebrow: string; t
 /** غلاف الصفحات الداخلية: شريط التنقل + المحتوى + التذييل */
 export function PageFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-[#07090D] text-white antialiased">
+    <div data-ui="dark" className="flex min-h-screen flex-col bg-[#07090D] text-white antialiased">
       <SiteNavbar />
       <main className="flex-1">{children}</main>
       <SiteFooter />

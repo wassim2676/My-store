@@ -45,7 +45,7 @@ export default function Onboarding({ firstName, isAdmin = false }: { firstName: 
   };
 
   return (
-    <div className="relative min-h-screen bg-[#07090D] text-white flex items-center justify-center px-4">
+    <div data-ui="dark" className="relative min-h-screen bg-[#07090D] text-white flex items-center justify-center px-4">
       {isAdmin && (
         <Link
           href="/admin/dashboard"

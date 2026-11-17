@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import BrandLogo from "@/components/shop/BrandLogo";
+import { InfoTip } from "@/components/shared/InfoTip";
 import ClientFonts from "@/components/landing/ClientFonts";
 import { ImageDropzone, SingleImageField } from "./ImageUpload";
 import OfferCard from "@/components/landing/OfferCard";
@@ -219,7 +220,7 @@ export default function OfferForm({
         <div className="space-y-6">
           {/* 🔗 المتجر والرابط */}
           <Section title={t("form.sec.store")} hint={t("form.sec.storeHint")}>
-            <Label text={t("form.affiliateUrl")} required>
+            <Label text={t("form.affiliateUrl")} required tip={t("rec.affiliateLink")}>
               <div className="relative">
                 <Link2 className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
                 <input dir="ltr" required type="url" value={f.affiliateUrl} onChange={(e) => onAffiliateUrl(e.target.value)} placeholder="https://www.amazon.com/dp/…?tag=yourtag-20" className={field + " ps-9"} />
@@ -427,11 +428,14 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   );
 }
 
-function Label({ text, hint, required, children }: { text: string; hint?: string; required?: boolean; children: React.ReactNode }) {
+function Label({ text, hint, required, tip, children }: { text: string; hint?: string; required?: boolean; tip?: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-1.5">
-      <span className="text-sm text-white/70">
-        {text} {required && <span className="text-amber-400">*</span>}
+      <span className="flex items-center gap-1.5 text-sm text-white/70">
+        <span>
+          {text} {required && <span className="text-amber-400">*</span>}
+        </span>
+        {tip && <InfoTip text={tip} />}
       </span>
       {children}
       {hint && <span className="block text-xs text-white/35">{hint}</span>}

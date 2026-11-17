@@ -13,9 +13,15 @@ import { locales, localeInfo, type Locale } from "@/i18n/config";
 export default function LanguageSwitcher({
   variant = "default",
   dropUp = false,
+  placement = "inline",
 }: {
   variant?: "default" | "compact" | "dark" | "segmented";
   dropUp?: boolean;
+  /**
+   * أين تنزل القائمة: "inline" تحت الزر مباشرة، "navbar" تحت خط الشريط العائم (مثل قائمة Resources)،
+   * "topbar" تحت خط الشريط العلوي للوحات التحكم (ارتفاعه 64px)
+   */
+  placement?: "inline" | "navbar" | "topbar";
 }) {
   const currentLocale = useLocale() as Locale;
   const router = useRouter();
@@ -98,12 +104,20 @@ export default function LanguageSwitcher({
       </button>
 
       {open && (
-        <div className={`absolute end-0 ${dropUp ? "bottom-full mb-2" : "mt-2"} w-48 rounded-xl py-1.5 z-50 overflow-hidden shadow-xl ${variant === "dark" ? "bg-[#10141C] ring-1 ring-white/10" : "bg-white ring-1 ring-black/5"}`}>
+        <div
+          className={`absolute end-0 z-50 w-52 overflow-hidden animate-[lp-pop_140ms_ease-out] ${
+            dropUp ? "bottom-full mb-2" : placement === "navbar" ? "top-full mt-4" : placement === "topbar" ? "top-full mt-[22px]" : "top-full mt-2"
+          } ${
+            variant === "dark"
+              ? "rounded-2xl border border-white/[0.08] bg-[#0C0F15]/95 p-1.5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-2xl"
+              : "rounded-xl bg-white py-1.5 shadow-xl ring-1 ring-black/5"
+          }`}
+        >
           {locales.map((locale) => (
             <button
               key={locale}
               onClick={() => changeLocale(locale)}
-              className={`w-full flex items-center justify-between gap-2 px-3.5 py-2 text-sm transition-colors cursor-pointer ${variant === "dark" ? "text-white/80 hover:bg-white/[0.06]" : "text-gray-700 hover:bg-gray-50"}`}
+              className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-sm transition-colors cursor-pointer ${variant === "dark" ? "rounded-xl text-white/80 hover:bg-white/[0.06] hover:text-white" : "text-gray-700 hover:bg-gray-50"}`}
             >
               <span className="flex items-center gap-2">
                 <span>{localeInfo[locale].flag}</span>

@@ -40,7 +40,7 @@ export default function DashboardShell({
   const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
 
   return (
-    <div className="min-h-screen bg-[#07090D] text-white flex">
+    <div data-ui="dark" className="min-h-screen bg-[#07090D] text-white flex">
       {open && <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setOpen(false)} />}
 
       <aside
@@ -142,7 +142,7 @@ export default function DashboardShell({
                 <span className="hidden min-[400px]:inline">{t("nav.admin")}</span>
               </Link>
             )}
-            <LanguageSwitcher variant="dark" />
+            <LanguageSwitcher variant="dark" placement="topbar" />
           </div>
         </header>
         <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 [&_.grid>*]:min-w-0">{children}</main>

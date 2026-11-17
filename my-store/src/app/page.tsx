@@ -49,7 +49,7 @@ export default async function Home() {
   const faq = (tp.raw("sections") as { h: string; p: string }[]).slice(0, 4);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#07090D] text-white antialiased">
+    <div data-ui="dark" className="min-h-screen overflow-x-hidden bg-[#07090D] text-white antialiased">
       <SiteNavbar />
 
       {/* عناصر الشبكات تتقلّص لعرض الشاشة (الشريط الأفقي للبطاقات كان يمطّ العمود خارج الهاتف) */}
@@ -272,19 +272,19 @@ export default async function Home() {
 
         {/* ⚖️ مقارنة */}
         <section className="border-t border-white/[0.06]">
-          <div className="mx-auto max-w-4xl px-4 py-24">
+          <div className="mx-auto max-w-[66rem] px-4 py-24">
             <div className="text-center">
               <h2 className="font-serif text-3xl font-semibold sm:text-4xl">{t("home.compare.title")}</h2>
               <p className="mt-4 text-white/55">{t("home.compare.subtitle")}</p>
             </div>
             <div className="mt-12 overflow-hidden rounded-3xl border border-white/[0.08]">
-              <div className="grid grid-cols-[1fr_80px_80px] items-center border-b border-white/[0.08] bg-white/[0.03] px-5 py-4 text-xs font-semibold uppercase tracking-wider sm:grid-cols-[1fr_140px_140px]">
+              <div className="grid grid-cols-[1fr_80px_80px] items-center border-b border-white/[0.08] bg-white/[0.03] px-5 py-4 text-xs font-semibold uppercase tracking-wider sm:grid-cols-[1fr_180px_180px] sm:px-8">
                 <span />
                 <span className="text-center text-amber-300">{t("home.compare.us")}</span>
                 <span className="text-center text-white/40">{t("home.compare.them")}</span>
               </div>
               {compareRows.map((row, i) => (
-                <div key={row} className="grid grid-cols-[1fr_80px_80px] items-center border-b border-white/[0.05] px-5 py-4 text-sm last:border-b-0 sm:grid-cols-[1fr_140px_140px]">
+                <div key={row} className="grid grid-cols-[1fr_80px_80px] items-center border-b border-white/[0.05] px-5 py-4 text-sm last:border-b-0 sm:grid-cols-[1fr_180px_180px] sm:px-8 sm:py-5 sm:text-base">
                   <span className="text-white/80">{row}</span>
                   <span className="flex justify-center">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-400/15 text-amber-300"><Check className="h-3.5 w-3.5" /></span>
@@ -298,22 +298,24 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ❓ أسئلة */}
+        {/* ❓ أسئلة: ممتدة بعرض إطار الدعوة الأخيرة، أسئلة كبيرة بفواصل خفيفة */}
         <section className="border-t border-white/[0.06]">
-          <div className="mx-auto max-w-3xl px-4 py-24">
+          <div className="mx-auto max-w-[66rem] px-4 py-24">
             <h2 className="text-center font-serif text-3xl font-semibold sm:text-4xl">{t("home.faq.title")}</h2>
-            <div className="mt-10 divide-y divide-white/[0.07] rounded-3xl border border-white/[0.07] bg-white/[0.02]">
+            <div className="mt-12 border-t border-white/[0.08]">
               {faq.map((s, i) => (
-                <details key={i} className="group px-6 py-5 [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
+                <details key={i} className="group border-b border-white/[0.08] [&_summary::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-semibold text-white/90 transition-colors hover:text-white sm:py-7 sm:text-xl">
                     {s.h}
-                    <ChevronDown className="h-4 w-4 shrink-0 text-white/40 transition-transform group-open:rotate-180" />
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all group-open:rotate-180 group-open:border-amber-400/40 group-open:text-amber-300 group-hover:border-white/25">
+                      <ChevronDown className="h-4 w-4" />
+                    </span>
                   </summary>
-                  <p className="mt-3 leading-relaxed text-white/60">{s.p}</p>
+                  <p className="-mt-1 max-w-3xl pb-7 text-[15px] leading-relaxed text-white/60 sm:text-base">{s.p}</p>
                 </details>
               ))}
             </div>
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
               <Link href="/faq" className="inline-flex items-center gap-1.5 text-sm text-amber-300 hover:text-amber-200">
                 {t("home.faq.more")}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />

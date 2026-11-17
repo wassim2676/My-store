@@ -546,7 +546,24 @@
       "currentPassword": "Mot de passe actuel",
       "newPassword": "Nouveau mot de passe",
       "passwordHint": "Utilisez majuscules, minuscules, chiffres et un symbole (!@#$%^&*).",
-      "changePassword": "Changer le mot de passe"
+      "changePassword": "Changer le mot de passe",
+      "edit": "Modifier",
+      "cancel": "Annuler",
+      "name": "Nom",
+      "email": "E-mail",
+      "lockedHint": "Vos informations sont verrouillées pour éviter toute modification accidentelle. Cliquez sur Modifier pour les changer.",
+      "emailConfirmHint": "Votre e-mail sert à vous connecter. Saisissez votre mot de passe actuel pour confirmer.",
+      "passwordChanged": "Mot de passe modifié",
+      "errors": {
+        "wrong_password": "Votre mot de passe actuel est incorrect.",
+        "email_taken": "Cet e-mail est déjà utilisé par un autre compte.",
+        "invalid_email": "Saisissez une adresse e-mail valide.",
+        "same_email": "C’est déjà votre e-mail.",
+        "no_password": "Ce compte n’a pas de mot de passe. Définissez-en un d’abord.",
+        "invalid": "Vérifiez vos informations et réessayez.",
+        "unauthorized": "Votre session a expiré. Reconnectez-vous.",
+        "server": "Une erreur est survenue. Réessayez."
+      }
     },
     "media": {
       "dropTitle": "Glissez-déposez vos images ici, collez-les (Ctrl+V), ou",
@@ -641,7 +658,7 @@
       },
       "bots": {
         "title": "Protection contre les robots",
-        "subtitle": "Recommandée — protège vos comptes affiliés.",
+        "subtitle": "Protège vos comptes affiliés.",
         "p1": "Les robots d’aperçu des réseaux sociaux ne voient jamais votre lien affilié.",
         "p2": "Ils sont envoyés vers la page produit propre de la boutique, sans votre tag ni click ID : aucun faux clic sur votre compte.",
         "p3": "Moteurs de recherche, robots d’IA, outils SEO, scripts et navigateurs automatisés sont aussi filtrés.",
@@ -656,7 +673,23 @@
         "network": "Échec de l’enregistrement. Vérifiez votre connexion.",
         "unauthorized": "Votre session a expiré. Reconnectez-vous.",
         "no_page": "Créez d’abord votre page."
+      },
+      "rec": "Recommandé",
+      "tips": {
+        "bots": "Les réseaux sociaux et robots ouvrent chaque lien qu’ils voient. Sans protection, ces visites atteignent votre lien affilié et peuvent passer pour des clics invalides chez Amazon, Walmart, etc.",
+        "neutral": "Le choix le plus sûr : les visiteurs bloqués n’atteignent aucun lien affilié, vous n’envoyez donc pas de trafic non rémunéré ou interdit.",
+        "geo_allow": "À utiliser quand votre programme ne paie que certains pays — ex. Amazon.com ne paie que les acheteurs américains. Les autres sont tenus à l’écart.",
+        "geo_block": "À utiliser pour exclure les pays qui envoient un trafic faible ou invalide, tout en gardant les autres.",
+        "botsStat": "Visites de robots, aperçus de liens et scripts. Ils ont été envoyés vers la page propre de la boutique — aucun n’a touché votre lien affilié.",
+        "geoStat": "Vrais visiteurs de pays hors de votre audience. Ils ont vu votre page neutre ou votre destination au lieu du lien affilié."
       }
+    },
+    "rec": {
+      "label": "Recommandé",
+      "navTheme": "Suit automatiquement les couleurs de votre page et reste toujours lisible — même si vous changez de thème.",
+      "cardImage": "La plupart des photos produits sont prises sur fond blanc. Un cadre blanc les fond parfaitement : votre page ressemble à un catalogue haut de gamme.",
+      "disclosure": "Amazon Associates, Walmart et la FTC exigent une mention d’affiliation claire. La masquer peut entraîner la suspension de votre compte.",
+      "affiliateLink": "Votre lien n’apparaît jamais dans le code de votre page. Les visiteurs passent par une redirection protégée ; les robots n’obtiennent que la page produit simple."
     }
   },
   "pages": {

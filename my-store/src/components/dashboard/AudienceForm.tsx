@@ -7,7 +7,8 @@ import {
   AlertTriangle, Ban, Bot, Check, CircleSlash, Globe2, Loader2, MapPin, MousePointerClick, Navigation, Save, Search, ShieldCheck, X,
 } from "lucide-react";
 import { Toggle } from "./OfferForm";
-import { COUNTRY_CODES, COUNTRY_PRESETS, flagEmoji, isCountryAllowed, type AudienceSettings } from "@/lib/traffic";
+import { InfoTip, RecommendedBadge } from "@/components/shared/InfoTip";
+import { COUNTRY_CODES, COUNTRY_PRESETS, isCountryAllowed, type AudienceSettings } from "@/lib/traffic";
 
 const PRESET_KEYS = ["us", "northAmerica", "english", "eu", "gcc"] as const;
 const COVERED = ["Facebook", "Instagram", "WhatsApp", "Messenger", "TikTok", "X / Twitter", "LinkedIn", "Telegram", "Pinterest", "Snapchat", "Discord", "Slack", "Reddit", "Google", "Bing", "ChatGPT / AI", "Scripts & headless"];
@@ -139,8 +140,8 @@ export default function AudienceForm({
         {/* 📊 آخر 30 يوماً */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat icon={MousePointerClick} tone="text-emerald-300" value={nf.format(stats.clicks)} label={t("stats.clicks")} hint={t("stats.clicksHint")} />
-          <Stat icon={Bot} tone="text-sky-300" value={nf.format(stats.bots)} label={t("stats.bots")} hint={t("stats.botsHint")} />
-          <Stat icon={Ban} tone="text-amber-300" value={nf.format(stats.geo)} label={t("stats.geo")} hint={t("stats.geoHint")} />
+          <Stat icon={Bot} tone="text-sky-300" value={nf.format(stats.bots)} label={t("stats.bots")} hint={t("stats.botsHint")} tip={t("tips.botsStat")} />
+          <Stat icon={Ban} tone="text-amber-300" value={nf.format(stats.geo)} label={t("stats.geo")} hint={t("stats.geoHint")} tip={t("tips.geoStat")} />
         </div>
 
         {/* 🔄 كيف يعمل */}
@@ -161,7 +162,10 @@ export default function AudienceForm({
                 className={`rounded-xl border p-4 text-start transition cursor-pointer ${a.geoMode === m ? "border-amber-400 bg-amber-400/[0.06]" : "border-white/10 hover:border-white/25"}`}
               >
                 <span className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold">{t(`geo.modes.${m}`)}</span>
+                  <span className="flex items-center gap-1.5 text-sm font-semibold">
+                    {t(`geo.modes.${m}`)}
+                    {m !== "all" && <InfoTip text={t(`tips.geo_${m}`)} />}
+                  </span>
                   <span className={`flex h-4 w-4 items-center justify-center rounded-full border ${a.geoMode === m ? "border-amber-400 bg-amber-400" : "border-white/25"}`}>
                     {a.geoMode === m && <span className="h-1.5 w-1.5 rounded-full bg-black" />}
                   </span>
@@ -211,7 +215,6 @@ export default function AudienceForm({
                           a.geoMode === "allow" ? "border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-100" : "border-rose-400/25 bg-rose-400/[0.08] text-rose-100"
                         }`}
                       >
-                        <span aria-hidden>{flagEmoji(code)}</span>
                         {nameOf(code)}
                         <button type="button" onClick={() => toggleCountry(code)} className="rounded-full p-0.5 opacity-60 hover:bg-white/10 hover:opacity-100 cursor-pointer" aria-label={t("geo.remove")}>
                           <X className="h-3 w-3" />
@@ -252,7 +255,6 @@ export default function AudienceForm({
                           <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${on ? "border-amber-400 bg-amber-400 text-black" : "border-white/25"}`}>
                             {on && <Check className="h-3 w-3" strokeWidth={3} />}
                           </span>
-                          <span aria-hidden className="text-base leading-none">{flagEmoji(c.code)}</span>
                           <span className="min-w-0 flex-1 truncate">{c.name}</span>
                           <span className="text-[11px] tabular-nums text-white/30">{c.code}</span>
                         </button>
@@ -268,7 +270,7 @@ export default function AudienceForm({
           <div className={`mt-5 flex items-start gap-3 rounded-xl border px-4 py-3 text-sm ${myAllowed ? "border-emerald-400/20 bg-emerald-400/[0.05]" : "border-amber-400/25 bg-amber-400/[0.06]"}`}>
             <MapPin className={`mt-0.5 h-4 w-4 shrink-0 ${myAllowed ? "text-emerald-300" : "text-amber-300"}`} />
             <p className="text-white/75">
-              {myCountry ? t("geo.you", { country: `${flagEmoji(myCountry)} ${nameOf(myCountry)}` }) : t("geo.youUnknown")}{" "}
+              {myCountry ? t("geo.you", { country: nameOf(myCountry) }) : t("geo.youUnknown")}{" "}
               <span className={myAllowed ? "font-semibold text-emerald-300" : "font-semibold text-amber-300"}>{myAllowed ? t("geo.youAllowed") : t("geo.youBlocked")}</span>
             </p>
           </div>
@@ -284,7 +286,10 @@ export default function AudienceForm({
                 onClick={() => set("blockAction", m)}
                 className={`rounded-xl border p-4 text-start transition cursor-pointer ${a.blockAction === m ? "border-amber-400 bg-amber-400/[0.06]" : "border-white/10 hover:border-white/25"}`}
               >
-                <span className="text-sm font-semibold">{t(`blocked.actions.${m}`)}</span>
+                <span className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+                  {t(`blocked.actions.${m}`)}
+                  {m === "page" && <RecommendedBadge label={t("rec")} reason={t("tips.neutral")} />}
+                </span>
                 <span className="mt-1 block text-xs leading-relaxed text-white/50">{t(`blocked.actionsHint.${m}`)}</span>
               </button>
             ))}
@@ -309,6 +314,7 @@ export default function AudienceForm({
           icon={ShieldCheck}
           title={t("bots.title")}
           subtitle={t("bots.subtitle")}
+          badge={<RecommendedBadge label={t("rec")} reason={t("tips.bots")} />}
           action={<Toggle checked={a.botProtection} onChange={(v) => set("botProtection", v)} />}
         >
           <div className={`space-y-4 transition-opacity ${a.botProtection ? "" : "opacity-45"}`}>
@@ -349,6 +355,7 @@ function Card({
   title,
   subtitle,
   action,
+  badge,
   muted,
   children,
 }: {
@@ -356,6 +363,7 @@ function Card({
   title: string;
   subtitle: string;
   action?: React.ReactNode;
+  badge?: React.ReactNode;
   muted?: boolean;
   children: React.ReactNode;
 }) {
@@ -367,7 +375,10 @@ function Card({
             <Icon className="h-4.5 w-4.5" />
           </span>
           <div className="min-w-0">
-            <h2 className="font-semibold">{title}</h2>
+            <h2 className="flex flex-wrap items-center gap-2 font-semibold">
+              {title}
+              {badge}
+            </h2>
             <p className="mt-0.5 text-sm text-white/50">{subtitle}</p>
           </div>
         </div>
@@ -378,12 +389,15 @@ function Card({
   );
 }
 
-function Stat({ icon: Icon, tone, value, label, hint }: { icon: React.ComponentType<{ className?: string }>; tone: string; value: string; label: string; hint: string }) {
+function Stat({ icon: Icon, tone, value, label, hint, tip }: { icon: React.ComponentType<{ className?: string }>; tone: string; value: string; label: string; hint: string; tip?: string }) {
   return (
     <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
       <Icon className={`h-4.5 w-4.5 ${tone}`} />
       <p className="mt-3 text-2xl font-semibold tabular-nums">{value}</p>
-      <p className="text-sm text-white/70">{label}</p>
+      <p className="flex items-center gap-1.5 text-sm text-white/70">
+        {label}
+        {tip && <InfoTip text={tip} />}
+      </p>
       <p className="mt-0.5 text-xs text-white/35">{hint}</p>
     </div>
   );

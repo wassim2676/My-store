@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { localizedApiError } from "@/lib/api-error";
-import { AlertTriangle, Check, ExternalLink, Loader2, Monitor, RotateCcw, Save, Smartphone } from "lucide-react";
+import { AlertTriangle, Check, ExternalLink, Loader2, Lock, Monitor, Pencil, RotateCcw, Save, Smartphone, X } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { Toggle } from "./OfferForm";
 import { SingleImageField } from "./ImageUpload";
@@ -13,6 +13,7 @@ import Storefront from "@/components/landing/Storefront";
 import ClientFonts from "@/components/landing/ClientFonts";
 import LandingFooter from "@/components/landing/LandingFooter";
 import FontPicker from "./FontPicker";
+import { RecommendedBadge } from "@/components/shared/InfoTip";
 import {
   BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
   RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, type PageDesign,
@@ -53,6 +54,10 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
   const [design, setDesign] = useState<PageDesign>(initial.design);
   const [socials, setSocials] = useState<Record<string, string>>(initial.socialLinks);
   const [slugStatus, setSlugStatus] = useState<SlugStatus>("available");
+  // 🔒 اسم الصفحة ورابطها مقفلان افتراضياً — زر "تعديل" يفتحهما (حماية من تغيير حرف بالخطأ)
+  const [savedTitle, setSavedTitle] = useState(initial.title);
+  const [editTitle, setEditTitle] = useState(false);
+  const [editSlug, setEditSlug] = useState(false);
   const [savedSlug, setSavedSlug] = useState(initial.slug);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -94,6 +99,9 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(apiError(res.status, data.error));
       setSavedSlug(data.data.slug);
+      setSavedTitle(data.data.title);
+      setEditTitle(false);
+      setEditSlug(false);
       setSaved(true);
       setDirty(false);
       setTimeout(() => setSaved(false), 2200);
@@ -175,7 +183,10 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
           {/* 🧭 شريط التنقل */}
           <Card title={t("design.sec.navbar")}>
             <div>
-              <p className="mb-2 text-sm text-white/70">{t("design.navStyle")}</p>
+              <p className="mb-2 flex flex-wrap items-center gap-2 text-sm text-white/70">
+                {t("design.navStyle")}
+                <RecommendedBadge label={t("rec.label")} reason={t("rec.navTheme")} />
+              </p>
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {NAV_STYLES.map((v) => {
                   const st = themeStyle(f.theme, f.accentColor, { ...design, nav: v }) as Record<string, string>;
@@ -193,7 +204,10 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
                           <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: st["--lp-nav-btn"] }} />
                         </div>
                       </div>
-                      <p className="truncate bg-white/[0.04] px-2.5 py-1.5 text-[11px]">{t(`design.navStyles.${v}`)}</p>
+                      <p className="flex items-center gap-1.5 truncate bg-white/[0.04] px-2.5 py-1.5 text-[11px]">
+                        {t(`design.navStyles.${v}`)}
+                        {v === "theme" && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />}
+                      </p>
                     </button>
                   );
                 })}
@@ -255,24 +269,44 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
               value={design.cardImage}
               options={CARD_IMAGE_STYLES.map((v) => ({ value: v, label: t(`design.cardImages.${v}`) }))}
               onChange={(v) => setD("cardImage", v)}
+              recommended={{ value: "white", label: t("rec.label"), reason: t("rec.cardImage") }}
             />
           </Card>
 
           {/* 🪪 الهوية */}
           <Card title={t("design.sec.identity")}>
-            <L text={t("design.pageTitle")}>
-              <input required maxLength={80} value={f.title} onChange={(e) => set("title", e.target.value)} className={field} />
-            </L>
-            <div className="space-y-1.5">
-              <span className="text-sm text-white/70">{t("design.slug")}</span>
+            <LockedField
+              label={t("design.pageTitle")}
+              display={f.title || "—"}
+              editing={editTitle}
+              onEdit={() => setEditTitle(true)}
+              onCancel={() => {
+                set("title", savedTitle);
+                setEditTitle(false);
+              }}
+              editLabel={t("account.edit")}
+              cancelLabel={t("account.cancel")}
+            >
+              <input required autoFocus maxLength={80} value={f.title} onChange={(e) => set("title", e.target.value)} className={field} />
+            </LockedField>
+            <LockedField
+              label={t("design.slug")}
+              display={<span dir="ltr">/{f.slug}</span>}
+              editing={editSlug}
+              onEdit={() => setEditSlug(true)}
+              onCancel={() => {
+                set("slug", savedSlug);
+                setEditSlug(false);
+              }}
+              editLabel={t("account.edit")}
+              cancelLabel={t("account.cancel")}
+            >
+              <p className="flex items-start gap-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.05] px-3 py-2 text-xs text-amber-200/90">
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                {t("design.slugWarning")}
+              </p>
               <SlugField value={f.slug} onChange={(v) => set("slug", v)} onStatus={setSlugStatus} currentSlug={savedSlug} />
-              {f.slug !== savedSlug && (
-                <p className="flex items-start gap-2 text-xs text-amber-300/90">
-                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                  {t("design.slugWarning")}
-                </p>
-              )}
-            </div>
+            </LockedField>
             <L text={t("design.tagline")} hint={t("design.taglineHint")}>
               <input maxLength={160} value={f.tagline} onChange={(e) => set("tagline", e.target.value)} className={field} />
             </L>
@@ -322,7 +356,10 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
           <Card title={t("design.sec.disclosure")}>
             <label className="flex cursor-pointer items-center justify-between gap-3 text-sm">
               <span>
-                <span className="block">{t("design.showDisclosure")}</span>
+                <span className="flex flex-wrap items-center gap-2">
+                  {t("design.showDisclosure")}
+                  <RecommendedBadge label={t("rec.label")} reason={t("rec.disclosure")} />
+                </span>
                 <span className="text-xs text-white/40">{t("design.showDisclosureHint")}</span>
               </span>
               <Toggle checked={f.showDisclosure} onChange={(v) => set("showDisclosure", v)} />
@@ -639,24 +676,31 @@ function Segmented<T extends string | number>({
   value,
   options,
   onChange,
+  recommended,
 }: {
   label: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
+  /** خيار موصى به: شارة بجانب العنوان (مع شرح السبب) ونقطة خضراء على الخيار */
+  recommended?: { value: T; label: string; reason: string };
 }) {
   return (
     <div>
-      <p className="mb-2 text-sm text-white/70">{label}</p>
+      <p className="mb-2 flex flex-wrap items-center gap-2 text-sm text-white/70">
+        {label}
+        {recommended && <RecommendedBadge label={recommended.label} reason={recommended.reason} />}
+      </p>
       <div className="flex flex-wrap gap-1.5 rounded-xl border border-white/10 bg-white/[0.02] p-1">
         {options.map((o) => (
           <button
             type="button"
             key={String(o.value)}
             onClick={() => onChange(o.value)}
-            className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium transition cursor-pointer ${value === o.value ? "bg-amber-400 text-black" : "text-white/60 hover:bg-white/[0.05] hover:text-white"}`}
+            className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium transition cursor-pointer ${value === o.value ? "bg-amber-400 text-black" : "text-white/60 hover:bg-white/[0.05] hover:text-white"}`}
           >
             {o.label}
+            {recommended?.value === o.value && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />}
           </button>
         ))}
       </div>
@@ -673,6 +717,57 @@ function Card({ title, action, children }: { title: string; action?: React.React
       </div>
       <div className="mt-5 space-y-5">{children}</div>
     </section>
+  );
+}
+
+/** 🔒 حقل مقفل: يعرض القيمة للقراءة فقط مع زر "تعديل"؛ "إلغاء" يعيد القيمة المحفوظة */
+function LockedField({
+  label,
+  display,
+  editing,
+  onEdit,
+  onCancel,
+  editLabel,
+  cancelLabel,
+  children,
+}: {
+  label: string;
+  display: React.ReactNode;
+  editing: boolean;
+  onEdit: () => void;
+  onCancel: () => void;
+  editLabel: string;
+  cancelLabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm text-white/70">{label}</span>
+        {editing && (
+          <button type="button" onClick={onCancel} className="inline-flex items-center gap-1 text-xs font-medium text-white/50 hover:text-white cursor-pointer">
+            <X className="h-3.5 w-3.5" />
+            {cancelLabel}
+          </button>
+        )}
+      </div>
+      {editing ? (
+        <div className="space-y-2">{children}</div>
+      ) : (
+        <div className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-black/20 px-4 py-2.5">
+          <Lock className="h-3.5 w-3.5 shrink-0 text-white/30" />
+          <span className="min-w-0 flex-1 truncate text-sm text-white/85">{display}</span>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-xs font-semibold text-white/80 transition hover:border-white/25 hover:bg-white/[0.05] hover:text-white cursor-pointer"
+          >
+            <Pencil className="h-3 w-3" />
+            {editLabel}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 

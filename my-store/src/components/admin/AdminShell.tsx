@@ -39,7 +39,7 @@ export default function AdminShell({ user, children }: { user: { name: string; e
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <div className="dark flex min-h-screen bg-[#07090D] text-white">
+    <div data-ui="dark" className="dark flex min-h-screen bg-[#07090D] text-white">
       {open && <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setOpen(false)} />}
 
       <aside
@@ -134,7 +134,7 @@ export default function AdminShell({ user, children }: { user: { name: string; e
               <ExternalLink className="h-4 w-4" />
               {t("viewSite")}
             </a>
-            <LanguageSwitcher variant="dark" />
+            <LanguageSwitcher variant="dark" placement="topbar" />
           </div>
         </header>
         <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 [&_.grid>*]:min-w-0">

@@ -97,7 +97,7 @@ export default function NavbarClient({ siteName, loggedIn, labels: l }: { siteNa
           {/* الإجراءات */}
           <div className="ms-auto flex shrink-0 items-center gap-1 lg:ms-0">
             <div className="hidden sm:block">
-              <LanguageSwitcher variant="dark" />
+              <LanguageSwitcher variant="dark" placement="navbar" />
             </div>
             {loggedIn ? (
               <Link href="/dashboard" className="group/cta hidden h-[38px] items-center gap-1.5 rounded-full bg-white px-4 text-[13px] font-semibold text-black transition hover:bg-amber-100 sm:inline-flex">

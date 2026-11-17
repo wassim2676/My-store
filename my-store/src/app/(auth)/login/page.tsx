@@ -26,7 +26,7 @@ function safeCallback(value: string | null): string | null {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#07090D]" />}>
+    <Suspense fallback={<div data-ui="dark" className="min-h-screen bg-[#07090D]" />}>
       <LoginForm />
     </Suspense>
   );
