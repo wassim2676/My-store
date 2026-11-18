@@ -535,7 +535,9 @@
         "handwriting": "Handwriting",
         "mono": "Monospace",
         "arabic": "Arabic"
-      }
+      },
+      "slugKept": "The name has no Latin letters, so your current link is kept.",
+      "slugFollows": "Your link follows your page name. Edit the name to change it — the new link is applied when you save."
     },
     "account": {
       "title": "Account",
@@ -688,7 +690,7 @@
       "label": "Recommended",
       "navTheme": "Follows your page colors automatically and always stays readable — even when you switch themes later.",
       "cardImage": "Most store product photos are shot on white. A white frame blends them seamlessly so your page looks like a premium catalog.",
-      "disclosure": "Amazon Associates, Walmart and the FTC require a clear affiliate disclosure. Hiding it can get your affiliate account suspended.",
+      "disclosure": "Amazon, Walmart and the FTC require an affiliate disclosure — hiding it can get your account suspended. Don’t want to write one? Leave the text empty and a ready-made default disclosure is shown automatically.",
       "affiliateLink": "Your link is never shown in your page’s code. Visitors go through a protected redirect, and bots only get the plain product page."
     }
   },

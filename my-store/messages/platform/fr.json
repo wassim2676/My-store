@@ -535,7 +535,9 @@
         "handwriting": "Manuscrite",
         "mono": "Monospace",
         "arabic": "Arabe"
-      }
+      },
+      "slugKept": "Le nom ne contient pas de lettres latines : votre lien actuel est conservé.",
+      "slugFollows": "Votre lien suit le nom de votre page. Modifiez le nom pour le changer — le nouveau lien est appliqué à l’enregistrement."
     },
     "account": {
       "title": "Compte",
@@ -688,7 +690,7 @@
       "label": "Recommandé",
       "navTheme": "Suit automatiquement les couleurs de votre page et reste toujours lisible — même si vous changez de thème.",
       "cardImage": "La plupart des photos produits sont prises sur fond blanc. Un cadre blanc les fond parfaitement : votre page ressemble à un catalogue haut de gamme.",
-      "disclosure": "Amazon Associates, Walmart et la FTC exigent une mention d’affiliation claire. La masquer peut entraîner la suspension de votre compte.",
+      "disclosure": "Amazon, Walmart et la FTC exigent une mention d’affiliation — la masquer peut entraîner la suspension de votre compte. Pas envie de l’écrire ? Laissez le texte vide : une mention par défaut s’affiche automatiquement.",
       "affiliateLink": "Votre lien n’apparaît jamais dans le code de votre page. Les visiteurs passent par une redirection protégée ; les robots n’obtiennent que la page produit simple."
     }
   },

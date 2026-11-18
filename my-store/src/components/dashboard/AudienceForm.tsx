@@ -288,7 +288,6 @@ export default function AudienceForm({
               >
                 <span className="flex flex-wrap items-center gap-2 text-sm font-semibold">
                   {t(`blocked.actions.${m}`)}
-                  {m === "page" && <RecommendedBadge label={t("rec")} reason={t("tips.neutral")} />}
                 </span>
                 <span className="mt-1 block text-xs leading-relaxed text-white/50">{t(`blocked.actionsHint.${m}`)}</span>
               </button>

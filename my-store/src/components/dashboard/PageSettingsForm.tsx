@@ -16,7 +16,7 @@ import FontPicker from "./FontPicker";
 import { RecommendedBadge } from "@/components/shared/InfoTip";
 import {
   BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
-  RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, type PageDesign,
+  RADIUS_STYLES, SOCIAL_KEYS, THEMES, deriveTokens, pageDir, publicT, themeStyle, toSlug, type PageDesign,
 } from "@/lib/landing";
 import type { SerializedLandingPage } from "@/lib/marketer";
 
@@ -57,7 +57,6 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
   // 🔒 اسم الصفحة ورابطها مقفلان افتراضياً — زر "تعديل" يفتحهما (حماية من تغيير حرف بالخطأ)
   const [savedTitle, setSavedTitle] = useState(initial.title);
   const [editTitle, setEditTitle] = useState(false);
-  const [editSlug, setEditSlug] = useState(false);
   const [savedSlug, setSavedSlug] = useState(initial.slug);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -101,7 +100,6 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
       setSavedSlug(data.data.slug);
       setSavedTitle(data.data.title);
       setEditTitle(false);
-      setEditSlug(false);
       setSaved(true);
       setDirty(false);
       setTimeout(() => setSaved(false), 2200);
@@ -183,10 +181,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
           {/* 🧭 شريط التنقل */}
           <Card title={t("design.sec.navbar")}>
             <div>
-              <p className="mb-2 flex flex-wrap items-center gap-2 text-sm text-white/70">
-                {t("design.navStyle")}
-                <RecommendedBadge label={t("rec.label")} reason={t("rec.navTheme")} />
-              </p>
+              <p className="mb-2 text-sm text-white/70">{t("design.navStyle")}</p>
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {NAV_STYLES.map((v) => {
                   const st = themeStyle(f.theme, f.accentColor, { ...design, nav: v }) as Record<string, string>;
@@ -204,10 +199,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
                           <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: st["--lp-nav-btn"] }} />
                         </div>
                       </div>
-                      <p className="flex items-center gap-1.5 truncate bg-white/[0.04] px-2.5 py-1.5 text-[11px]">
-                        {t(`design.navStyles.${v}`)}
-                        {v === "theme" && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />}
-                      </p>
+                      <p className="truncate bg-white/[0.04] px-2.5 py-1.5 text-[11px]">{t(`design.navStyles.${v}`)}</p>
                     </button>
                   );
                 })}
@@ -269,7 +261,6 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
               value={design.cardImage}
               options={CARD_IMAGE_STYLES.map((v) => ({ value: v, label: t(`design.cardImages.${v}`) }))}
               onChange={(v) => setD("cardImage", v)}
-              recommended={{ value: "white", label: t("rec.label"), reason: t("rec.cardImage") }}
             />
           </Card>
 
@@ -282,31 +273,37 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
               onEdit={() => setEditTitle(true)}
               onCancel={() => {
                 set("title", savedTitle);
+                set("slug", savedSlug);
                 setEditTitle(false);
               }}
               editLabel={t("account.edit")}
               cancelLabel={t("account.cancel")}
             >
-              <input required autoFocus maxLength={80} value={f.title} onChange={(e) => set("title", e.target.value)} className={field} />
+              <input
+                required
+                autoFocus
+                maxLength={80}
+                value={f.title}
+                onChange={(e) => {
+                  set("title", e.target.value);
+                  // الرابط يُشتق من الاسم لحظياً؛ إن لم يحتوِ الاسم أحرفاً لاتينية يبقى الرابط الحالي
+                  set("slug", toSlug(e.target.value) || savedSlug);
+                }}
+                className={field}
+              />
             </LockedField>
-            <LockedField
-              label={t("design.slug")}
-              display={<span dir="ltr">/{f.slug}</span>}
-              editing={editSlug}
-              onEdit={() => setEditSlug(true)}
-              onCancel={() => {
-                set("slug", savedSlug);
-                setEditSlug(false);
-              }}
-              editLabel={t("account.edit")}
-              cancelLabel={t("account.cancel")}
-            >
-              <p className="flex items-start gap-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.05] px-3 py-2 text-xs text-amber-200/90">
-                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                {t("design.slugWarning")}
-              </p>
-              <SlugField value={f.slug} onChange={(v) => set("slug", v)} onStatus={setSlugStatus} currentSlug={savedSlug} />
-            </LockedField>
+            <div className="space-y-1.5">
+              <span className="text-sm text-white/70">{t("design.slug")}</span>
+              <SlugField readOnly value={f.slug} onStatus={setSlugStatus} currentSlug={savedSlug} />
+              {editTitle && !toSlug(f.title) && f.title.trim() && <p className="text-xs text-white/45">{t("design.slugKept")}</p>}
+              {f.slug !== savedSlug && (
+                <p className="flex items-start gap-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.05] px-3 py-2 text-xs text-amber-200/90">
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  {t("design.slugWarning")}
+                </p>
+              )}
+              {!editTitle && <p className="text-xs text-white/40">{t("design.slugFollows")}</p>}
+            </div>
             <L text={t("design.tagline")} hint={t("design.taglineHint")}>
               <input maxLength={160} value={f.tagline} onChange={(e) => set("tagline", e.target.value)} className={field} />
             </L>

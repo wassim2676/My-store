@@ -14,11 +14,14 @@ export default function SlugField({
   onChange,
   onStatus,
   currentSlug,
+  readOnly = false,
 }: {
   value: string;
-  onChange: (v: string) => void;
+  onChange?: (v: string) => void;
   onStatus?: (s: SlugStatus) => void;
   currentSlug?: string;
+  /** للعرض فقط (يُشتق من حقل آخر) — مع إبقاء فحص التوفر الحي */
+  readOnly?: boolean;
 }) {
   const t = useTranslations("dash");
   const host = useSiteHost();
@@ -54,19 +57,28 @@ export default function SlugField({
 
   return (
     <div>
-      <div className="flex items-stretch overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] focus-within:ring-2 focus-within:ring-amber-400/50" dir="ltr">
+      <div
+        className={`flex items-stretch overflow-hidden rounded-xl border ${readOnly ? "border-white/[0.07] bg-black/20" : "border-white/10 bg-white/[0.03] focus-within:ring-2 focus-within:ring-amber-400/50"}`}
+        dir="ltr"
+      >
         <span className="flex items-center gap-1.5 whitespace-nowrap ps-3 pe-1 text-sm text-white/40">
           <Link2 className="h-4 w-4" />
           {host}/
         </span>
-        <input
-          dir="ltr"
-          value={value}
-          maxLength={40}
-          onChange={(e) => onChange(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-          placeholder="your-name"
-          className="min-w-0 flex-1 bg-transparent py-2.5 pe-3 text-white placeholder-white/30 focus:outline-none"
-        />
+        {readOnly ? (
+          <span className={`min-w-0 flex-1 truncate py-2.5 pe-3 text-sm transition-colors ${currentSlug && value !== currentSlug ? "text-amber-200" : "text-white/85"}`}>
+            {value || "…"}
+          </span>
+        ) : (
+          <input
+            dir="ltr"
+            value={value}
+            maxLength={40}
+            onChange={(e) => onChange?.(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+            placeholder="your-name"
+            className="min-w-0 flex-1 bg-transparent py-2.5 pe-3 text-white placeholder-white/30 focus:outline-none"
+          />
+        )}
       </div>
       <div className="mt-1.5 min-h-5 text-xs">
         {status === "checking" && (
