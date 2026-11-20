@@ -263,7 +263,8 @@
       "view": "View page",
       "admin": "Admin panel",
       "logout": "Log out",
-      "audience": "Audience"
+      "audience": "Audience",
+      "articles": "Articles"
     },
     "common": {
       "copy": "Copy",
@@ -692,6 +693,93 @@
       "cardImage": "Most store product photos are shot on white. A white frame blends them seamlessly so your page looks like a premium catalog.",
       "disclosure": "Amazon, Walmart and the FTC require an affiliate disclosure — hiding it can get your account suspended. Don’t want to write one? Leave the text empty and a ready-made default disclosure is shown automatically.",
       "affiliateLink": "Your link is never shown in your page’s code. Visitors go through a protected redirect, and bots only get the plain product page."
+    },
+    "articles": {
+      "title": "Articles",
+      "subtitle": "Write guides, reviews and buying advice that bring visitors from Google to your picks.",
+      "new": "New article",
+      "first": "Write your first article",
+      "viewBlog": "View blog",
+      "emptyTitle": "No articles yet",
+      "emptyHint": "Articles bring free traffic from Google and help visitors trust your recommendations. Embed your offers right inside the text.",
+      "filterAll": "All",
+      "search": "Search articles…",
+      "noResults": "No articles match.",
+      "status": {
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published"
+      },
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "update": "Update",
+      "saveDraft": "Save draft",
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "min": "{n} min",
+      "confirmDelete": "Delete “{title}” permanently?",
+      "newTitle": "New article",
+      "editTitle": "Edit article",
+      "titlePh": "Article title",
+      "cover": "Cover image",
+      "excerpt": "Short summary",
+      "excerptPh": "One or two sentences shown under the title and on article cards.",
+      "category": "Category",
+      "categoryPh": "e.g. Buying guide, Kitchen, Tech",
+      "tabs": {
+        "write": "Write",
+        "preview": "Preview"
+      },
+      "contentPh": "Start writing…\n\n## Use headings to organise sections\n\nWrite short paragraphs. Paste or drop images right here, and use “Insert offer” to show your product cards inside the article.",
+      "formatHint": "## heading · **bold** · *italic* · - list · > quote · paste or drop images",
+      "stats": "{words} words · {min} min read",
+      "emptyPreview": "Your article preview appears here.",
+      "seo": "Google result preview",
+      "seoTitle": "SEO title",
+      "seoDescription": "Meta description",
+      "seoDescPh": "What readers will learn — 120 to 160 characters works best.",
+      "quality": "Quality checklist",
+      "qualityHint": "Articles that tick these boxes rank better on Google and meet Google AdSense content guidelines.",
+      "qualityScore": "{n}/{total} done",
+      "check": {
+        "title": "Title between 20 and 70 characters",
+        "words": "At least 600 words ({n} now)",
+        "headings": "At least 3 section headings (##)",
+        "cover": "Cover image",
+        "description": "Summary or meta description",
+        "media": "An image or an offer inside the text"
+      },
+      "tool": {
+        "h2": "Heading",
+        "h3": "Subheading",
+        "bold": "Bold",
+        "italic": "Italic",
+        "link": "Link",
+        "ul": "Bulleted list",
+        "ol": "Numbered list",
+        "quote": "Quote",
+        "hr": "Divider",
+        "image": "Insert image",
+        "offer": "Insert offer",
+        "noOffers": "Publish an offer first to embed it here.",
+        "heading": "Section title",
+        "boldText": "bold text",
+        "italicText": "italic text",
+        "item": "List item",
+        "quoteText": "A memorable quote",
+        "linkPrompt": "Link URL",
+        "linkText": "link text"
+      },
+      "errors": {
+        "title": "Add a title (at least 3 characters).",
+        "content": "Write some content first.",
+        "invalid": "Please check the fields and try again.",
+        "limit": "You reached the maximum number of articles.",
+        "no_page": "Create your page first.",
+        "unauthorized": "Your session expired. Please log in again.",
+        "not_found": "This article no longer exists.",
+        "generic": "Something went wrong. Please try again."
+      }
     }
   },
   "pages": {

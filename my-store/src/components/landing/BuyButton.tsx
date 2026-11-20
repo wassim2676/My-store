@@ -30,11 +30,12 @@ export default function BuyButton({
       }`}
       style={{ backgroundColor: bg, color: fg }}
     >
-      <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-white px-1">
-        <BrandLogo brand={store} size={20} />
+      {/* إطار ثابت للشعار: لا ينضغط ولا تخرج منه الشعارات العريضة */}
+      <span className="flex h-7 w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-white px-1.5">
+        <BrandLogo brand={store} size={18} className="max-w-full! [&_svg]:max-w-full" />
       </span>
-      <span>{label || publicT(lang, "buyOn", { store: store.name })}</span>
-      <ExternalLink className="h-4 w-4 opacity-70 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100" />
+      <span className="min-w-0 text-balance text-center leading-tight">{label || publicT(lang, "buyOn", { store: store.name })}</span>
+      <ExternalLink className="h-4 w-4 shrink-0 opacity-70 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100" />
     </a>
   );
 }

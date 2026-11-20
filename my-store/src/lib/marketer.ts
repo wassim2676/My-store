@@ -309,7 +309,8 @@ export type SerializedLandingPage = ReturnType<typeof serializeLandingPage>;
 
 /** يولّد slug فريد للعرض داخل صفحة المسوّق */
 export async function uniqueOfferSlug(landingPageId: string, base: string, excludeId?: string): Promise<string> {
-  const root = base || `offer-${Date.now().toString(36)}`;
+  // "articles" محجوز لمسار مدونة الصفحة (/{slug}/articles)
+  const root = !base ? `offer-${Date.now().toString(36)}` : base === "articles" ? "articles-offer" : base;
   let candidate = root;
   for (let i = 2; i < 50; i++) {
     const exists = await prisma.offer.findFirst({

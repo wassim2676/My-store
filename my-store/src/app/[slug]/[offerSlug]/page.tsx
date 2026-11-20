@@ -275,7 +275,12 @@ export default async function OfferPage({ params }: Props) {
 
         {/* 🏁 الخلاصة */}
         <section className="mt-16 overflow-hidden rounded-3xl border border-[color-mix(in_srgb,var(--lp-accent)_35%,transparent)] bg-[radial-gradient(ellipse_80%_100%_at_0%_0%,color-mix(in_srgb,var(--lp-accent)_14%,transparent),transparent_70%)] p-6 sm:p-10">
-          <div className="grid items-center gap-8 md:grid-cols-[auto_1fr_minmax(0,320px)]">
+          <div
+            className={`grid items-center gap-8 ${
+              // الأعمدة حسب وجود التقييم: بدون تقييم كان الزر يقع في العمود الضيّق فيتشوّه
+              offer.rating != null && offer.rating > 0 ? "md:grid-cols-[auto_minmax(0,1fr)_minmax(240px,320px)]" : "md:grid-cols-[minmax(0,1fr)_minmax(240px,320px)]"
+            }`}
+          >
             {offer.rating != null && offer.rating > 0 && (
               <div className="flex flex-col items-center">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--lp-muted)]">{publicT(lang, "ourScore")}</span>

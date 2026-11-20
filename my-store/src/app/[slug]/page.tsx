@@ -8,6 +8,8 @@ import { bumpDailyStat, isCountableRequest } from "@/lib/marketer";
 import { parseDesign, parseSocials } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
 import Storefront from "@/components/landing/Storefront";
+import { LatestArticles } from "@/components/landing/ArticleCard";
+import { articleSummary, publishedArticles } from "@/lib/articles-server";
 
 type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ q?: string; c?: string }> };
 
@@ -35,6 +37,7 @@ export default async function LandingPageView({ params, searchParams }: Props) {
   if (!data) notFound();
 
   const { page, offers, isOwner } = data;
+  const articles = (await publishedArticles(page.id, 3)).map(articleSummary);
 
   // 📊 زيارة (لا تُحتسب زيارات المالك أو الروبوتات)
   const h = await headers();
@@ -69,6 +72,7 @@ export default async function LandingPageView({ params, searchParams }: Props) {
         initialQuery={typeof sp.q === "string" ? sp.q.slice(0, 100) : ""}
         initialCategory={typeof sp.c === "string" ? sp.c.slice(0, 80) : null}
       />
+      <LatestArticles articles={articles} pageSlug={page.slug} lang={page.language} />
     </LandingShell>
   );
 }

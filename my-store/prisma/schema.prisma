@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearchPostgres"]
 }
 
@@ -82,8 +82,8 @@ enum PostStatus {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
+  id            String    @id @default(cuid())
+  email         String    @unique
   passwordHash  String?
   firstName     String?
   lastName      String?
@@ -93,28 +93,28 @@ model User {
   country       String?
   city          String?
   avatar        String?
-  role          UserRole       @default(USER)
-  isActive      Boolean        @default(true)
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
   emailVerified DateTime?
-  
+
   // العلاقات
-  orders        Order[]        @relation("UserOrders")
-  cart          Cart?          @relation("UserCart")
-  addresses     Address[]
-  wishlist      WishlistItem[]
-  reviews       Review[]
-  vendor        Vendor?
+  orders    Order[]        @relation("UserOrders")
+  cart      Cart?          @relation("UserCart")
+  addresses Address[]
+  wishlist  WishlistItem[]
+  reviews   Review[]
+  vendor    Vendor?
 
   // 🔗 صفحة الهبوط الخاصة بالمسوّق بالعمولة (واحدة لكل حساب)
-  landingPage   LandingPage?
-  media         Media[]
+  landingPage LandingPage?
+  media       Media[]
 
   // NextAuth relations
-  accounts      Account[]
-  sessions      Session[]
-  
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  accounts Account[]
+  sessions Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // الفهارس
   @@index([email])
@@ -124,40 +124,40 @@ model User {
 }
 
 model Product {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
-  slug        String    @unique
-  description String?   @db.Text
-  shortDesc   String?   @db.VarChar(255)
-  price       Decimal   @db.Decimal(10, 2)
-  compareAt   Decimal?  @db.Decimal(10, 2)
-  costPrice   Decimal?  @db.Decimal(10, 2)
-  stock       Int       @default(0)
-  sku         String?   @unique
-  barcode     String?   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  shortDesc   String?  @db.VarChar(255)
+  price       Decimal  @db.Decimal(10, 2)
+  compareAt   Decimal? @db.Decimal(10, 2)
+  costPrice   Decimal? @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  sku         String?  @unique
+  barcode     String?  @unique
   images      String[]
   categories  String[]
   tags        String[]
   brand       String?
   weight      Float?
   dimensions  Json?
-  isActive    Boolean   @default(true)
-  isFeatured  Boolean   @default(false)
-  rating      Float?    @default(0)
-  reviewCount Int       @default(0)
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  rating      Float?   @default(0)
+  reviewCount Int      @default(0)
 
   // 🏪 البائع المالك للمنتج (فارغ = منتج المنصة نفسها)
-  vendor      Vendor?     @relation(fields: [vendorId], references: [id], onDelete: SetNull)
-  vendorId    String?
+  vendor   Vendor? @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  vendorId String?
 
   // العلاقات
-  orderItems  OrderItem[]
-  cartItems   CartItem[]
-  wishlistBy  WishlistItem[]
-  reviews     Review[]
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+  wishlistBy WishlistItem[]
+  reviews    Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // الفهارس
   @@index([isActive])
@@ -171,47 +171,47 @@ model Product {
 
 // ==================== 🏪 Vendor Model - متجر البائع في السوق متعدد البائعين ====================
 model Vendor {
-  id              String       @id @default(cuid())
-  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String       @unique
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
-  storeName       String       @db.VarChar(150)
-  slug            String       @unique
-  logo            String?
-  banner          String?
-  description     String?      @db.Text
+  storeName   String  @db.VarChar(150)
+  slug        String  @unique
+  logo        String?
+  banner      String?
+  description String? @db.Text
 
   status          VendorStatus @default(PENDING)
   rejectionReason String?      @db.Text
 
   // 🎨 تخصيص واجهة المتجر (يتحكم بها البائع بنفسه)
-  primaryColor    String       @default("#FF9900")
-  secondaryColor  String       @default("#131921")
-  backgroundColor String       @default("#FFFFFF")
-  textColor       String       @default("#0F1111")
-  bannerTitle     String?      @db.VarChar(150)
-  bannerSubtitle  String?      @db.VarChar(255)
+  primaryColor    String  @default("#FF9900")
+  secondaryColor  String  @default("#131921")
+  backgroundColor String  @default("#FFFFFF")
+  textColor       String  @default("#0F1111")
+  bannerTitle     String? @db.VarChar(150)
+  bannerSubtitle  String? @db.VarChar(255)
 
   // 📞 معلومات التواصل
-  phone           String?
-  contactEmail    String?
-  address         String?
-  city            String?
-  country         String?      @default("Morocco")
+  phone        String?
+  contactEmail String?
+  address      String?
+  city         String?
+  country      String? @default("Morocco")
 
   // 📊 إحصائيات
-  commissionRate  Float        @default(10)
-  rating          Float?       @default(0)
-  reviewCount     Int          @default(0)
-  totalSales      Decimal      @default(0) @db.Decimal(12, 2)
-  totalOrders     Int          @default(0)
+  commissionRate Float   @default(10)
+  rating         Float?  @default(0)
+  reviewCount    Int     @default(0)
+  totalSales     Decimal @default(0) @db.Decimal(12, 2)
+  totalOrders    Int     @default(0)
 
-  products        Product[]
-  orderItems      OrderItem[]
+  products   Product[]
+  orderItems OrderItem[]
 
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  approvedAt      DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  approvedAt DateTime?
 
   @@index([status])
   @@index([slug])
@@ -220,21 +220,21 @@ model Vendor {
 
 // ==================== 📝 Post Model - نظام المقالات (المدونة) ====================
 model Post {
-  id           String     @id @default(cuid())
-  title        String     @db.VarChar(200)
-  slug         String     @unique
-  excerpt      String?    @db.VarChar(300)
-  content      String     @db.Text
-  coverImage   String?
-  category     String?    @db.VarChar(100)
-  tags         String[]
-  status       PostStatus @default(DRAFT)
-  authorName   String     @default("فريق المتجر")
-  views        Int        @default(0)
+  id         String     @id @default(cuid())
+  title      String     @db.VarChar(200)
+  slug       String     @unique
+  excerpt    String?    @db.VarChar(300)
+  content    String     @db.Text
+  coverImage String?
+  category   String?    @db.VarChar(100)
+  tags       String[]
+  status     PostStatus @default(DRAFT)
+  authorName String     @default("فريق المتجر")
+  views      Int        @default(0)
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  publishedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
 
   @@index([status])
   @@index([slug])
@@ -243,11 +243,11 @@ model Post {
 }
 
 model Cart {
-  id        String     @id @default(cuid())
-  
-  user      User?      @relation("UserCart", fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?    @unique
-  
+  id String @id @default(cuid())
+
+  user   User?   @relation("UserCart", fields: [userId], references: [id], onDelete: Cascade)
+  userId String? @unique
+
   items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -270,48 +270,48 @@ model CartItem {
 
 // ==================== 🛒 Order Model - للطلبات العادية (العربة) ====================
 model Order {
-  id              String        @id @default(cuid())
-  orderNumber     Int           @unique @default(autoincrement())
-  
+  id          String @id @default(cuid())
+  orderNumber Int    @unique @default(autoincrement())
+
   // 🔗 للمستخدمين المسجلين
-  user            User?         @relation("UserOrders", fields: [userId], references: [id], onDelete: SetNull)
-  userId          String?
-  
+  user   User?   @relation("UserOrders", fields: [userId], references: [id], onDelete: SetNull)
+  userId String?
+
   // 📦 عناصر الطلب المتعددة (من العربة)
-  items           OrderItem[]
-  
+  items OrderItem[]
+
   // 💰 الأسعار
-  subtotal        Decimal       @db.Decimal(10, 2)
-  tax             Decimal       @db.Decimal(10, 2) @default(0)
-  taxRate         Float?        @default(0.20)
-  shippingFee     Decimal       @db.Decimal(10, 2) @default(0)
-  discount        Decimal       @db.Decimal(10, 2) @default(0)
-  discountCode    String?
-  total           Decimal       @db.Decimal(10, 2)
-  currency        String        @default("MAD")
-  
+  subtotal     Decimal @db.Decimal(10, 2)
+  tax          Decimal @default(0) @db.Decimal(10, 2)
+  taxRate      Float?  @default(0.20)
+  shippingFee  Decimal @default(0) @db.Decimal(10, 2)
+  discount     Decimal @default(0) @db.Decimal(10, 2)
+  discountCode String?
+  total        Decimal @db.Decimal(10, 2)
+  currency     String  @default("MAD")
+
   // 💳 الدفع
   paymentMethod   PaymentMethod @default(COD)
   paymentStatus   PaymentStatus @default(PENDING)
   paymentIntentId String?
   transactionId   String?
-  
+
   // 📊 الحالة والتتبع
-  status          OrderStatus   @default(PENDING)
-  trackingNumber  String?
-  trackingUrl     String?
-  shippedAt       DateTime?
-  deliveredAt     DateTime?
-  
+  status         OrderStatus @default(PENDING)
+  trackingNumber String?
+  trackingUrl    String?
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
+
   // 📝 ملاحظات
-  customerNote    String?       @db.Text
-  adminNotes      String?       @db.Text
-  
+  customerNote String? @db.Text
+  adminNotes   String? @db.Text
+
   // 🕐 الطوابع الزمنية
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  cancelledAt     DateTime?
-  refundedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  cancelledAt DateTime?
+  refundedAt  DateTime?
 
   // 🔍 الفهارس
   @@index([status])
@@ -334,8 +334,8 @@ model OrderItem {
   total     Decimal @db.Decimal(10, 2)
 
   // 🏪 البائع صاحب هذا المنتج وقت الطلب (لتسهيل فلترة طلبات كل بائع)
-  vendor    Vendor? @relation(fields: [vendorId], references: [id], onDelete: SetNull)
-  vendorId  String?
+  vendor   Vendor? @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  vendorId String?
 
   @@index([orderId])
   @@index([productId])
@@ -344,100 +344,99 @@ model OrderItem {
 
 // ==================== ✍️ ManualOrder Model - جديد! للطلبات اليدوية ====================
 model ManualOrder {
-  id                  String        @id @default(cuid())
-  orderNumber         Int           @unique @default(autoincrement())
-  
+  id          String @id @default(cuid())
+  orderNumber Int    @unique @default(autoincrement())
+
   // ==================== 👤 معلومات العميل (مطلوبة) ====================
-  customerName        String        @db.VarChar(255)   // ✅ الاسم الكامل (مطلوب)
-  phone               String        @db.VarChar(20)    // ✅ رقم الهاتف (مطلوب)
-  email               String?       @db.VarChar(255)   // ✅ البريد الإلكتروني (اختياري)
-  country             String        @db.VarChar(100)   // ✅ الدولة (مطلوب)
-  city                String        @db.VarChar(100)   // ✅ المدينة (مطلوب)
-  address             String        @db.Text           // ✅ العنوان التفصيلي (مطلوب)
-  
+  customerName String  @db.VarChar(255) // ✅ الاسم الكامل (مطلوب)
+  phone        String  @db.VarChar(20) // ✅ رقم الهاتف (مطلوب)
+  email        String? @db.VarChar(255) // ✅ البريد الإلكتروني (اختياري)
+  country      String  @db.VarChar(100) // ✅ الدولة (مطلوب)
+  city         String  @db.VarChar(100) // ✅ المدينة (مطلوب)
+  address      String  @db.Text // ✅ العنوان التفصيلي (مطلوب)
+
   // ==================== 📦 تفاصيل المنتج (مطلوبة) ====================
-  productType         String        @db.VarChar(255)   // ✅ نوع العرض/الباقة (مطلوب)
-  quantity            Int           @default(1)        // ✅ الكمية (مطلوب، افتراضي 1)
-  unitPrice           Decimal       @db.Decimal(10, 2) // ✅ سعر الوحدة
-  totalPrice          Decimal       @db.Decimal(10, 2) // ✅ السعر الإجمالي
-  
+  productType String  @db.VarChar(255) // ✅ نوع العرض/الباقة (مطلوب)
+  quantity    Int     @default(1) // ✅ الكمية (مطلوب، افتراضي 1)
+  unitPrice   Decimal @db.Decimal(10, 2) // ✅ سعر الوحدة
+  totalPrice  Decimal @db.Decimal(10, 2) // ✅ السعر الإجمالي
+
   // ==================== 💳 الدفع ====================
-  paymentMethod       PaymentMethod @default(COD)      // COD أو STRIPE
-  paymentStatus       PaymentStatus @default(PENDING)
-  
+  paymentMethod PaymentMethod @default(COD) // COD أو STRIPE
+  paymentStatus PaymentStatus @default(PENDING)
+
   // ==================== 📊 حالة الطلب والمكالمة ====================
-  status              OrderStatus   @default(PENDING)  // حالة الطلب
-  callStatus          CallStatus    @default(NOT_CALLED) // حالة المكالمة
-  
+  status     OrderStatus @default(PENDING) // حالة الطلب
+  callStatus CallStatus  @default(NOT_CALLED) // حالة المكالمة
+
   // ==================== 📝 ملاحظات إضافية ====================
-  customerNote        String?       @db.Text           // ملاحظة من العميل
-  adminNotes          String?       @db.Text           // ملاحظة من الأدمن
-  sourcePage          String?       @db.VarChar(255)   // الصفحة التي أتى منها النموذج (للتحليل)
-  userAgent           String?       @db.Text           // معلومات المتصفح (للتحليل)
-  ipAddress           String?       @db.VarChar(45)    // عنوان IP (للتحليل والأمان)
-  
+  customerNote String? @db.Text // ملاحظة من العميل
+  adminNotes   String? @db.Text // ملاحظة من الأدمن
+  sourcePage   String? @db.VarChar(255) // الصفحة التي أتى منها النموذج (للتحليل)
+  userAgent    String? @db.Text // معلومات المتصفح (للتحليل)
+  ipAddress    String? @db.VarChar(45) // عنوان IP (للتحليل والأمان)
+
   // ==================== 🕐 الطوابع الزمنية ====================
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  calledAt            DateTime?     // متى تم الاتصال بالعميل
-  cancelledAt         DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  calledAt    DateTime? // متى تم الاتصال بالعميل
+  cancelledAt DateTime?
 
   // ==================== 🎯 طلب مبدئي غير مؤكَّد (Lead) ====================
   // ✅ true = التُقط تلقائياً فور إكمال رقم الهاتف، ولم يضغط الزائر على "تأكيد الطلب" إطلاقاً
-  isLead              Boolean       @default(false)
+  isLead Boolean @default(false)
 
   // ==================== 🎙️ طلب صوتي (اختياري) ====================
   // ✅ يُخزَّن كـ Base64 مباشرة في قاعدة البيانات (حل ذاتي الاكتفاء بلا خدمة تخزين خارجية)
   // مناسب لحجم ملف دقيقة واحدة كحد أقصى (عادة أقل من 500KB بصيغة webm/opus)
-  voiceNoteBase64     String?       @db.Text
+  voiceNoteBase64 String? @db.Text
 
   // ==================== 🚚 معلومات الشحن (كانت مفقودة سابقاً وتسبب خطأ عند الحفظ) ====================
-  trackingNumber      String?       @db.VarChar(100)
-  trackingUrl         String?       @db.Text
-  
+  trackingNumber String? @db.VarChar(100)
+  trackingUrl    String? @db.Text
+
+  // ==================== 🔎 بحث نصي كامل (PostgreSQL) ====================
+
   // ==================== 🔍 الفهارس للأداء العالي ====================
   @@index([status])
   @@index([callStatus])
   @@index([paymentStatus])
-  @@index([phone])              // 🔍 بحث سريع برقم الهاتف
-  @@index([customerName])       // 🔍 بحث بالاسم
-  @@index([city, country])      // 🔍 بحث جغرافي
-  @@index([createdAt])          // 🔍 ترتيب زمني
-  @@index([productType])        // 🔍 فلترة حسب نوع المنتج
-  
-  // ==================== 🔎 بحث نصي كامل (PostgreSQL) ====================
-  
+  @@index([phone]) // 🔍 بحث سريع برقم الهاتف
+  @@index([customerName]) // 🔍 بحث بالاسم
+  @@index([city, country]) // 🔍 بحث جغرافي
+  @@index([createdAt]) // 🔍 ترتيب زمني
+  @@index([productType]) // 🔍 فلترة حسب نوع المنتج
 }
 
 // ==================== Address Model ====================
 model Address {
-  id          String       @id @default(cuid())
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  
-  label       String
-  type        AddressType  @default(SHIPPING)
-  
-  firstName   String
-  lastName    String
-  phone       String
-  company     String?
-  
-  street      String       @db.VarChar(255)
-  address2    String?      @db.VarChar(255)
-  city        String       @db.VarChar(100)
-  state       String?      @db.VarChar(100)
-  postalCode  String?      @db.VarChar(20)
-  country     String       @default("Morocco")
-  
-  isDefault   Boolean      @default(false)
-  isActive    Boolean      @default(true)
-  
-  latitude    Float?
-  longitude   Float?
-  
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  label String
+  type  AddressType @default(SHIPPING)
+
+  firstName String
+  lastName  String
+  phone     String
+  company   String?
+
+  street     String  @db.VarChar(255)
+  address2   String? @db.VarChar(255)
+  city       String  @db.VarChar(100)
+  state      String? @db.VarChar(100)
+  postalCode String? @db.VarChar(20)
+  country    String  @default("Morocco")
+
+  isDefault Boolean @default(false)
+  isActive  Boolean @default(true)
+
+  latitude  Float?
+  longitude Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, label])
   @@index([userId, isDefault])
@@ -446,14 +445,14 @@ model Address {
 
 // ==================== Wishlist Model ====================
 model WishlistItem {
-  id        String         @id @default(cuid())
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String       @id @default(cuid())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
-  type      WishlistType   @default(PRIVATE)
-  note      String?        @db.VarChar(255)
-  addedAt   DateTime       @default(now())
+  type      WishlistType @default(PRIVATE)
+  note      String?      @db.VarChar(255)
+  addedAt   DateTime     @default(now())
 
   @@unique([userId, productId])
   @@index([userId, addedAt])
@@ -462,21 +461,21 @@ model WishlistItem {
 
 // ==================== Review Model ====================
 model Review {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
-  
-  rating    Int
-  title     String?  @db.VarChar(100)
-  comment   String?  @db.Text
-  images    String[]
-  
+
+  rating  Int
+  title   String?  @db.VarChar(100)
+  comment String?  @db.Text
+  images  String[]
+
   isVerified Boolean @default(false)
   isApproved Boolean @default(false)
-  helpful   Int      @default(0)
-  
+  helpful    Int     @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -545,9 +544,9 @@ model PageComment {
   createdAt DateTime @default(now())
 
   // 🧵 الردود المتداخلة (تعليق على تعليق) — نفس النموذج، علاقة ذاتية
-  parentId  String?
-  parent    PageComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   PageComment[] @relation("CommentReplies")
+  parentId String?
+  parent   PageComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  PageComment[] @relation("CommentReplies")
 
   @@index([slug])
   @@index([parentId])
@@ -560,35 +559,35 @@ model PageComment {
 // لتجنب أي تأثير على المتجر والطلبات اليدوية الفعّالة حالياً.
 
 enum AffiliateProductStatus {
-  DRAFT       // مسودة، غير ظاهرة للزوار
-  PUBLISHED   // منشورة وظاهرة للجميع
-  ARCHIVED    // مؤرشفة (مخفية لكن غير محذوفة)
+  DRAFT // مسودة، غير ظاهرة للزوار
+  PUBLISHED // منشورة وظاهرة للجميع
+  ARCHIVED // مؤرشفة (مخفية لكن غير محذوفة)
 }
 
 // 🏷️ العلامة التجارية (Walmart, Target, Amazon, ...) — يضيفها الأدمن بحرية
 // الشعار يُخزَّن كـ SVG نصي خام يضيفه الأدمن نفسه (لا نولّد نحن أي شعار تجاري)
 model Brand {
-  id          String   @id @default(cuid())
-  name        String   @unique @db.VarChar(100)
-  slug        String   @unique @db.VarChar(120)
+  id   String @id @default(cuid())
+  name String @unique @db.VarChar(100)
+  slug String @unique @db.VarChar(120)
 
   // شعار SVG خام (يلصقه الأدمن)، أو رابط لملف SVG/صورة في /public — أحدهما كافٍ
-  logoSvg     String?  @db.Text
-  logoUrl     String?  @db.VarChar(500)
+  logoSvg String? @db.Text
+  logoUrl String? @db.VarChar(500)
 
   // لون العلامة التجارية (يُستعمل في زر "اشتري من X" وشارة الشعار)
-  accentColor String   @default("#1D4ED8") @db.VarChar(20)
+  accentColor String @default("#1D4ED8") @db.VarChar(20)
 
   // نص زر الشراء المخصص، مثال: "الشراء من Walmart" — إن تُرك فارغاً نولّده تلقائياً
-  buyLabel    String?  @db.VarChar(100)
+  buyLabel String? @db.VarChar(100)
 
-  isActive    Boolean  @default(true)
+  isActive Boolean @default(true)
 
-  products    AffiliateProduct[]
-  offers      Offer[]
+  products AffiliateProduct[]
+  offers   Offer[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([slug])
   @@index([isActive])
@@ -599,51 +598,52 @@ model Brand {
 // وكل عرض له صفحة مراجعة على /{slug}/{offerSlug} مع زر "اشترِ من {المتجر}".
 
 enum OfferStatus {
-  DRAFT       // مسودة — لا تظهر للزوار
-  PUBLISHED   // منشور
-  ARCHIVED    // مؤرشف (مخفي دون حذف)
+  DRAFT // مسودة — لا تظهر للزوار
+  PUBLISHED // منشور
+  ARCHIVED // مؤرشف (مخفي دون حذف)
 }
 
 model LandingPage {
-  id             String   @id @default(cuid())
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String   @unique
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
-  slug           String   @unique @db.VarChar(40)
-  title          String   @db.VarChar(80)
-  tagline        String?  @db.VarChar(160)
-  bio            String?  @db.Text
-  avatarUrl      String?  @db.VarChar(1000)
-  coverUrl       String?  @db.VarChar(1000)
+  slug      String  @unique @db.VarChar(40)
+  title     String  @db.VarChar(80)
+  tagline   String? @db.VarChar(160)
+  bio       String? @db.Text
+  avatarUrl String? @db.VarChar(1000)
+  coverUrl  String? @db.VarChar(1000)
 
   // 🎨 المظهر
-  language       String   @default("en") @db.VarChar(5)        // en | ar | fr — لغة واجهة الصفحة للزوار
-  theme          String   @default("midnight") @db.VarChar(20) // midnight | ivory | noir
-  accentColor    String   @default("#C8A24A") @db.VarChar(20)
-  design         Json?    // خيارات التصميم: لون خلفية حر، نمط الخلفية، الخط، الزوايا، الأزرار، الأعمدة
+  language    String @default("en") @db.VarChar(5) // en | ar | fr — لغة واجهة الصفحة للزوار
+  theme       String @default("midnight") @db.VarChar(20) // midnight | ivory | noir
+  accentColor String @default("#C8A24A") @db.VarChar(20)
+  design      Json? // خيارات التصميم: لون خلفية حر، نمط الخلفية، الخط، الزوايا، الأزرار، الأعمدة
 
   // 🌐 روابط التواصل { instagram, tiktok, youtube, x, facebook, pinterest, website }
-  socialLinks    Json?
+  socialLinks Json?
 
   // 🛡️ الجمهور وحماية روابط الأفلييت { geoMode, countries, blockAction, redirectUrl, botProtection } — انظر src/lib/traffic.ts
-  audience       Json?
+  audience Json?
 
   // ⚖️ إفصاح الأفلييت (مطلوب قانونياً عند Amazon/FTC)
-  showDisclosure Boolean  @default(true)
-  disclosure     String?  @db.Text
+  showDisclosure Boolean @default(true)
+  disclosure     String? @db.Text
 
   // 🔍 SEO
-  seoTitle       String?  @db.VarChar(70)
-  seoDescription String?  @db.VarChar(170)
+  seoTitle       String? @db.VarChar(70)
+  seoDescription String? @db.VarChar(170)
 
-  isPublished    Boolean  @default(true)
-  views          Int      @default(0)
+  isPublished Boolean @default(true)
+  views       Int     @default(0)
 
-  offers         Offer[]
-  dailyStats     LandingPageDailyStat[]
+  offers     Offer[]
+  articles   Article[]
+  dailyStats LandingPageDailyStat[]
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([slug])
 }
@@ -654,54 +654,54 @@ model Offer {
   landingPageId String
 
   // 🏬 المتجر: علامة من قائمة المنصات (Amazon/Walmart/Target...) أو اسم متجر حر
-  brand         Brand?      @relation(fields: [brandId], references: [id], onDelete: SetNull)
-  brandId       String?
-  storeName     String?     @db.VarChar(80)
-  storeLogo     String?     @db.VarChar(500) // شعار متجر حر (رفع SVG/PNG أو رابط) عندما لا يكون من قائمة المنصات
+  brand     Brand?  @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId   String?
+  storeName String? @db.VarChar(80)
+  storeLogo String? @db.VarChar(500) // شعار متجر حر (رفع SVG/PNG أو رابط) عندما لا يكون من قائمة المنصات
 
-  title         String      @db.VarChar(200)
-  slug          String      @db.VarChar(120)
-  subtitle      String?     @db.VarChar(200)
+  title    String  @db.VarChar(200)
+  slug     String  @db.VarChar(120)
+  subtitle String? @db.VarChar(200)
 
   // ✍️ المحتوى
-  shortReview   String      @db.VarChar(700)
-  review        String?     @db.Text
-  pros          String[]
-  cons          String[]
-  highlights    String[]
-  specs         Json?       // [{ label, value }]
-  verdict       String?     @db.VarChar(400)
+  shortReview String   @db.VarChar(700)
+  review      String?  @db.Text
+  pros        String[]
+  cons        String[]
+  highlights  String[]
+  specs       Json? // [{ label, value }]
+  verdict     String?  @db.VarChar(400)
 
   // 🖼️ الوسائط
-  images        String[]
-  videoUrl      String?     @db.VarChar(1000)
+  images   String[]
+  videoUrl String?  @db.VarChar(1000)
 
   // 🔗 الأفلييت
-  affiliateUrl  String      @db.Text
-  buttonLabel   String?     @db.VarChar(60)
-  couponCode    String?     @db.VarChar(60)
+  affiliateUrl String  @db.Text
+  buttonLabel  String? @db.VarChar(60)
+  couponCode   String? @db.VarChar(60)
 
   // 💰 السعر (اختياري — الأسعار عند المتاجر تتغيّر باستمرار)
-  price         Decimal?    @db.Decimal(10, 2)
-  compareAt     Decimal?    @db.Decimal(10, 2)
-  currency      String      @default("USD") @db.VarChar(10)
-  dealEndsAt    DateTime?
+  price      Decimal?  @db.Decimal(10, 2)
+  compareAt  Decimal?  @db.Decimal(10, 2)
+  currency   String    @default("USD") @db.VarChar(10)
+  dealEndsAt DateTime?
 
   // ⭐ تقييم المسوّق (0 – 5)
-  rating        Float?
-  category      String?     @db.VarChar(80)
-  badge         String?     @db.VarChar(40)
+  rating   Float?
+  category String? @db.VarChar(80)
+  badge    String? @db.VarChar(40)
 
-  isFeatured    Boolean     @default(false)
-  status        OfferStatus @default(PUBLISHED)
-  position      Int         @default(0)
+  isFeatured Boolean     @default(false)
+  status     OfferStatus @default(PUBLISHED)
+  position   Int         @default(0)
 
   // 📊 تتبع
-  views         Int         @default(0)
-  clicks        Int         @default(0)
+  views  Int @default(0)
+  clicks Int @default(0)
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([landingPageId, slug])
   @@index([landingPageId, status, position])
@@ -724,40 +724,40 @@ model LandingPageDailyStat {
 
 // 🛍️ منتج أفلييت — يعرضه الموقع مع مراجعة مختصرة وزر تحويل لرابط خارجي
 model AffiliateProduct {
-  id            String                  @id @default(cuid())
-  title         String                  @db.VarChar(255)
-  slug          String                  @unique @db.VarChar(255)
+  id    String @id @default(cuid())
+  title String @db.VarChar(255)
+  slug  String @unique @db.VarChar(255)
 
   // مراجعة مختصرة تظهر في صفحة "تصفح المنتج"
-  shortReview   String                  @db.VarChar(600)
-  description   String?                 @db.Text
+  shortReview String  @db.VarChar(600)
+  description String? @db.Text
 
-  images        String[]
-  price         Decimal?                @db.Decimal(10, 2)
-  compareAt     Decimal?                @db.Decimal(10, 2)
-  currency      String                  @default("MAD") @db.VarChar(10)
+  images    String[]
+  price     Decimal? @db.Decimal(10, 2)
+  compareAt Decimal? @db.Decimal(10, 2)
+  currency  String   @default("MAD") @db.VarChar(10)
 
-  category      String                  @db.VarChar(100)
-  tags          String[]
+  category String   @db.VarChar(100)
+  tags     String[]
 
   // 🔗 رابط الأفلييت الخارجي (Walmart/Target/Amazon/...) — يضبطه الأدمن
-  affiliateUrl  String                  @db.Text
+  affiliateUrl String @db.Text
 
-  rating        Float                   @default(0)
-  reviewCount   Int                     @default(0)
+  rating      Float @default(0)
+  reviewCount Int   @default(0)
 
-  isFeatured    Boolean                 @default(false)
-  status        AffiliateProductStatus  @default(PUBLISHED)
+  isFeatured Boolean                @default(false)
+  status     AffiliateProductStatus @default(PUBLISHED)
 
   // 📊 تتبع الأداء
-  views         Int                     @default(0)
-  clicks        Int                     @default(0)
+  views  Int @default(0)
+  clicks Int @default(0)
 
-  brand         Brand                   @relation(fields: [brandId], references: [id], onDelete: Restrict)
-  brandId       String
+  brand   Brand  @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  brandId String
 
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([slug])
   @@index([category])
@@ -766,6 +766,7 @@ model AffiliateProduct {
   @@index([isFeatured])
   @@index([createdAt])
 }
+
 // ==================== 🖼️ ملفات يرفعها المسوّقون (صور العروض، الصورة الشخصية، شعارات المتاجر) ====================
 // تُخزَّن في قاعدة البيانات (بعد ضغطها في المتصفح إلى WebP) وتُقدَّم من /api/media/{id} مع كاش طويل
 model Media {
@@ -778,4 +779,31 @@ model Media {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// 📰 مقالات المسوّق (مدونة صفحته) — /{slug}/articles/{articleSlug}
+// المحتوى بصيغة Markdown مبسّطة تُعرض بأمان (بدون HTML خام)، ويمكن تضمين عروض المسوّق: {{offer:slug}}
+model Article {
+  id            String      @id @default(cuid())
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  landingPageId String
+
+  slug       String  @db.VarChar(120)
+  title      String  @db.VarChar(150)
+  excerpt    String? @db.VarChar(300)
+  content    String  @db.Text
+  coverImage String? @db.VarChar(1000)
+  category   String? @db.VarChar(60)
+
+  status         String  @default("DRAFT") @db.VarChar(12) // DRAFT | PUBLISHED
+  seoTitle       String? @db.VarChar(70)
+  seoDescription String? @db.VarChar(170)
+  views          Int     @default(0)
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([landingPageId, slug])
+  @@index([landingPageId, status, publishedAt])
 }

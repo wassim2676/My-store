@@ -263,7 +263,8 @@
       "view": "Voir la page",
       "admin": "Administration",
       "logout": "Déconnexion",
-      "audience": "Audience"
+      "audience": "Audience",
+      "articles": "Articles"
     },
     "common": {
       "copy": "Copier",
@@ -692,6 +693,93 @@
       "cardImage": "La plupart des photos produits sont prises sur fond blanc. Un cadre blanc les fond parfaitement : votre page ressemble à un catalogue haut de gamme.",
       "disclosure": "Amazon, Walmart et la FTC exigent une mention d’affiliation — la masquer peut entraîner la suspension de votre compte. Pas envie de l’écrire ? Laissez le texte vide : une mention par défaut s’affiche automatiquement.",
       "affiliateLink": "Votre lien n’apparaît jamais dans le code de votre page. Les visiteurs passent par une redirection protégée ; les robots n’obtiennent que la page produit simple."
+    },
+    "articles": {
+      "title": "Articles",
+      "subtitle": "Rédigez des guides, tests et conseils d’achat qui amènent des visiteurs de Google vers vos sélections.",
+      "new": "Nouvel article",
+      "first": "Écrire votre premier article",
+      "viewBlog": "Voir le blog",
+      "emptyTitle": "Aucun article",
+      "emptyHint": "Les articles apportent du trafic gratuit depuis Google et renforcent la confiance. Intégrez vos offres directement dans le texte.",
+      "filterAll": "Tous",
+      "search": "Rechercher…",
+      "noResults": "Aucun article ne correspond.",
+      "status": {
+        "DRAFT": "Brouillon",
+        "PUBLISHED": "Publié"
+      },
+      "publish": "Publier",
+      "unpublish": "Dépublier",
+      "update": "Mettre à jour",
+      "saveDraft": "Enregistrer le brouillon",
+      "view": "Voir",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "min": "{n} min",
+      "confirmDelete": "Supprimer définitivement « {title} » ?",
+      "newTitle": "Nouvel article",
+      "editTitle": "Modifier l’article",
+      "titlePh": "Titre de l’article",
+      "cover": "Image de couverture",
+      "excerpt": "Résumé court",
+      "excerptPh": "Une ou deux phrases affichées sous le titre et sur les cartes.",
+      "category": "Catégorie",
+      "categoryPh": "ex. Guide d’achat, Cuisine, Tech",
+      "tabs": {
+        "write": "Écrire",
+        "preview": "Aperçu"
+      },
+      "contentPh": "Commencez à écrire…\n\n## Utilisez des titres pour organiser les sections\n\nÉcrivez des paragraphes courts. Collez ou déposez des images ici, et utilisez « Insérer une offre » pour afficher vos produits dans l’article.",
+      "formatHint": "## titre · **gras** · *italique* · - liste · > citation · collez ou déposez des images",
+      "stats": "{words} mots · {min} min de lecture",
+      "emptyPreview": "L’aperçu de votre article apparaît ici.",
+      "seo": "Aperçu du résultat Google",
+      "seoTitle": "Titre SEO",
+      "seoDescription": "Méta-description",
+      "seoDescPh": "Ce que le lecteur va apprendre — 120 à 160 caractères idéalement.",
+      "quality": "Liste qualité",
+      "qualityHint": "Les articles qui cochent ces cases se classent mieux sur Google et respectent les règles de contenu Google AdSense.",
+      "qualityScore": "{n}/{total} faits",
+      "check": {
+        "title": "Titre entre 20 et 70 caractères",
+        "words": "Au moins 600 mots ({n} actuellement)",
+        "headings": "Au moins 3 titres de section (##)",
+        "cover": "Image de couverture",
+        "description": "Résumé ou méta-description",
+        "media": "Une image ou une offre dans le texte"
+      },
+      "tool": {
+        "h2": "Titre",
+        "h3": "Sous-titre",
+        "bold": "Gras",
+        "italic": "Italique",
+        "link": "Lien",
+        "ul": "Liste à puces",
+        "ol": "Liste numérotée",
+        "quote": "Citation",
+        "hr": "Séparateur",
+        "image": "Insérer une image",
+        "offer": "Insérer une offre",
+        "noOffers": "Publiez d’abord une offre pour l’intégrer.",
+        "heading": "Titre de section",
+        "boldText": "texte en gras",
+        "italicText": "texte en italique",
+        "item": "Élément",
+        "quoteText": "Une citation marquante",
+        "linkPrompt": "URL du lien",
+        "linkText": "texte du lien"
+      },
+      "errors": {
+        "title": "Ajoutez un titre (3 caractères minimum).",
+        "content": "Écrivez d’abord du contenu.",
+        "invalid": "Vérifiez les champs et réessayez.",
+        "limit": "Vous avez atteint le nombre maximum d’articles.",
+        "no_page": "Créez d’abord votre page.",
+        "unauthorized": "Votre session a expiré. Reconnectez-vous.",
+        "not_found": "Cet article n’existe plus.",
+        "generic": "Une erreur est survenue. Réessayez."
+      }
     }
   },
   "pages": {
