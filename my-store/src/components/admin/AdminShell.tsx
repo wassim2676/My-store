@@ -9,7 +9,7 @@ import {
   ExternalLink, LayoutDashboard, LayoutGrid, LogOut, Menu, Newspaper, Package, ShieldCheck, ShoppingCart, Store, Tags, Users, X,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
-import { SITE_NAME } from "@/lib/site";
+import Logo from "@/components/shared/Logo";
 
 // ==================== 🛡️ غلاف لوحة الأدمن (نفس هوية المنصة الداكنة) ====================
 // الصنف "dark" يفعّل متغيرات dark: في صفحات الأدمن القديمة (المستخدمون، المدونة، الطلبات اليدوية...)
@@ -49,12 +49,12 @@ export default function AdminShell({ user, children }: { user: { name: string; e
       >
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] px-6">
           <Link href="/admin/dashboard" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-300 to-indigo-600">
-              <ShieldCheck className="h-4.5 w-4.5 text-white" />
-            </span>
             <span className="leading-tight">
-              <span className="block font-serif text-[19px] leading-none">{SITE_NAME}</span>
-              <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-sky-300/80">{t("panel")}</span>
+              <Logo className="h-6" />
+              <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-sky-300/80">
+                <ShieldCheck className="h-3 w-3" />
+                {t("panel")}
+              </span>
             </span>
           </Link>
           <button onClick={() => setOpen(false)} className="rounded-lg p-2 text-white/60 hover:bg-white/5 lg:hidden cursor-pointer" aria-label="close">

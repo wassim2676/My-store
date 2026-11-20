@@ -1,6 +1,6 @@
 // ==================== 🏷️ هوية المنصة ====================
 // يمكن تغيير الاسم من متغير البيئة NEXT_PUBLIC_SITE_NAME دون تعديل الكود
-export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "PrimeShelf";
+export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Primeshelf";
 
 /** النطاق الرسمي للمنصة */
 export const PRODUCTION_URL = "https://primeshelf.store";

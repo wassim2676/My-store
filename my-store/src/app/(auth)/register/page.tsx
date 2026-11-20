@@ -10,6 +10,7 @@ import { Eye, EyeOff, Mail, Lock, User, Sparkles, Loader2 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import SlugField, { type SlugStatus } from "@/components/dashboard/SlugField";
 import { toSlug } from "@/lib/landing";
+import Logo from "@/components/shared/Logo";
 
 const inputCls =
   "block w-full ps-10 pe-3 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-white placeholder-white/35 focus:outline-none focus:ring-2 focus:ring-amber-400/60 focus:border-transparent transition-all";
@@ -80,10 +81,8 @@ function RegisterForm() {
 
       <div className="relative w-full max-w-lg">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <Sparkles className="w-5 h-5 text-black" />
-            </span>
+          <Link href="/" className="inline-flex" aria-label="Home">
+            <Logo className="h-10" priority />
           </Link>
           <h1 className="mt-5 font-serif text-3xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="mt-2 text-white/60">{t("subtitle")}</p>

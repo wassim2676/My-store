@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="315" viewBox="160 94 1240 315" role="img" aria-labelledby="title desc">
+  <title id="title">Primeshelf logo</title>
+  <desc id="desc">Minimal gold abstract P symbol, gold divider, and Primeshelf wordmark in white and gold.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFD928"/>
+      <stop offset="0.55" stop-color="#F8B900"/>
+      <stop offset="1" stop-color="#E99A00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Abstract folded P mark -->
+  <g transform="translate(110 82)">
+    <path d="M92 22 H276
+             C337 22 376 62 376 119
+             C376 177 336 216 278 216
+             H179
+             L75 314
+             C68 321 57 315 61 305
+             L103 204
+             C112 183 131 170 154 170
+             H276
+             C305 170 322 151 322 121
+             C322 92 304 74 276 74
+             H92 Z"
+          fill="url(#gold)"/>
+    <path d="M104 204 C119 180 140 170 164 170 H274
+             C293 170 307 161 315 146
+             C307 169 289 184 262 184 H161
+             C141 184 125 191 112 207 L75 314
+             C68 321 57 315 61 305 Z"
+          fill="#D98B00" opacity=".34"/>
+  </g>
+
+  <path d="M520 145 V365" stroke="#D9A51A" stroke-width="2" opacity=".9"/>
+
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="166" letter-spacing="-5">
+    <text x="585" y="326" fill="#F7F7F5">Prime</text>
+    <text x="1016" y="326" fill="url(#gold)">shelf</text>
+  </g>
+</svg>

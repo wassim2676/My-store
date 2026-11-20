@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { SITE_NAME } from "@/lib/site";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
+import Logo from "@/components/shared/Logo";
 
 // ==================== 🦶 تذييل المنصة: أعمدة روابط + دعوة للتسجيل ====================
 export default async function SiteFooter() {
@@ -56,11 +57,8 @@ export default async function SiteFooter() {
         <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
           {/* العلامة */}
           <div className="max-w-sm">
-            <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600">
-                <Sparkles className="h-4 w-4 text-black" />
-              </span>
-              <span className="font-serif text-[19px] leading-none">{SITE_NAME}</span>
+            <Link href="/" className="flex w-fit items-center" aria-label={SITE_NAME}>
+              <Logo className="h-8" />
             </Link>
             <p className="mt-5 text-sm leading-relaxed text-white/50">{f("tagline")}</p>
             <Link

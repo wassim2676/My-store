@@ -203,11 +203,10 @@ function layout(locale: EmailLocale, preheader: string, blocks: Block[]): string
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page};">
 <tr><td align="center" style="padding:32px 12px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="${dir}" style="max-width:560px;background:${C.card};border:1px solid ${C.border};border-radius:10px;overflow:hidden;font-family:${font};text-align:${align};">
-    <tr><td style="background:${C.head};padding:20px 32px;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" dir="ltr"><tr>
-        <td style="width:26px;height:26px;background:${C.gold};border-radius:7px;font-size:0;line-height:0;">&nbsp;</td>
-        <td style="padding-left:10px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px;color:#FFFFFF;">${esc(SITE_NAME)}</td>
-      </tr></table>
+    <tr><td style="background:${C.head};padding:18px 32px;">
+      <a href="${SITE_URL}" target="_blank" style="text-decoration:none;">
+        <img src="${SITE_URL}/brand/primeshelf-logo-email.png" width="166" height="42" alt="${esc(SITE_NAME)}" style="display:block;border:0;outline:none;width:166px;height:42px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;line-height:42px;color:#FFFFFF;">
+      </a>
     </td></tr>
     <tr><td style="height:3px;background:${C.gold};font-size:0;line-height:0;">&nbsp;</td></tr>
     <tr><td style="padding:36px 32px 12px;">

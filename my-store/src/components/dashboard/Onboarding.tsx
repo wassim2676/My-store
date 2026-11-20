@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { localizedApiError } from "@/lib/api-error";
-import { Loader2, Sparkles, ShieldCheck } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import SlugField, { type SlugStatus } from "./SlugField";
 import { toSlug } from "@/lib/landing";
+import Logo from "@/components/shared/Logo";
 
 // ==================== 👋 اختيار اسم صفحة الهبوط (للحسابات التي لا تملك صفحة بعد) ====================
 export default function Onboarding({ firstName, isAdmin = false }: { firstName: string | null; isAdmin?: boolean }) {
@@ -56,9 +57,7 @@ export default function Onboarding({ firstName, isAdmin = false }: { firstName: 
         </Link>
       )}
       <form onSubmit={submit} className="w-full max-w-lg rounded-3xl border border-white/10 bg-white/[0.03] p-8 space-y-5">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600">
-          <Sparkles className="h-5 w-5 text-black" />
-        </span>
+        <Logo className="h-9" />
         <div>
           <h1 className="font-serif text-3xl font-semibold">{t("onboarding.title", { name: firstName || "" })}</h1>
           <p className="mt-2 text-white/60">{t("onboarding.subtitle")}</p>

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
-import { SITE_NAME } from "@/lib/site";
+import Logo from "@/components/shared/Logo";
 
 // ==================== 🔐 إطار صفحات الحساب الصغيرة (التفعيل، نسيت كلمة المرور، إعادة التعيين) ====================
 export default function AuthFrame({ children }: { children: React.ReactNode }) {
@@ -12,11 +11,8 @@ export default function AuthFrame({ children }: { children: React.ReactNode }) {
         <LanguageSwitcher variant="dark" />
       </div>
       <div className="relative w-full max-w-md">
-        <Link href="/" className="mx-auto mb-8 flex w-fit items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg shadow-amber-500/20">
-            <Sparkles className="h-5 w-5 text-black" />
-          </span>
-          <span className="font-serif text-xl leading-none">{SITE_NAME}</span>
+        <Link href="/" className="mx-auto mb-8 flex w-fit" aria-label="Home">
+          <Logo className="h-10" priority />
         </Link>
         <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur sm:p-8">{children}</div>
       </div>

@@ -5,8 +5,9 @@ import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { BarChart3, Check, Eye, EyeOff, Gem, Loader2, Lock, Mail, MousePointerClick, Sparkles } from "lucide-react";
+import { BarChart3, Check, Eye, EyeOff, Gem, Loader2, Lock, Mail, MousePointerClick } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
+import Logo from "@/components/shared/Logo";
 
 const inputCls =
   "block w-full ps-10 pe-3 py-3 rounded-xl border border-white/10 bg-white/[0.04] text-white placeholder-white/35 focus:outline-none focus:ring-2 focus:ring-amber-400/60 focus:border-transparent transition-all disabled:opacity-50";
@@ -98,10 +99,8 @@ function LoginForm() {
       <div className="relative flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center lg:text-start">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg shadow-amber-500/20">
-                <Sparkles className="h-5 w-5 text-black" />
-              </span>
+            <Link href="/" className="inline-flex" aria-label="Home">
+              <Logo className="h-10" priority />
             </Link>
             <h1 className="mt-6 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">{t("title")}</h1>
             <p className="mt-2 text-white/60">{t("subtitle")}</p>

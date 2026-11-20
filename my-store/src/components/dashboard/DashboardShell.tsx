@@ -6,12 +6,12 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
-  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, Sparkles, ShieldCheck, GlobeLock, Newspaper,
+  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import CopyLink from "./CopyLink";
 import VerifyEmailBanner from "./VerifyEmailBanner";
-import { SITE_NAME } from "@/lib/site";
+import Logo from "@/components/shared/Logo";
 
 export default function DashboardShell({
   page,
@@ -53,11 +53,8 @@ export default function DashboardShell({
         }`}
       >
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-300 to-amber-600">
-              <Sparkles className="h-4.5 w-4.5 text-black" />
-            </span>
-            <span className="font-serif text-[19px] leading-none">{SITE_NAME}</span>
+          <Link href="/" className="flex items-center" aria-label="Home">
+            <Logo className="h-9" />
           </Link>
           <button onClick={() => setOpen(false)} className="lg:hidden rounded-lg p-2 text-white/60 hover:bg-white/5 cursor-pointer" aria-label="close">
             <X className="h-5 w-5" />

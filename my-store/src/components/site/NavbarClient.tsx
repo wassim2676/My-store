@@ -3,8 +3,9 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, BookOpen, ChevronDown, CircleHelp, LifeBuoy, Menu, Newspaper, Sparkles, X } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, CircleHelp, LifeBuoy, Menu, Newspaper, X } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
+import Logo from "@/components/shared/Logo";
 
 export type NavLabels = Record<
   | "features" | "how" | "stores" | "resources" | "blog" | "guide" | "help" | "faq"
@@ -55,11 +56,8 @@ export default function NavbarClient({ siteName, loggedIn, labels: l }: { siteNa
       >
         <div className="flex h-[52px] items-center gap-3 ps-3 pe-1.5">
           {/* الشعار */}
-          <Link href="/" className="flex shrink-0 items-center gap-2" onClick={() => setOpen(false)}>
-            <span className="flex h-7 w-7 items-center justify-center rounded-[9px] bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 shadow-[0_0_20px_-6px_rgba(245,180,60,0.75)]">
-              <Sparkles className="h-3.5 w-3.5 text-black" />
-            </span>
-            <span className="font-serif text-[18px] leading-none">{siteName}</span>
+          <Link href="/" className="flex shrink-0 items-center" aria-label={siteName} onClick={() => setOpen(false)}>
+            <Logo className="h-8" priority />
           </Link>
 
           {/* روابط سطح المكتب — في الوسط، ممتدة بلا إطار داخلي سميك */}
