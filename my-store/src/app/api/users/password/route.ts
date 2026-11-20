@@ -1,8 +1,9 @@
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse, getAuthSession } from "@/lib/api-utils";
+import { requestEmailLocale, sendPasswordChanged } from "@/lib/email/account";
 
 // ==================== 🔍 مخطط التحقق (Zod Schema) ====================
 const passwordSchema = z.object({
@@ -45,6 +46,7 @@ export async function PUT(request: NextRequest) {
       select: { 
         id: true, 
         email: true, 
+        firstName: true,
         passwordHash: true,
         role: true,
       },
@@ -85,6 +87,10 @@ export async function PUT(request: NextRequest) {
 
     // 9️⃣ (اختياري) تسجيل الحدث للأمان
     console.log(`[PASSWORD_CHANGED] User: ${user.email} at: ${new Date().toISOString()}`);
+
+    // ✉️ تنبيه أمني بالبريد
+    const locale = await requestEmailLocale();
+    after(() => sendPasswordChanged(user, locale).catch((err) => console.error("[PASSWORD_NOTICE_EMAIL]", err)));
 
     return successResponse({ 
       message: "تم تغيير كلمة المرور بنجاح",

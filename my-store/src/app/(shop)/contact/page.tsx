@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Clock, Mail } from "lucide-react";
 import StaticPage, { contentMetadata } from "@/components/site/StaticPage";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export const generateMetadata = () => contentMetadata("contact");
 
-const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "support@mystore.ma";
 
 export default async function Page() {
   const t = await getTranslations("pages.contact");

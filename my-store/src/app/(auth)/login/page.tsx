@@ -46,6 +46,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const justRegistered = searchParams.get("registered") === "true";
+  const justReset = searchParams.get("reset") === "1";
 
   const callback = safeCallback(searchParams.get("callbackUrl"));
 
@@ -118,6 +119,12 @@ function LoginForm() {
                   {t("registered")}
                 </div>
               )}
+              {justReset && !error && (
+                <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+                  <Check className="h-4 w-4 shrink-0" />
+                  {t("resetDone")}
+                </div>
+              )}
               {error && <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</div>}
 
               <div className="relative">
@@ -161,7 +168,7 @@ function LoginForm() {
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-4 w-4 cursor-pointer accent-amber-500" />
                   {t("remember")}
                 </label>
-                <Link href="/contact" className="font-medium text-amber-300 hover:text-amber-200">
+                <Link href="/forgot-password" className="font-medium text-amber-300 hover:text-amber-200">
                   {t("forgot")}
                 </Link>
               </div>

@@ -1,6 +1,6 @@
 {
   "common": {
-    "siteName": "متجري",
+    "siteName": "PrimeShelf",
     "search": "ابحث عن منتجات، ماركات وأكثر...",
     "searchBtn": "بحث",
     "loading": "جاري التحميل...",
@@ -123,7 +123,7 @@
     "trustSupportDesc": "فريقنا جاهز لمساعدتك",
     "blogSectionTitle": "من مدونتنا",
     "blogSectionSubtitle": "نصائح ومقالات مفيدة يختارها فريقنا لك",
-    "whyUsTitle": "لماذا تختار متجري؟",
+    "whyUsTitle": "لماذا تختار PrimeShelf؟",
     "whyUsSubtitle": "نحن نجعل التسوق أسهل وأكثر أماناً كل يوم",
     "whyUsQuality": "منتجات موثوقة",
     "whyUsQualityDesc": "كل بائع يخضع للمراجعة قبل عرض منتجاته",

@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getPrismaErrorCode } from "@/lib/api-utils";
 import { slugSchema } from "@/lib/marketer";
+import { requestEmailLocale, sendVerification } from "@/lib/email/account";
 
 // ==================== 🧑‍💼 تسجيل مسوّق جديد + إنشاء صفحة الهبوط في نفس العملية ====================
 const registerSchema = z.object({
@@ -44,8 +45,12 @@ export async function POST(request: NextRequest) {
         isActive: true,
         landingPage: { create: { slug, title: pageTitle } },
       },
-      select: { id: true, email: true, landingPage: { select: { slug: true } } },
+      select: { id: true, email: true, firstName: true, landingPage: { select: { slug: true } } },
     });
+
+    // ✉️ رابط تفعيل الحساب (بعد الرد حتى لا ينتظر المستخدم مزوّد البريد)
+    const locale = await requestEmailLocale();
+    after(() => sendVerification(user, locale).catch((err) => console.error("[REGISTER_VERIFY_EMAIL]", err)));
 
     return NextResponse.json({ success: true, message: "تم إنشاء حسابك وصفحتك بنجاح", user }, { status: 201 });
   } catch (error) {

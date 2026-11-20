@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getMarketerSession } from "@/lib/marketer";
+import { prisma } from "@/lib/prisma";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import Onboarding from "@/components/dashboard/Onboarding";
 
@@ -21,10 +22,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   const user = ctx.session.user;
+  const account = await prisma.user.findUnique({ where: { id: ctx.userId }, select: { email: true, emailVerified: true } });
   return (
     <DashboardShell
       page={{ slug: ctx.landingPage.slug, title: ctx.landingPage.title, isPublished: ctx.landingPage.isPublished }}
       user={{ name: [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || "", email: user.email ?? "", role: user.role }}
+      unverifiedEmail={account && !account.emailVerified ? account.email : null}
     >
       {children}
     </DashboardShell>

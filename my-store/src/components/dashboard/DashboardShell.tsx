@@ -10,15 +10,18 @@ import {
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import CopyLink from "./CopyLink";
+import VerifyEmailBanner from "./VerifyEmailBanner";
 import { SITE_NAME } from "@/lib/site";
 
 export default function DashboardShell({
   page,
   user,
+  unverifiedEmail,
   children,
 }: {
   page: { slug: string; title: string; isPublished: boolean };
   user: { name: string; email: string; role: string };
+  unverifiedEmail?: string | null;
   children: React.ReactNode;
 }) {
   const t = useTranslations("dash");
@@ -146,7 +149,10 @@ export default function DashboardShell({
             <LanguageSwitcher variant="dark" placement="topbar" />
           </div>
         </header>
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 [&_.grid>*]:min-w-0">{children}</main>
+        <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 [&_.grid>*]:min-w-0">
+          {unverifiedEmail && <VerifyEmailBanner email={unverifiedEmail} />}
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -139,7 +139,8 @@
       "sideTitle": "Vos sélections. Votre lien. Vos commissions.",
       "side1": "Une page de luxe à votre nom",
       "side2": "Des pages d’avis avec boutons « Buy on Walmart »",
-      "side3": "Statistiques quotidiennes de vues et de clics"
+      "side3": "Statistiques quotidiennes de vues et de clics",
+      "resetDone": "Votre mot de passe a été mis à jour. Connectez-vous avec votre nouveau mot de passe."
     },
     "home": {
       "trust": [
@@ -221,6 +222,55 @@
       "final": {
         "title": "Réservez votre lien avant les autres",
         "subtitle": "Une minute suffit. Gratuit pour commencer."
+      }
+    },
+    "auth": {
+      "verify": {
+        "okTitle": "E-mail confirmé",
+        "okBody": "Merci ! Votre compte est maintenant actif. Nous vous avons envoyé un e-mail de bienvenue avec quelques conseils pour démarrer.",
+        "okCta": "Accéder à mon tableau de bord",
+        "badTitle": "Ce lien est invalide ou expiré",
+        "badBody": "Les liens de confirmation expirent après 48 heures et ne fonctionnent qu'une fois. Connectez-vous pour en demander un nouveau depuis votre tableau de bord.",
+        "badCta": "Demander un nouveau lien"
+      },
+      "forgot": {
+        "title": "Mot de passe oublié ?",
+        "subtitle": "Saisissez l'e-mail de connexion et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+        "email": "Adresse e-mail",
+        "submit": "Envoyer le lien",
+        "sentTitle": "Consultez votre boîte de réception",
+        "sentBody": "Si un compte existe pour {email}, vous recevrez un lien de réinitialisation dans quelques minutes.",
+        "sentHint": "Vous ne le voyez pas ? Vérifiez vos spams ou l'onglet Promotions. Le lien expire dans 60 minutes.",
+        "again": "Utiliser une autre adresse",
+        "back": "Retour à la connexion",
+        "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+        "error": "Une erreur est survenue. Veuillez réessayer."
+      },
+      "reset": {
+        "title": "Choisissez un nouveau mot de passe",
+        "subtitle": "Créez un mot de passe solide que vous n'utilisez pas ailleurs.",
+        "password": "Nouveau mot de passe",
+        "confirm": "Confirmer le mot de passe",
+        "hint": "8 caractères minimum.",
+        "submit": "Mettre à jour",
+        "short": "Le mot de passe doit contenir au moins 8 caractères.",
+        "mismatch": "Les mots de passe ne correspondent pas.",
+        "error": "Une erreur est survenue. Veuillez réessayer.",
+        "doneTitle": "Mot de passe mis à jour",
+        "doneBody": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.",
+        "doneCta": "Se connecter",
+        "badTitle": "Ce lien est invalide ou expiré",
+        "badBody": "Les liens de réinitialisation expirent après 60 minutes et ne fonctionnent qu'une fois. Demandez-en un nouveau.",
+        "badCta": "Demander un nouveau lien"
+      },
+      "banner": {
+        "title": "Confirmez votre adresse e-mail",
+        "body": "Nous avons envoyé un lien de confirmation à {email}. Confirmez-le pour activer et sécuriser votre compte.",
+        "resend": "Renvoyer le lien",
+        "sent": "Un nouveau lien a été envoyé à {email}. Vérifiez votre boîte de réception et vos spams.",
+        "sentShort": "Envoyé",
+        "cooldown": "Veuillez patienter {s} secondes avant de redemander un lien.",
+        "error": "Impossible d'envoyer l'e-mail. Réessayez dans un instant."
       }
     }
   },

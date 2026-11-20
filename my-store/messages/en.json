@@ -1,6 +1,6 @@
 {
   "common": {
-    "siteName": "MyStore",
+    "siteName": "PrimeShelf",
     "search": "Search for products, brands and more...",
     "searchBtn": "Search",
     "loading": "Loading...",
@@ -123,7 +123,7 @@
     "trustSupportDesc": "Our team is here to help",
     "blogSectionTitle": "From Our Blog",
     "blogSectionSubtitle": "Helpful tips and articles picked by our team",
-    "whyUsTitle": "Why Choose MyStore?",
+    "whyUsTitle": "Why Choose PrimeShelf?",
     "whyUsSubtitle": "We make shopping easier and safer every day",
     "whyUsQuality": "Trusted Products",
     "whyUsQualityDesc": "Every seller is reviewed before listing products",

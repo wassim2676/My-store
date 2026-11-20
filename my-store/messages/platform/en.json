@@ -139,7 +139,8 @@
       "sideTitle": "Your picks. Your link. Your commissions.",
       "side1": "Luxury landing page with your name",
       "side2": "Review pages with “Buy on Walmart” buttons",
-      "side3": "Daily views and click analytics"
+      "side3": "Daily views and click analytics",
+      "resetDone": "Your password was updated. Sign in with your new password."
     },
     "home": {
       "trust": [
@@ -221,6 +222,55 @@
       "final": {
         "title": "Claim your link before someone else does",
         "subtitle": "It takes one minute. Free to start."
+      }
+    },
+    "auth": {
+      "verify": {
+        "okTitle": "Email confirmed",
+        "okBody": "Thanks! Your account is now active. We've sent you a welcome email with a few tips to get started.",
+        "okCta": "Go to my dashboard",
+        "badTitle": "This link is invalid or expired",
+        "badBody": "Confirmation links expire after 48 hours and work only once. Sign in to request a new one from your dashboard.",
+        "badCta": "Request a new link"
+      },
+      "forgot": {
+        "title": "Forgot your password?",
+        "subtitle": "Enter the email you use to sign in and we'll send you a link to reset your password.",
+        "email": "Email address",
+        "submit": "Send reset link",
+        "sentTitle": "Check your inbox",
+        "sentBody": "If an account exists for {email}, you'll receive a link to reset your password within a few minutes.",
+        "sentHint": "Don't see it? Check your spam or promotions folder. The link expires in 60 minutes.",
+        "again": "Use a different email",
+        "back": "Back to sign in",
+        "invalidEmail": "Please enter a valid email address.",
+        "error": "Something went wrong. Please try again."
+      },
+      "reset": {
+        "title": "Choose a new password",
+        "subtitle": "Create a strong password you don't use on other sites.",
+        "password": "New password",
+        "confirm": "Confirm new password",
+        "hint": "At least 8 characters.",
+        "submit": "Update password",
+        "short": "Password must be at least 8 characters.",
+        "mismatch": "Passwords don't match.",
+        "error": "Something went wrong. Please try again.",
+        "doneTitle": "Password updated",
+        "doneBody": "Your password has been changed. You can now sign in with your new password.",
+        "doneCta": "Sign in",
+        "badTitle": "This link is invalid or expired",
+        "badBody": "Reset links expire after 60 minutes and work only once. Request a new one to continue.",
+        "badCta": "Request a new link"
+      },
+      "banner": {
+        "title": "Confirm your email address",
+        "body": "We sent a confirmation link to {email}. Confirm it to activate your account and keep it secure.",
+        "resend": "Resend link",
+        "sent": "A new confirmation link was sent to {email}. Check your inbox and spam folder.",
+        "sentShort": "Sent",
+        "cooldown": "Please wait {s} seconds before requesting another link.",
+        "error": "We couldn't send the email. Please try again in a moment."
       }
     }
   },
