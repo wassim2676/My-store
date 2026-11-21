@@ -104,6 +104,16 @@ const BOT_UA = new RegExp(
   "i",
 );
 
+// زواحف معاينة الروابط ومراجعة الإعلانات في منصات التواصل. تحصل على نفس وجهة الإنسان تماماً،
+// لأن عرض وجهة مختلفة لها يُعتبر Cloaking عند Meta/TikTok وقد يؤدي لحظر الدومين كله.
+const LINK_PREVIEW_UA =
+  /facebookexternalhit|facebookcatalog|meta-externalagent|meta-externalfetcher|facebot|twitterbot|linkedinbot|slackbot|telegrambot|whatsapp|discordbot|pinterestbot|pinterest\/0\.|redditbot|snap url preview|tiktokspider|bytespider|skypeuripreview|applebot/i;
+
+/** زاحف معاينة/مراجعة تابع لمنصة تواصل (وليس سكربت أو أداة نسخ) */
+export function isLinkPreviewBot(h: Headers): boolean {
+  return LINK_PREVIEW_UA.test(h.get("user-agent") || "");
+}
+
 export type VisitorKind = "human" | "bot" | "prefetch";
 
 /** يصنّف الطلب: إنسان، روبوت/زاحف، أو جلب مسبق من المتصفح */

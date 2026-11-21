@@ -373,7 +373,18 @@
       "clicksChart": "Daily clicks to stores",
       "noData": "No data yet",
       "topOffers": "Top offers",
-      "allOffers": "All offers"
+      "allOffers": "All offers",
+      "sources": {
+        "title": "Traffic sources",
+        "subtitle": "Where your visitors came from — last 30 days",
+        "empty": "Share your link on Instagram, TikTok, Facebook or WhatsApp — you'll see here which platform brings visitors and clicks.",
+        "source": "Source",
+        "share": "Share of visits",
+        "views": "Visits",
+        "clicks": "Clicks",
+        "direct": "Direct / unknown",
+        "other": "Other websites"
+      }
     },
     "offers": {
       "title": "My offers",
@@ -913,6 +924,18 @@
         "sslPending": "Issued after DNS is set",
         "platform": "Primeshelf link",
         "redirects": "redirects"
+      },
+      "verify": {
+        "title": "Domain verification",
+        "text": "Verify your domain with Meta, Pinterest, Google and Bing. Platforms trust verified domains more: Meta lets you edit link previews and run ads to your domain, and Google indexes it faster.",
+        "needDomain": "Connect your own domain above first — platforms verify the domain itself, so these tags work only on your custom domain.",
+        "getCode": "Get code",
+        "active": "Active",
+        "save": "Save",
+        "saved": "Saved",
+        "hint": "Paste the code or the full <meta> tag exactly as the platform gives it — we keep only the code and add the tag to your page automatically.",
+        "invalid": "One of the codes is not valid. Paste the code or the full <meta> tag as given by the platform.",
+        "error": "Couldn't save. Please try again."
       }
     }
   },

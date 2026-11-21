@@ -7,7 +7,8 @@ import { ArrowLeft, Check, Minus, Clock, Sparkles, PlayCircle } from "lucide-rea
 import { prisma } from "@/lib/prisma";
 import { getPublicLandingPage } from "@/lib/public-page";
 import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
-import { bumpDailyStat, isCountableRequest } from "@/lib/marketer";
+import { bumpDailyStat, bumpSourceStat, isCountableRequest } from "@/lib/marketer";
+import { visitSource } from "@/lib/sources-server";
 import { discountPercent, formatPrice, publicT, resolveStore, toEmbedUrl } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
 import OfferImages from "@/components/landing/OfferImages";
@@ -18,7 +19,7 @@ import BuyButton from "@/components/landing/BuyButton";
 import Stars from "@/components/landing/Stars";
 import BrandLogo from "@/components/shop/BrandLogo";
 
-type Props = { params: Promise<{ slug: string; offerSlug: string }> };
+type Props = { params: Promise<{ slug: string; offerSlug: string }>; searchParams?: Promise<{ utm_source?: string }> };
 
 async function load(slug: string, offerSlug: string) {
   const data = await getPublicLandingPage(slug);
@@ -38,12 +39,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: offer.shortReview.slice(0, 170),
     alternates: { canonical: pageAbsoluteUrl(page, `/${offer.slug}`) },
     robots: offer.status === "PUBLISHED" && page.isPublished ? undefined : { index: false, follow: false },
-    openGraph: { title: offer.title, description: offer.shortReview.slice(0, 200), images: offer.images.slice(0, 1), type: "article" },
-    twitter: { card: "summary_large_image", title: offer.title, description: offer.shortReview.slice(0, 200), images: offer.images.slice(0, 1) },
+    openGraph: { title: offer.title, description: offer.shortReview.slice(0, 200), type: "article" }, // الصورة من opengraph-image.tsx
+    twitter: { card: "summary_large_image", title: offer.title, description: offer.shortReview.slice(0, 200) },
   };
 }
 
-export default async function OfferPage({ params }: Props) {
+export default async function OfferPage({ params, searchParams }: Props) {
   const { slug, offerSlug } = await params;
   const data = await load(slug, offerSlug);
   if (!data) notFound();
@@ -56,11 +57,13 @@ export default async function OfferPage({ params }: Props) {
 
   const h = await headers();
   if (!isOwner && isCountableRequest(h)) {
+    const source = await visitSource((await searchParams)?.utm_source);
     after(async () => {
       try {
         await Promise.all([
           prisma.offer.update({ where: { id: offer.id }, data: { views: { increment: 1 } } }),
           bumpDailyStat(page.id, "views"),
+          bumpSourceStat(page.id, source, "views"),
         ]);
       } catch (err) {
         console.error("[OFFER_VIEW_TRACK_ERROR]", err);

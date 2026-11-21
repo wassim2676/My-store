@@ -5,29 +5,31 @@ import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getPublicLandingPage } from "@/lib/public-page";
 import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
-import { bumpDailyStat, isCountableRequest } from "@/lib/marketer";
+import { bumpDailyStat, bumpSourceStat, isCountableRequest } from "@/lib/marketer";
+import { visitSource } from "@/lib/sources-server";
+import { verificationMetadata } from "@/lib/integrations";
 import { parseDesign, parseSocials } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
 import Storefront from "@/components/landing/Storefront";
 import { LatestArticles } from "@/components/landing/ArticleCard";
 import { articleSummary, publishedArticles } from "@/lib/articles-server";
 
-type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ q?: string; c?: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ q?: string; c?: string; utm_source?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await getPublicLandingPage(slug);
   if (!data) return { title: "Not found" };
-  const { page, offers } = data;
+  const { page } = data;
   const description = page.seoDescription || page.tagline || page.bio?.slice(0, 160) || undefined;
-  const image = page.coverUrl || page.avatarUrl || offers[0]?.images[0];
   return {
     title: page.seoTitle || page.title,
     description,
     alternates: { canonical: pageAbsoluteUrl(page) },
+    verification: verificationMetadata(page.integrations),
     robots: page.isPublished ? undefined : { index: false, follow: false },
-    openGraph: { title: page.seoTitle || page.title, description, images: image ? [image] : undefined, type: "website" },
-    twitter: { card: "summary_large_image", title: page.seoTitle || page.title, description, images: image ? [image] : undefined },
+    openGraph: { title: page.seoTitle || page.title, description, type: "website" }, // الصورة من opengraph-image.tsx
+    twitter: { card: "summary_large_image", title: page.seoTitle || page.title, description },
   };
 }
 
@@ -45,11 +47,13 @@ export default async function LandingPageView({ params, searchParams }: Props) {
   // 📊 زيارة (لا تُحتسب زيارات المالك أو الروبوتات)
   const h = await headers();
   if (!isOwner && isCountableRequest(h)) {
+    const source = await visitSource(sp.utm_source);
     after(async () => {
       try {
         await Promise.all([
           prisma.landingPage.update({ where: { id: page.id }, data: { views: { increment: 1 } } }),
           bumpDailyStat(page.id, "views"),
+          bumpSourceStat(page.id, source, "views"),
         ]);
       } catch (err) {
         console.error("[LANDING_VIEW_TRACK_ERROR]", err);

@@ -2,6 +2,7 @@ import { cache } from "react";
 import { z } from "zod";
 import type { Offer, Brand, LandingPage } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import type { TrafficSource } from "@/lib/sources";
 import { classifyVisitor } from "@/lib/traffic";
 import { auth } from "@/lib/auth";
 import {
@@ -221,6 +222,16 @@ export async function bumpDailyStat(landingPageId: string, field: "views" | "cli
   await prisma.landingPageDailyStat.upsert({
     where: { landingPageId_date: { landingPageId, date } },
     create: { landingPageId, date, [field]: 1 },
+    update: { [field]: { increment: 1 } },
+  });
+}
+
+/** 📣 زيارة/نقرة حسب المصدر (instagram, tiktok, ...) — انظر src/lib/sources.ts */
+export async function bumpSourceStat(landingPageId: string, source: TrafficSource, field: "views" | "clicks") {
+  const date = todayUtc();
+  await prisma.landingPageSourceStat.upsert({
+    where: { landingPageId_date_source: { landingPageId, date, source } },
+    create: { landingPageId, date, source, [field]: 1 },
     update: { [field]: { increment: 1 } },
   });
 }

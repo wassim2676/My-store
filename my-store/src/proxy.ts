@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { SITE_URL } from "@/lib/site";
 import { isPlatformHost, normalizeHost } from "@/lib/domains";
 import { slugForDomain } from "@/lib/domain-lookup";
+import { detectSource, SOURCE_COOKIE } from "@/lib/sources";
 
 // ==================== 🛡️ Proxy (كان middleware قبل Next.js 16) ====================
 // 1) دومين خاص لمسوّق (mydeals.com) → نعرض صفحته: "/" ← "/{slug}" و"/x" ← "/{slug}/x" (إعادة كتابة داخلية، الرابط يبقى كما هو)
@@ -62,6 +63,24 @@ const PLATFORM_ONLY = ["/dashboard", "/admin", "/login", "/register", "/verify-e
 // مسارات مشتركة تعمل كما هي على أي دومين
 const PASS_THROUGH = ["/api", "/go", "/_next", "/brand"];
 
+/**
+ * 📣 يحفظ مصدر الزيارة (Instagram/TikTok/...) في كوكي جلسة عند فتح صفحة من خارج الموقع،
+ * لتُنسب له النقرات اللاحقة على أزرار الشراء (/go) حتى بعد التنقل داخل الصفحة.
+ */
+function rememberSource(req: NextRequest, res: NextResponse, host: string) {
+  if (req.method !== "GET" || req.headers.get("sec-fetch-dest") === "empty" || req.headers.get("rsc")) return res;
+  const source = detectSource({
+    userAgent: req.headers.get("user-agent"),
+    utmSource: req.nextUrl.searchParams.get("utm_source"),
+    referrer: req.headers.get("referer"),
+    host,
+  });
+  if (source && req.cookies.get(SOURCE_COOKIE)?.value !== source) {
+    res.cookies.set(SOURCE_COOKIE, source, { path: "/", sameSite: "lax", httpOnly: true, secure: req.nextUrl.protocol === "https:" });
+  }
+  return res;
+}
+
 async function customDomain(req: NextRequest, host: string) {
   const { pathname, search } = req.nextUrl;
 
@@ -85,7 +104,7 @@ async function customDomain(req: NextRequest, host: string) {
 
   const url = req.nextUrl.clone();
   url.pathname = `/${slug}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.rewrite(url);
+  return rememberSource(req, NextResponse.rewrite(url), host);
 }
 
 export default async function proxy(req: NextRequest, event: NextFetchEvent) {
@@ -96,7 +115,8 @@ export default async function proxy(req: NextRequest, event: NextFetchEvent) {
   if (isUnder(pathname, "/dashboard") || isUnder(pathname, "/admin") || pathname === "/login" || pathname === "/register") {
     return (platformGuard as unknown as (r: NextRequest, e: NextFetchEvent) => Promise<Response>)(req, event);
   }
-  return NextResponse.next();
+  if (isUnder(pathname, "/api") || isUnder(pathname, "/go")) return NextResponse.next();
+  return rememberSource(req, NextResponse.next(), host);
 }
 
 export const config = {

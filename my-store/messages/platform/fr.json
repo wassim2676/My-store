@@ -373,7 +373,18 @@
       "clicksChart": "Clics quotidiens vers les magasins",
       "noData": "Pas encore de données",
       "topOffers": "Meilleures offres",
-      "allOffers": "Toutes les offres"
+      "allOffers": "Toutes les offres",
+      "sources": {
+        "title": "Sources de trafic",
+        "subtitle": "D'où viennent vos visiteurs — 30 derniers jours",
+        "empty": "Partagez votre lien sur Instagram, TikTok, Facebook ou WhatsApp — vous verrez ici quelle plateforme apporte des visites et des clics.",
+        "source": "Source",
+        "share": "Part des visites",
+        "views": "Visites",
+        "clicks": "Clics",
+        "direct": "Direct / inconnu",
+        "other": "Autres sites"
+      }
     },
     "offers": {
       "title": "Mes offres",
@@ -913,6 +924,18 @@
         "sslPending": "Émis après la configuration DNS",
         "platform": "Lien Primeshelf",
         "redirects": "redirige"
+      },
+      "verify": {
+        "title": "Vérification du domaine",
+        "text": "Vérifiez votre domaine auprès de Meta, Pinterest, Google et Bing. Les plateformes font davantage confiance aux domaines vérifiés : Meta vous permet de modifier les aperçus de liens et de diffuser des publicités vers votre domaine, et Google l'indexe plus vite.",
+        "needDomain": "Connectez d'abord votre propre domaine ci-dessus — les plateformes vérifient le domaine lui-même, ces balises ne fonctionnent donc que sur votre domaine personnalisé.",
+        "getCode": "Obtenir le code",
+        "active": "Actif",
+        "save": "Enregistrer",
+        "saved": "Enregistré",
+        "hint": "Collez le code ou la balise <meta> complète telle que fournie — nous gardons uniquement le code et ajoutons la balise à votre page automatiquement.",
+        "invalid": "L'un des codes n'est pas valide. Collez le code ou la balise <meta> complète fournie par la plateforme.",
+        "error": "Enregistrement impossible. Réessayez."
       }
     }
   },

@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { pageAbsoluteUrl } from "@/lib/page-urls";
-import { bumpDailyStat } from "@/lib/marketer";
-import { classifyVisitor, cleanAffiliateUrl, isCountryAllowed, parseAudience, visitorCountry } from "@/lib/traffic";
+import { bumpDailyStat, bumpSourceStat } from "@/lib/marketer";
+import { classifyVisitor, cleanAffiliateUrl, isCountryAllowed, isLinkPreviewBot, parseAudience, visitorCountry } from "@/lib/traffic";
+import { resolveSource, SOURCE_COOKIE } from "@/lib/sources";
+import { requestHost } from "@/lib/domains";
 import { bestTextOn, pageDir, parseDesign, publicT, resolveTokens } from "@/lib/landing";
 
 // ==================== ↗️ GET /go/{offerId}: البوابة الوحيدة لرابط الأفلييت ====================
 // عام بالكامل (بدون مصادقة). يعمل حتى بدون JavaScript، والتتبع لا يؤخر التحويل.
 // ترتيب الحماية (لكل المتاجر):
+//   0) زاحف معاينة لمنصة تواصل → نفس وجهة الإنسان (منع الـ Cloaking) بدون تسجيل نقرة
 //   1) روبوت/زاحف/جلب مسبق → رابط المنتج النظيف في المتجر (بدون معرّف الأفلييت) — أو صفحة المراجعة
 //   2) بلد غير مستهدف     → صفحة محايدة أو وجهة يحددها المسوّق — لا يصل لرابط الأفلييت أبداً
 //   3) زائر حقيقي مستهدف  → رابط الأفلييت + تسجيل النقرة
@@ -35,7 +38,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const kind = classifyVisitor(request.headers);
   const reviewUrl = pageAbsoluteUrl(page, `/${offer.slug}`);
 
-  // 1) 🤖 الروبوتات وزواحف المنصات: لا نكشف رابط الأفلييت ولا نسجّل نقرة
+  // 0) 👁️ زواحف معاينة منصات التواصل (Facebook, Instagram, TikTok, WhatsApp, X...): نفس وجهة الإنسان بالضبط
+  //    (بدون Cloaking يعرّض الدومين للحظر) لكن بدون تسجيل نقرة
+  if (kind === "bot" && isLinkPreviewBot(request.headers)) {
+    track(() => bumpDailyStat(offer.landingPageId, "botHits"));
+    return redirect(offer.affiliateUrl);
+  }
+
+  // 1) 🤖 بقية الروبوتات والسكربتات: لا نكشف رابط الأفلييت ولا نسجّل نقرة
   if (kind !== "human" && audience.botProtection) {
     if (kind === "bot") track(() => bumpDailyStat(offer.landingPageId, "botHits"));
     return redirect(cleanAffiliateUrl(offer.affiliateUrl) ?? reviewUrl);
@@ -50,10 +60,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   // 3) ✅ زائر حقيقي مستهدف
   if (kind === "human") {
+    const source = resolveSource(request.headers, { host: requestHost(request.headers), cookie: request.cookies.get(SOURCE_COOKIE)?.value });
     track(() =>
       Promise.all([
         prisma.offer.update({ where: { id: offer.id }, data: { clicks: { increment: 1 } } }),
         bumpDailyStat(offer.landingPageId, "clicks"),
+        bumpSourceStat(offer.landingPageId, source, "clicks"),
       ]),
     );
   }

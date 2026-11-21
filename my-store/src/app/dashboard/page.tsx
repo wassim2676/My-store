@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getMarketerSession } from "@/lib/marketer";
 import CopyLink from "@/components/dashboard/CopyLink";
 import DailyBars from "@/components/dashboard/DailyBars";
+import TrafficSources from "@/components/dashboard/TrafficSources";
 
 const DAYS = 30;
 
@@ -108,6 +109,8 @@ export default async function DashboardOverview({ searchParams }: { searchParams
         <DailyBars title={t("overview.viewsChart")} total={nf.format(views30)} data={series.map((s) => ({ date: s.date, value: s.views }))} color="#E5B54A" locale={locale} emptyLabel={t("overview.noData")} />
         <DailyBars title={t("overview.clicksChart")} total={nf.format(clicks30)} data={series.map((s) => ({ date: s.date, value: s.clicks }))} color="#5AA9E6" locale={locale} emptyLabel={t("overview.noData")} />
       </div>
+
+      <TrafficSources landingPageId={page.id} since={since} />
 
       <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02]">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">

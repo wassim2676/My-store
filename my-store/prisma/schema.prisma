@@ -642,9 +642,13 @@ model LandingPage {
   customDomain           String?   @unique @db.VarChar(253)
   customDomainVerifiedAt DateTime? // آخر تحقق ناجح (DNS + Vercel). null = بانتظار الإعداد
 
-  offers     Offer[]
-  articles   Article[]
-  dailyStats LandingPageDailyStat[]
+  // 🔌 تكاملات المسوّق { verify: { meta, pinterest, google, bing } } — انظر src/lib/integrations.ts
+  integrations Json?
+
+  offers      Offer[]
+  articles    Article[]
+  dailyStats  LandingPageDailyStat[]
+  sourceStats LandingPageSourceStat[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -724,6 +728,19 @@ model LandingPageDailyStat {
   geoBlocked    Int         @default(0) // زوار من دول مستبعدة لم يصلوا لرابط الأفلييت
 
   @@unique([landingPageId, date])
+}
+
+// 📣 الزيارات والنقرات حسب المصدر (instagram, tiktok, facebook, whatsapp, google, direct...) — انظر src/lib/sources.ts
+model LandingPageSourceStat {
+  id            String      @id @default(cuid())
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  landingPageId String
+  date          DateTime    @db.Date
+  source        String      @db.VarChar(20)
+  views         Int         @default(0)
+  clicks        Int         @default(0)
+
+  @@unique([landingPageId, date, source])
 }
 
 // 🛍️ منتج أفلييت — يعرضه الموقع مع مراجعة مختصرة وزر تحويل لرابط خارجي

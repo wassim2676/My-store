@@ -38,7 +38,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return { title: "Not found" };
   const { page, article } = data;
   const description = article.seoDescription || article.excerpt || autoExcerpt(article.content, 160);
-  const images = article.coverImage ? [article.coverImage] : undefined;
   return {
     title: article.seoTitle || `${article.title} — ${page.title}`,
     description,
@@ -48,13 +47,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "article",
       title: article.seoTitle || article.title,
-      description,
-      images,
+      description, // الصورة من opengraph-image.tsx
       publishedTime: (article.publishedAt ?? article.createdAt).toISOString(),
       modifiedTime: article.updatedAt.toISOString(),
       section: article.category ?? undefined,
     },
-    twitter: { card: images ? "summary_large_image" : "summary", title: article.title, description, images },
+    twitter: { card: "summary_large_image", title: article.title, description },
   };
 }
 
