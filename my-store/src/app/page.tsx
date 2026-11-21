@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import {
-  ArrowRight, BadgeCheck, BarChart3, Check, ChevronDown, Gem, Languages, Minus, Palette, PenLine, Search, ShieldCheck, Star, Tag, X,
+  ArrowRight, BadgeCheck, BarChart3, Check, ChevronDown, Gem, Languages, Minus, Palette, PenLine, Search, Share2, ShieldCheck, SlidersHorizontal, Star, Tag, X,
 } from "lucide-react";
 import SiteNavbar from "@/components/site/SiteNavbar";
 import SiteFooter from "@/components/site/SiteFooter";
@@ -34,6 +34,7 @@ export default async function Home() {
     { store: "Amazon", color: "#FF9900", title: t("mock.p1"), price: "$249", old: "$329", badge: "Best Pick", rating: 5 },
     { store: "Walmart", color: "#0071CE", title: t("mock.p2"), price: "$89", old: null, badge: null, rating: 4 },
     { store: "Target", color: "#CC0000", title: t("mock.p3"), price: "$59", old: "$79", badge: "Trending", rating: 5 },
+    { store: "Best Buy", color: "#0046BE", title: t("mock.p4"), price: "$45", old: null, badge: null, rating: 4 },
   ];
   // متاجر المنصة الفعلية (من لوحة الأدمن) لعروض الصفحة الرئيسية، مع بديل ثابت إن تعذّر الاتصال
   const tourBrands = (brands.length ? brands : mock.map((m) => ({ name: m.store, accentColor: m.color, logoSvg: null, logoUrl: null }))).map((b) => ({
@@ -75,60 +76,106 @@ export default async function Home() {
               </ul>
             </div>
 
-            {/* 🖥️ معاينة صفحة هبوط داخل إطار متصفح */}
-            <div className="relative mx-auto mt-16 max-w-5xl">
+            {/* 🖥️ معاينة صفحة هبوط داخل إطار متصفح (نفس ترتيب الصفحة الحقيقية: شريط الهوية والبحث ← الفلاتر ← النبذة ← البطاقات) */}
+            <div className="relative mx-auto mt-16 max-w-6xl">
               <div className="pointer-events-none absolute -inset-x-10 -bottom-10 top-20 rounded-[3rem] bg-amber-500/[0.08] blur-3xl" />
               <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0B0E14] text-start shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)]">
+                {/* شريط المتصفح */}
                 <div className="flex items-center gap-2 border-b border-white/[0.07] bg-white/[0.02] px-4 py-3">
                   <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/80" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]/80" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]/80" />
-                  <span className="mx-auto rounded-md bg-white/[0.05] px-4 py-1 text-[11px] text-white/45" dir="ltr">
-                    yoursite.com/sarah-home
+                  <span className="mx-auto flex items-center gap-1.5 rounded-md bg-white/[0.05] px-4 py-1 text-[11px] text-white/45" dir="ltr">
+                    <ShieldCheck className="h-3 w-3 text-emerald-400/70" />
+                    sarahfinds.com
                   </span>
                 </div>
-                <div className="bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(200,162,74,0.16),transparent_70%)] px-4 pb-8 pt-10 sm:px-10">
-                  <div className="flex flex-col items-center text-center">
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#C8A24A] bg-[#1A1F2C] font-serif text-2xl text-[#C8A24A]">S</span>
-                    <p className="mt-3 font-serif text-2xl font-semibold">{t("home.mockPage.title")}</p>
-                    <p className="mt-1 text-sm text-[#C8A24A]">{t("home.mockPage.tagline")}</p>
-                    <div className="mt-5 flex gap-2 text-xs">
-                      <span className="rounded-full bg-[#C8A24A] px-3 py-1 font-medium text-black">{t("home.mockPage.all")}</span>
-                      {["Amazon", "Walmart", "Target"].map((s) => (
-                        <span key={s} className="hidden rounded-full border border-white/10 px-3 py-1 text-white/55 sm:inline">{s}</span>
+
+                {/* شريط الصفحة: الهوية + البحث */}
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-white/[0.07] bg-[#0B0E14]/95 px-4 py-3 sm:px-6 lg:flex-nowrap">
+                  <div className="flex min-w-0 flex-1 items-center gap-3 lg:flex-none">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#C8A24A] font-serif text-base font-semibold text-black ring-2 ring-[#C8A24A]/40 ring-offset-2 ring-offset-[#0B0E14]">
+                      S
+                    </span>
+                    <span className="truncate font-serif text-lg font-semibold tracking-tight">{t("home.mockPage.title")}</span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/55">
+                      <Share2 className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
+                  <div className="flex h-10 w-full min-w-0 items-stretch overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] lg:flex-1">
+                    <span className="hidden shrink-0 items-center gap-1.5 border-e border-white/10 bg-white/[0.04] px-3.5 text-xs text-white/70 sm:flex">
+                      {t("home.mockPage.allCategories")}
+                      <ChevronDown className="h-3.5 w-3.5 text-white/40" />
+                    </span>
+                    <span className="flex min-w-0 flex-1 items-center truncate px-4 text-sm text-white/35">{t("home.mockPage.search")}</span>
+                    <span className="flex w-12 shrink-0 items-center justify-center bg-[#C8A24A] text-black">
+                      <Search className="h-4.5 w-4.5" />
+                    </span>
+                  </div>
+                </div>
+
+                {/* سطر الفلاتر */}
+                <div className="flex items-center gap-2 overflow-hidden border-b border-white/[0.07] px-4 py-2.5 text-xs sm:px-6">
+                  <SlidersHorizontal className="me-1 h-3.5 w-3.5 shrink-0 text-white/40" />
+                  <span className="shrink-0 rounded-full bg-[#C8A24A] px-3 py-1 font-medium text-black">{t("home.mockPage.all")}</span>
+                  {(t.raw("home.mockPage.cats") as string[]).map((c) => (
+                    <span key={c} className="shrink-0 rounded-full border border-white/10 px-3 py-1 text-white/60">{c}</span>
+                  ))}
+                  <span className="mx-1 hidden h-4 w-px shrink-0 bg-white/10 sm:block" />
+                  {mock.map((m) => (
+                    <span key={m.store} className="hidden shrink-0 rounded-full border border-white/10 px-3 py-1 text-white/60 sm:inline">{m.store}</span>
+                  ))}
+                </div>
+
+                {/* النبذة */}
+                <div className="flex flex-col gap-4 border-b border-white/[0.07] bg-[radial-gradient(ellipse_70%_100%_at_0%_0%,rgba(200,162,74,0.12),transparent_70%)] px-4 py-7 sm:px-6 md:flex-row md:items-end md:justify-between">
+                  <div className="max-w-xl">
+                    <p className="font-serif text-2xl font-semibold leading-tight sm:text-3xl">{t("home.mockPage.tagline")}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-white/55">{t("home.mockPage.bio")}</p>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-start gap-2.5 md:items-end">
+                    <div className="flex gap-2">
+                      {["Instagram", "TikTok", "YouTube"].map((s) => (
+                        <span key={s} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-medium text-white/60">
+                          {s}
+                          <ArrowRight className="h-3 w-3 -rotate-45 opacity-50 rtl:rotate-[-135deg]" />
+                        </span>
                       ))}
                     </div>
+                    <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/40">{t("home.mockPage.offers")}</span>
                   </div>
-                  <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    {mock.map((m, i) => (
-                      <div key={m.store} className={`overflow-hidden rounded-[1.2rem] border border-white/[0.08] bg-[#121621] ${i > 0 ? "hidden sm:block" : ""}`}>
-                        <div className="relative m-2 mb-0 aspect-[4/3] rounded-2xl bg-gradient-to-br from-white to-neutral-200">
-                          <div className="absolute inset-6 rounded-2xl bg-gradient-to-br from-neutral-300/70 to-neutral-100" />
-                          {m.badge && (
-                            <span className="absolute start-2 top-2 rounded-full bg-[#C8A24A] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-black">{m.badge}</span>
-                          )}
-                        </div>
-                        <div className="space-y-1.5 px-4 pb-3.5 pt-3">
-                          <div className="flex gap-0.5">
-                            {Array.from({ length: 5 }).map((_, s) => (
-                              <Star key={s} className={`h-3 w-3 ${s < m.rating ? "fill-[#C8A24A] text-[#C8A24A]" : "text-white/20"}`} />
-                            ))}
-                          </div>
-                          <p className="font-serif font-semibold">{m.title}</p>
-                          <p className="flex items-baseline gap-2">
-                            <span className="text-lg font-bold">{m.price}</span>
-                            {m.old && <span className="text-xs text-white/40 line-through">{m.old}</span>}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-between border-t border-white/[0.08] bg-[#1A1F2C] px-4 py-3">
-                          <span className="flex items-center text-white/90" title={m.store}>
-                            <BrandLogo brand={{ name: m.store, accentColor: m.color }} size={20} fallback="name" className={WHITE_LOGO} />
-                          </span>
-                          <span className="text-[11px] font-semibold text-[#C8A24A]">{t("mock.read")}</span>
-                        </div>
+                </div>
+
+                {/* البطاقات */}
+                <div className="grid grid-cols-1 gap-4 px-4 py-6 min-[480px]:grid-cols-2 sm:px-6 lg:grid-cols-4">
+                  {mock.map((m, i) => (
+                    <div key={m.store + i} className={`overflow-hidden rounded-[1.2rem] border border-white/[0.08] bg-[#121621] ${i === 1 ? "hidden min-[480px]:block" : i > 1 ? "hidden lg:block" : ""}`}>
+                      <div className="relative m-2 mb-0 aspect-square rounded-2xl bg-gradient-to-br from-white to-neutral-200">
+                        <div className="absolute inset-7 rounded-2xl bg-gradient-to-br from-neutral-300/70 to-neutral-100" />
+                        {m.badge && (
+                          <span className="absolute start-2 top-2 rounded-full bg-[#C8A24A] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-black">{m.badge}</span>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                      <div className="space-y-1.5 px-4 pb-3.5 pt-3">
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: 5 }).map((_, s) => (
+                            <Star key={s} className={`h-3 w-3 ${s < m.rating ? "fill-[#C8A24A] text-[#C8A24A]" : "text-white/20"}`} />
+                          ))}
+                        </div>
+                        <p className="truncate font-serif font-semibold">{m.title}</p>
+                        <p className="flex items-baseline gap-2">
+                          <span className="text-lg font-bold">{m.price}</span>
+                          {m.old && <span className="text-xs text-white/40 line-through">{m.old}</span>}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between border-t border-white/[0.08] bg-[#1A1F2C] px-4 py-3">
+                        <span className="flex items-center text-white/90" title={m.store}>
+                          <BrandLogo brand={{ name: m.store, accentColor: m.color }} size={20} fallback="name" className={WHITE_LOGO} />
+                        </span>
+                        <span className="text-[11px] font-semibold text-[#C8A24A]">{t("mock.read")}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

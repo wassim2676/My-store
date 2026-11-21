@@ -55,7 +55,8 @@
       "p1": "Casque à réduction de bruit",
       "p2": "Friteuse à air connectée",
       "p3": "Plaid en lin",
-      "read": "Lire l'avis"
+      "read": "Lire l'avis",
+      "p4": "Lampe de table en céramique"
     },
     "stores": {
       "title": "Faites la promotion de produits de",
@@ -152,7 +153,15 @@
         "title": "Les trouvailles de Sarah",
         "tagline": "Des produits testés pour une belle maison",
         "all": "Tout",
-        "offers": "12 offres"
+        "offers": "12 offres",
+        "search": "Rechercher dans Les trouvailles de Sarah",
+        "allCategories": "Toutes les catégories",
+        "bio": "Je teste chaque produit chez moi avant de le recommander. Avis honnêtes, vraies promos.",
+        "cats": [
+          "Cuisine",
+          "Audio",
+          "Déco"
+        ]
       },
       "tour": {
         "eyebrow": "Comment ça convertit",
@@ -871,7 +880,8 @@
         "value": "Valeur / Cible",
         "status": "Statut",
         "optional": "Recommandé",
-        "pending": "En attente"
+        "pending": "En attente",
+        "ok": "Valide"
       },
       "tips": {
         "remove": "Supprimez tout autre enregistrement A ou CNAME ayant le même hôte (page de parking, ancienne boutique comme Shopify…), sinon le domaine ne fonctionnera pas correctement.",
@@ -893,6 +903,16 @@
         "provider_error": "Impossible de joindre le service de domaines. Réessayez dans un instant.",
         "unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
         "network": "Problème de connexion. Vérifiez votre internet et réessayez."
+      },
+      "info": {
+        "status": "Configuration",
+        "valid": "Configuration valide",
+        "invalid": "Configuration invalide",
+        "ssl": "Certificat SSL",
+        "sslOn": "Actif (https)",
+        "sslPending": "Émis après la configuration DNS",
+        "platform": "Lien Primeshelf",
+        "redirects": "redirige"
       }
     }
   },

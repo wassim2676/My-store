@@ -55,7 +55,8 @@
       "p1": "Noise-cancelling headphones",
       "p2": "Smart air fryer, 6 qt",
       "p3": "Linen throw blanket",
-      "read": "Read review"
+      "read": "Read review",
+      "p4": "Ceramic table lamp"
     },
     "stores": {
       "title": "Promote products from",
@@ -152,7 +153,15 @@
         "title": "Sarah’s Home Finds",
         "tagline": "Tested picks for a beautiful home",
         "all": "All",
-        "offers": "12 offers"
+        "offers": "12 offers",
+        "search": "Search Sarah’s Home Finds",
+        "allCategories": "All categories",
+        "bio": "I test every product at home before recommending it. Honest reviews, real deals.",
+        "cats": [
+          "Kitchen",
+          "Audio",
+          "Decor"
+        ]
       },
       "tour": {
         "eyebrow": "How it converts",
@@ -871,7 +880,8 @@
         "value": "Value / Points to",
         "status": "Status",
         "optional": "Recommended",
-        "pending": "Waiting"
+        "pending": "Waiting",
+        "ok": "Valid"
       },
       "tips": {
         "remove": "Delete any other A or CNAME record with the same Host (e.g. parking pages or an old store like Shopify) — otherwise the domain won't work reliably.",
@@ -893,6 +903,16 @@
         "provider_error": "We couldn't reach the domain service. Please try again in a moment.",
         "unauthorized": "Your session expired. Please log in again.",
         "network": "Connection problem. Check your internet and try again."
+      },
+      "info": {
+        "status": "Configuration",
+        "valid": "Valid configuration",
+        "invalid": "Invalid configuration",
+        "ssl": "SSL certificate",
+        "sslOn": "Active (https)",
+        "sslPending": "Issued after DNS is set",
+        "platform": "Primeshelf link",
+        "redirects": "redirects"
       }
     }
   },
