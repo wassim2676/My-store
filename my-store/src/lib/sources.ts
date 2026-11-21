@@ -2,7 +2,7 @@
 // بدون قاعدة بيانات: آمن للاستيراد في proxy. الترتيب: متصفح التطبيق ← utm_source ← الـ referrer ← مباشر
 export const SOURCES = [
   "instagram", "facebook", "tiktok", "whatsapp", "youtube", "pinterest", "snapchat", "x", "telegram", "reddit", "linkedin",
-  "google", "bing", "email", "direct", "other",
+  "google", "bing", "email", "qr", "direct", "other",
 ] as const;
 export type TrafficSource = (typeof SOURCES)[number];
 
@@ -54,6 +54,7 @@ const UTM_ALIASES: Record<string, TrafficSource> = {
   reddit: "reddit", linkedin: "linkedin",
   google: "google", bing: "bing",
   email: "email", newsletter: "email", mail: "email",
+  qr: "qr", qrcode: "qr",
 };
 
 function fromReferrer(referrer: string | null | undefined, ownHost: string): TrafficSource | null {

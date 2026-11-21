@@ -103,7 +103,12 @@ export default async function OfferPage({ params, searchParams }: Props) {
   };
 
   return (
-    <LandingShell page={page} isOwner={isOwner} hiddenNotice={!page.isPublished || offer.status !== "PUBLISHED"}>
+    <LandingShell
+      page={page}
+      isOwner={isOwner}
+      hiddenNotice={!page.isPublished || offer.status !== "PUBLISHED"}
+      pixelContent={{ id: offer.id, name: offer.title, value: offer.price, currency: offer.currency }}
+    >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
       <LandingNavbar

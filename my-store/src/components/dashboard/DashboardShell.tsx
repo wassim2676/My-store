@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
-  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe,
+  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe, Share2,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import CopyLink from "./CopyLink";
@@ -35,6 +35,7 @@ export default function DashboardShell({
     { href: "/dashboard/articles", label: t("nav.articles"), icon: Newspaper, exact: false },
     { href: "/dashboard/page-settings", label: t("nav.design"), icon: Palette, exact: true },
     { href: "/dashboard/audience", label: t("nav.audience"), icon: GlobeLock, exact: true },
+    { href: "/dashboard/share", label: t("nav.share"), icon: Share2, exact: true },
     { href: "/dashboard/domain", label: t("nav.domain"), icon: Globe, exact: true },
     { href: "/dashboard/account", label: t("nav.account"), icon: UserCog, exact: true },
   ];

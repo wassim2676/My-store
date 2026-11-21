@@ -4,6 +4,8 @@ import { EyeOff, PenLine, Sparkles } from "lucide-react";
 import { pageDir, parseDesign, themeStyle } from "@/lib/landing";
 import LandingFonts from "./LandingFonts";
 import LandingFooter from "./LandingFooter";
+import LandingPixels from "./LandingPixels";
+import { parseIntegrations } from "@/lib/integrations";
 import { getDirection } from "@/i18n/config";
 import type { LandingPage } from "@prisma/client";
 
@@ -12,15 +14,20 @@ export default async function LandingShell({
   page,
   isOwner,
   hiddenNotice,
+  pixelContent,
   children,
 }: {
   page: LandingPage;
   isOwner: boolean;
   hiddenNotice?: boolean;
+  /** صفحة العرض: بيانات حدث ViewContent للبكسلات */
+  pixelContent?: { id: string; name: string; value?: number | null; currency?: string | null };
   children: React.ReactNode;
 }) {
   const lang = page.language;
   const design = parseDesign(page.design);
+  // 📈 بكسلات المسوّق للزوار فقط (زيارات المالك لا تلوّث بيانات إعلاناته)
+  const pixels = isOwner ? {} : parseIntegrations(page.integrations).pixels;
   // شريط المالك بلغة واجهة المنصة (لغة المسوّق)، لا بلغة الصفحة
   const [t, uiLocale] = isOwner ? await Promise.all([getTranslations("platform.owner"), getLocale()]) : [null, "en"];
   return (
@@ -32,6 +39,7 @@ export default async function LandingShell({
       className="min-h-screen antialiased"
     >
       <LandingFonts fonts={[design.font, design.bodyFont]} />
+      {(pixels.meta || pixels.tiktok) && <LandingPixels meta={pixels.meta} tiktok={pixels.tiktok} content={pixelContent} />}
       {isOwner && t && (
         <div className="relative z-50 border-b border-white/10 bg-black text-white" dir={getDirection(uiLocale)}>
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 text-xs">

@@ -81,7 +81,7 @@ function Footer({ ctx, cta, arabic }: { ctx: Loaded; cta?: string; arabic: boole
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexDirection: arabic ? "row-reverse" : "row", width: "100%", gap: 20 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 22, color: tokens.muted, fontFamily: "Inter", whiteSpace: "nowrap", overflow: "hidden", minWidth: 0, flexShrink: 1 }}>
         <div style={{ width: 10, height: 10, borderRadius: 10, background: accent }} />
-        {clip(domain, cta ? 26 : 44)}
+        {cta ? domain.split("/")[0] : clip(domain, 44)}
       </div>
       {cta && (
         <div

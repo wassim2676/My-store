@@ -324,7 +324,8 @@
       "logout": "Log out",
       "audience": "Audience",
       "articles": "Articles",
-      "domain": "Custom domain"
+      "domain": "Custom domain",
+      "share": "Share & pixels"
     },
     "common": {
       "copy": "Copy",
@@ -936,6 +937,57 @@
         "hint": "Paste the code or the full <meta> tag exactly as the platform gives it — we keep only the code and add the tag to your page automatically.",
         "invalid": "One of the codes is not valid. Paste the code or the full <meta> tag as given by the platform.",
         "error": "Couldn't save. Please try again."
+      }
+    },
+    "share": {
+      "title": "Share & pixels",
+      "subtitle": "Ready-to-post links for every platform, a live preview of how your link looks, a QR code, and your ad pixels.",
+      "whatToShare": "What do you want to share?",
+      "yourLink": "Link",
+      "homePage": "My page (home)",
+      "copy": "Copy",
+      "copied": "Copied",
+      "open": "Open",
+      "refreshFb": "Refresh on Facebook",
+      "refreshFbHint": "Opens Facebook's Sharing Debugger — click “Scrape Again” to update an old preview.",
+      "groups": {
+        "page": "Page",
+        "offer": "Offers",
+        "article": "Articles"
+      },
+      "goWarning": "Always share these page links — never the buy-button links (/go/…). Platforms trust links that show a real page, and your page gives every visitor the full review first.",
+      "previewTitle": "Link preview",
+      "previewText": "How your link appears when shared. The image is generated automatically from your page.",
+      "qrTitle": "QR code",
+      "qrText": "For flyers, packaging and stories — scans are counted as “QR code”.",
+      "qrDownload": "Download PNG",
+      "linksTitle": "Ready-made links per platform",
+      "linksText": "Each link is tagged with its platform, so your traffic sources stay accurate even when the platform hides where visitors came from.",
+      "shareNow": "Share now:",
+      "medium": {
+        "bio": "bio link",
+        "story": "story",
+        "post": "post",
+        "message": "message",
+        "description": "video description",
+        "pin": "pin",
+        "newsletter": "newsletter"
+      },
+      "pixels": {
+        "title": "Ad pixels",
+        "text": "Add your Meta and TikTok pixels to measure your ads and build retargeting audiences from visitors of your page. Pixels load only for visitors, never for you.",
+        "find": "Find my pixel ID",
+        "active": "Active",
+        "save": "Save",
+        "saved": "Saved",
+        "invalid": "This pixel ID doesn't look right. Paste the ID (or the full pixel code) from Events Manager.",
+        "error": "Couldn't save. Please try again.",
+        "ev": {
+          "page": "every page visit",
+          "view": "an offer page is viewed (with price)",
+          "click": "a visitor clicks a buy button"
+        },
+        "hint": "You can paste the full pixel code — we extract the ID automatically. Leave a field empty to remove that pixel."
       }
     }
   },

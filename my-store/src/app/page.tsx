@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import {
@@ -12,6 +13,15 @@ import BrandLogo from "@/components/shop/BrandLogo";
 import { WHITE_LOGO } from "@/components/shop/logo-classes";
 import { getActiveBrands } from "@/lib/brands";
 
+
+// ✅ توثيق دومين المنصة نفسه لدى Google Search Console وMeta Business (رموز من متغيرات البيئة).
+// في الصفحة الرئيسية فقط — لا في الـ layout — حتى لا تُورَّث لصفحات المسوّقين ودوميناتهم الخاصة.
+export function generateMetadata(): Metadata {
+  const google = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+  const meta = process.env.FACEBOOK_DOMAIN_VERIFICATION?.trim();
+  if (!google && !meta) return {};
+  return { verification: { ...(google ? { google } : {}), ...(meta ? { other: { "facebook-domain-verification": meta } } : {}) } };
+}
 
 // ==================== 🏠 الصفحة الرئيسية للمنصة (للمسوّقين بالعمولة) ====================
 export default async function Home() {

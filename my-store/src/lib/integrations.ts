@@ -1,11 +1,26 @@
 import type { Metadata } from "next";
 
-// ==================== 🔌 تكاملات المسوّق (وسوم التحقق من ملكية الدومين) ====================
-// تُحفظ في LandingPage.integrations وتُطبع كوسوم <meta> في الصفحة الرئيسية لصفحة المسوّق.
+// ==================== 🔌 تكاملات المسوّق (وسوم التحقق + بكسلات الإعلانات) ====================
+// تُحفظ في LandingPage.integrations: وسوم التحقق تُطبع كـ <meta>، والبكسلات تُحمَّل للزوار (ليس للمالك).
 export const VERIFY_KEYS = ["meta", "pinterest", "google", "bing"] as const;
 export type VerifyKey = (typeof VERIFY_KEYS)[number];
 
-export type Integrations = { verify: Partial<Record<VerifyKey, string>> };
+export type Pixels = { meta?: string; tiktok?: string };
+export type Integrations = { verify: Partial<Record<VerifyKey, string>>; pixels: Pixels };
+
+/** Meta Pixel ID: أرقام فقط (15-16 عادةً) · TikTok Pixel ID: حروف وأرقام (مثل C4ABCD1234EFGH5678IJ) */
+const PIXEL_RE: Record<keyof Pixels, RegExp> = { meta: /^\d{10,20}$/, tiktok: /^[A-Z0-9]{12,30}$/ };
+
+/** يقبل رقم البكسل وحده أو كود البكسل كاملاً ويستخرج الرقم. null = فارغ · false = غير صالح */
+export function cleanPixelId(kind: keyof Pixels, raw: unknown): string | null | false {
+  if (raw == null) return null;
+  if (typeof raw !== "string") return false;
+  let v = raw.trim();
+  if (!v) return null;
+  if (kind === "meta") v = /fbq\(\s*["']init["']\s*,\s*["'](\d+)/.exec(v)?.[1] ?? v.replace(/\s/g, "");
+  else v = (/ttq\.load\(\s*["']([A-Za-z0-9]+)/.exec(v)?.[1] ?? v.replace(/\s/g, "")).toUpperCase();
+  return PIXEL_RE[kind].test(v) ? v : false;
+}
 
 /** اسم وسم <meta> لكل منصة */
 export const VERIFY_META_NAME: Record<VerifyKey, string> = {
@@ -37,7 +52,13 @@ export function parseIntegrations(raw: unknown): Integrations {
     const t = cleanVerifyToken(vo[k]);
     if (t) verify[k] = t;
   }
-  return { verify };
+  const po = o.pixels && typeof o.pixels === "object" ? (o.pixels as Record<string, unknown>) : {};
+  const pixels: Pixels = {};
+  for (const k of ["meta", "tiktok"] as const) {
+    const v = cleanPixelId(k, po[k]);
+    if (v) pixels[k] = v;
+  }
+  return { verify, pixels };
 }
 
 /** وسوم التحقق لـ generateMetadata */

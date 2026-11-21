@@ -19,6 +19,7 @@ const META: Record<TrafficSource, { name: string; color: string }> = {
   google: { name: "Google", color: "#4285F4" },
   bing: { name: "Bing", color: "#00A4EF" },
   email: { name: "Email", color: "#A78BFA" },
+  qr: { name: "QR code", color: "#F59E0B" },
   direct: { name: "", color: "#9AA1AE" },
   other: { name: "", color: "#6B7280" },
 };

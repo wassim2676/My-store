@@ -2,28 +2,42 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getMarketerSession } from "@/lib/marketer";
-import { cleanVerifyToken, parseIntegrations, VERIFY_KEYS, type Integrations } from "@/lib/integrations";
+import { cleanPixelId, cleanVerifyToken, parseIntegrations, VERIFY_KEYS, type Integrations, type Pixels } from "@/lib/integrations";
 
-// ==================== 🔌 PATCH /api/marketer/integrations: وسوم التحقق من ملكية الدومين ====================
+// ==================== 🔌 PATCH /api/marketer/integrations: وسوم التحقق و/أو البكسلات ====================
+// كل قسم اختياري: { verify?: {...} } أو { pixels?: {...} } — القسم غير المرسَل يبقى كما هو.
+const bad = (error: string, field?: string) => NextResponse.json({ success: false, error, field }, { status: 400 });
+
 export async function PATCH(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx) return NextResponse.json({ success: false, error: "unauthorized" }, { status: 401 });
   if (!ctx.landingPage) return NextResponse.json({ success: false, error: "no_page" }, { status: 404 });
 
-  const body = (await request.json().catch(() => ({}))) as { verify?: Record<string, unknown> };
-  const input = body.verify && typeof body.verify === "object" ? body.verify : {};
+  const body = (await request.json().catch(() => ({}))) as { verify?: Record<string, unknown>; pixels?: Record<string, unknown> };
+  const next: Integrations = parseIntegrations(ctx.landingPage.integrations);
 
-  const current = parseIntegrations(ctx.landingPage.integrations);
-  const verify: Integrations["verify"] = {};
-  for (const k of VERIFY_KEYS) {
-    const v = cleanVerifyToken(input[k]);
-    if (v === false) return NextResponse.json({ success: false, error: "invalid_token", field: k }, { status: 400 });
-    if (v) verify[k] = v;
+  if (body.verify && typeof body.verify === "object") {
+    const verify: Integrations["verify"] = {};
+    for (const k of VERIFY_KEYS) {
+      const v = cleanVerifyToken(body.verify[k]);
+      if (v === false) return bad("invalid_token", k);
+      if (v) verify[k] = v;
+    }
+    next.verify = verify;
   }
 
-  const next: Integrations = { ...current, verify };
+  if (body.pixels && typeof body.pixels === "object") {
+    const pixels: Pixels = {};
+    for (const k of ["meta", "tiktok"] as const) {
+      const v = cleanPixelId(k, body.pixels[k]);
+      if (v === false) return bad("invalid_pixel", k);
+      if (v) pixels[k] = v;
+    }
+    next.pixels = pixels;
+  }
+
   await prisma.landingPage.update({ where: { id: ctx.landingPage.id }, data: { integrations: next } });
-  revalidatePath(`/${ctx.landingPage.slug}`);
-  revalidatePath("/dashboard/domain");
+  revalidatePath(`/${ctx.landingPage.slug}`, "layout");
+  revalidatePath("/dashboard", "layout");
   return NextResponse.json({ success: true, data: next });
 }

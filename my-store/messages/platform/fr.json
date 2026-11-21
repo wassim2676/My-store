@@ -324,7 +324,8 @@
       "logout": "Déconnexion",
       "audience": "Audience",
       "articles": "Articles",
-      "domain": "Domaine personnalisé"
+      "domain": "Domaine personnalisé",
+      "share": "Partage & pixels"
     },
     "common": {
       "copy": "Copier",
@@ -936,6 +937,57 @@
         "hint": "Collez le code ou la balise <meta> complète telle que fournie — nous gardons uniquement le code et ajoutons la balise à votre page automatiquement.",
         "invalid": "L'un des codes n'est pas valide. Collez le code ou la balise <meta> complète fournie par la plateforme.",
         "error": "Enregistrement impossible. Réessayez."
+      }
+    },
+    "share": {
+      "title": "Partage & pixels",
+      "subtitle": "Des liens prêts à publier pour chaque plateforme, un aperçu en direct de votre lien, un QR code et vos pixels publicitaires.",
+      "whatToShare": "Que voulez-vous partager ?",
+      "yourLink": "Lien",
+      "homePage": "Ma page (accueil)",
+      "copy": "Copier",
+      "copied": "Copié",
+      "open": "Ouvrir",
+      "refreshFb": "Actualiser sur Facebook",
+      "refreshFbHint": "Ouvre le Débogueur de partage de Facebook — cliquez sur « Récupérer à nouveau » pour mettre à jour un ancien aperçu.",
+      "groups": {
+        "page": "Page",
+        "offer": "Offres",
+        "article": "Articles"
+      },
+      "goWarning": "Partagez toujours ces liens de page — jamais les liens des boutons d'achat (/go/…). Les plateformes font confiance aux liens qui montrent une vraie page, et votre page présente d'abord l'avis complet.",
+      "previewTitle": "Aperçu du lien",
+      "previewText": "L'apparence de votre lien une fois partagé. L'image est générée automatiquement à partir de votre page.",
+      "qrTitle": "QR code",
+      "qrText": "Pour flyers, emballages et stories — les scans sont comptés comme « QR code ».",
+      "qrDownload": "Télécharger PNG",
+      "linksTitle": "Liens prêts par plateforme",
+      "linksText": "Chaque lien est marqué avec sa plateforme : vos sources de trafic restent exactes même quand la plateforme masque l'origine des visiteurs.",
+      "shareNow": "Partager :",
+      "medium": {
+        "bio": "lien en bio",
+        "story": "story",
+        "post": "publication",
+        "message": "message",
+        "description": "description vidéo",
+        "pin": "épingle",
+        "newsletter": "newsletter"
+      },
+      "pixels": {
+        "title": "Pixels publicitaires",
+        "text": "Ajoutez vos pixels Meta et TikTok pour mesurer vos publicités et créer des audiences de reciblage à partir des visiteurs de votre page. Les pixels se chargent uniquement pour les visiteurs, jamais pour vous.",
+        "find": "Trouver mon ID",
+        "active": "Actif",
+        "save": "Enregistrer",
+        "saved": "Enregistré",
+        "invalid": "Cet ID de pixel ne semble pas correct. Collez l'ID (ou le code complet) depuis le Gestionnaire d'événements.",
+        "error": "Enregistrement impossible. Réessayez.",
+        "ev": {
+          "page": "chaque visite de page",
+          "view": "une page d'offre est vue (avec le prix)",
+          "click": "un visiteur clique sur un bouton d'achat"
+        },
+        "hint": "Vous pouvez coller le code complet du pixel — nous extrayons l'ID automatiquement. Laissez un champ vide pour retirer ce pixel."
       }
     }
   },
