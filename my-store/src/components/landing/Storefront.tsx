@@ -19,7 +19,11 @@ export interface StorefrontPage {
   avatarUrl: string | null;
   coverUrl: string | null;
   language: string;
+  /** بادئة الروابط: "/slug" على المنصة (الافتراضي) أو "" على الدومين الخاص */
+  base?: string;
 }
+
+const pageBase = (p: Pick<StorefrontPage, "slug" | "base">) => p.base ?? `/${p.slug}`;
 
 const gridCols = (columns: 2 | 3 | 4) =>
   columns === 2
@@ -47,7 +51,7 @@ export function LandingNavbar({
   categoryCounts,
   total,
 }: {
-  page: Pick<StorefrontPage, "slug" | "title" | "avatarUrl" | "language">;
+  page: Pick<StorefrontPage, "slug" | "title" | "avatarUrl" | "language" | "base">;
   categories: string[];
   /** عدد العروض لكل فئة (يظهر في القائمة) */
   categoryCounts?: Record<string, number>;
@@ -73,7 +77,7 @@ export function LandingNavbar({
     if (q.trim()) sp.set("q", q.trim());
     if (c) sp.set("c", c);
     const qs = sp.toString();
-    router.push(`/${page.slug}${qs ? `?${qs}` : ""}`);
+    router.push(`${pageBase(page) || "/"}${qs ? `?${qs}` : ""}`);
   };
 
   const chip = (active: boolean) =>
@@ -89,7 +93,7 @@ export function LandingNavbar({
       <div className="flex w-full flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 @min-[640px]:px-6 @min-[1024px]:flex-nowrap @min-[1024px]:px-8">
         {/* الهوية: الشعار + الاسم + المشاركة */}
         <div className="flex min-w-0 flex-1 items-center gap-3 @min-[1024px]:flex-none">
-          <Link href={`/${page.slug}`} className="flex min-w-0 items-center gap-3">
+          <Link href={pageBase(page) || "/"} className="flex min-w-0 items-center gap-3">
             {page.avatarUrl ? (
               <img src={page.avatarUrl} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-[var(--lp-nav-btn)] ring-offset-2 ring-offset-[var(--lp-nav-bg)]" />
             ) : (
@@ -172,11 +176,11 @@ export function LandingNavbar({
             </>
           ) : (
             <>
-              <Link href={`/${page.slug}`} className={chip(false)}>
+              <Link href={pageBase(page) || "/"} className={chip(false)}>
                 {publicT(lang, "allOffers")}
               </Link>
               {categories.map((c) => (
-                <Link key={c} href={`/${page.slug}?c=${encodeURIComponent(c)}`} className={chip(false)}>
+                <Link key={c} href={`${pageBase(page) || "/"}?c=${encodeURIComponent(c)}`} className={chip(false)}>
                   {c}
                 </Link>
               ))}
@@ -291,7 +295,7 @@ export default function Storefront({
                 </h2>
                 <div className={`grid gap-5 ${featured.length === 1 ? "max-w-md" : featured.length === 2 ? "@min-[768px]:grid-cols-2" : "@min-[768px]:grid-cols-3"}`}>
                   {featured.map((o) => (
-                    <OfferCard key={o.id} offer={o} pageSlug={page.slug} lang={lang} large />
+                    <OfferCard key={o.id} offer={o} base={pageBase(page)} lang={lang} large />
                   ))}
                 </div>
               </section>
@@ -320,7 +324,7 @@ export default function Storefront({
             ) : (
               <div className={`grid gap-5 ${gridCols(columns)}`}>
                 {filtered.map((o) => (
-                  <OfferCard key={o.id} offer={o} pageSlug={page.slug} lang={lang} />
+                  <OfferCard key={o.id} offer={o} base={pageBase(page)} lang={lang} />
                 ))}
               </div>
             )}

@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { SITE_URL } from "@/lib/site";
+import { isPlatformHost, normalizeHost } from "@/lib/domains";
+import { slugForDomain } from "@/lib/domain-lookup";
 
 // ==================== 🛡️ Proxy (كان middleware قبل Next.js 16) ====================
-// الصفحات العامة (الرئيسية، صفحات المسوّقين /{slug}، /go/{id} ...) لا تحتاج أي فحص.
-// نحمي هنا صفحات لوحة التحكم والأدمن فقط. واجهات /api تتحقق من الصلاحيات داخل كل route بنفسها.
+// 1) دومين خاص لمسوّق (mydeals.com) → نعرض صفحته: "/" ← "/{slug}" و"/x" ← "/{slug}/x" (إعادة كتابة داخلية، الرابط يبقى كما هو)
+// 2) دومين المنصة → نحمي لوحة التحكم والأدمن فقط. واجهات /api تتحقق من الصلاحيات داخل كل route بنفسها.
 type AuthenticatedRequest = NextRequest & {
   auth: { user?: { role?: string } } | null;
 };
@@ -24,7 +27,9 @@ function requestOrigin(req: NextRequest): string {
   return `${proto}://${host}`;
 }
 
-export default auth((req: AuthenticatedRequest) => {
+const isUnder = (pathname: string, base: string) => pathname === base || pathname.startsWith(base + "/");
+
+const platformGuard = auth((req: AuthenticatedRequest) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
   const role = req.auth?.user?.role;
@@ -33,12 +38,12 @@ export default auth((req: AuthenticatedRequest) => {
 
   const toLogin = () => redirectTo(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
 
-  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
+  if (isUnder(pathname, "/dashboard")) {
     if (!isLoggedIn) return toLogin();
     return NextResponse.next();
   }
 
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+  if (isUnder(pathname, "/admin")) {
     if (!isLoggedIn) return toLogin();
     if (!role || !ADMIN_ROLES.has(role)) return redirectTo("/dashboard");
     return NextResponse.next();
@@ -52,6 +57,51 @@ export default auth((req: AuthenticatedRequest) => {
   return NextResponse.next();
 });
 
+// مسارات المنصة التي لا معنى لها على دومين المسوّق: نرسلها لموقع المنصة
+const PLATFORM_ONLY = ["/dashboard", "/admin", "/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/onboarding"];
+// مسارات مشتركة تعمل كما هي على أي دومين
+const PASS_THROUGH = ["/api", "/go", "/_next", "/brand"];
+
+async function customDomain(req: NextRequest, host: string) {
+  const { pathname, search } = req.nextUrl;
+
+  if (PASS_THROUGH.some((p) => isUnder(pathname, p))) return NextResponse.next();
+  if (PLATFORM_ONLY.some((p) => isUnder(pathname, p))) return NextResponse.redirect(`${SITE_URL}${pathname}${search}`);
+
+  const slug = await slugForDomain(host);
+  if (!slug) {
+    return new NextResponse("This domain is not connected to any page.", {
+      status: 404,
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+    });
+  }
+
+  if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
+    const url = req.nextUrl.clone();
+    url.pathname = `/api/site-files/${pathname === "/robots.txt" ? "robots" : "sitemap"}`;
+    url.searchParams.set("slug", slug);
+    return NextResponse.rewrite(url);
+  }
+
+  const url = req.nextUrl.clone();
+  url.pathname = `/${slug}${pathname === "/" ? "" : pathname}`;
+  return NextResponse.rewrite(url);
+}
+
+export default async function proxy(req: NextRequest, event: NextFetchEvent) {
+  const host = normalizeHost(req.headers.get("x-forwarded-host") ?? req.headers.get("host"));
+  if (!isPlatformHost(host)) return customDomain(req, host);
+
+  const { pathname } = req.nextUrl;
+  if (isUnder(pathname, "/dashboard") || isUnder(pathname, "/admin") || pathname === "/login" || pathname === "/register") {
+    return (platformGuard as unknown as (r: NextRequest, e: NextFetchEvent) => Promise<Response>)(req, event);
+  }
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/login", "/register"],
+  // كل الصفحات (لدعم الدومينات الخاصة) ما عدا ملفات Next الثابتة والصور والخطوط
+  matcher: [
+    "/((?!_next/static|_next/image|.*\\.(?:svg|png|jpe?g|gif|webp|avif|ico|css|js|map|woff2?|ttf|otf|mp4|webm|pdf|webmanifest)$).*)",
+  ],
 };

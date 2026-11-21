@@ -638,6 +638,10 @@ model LandingPage {
   isPublished Boolean @default(true)
   views       Int     @default(0)
 
+  // 🌐 دومين خاص للمسوّق (مثل mydeals.com): يُضاف لمشروع Vercel، ويصبح فعّالاً عند ضبط الـ DNS
+  customDomain           String?   @unique @db.VarChar(253)
+  customDomainVerifiedAt DateTime? // آخر تحقق ناجح (DNS + Vercel). null = بانتظار الإعداد
+
   offers     Offer[]
   articles   Article[]
   dailyStats LandingPageDailyStat[]

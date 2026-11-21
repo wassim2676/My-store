@@ -28,12 +28,13 @@ export interface OfferCardData {
 // ==================== 💎 بطاقة عرض فخمة + شعار المتجر في الأسفل (مباشرة على الخلفية) ====================
 export default function OfferCard({
   offer,
-  pageSlug,
+  base,
   lang,
   large = false,
 }: {
   offer: OfferCardData;
-  pageSlug: string;
+  /** بادئة روابط الصفحة: "/slug" على المنصة أو "" على الدومين الخاص */
+  base: string;
   lang: string;
   large?: boolean;
 }) {
@@ -44,7 +45,7 @@ export default function OfferCard({
 
   return (
     <Link
-      href={`/${pageSlug}/${offer.slug}`}
+      href={`${base}/${offer.slug}`}
       className="group relative flex flex-col overflow-hidden rounded-3xl border border-[var(--lp-border)] bg-[var(--lp-surface)] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_20px_40px_-24px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--lp-accent)_45%,transparent)] hover:shadow-[0_30px_60px_-28px_color-mix(in_srgb,var(--lp-accent)_45%,transparent)]"
     >
       {/* 🖼️ الصورة */}

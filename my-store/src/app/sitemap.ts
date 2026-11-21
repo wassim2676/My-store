@@ -14,7 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const pages = await prisma.landingPage.findMany({
-      where: { isPublished: true, user: { isActive: true } },
+      // صفحات الدومين الخاص الفعّال لها خريطتها على دومينها (mydeals.com/sitemap.xml)
+      where: { isPublished: true, user: { isActive: true }, customDomainVerifiedAt: null },
       select: {
         slug: true,
         updatedAt: true,

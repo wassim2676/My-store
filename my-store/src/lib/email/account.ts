@@ -1,8 +1,6 @@
 import { createHash, randomBytes } from "crypto";
-import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site";
-import { localeCookieName } from "@/i18n/config";
 import { sendEmail } from "./send";
 import { emailChangedEmail, passwordChangedEmail, resetPasswordEmail, verifyEmail, welcomeEmail, type EmailLocale } from "./templates";
 
@@ -60,14 +58,9 @@ export async function clearTokens(kind: Kind, userId: string) {
 }
 
 // ==================== 🌐 لغة الإيميل ====================
-/** لغة الإيميل = لغة الواجهة التي يستعملها صاحب الطلب الآن (الكوكي)، والإنجليزية افتراضياً */
+/** كل إيميلات المنصة بالإنجليزية دائماً، مهما كانت لغة واجهة المستخدم */
 export async function requestEmailLocale(): Promise<EmailLocale> {
-  try {
-    const v = (await cookies()).get(localeCookieName)?.value;
-    return v === "ar" || v === "fr" ? v : "en";
-  } catch {
-    return "en";
-  }
+  return "en";
 }
 
 type Recipient = { id: string; email: string; firstName?: string | null };

@@ -314,7 +314,8 @@
       "admin": "Administration",
       "logout": "Déconnexion",
       "audience": "Audience",
-      "articles": "Articles"
+      "articles": "Articles",
+      "domain": "Domaine personnalisé"
     },
     "common": {
       "copy": "Copier",
@@ -829,6 +830,69 @@
         "unauthorized": "Votre session a expiré. Reconnectez-vous.",
         "not_found": "Cet article n’existe plus.",
         "generic": "Une erreur est survenue. Réessayez."
+      }
+    },
+    "domain": {
+      "title": "Domaine personnalisé",
+      "subtitle": "Utilisez votre propre domaine (comme mydeals.com) pour votre page au lieu du lien Primeshelf.",
+      "notEnabled": "Les domaines personnalisés ne sont pas encore disponibles. Nous finalisons la configuration — revenez bientôt.",
+      "connectTitle": "Connectez votre domaine",
+      "connectText": "Saisissez un domaine qui vous appartient : le domaine principal (mydeals.com) ou un sous-domaine (shop.mydeals.com).",
+      "connect": "Connecter",
+      "inputHint": "Saisissez uniquement le domaine — sans https:// ni chemin.",
+      "needDomain": "Pas encore de domaine ? Achetez-en un chez n'importe quel fournisseur (Namecheap, GoDaddy, Cloudflare, Hostinger…), puis revenez ici. Le certificat SSL (https) est offert.",
+      "how": {
+        "s1": "Saisissez votre domaine",
+        "s1Text": "Tapez le domaine acheté et cliquez sur Connecter.",
+        "s2": "Ajoutez les enregistrements DNS",
+        "s2Text": "Copiez les enregistrements affichés dans les réglages DNS de votre fournisseur.",
+        "s3": "Votre page est en ligne",
+        "s3Text": "Nous vérifions automatiquement. Une fois prêt, votre page s'ouvre sur votre domaine en https."
+      },
+      "yourDomain": "Votre domaine",
+      "visit": "Ouvrir le site",
+      "check": "Vérifier",
+      "autoCheck": "Nous revérifions automatiquement toutes les quelques secondes tant que cette page est ouverte.",
+      "activeText": "Votre domaine est connecté et sécurisé en https. Les visiteurs de votre ancien lien Primeshelf sont redirigés automatiquement vers votre domaine.",
+      "state": {
+        "loading": "Vérification…",
+        "active": "Connecté",
+        "dns": "En attente des enregistrements DNS",
+        "verify": "Vérification de propriété requise",
+        "missing": "Introuvable — cliquez sur Vérifier"
+      },
+      "records": {
+        "title": "Ajoutez ces enregistrements chez votre fournisseur",
+        "titleDone": "Enregistrements DNS",
+        "text": "Ouvrez les réglages DNS de votre domaine (souvent « DNS », « DNS avancé » ou « Gérer les DNS ») et ajoutez les enregistrements ci-dessous exactement comme indiqué. Cliquez sur une valeur pour la copier.",
+        "verifyText": "Ce domaine a déjà été utilisé sur une autre plateforme. Ajoutez l'enregistrement TXT pour prouver qu'il vous appartient, ainsi que les autres enregistrements.",
+        "type": "Type",
+        "host": "Hôte / Nom",
+        "value": "Valeur / Cible",
+        "status": "Statut",
+        "optional": "Recommandé",
+        "pending": "En attente"
+      },
+      "tips": {
+        "remove": "Supprimez tout autre enregistrement A ou CNAME ayant le même hôte (page de parking, ancienne boutique comme Shopify…), sinon le domaine ne fonctionnera pas correctement.",
+        "cloudflare": "Vous utilisez Cloudflare ? Réglez le proxy de l'enregistrement sur « DNS only » (nuage gris).",
+        "wait": "Les changements prennent généralement quelques minutes, mais peuvent aller jusqu'à 24–48 h selon le fournisseur.",
+        "www": "Le second enregistrement permet aussi d'ouvrir votre page avec www (redirection vers le domaine principal)."
+      },
+      "removeTitle": "Déconnecter le domaine",
+      "removeText": "Votre page reviendra à son lien Primeshelf. Vous pourrez reconnecter un domaine à tout moment.",
+      "remove": "Déconnecter",
+      "confirmRemove": "Oui, déconnecter",
+      "cancel": "Annuler",
+      "errors": {
+        "invalid_domain": "Ce domaine ne semble pas valide. Exemple : mydeals.com",
+        "same_domain": "Ce domaine est déjà connecté à votre page.",
+        "taken": "Ce domaine est déjà connecté à une autre page.",
+        "in_use": "Ce domaine est déjà utilisé sur un autre site. Retirez-le là-bas puis réessayez.",
+        "not_enabled": "Les domaines personnalisés ne sont pas encore disponibles.",
+        "provider_error": "Impossible de joindre le service de domaines. Réessayez dans un instant.",
+        "unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
+        "network": "Problème de connexion. Vérifiez votre internet et réessayez."
       }
     }
   },

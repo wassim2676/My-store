@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getPublicLandingPage } from "@/lib/public-page";
 import { publicT } from "@/lib/landing";
-import { SITE_URL } from "@/lib/site";
+import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
 import { articleSummary } from "@/lib/articles-server";
 import LandingShell from "@/components/landing/LandingShell";
 import { LandingNavbar } from "@/components/landing/Storefront";
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: `/${page.slug}/articles` },
+    alternates: { canonical: pageAbsoluteUrl(page, "/articles") },
     robots: page.isPublished ? undefined : { index: false, follow: false },
     openGraph: { title, description, type: "website" },
   };
@@ -47,13 +47,14 @@ export default async function ArticlesIndex({ params }: Props) {
   if (!data) notFound();
   const { page, offers, isOwner, articles } = data;
   const lang = page.language;
+  const { base, abs } = await pageLinks(page, { sub: "/articles", isOwner });
 
   const breadcrumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: page.title, item: `${SITE_URL}/${page.slug}` },
-      { "@type": "ListItem", position: 2, name: publicT(lang, "articles"), item: `${SITE_URL}/${page.slug}/articles` },
+      { "@type": "ListItem", position: 1, name: page.title, item: abs() },
+      { "@type": "ListItem", position: 2, name: publicT(lang, "articles"), item: abs("/articles") },
     ],
   };
 
@@ -62,12 +63,12 @@ export default async function ArticlesIndex({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c") }} />
       <LandingNavbar
         mode="link"
-        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: lang }}
+        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: lang, base }}
         categories={Array.from(new Set(offers.map((o) => o.category).filter((c): c is string => !!c)))}
       />
 
       <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
-        <Link href={`/${page.slug}`} className="inline-flex items-center gap-2 text-sm text-[var(--lp-muted)] hover:text-[var(--lp-text)]">
+        <Link href={base || "/"} className="inline-flex items-center gap-2 text-sm text-[var(--lp-muted)] hover:text-[var(--lp-text)]">
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           {publicT(lang, "backTo", { name: page.title })}
         </Link>
@@ -84,7 +85,7 @@ export default async function ArticlesIndex({ params }: Props) {
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {articles.map((a) => (
-              <ArticleCard key={a.id} article={articleSummary(a)} pageSlug={page.slug} lang={lang} />
+              <ArticleCard key={a.id} article={articleSummary(a)} base={base} lang={lang} />
             ))}
           </div>
         )}

@@ -10,6 +10,7 @@ import { getPublicLandingPage } from "@/lib/public-page";
 import { isCountableRequest } from "@/lib/marketer";
 import { publicT } from "@/lib/landing";
 import { SITE_URL } from "@/lib/site";
+import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
 import { autoExcerpt, parseArticle } from "@/lib/articles";
 import { articleSummary, publishedArticles } from "@/lib/articles-server";
 import LandingShell from "@/components/landing/LandingShell";
@@ -41,9 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: article.seoTitle || `${article.title} — ${page.title}`,
     description,
-    alternates: { canonical: `/${page.slug}/articles/${article.slug}` },
+    alternates: { canonical: pageAbsoluteUrl(page, `/articles/${article.slug}`) },
     robots: article.status === "PUBLISHED" && page.isPublished ? undefined : { index: false, follow: false },
-    authors: [{ name: page.title, url: `/${page.slug}` }],
+    authors: [{ name: page.title, url: pageAbsoluteUrl(page) }],
     openGraph: {
       type: "article",
       title: article.seoTitle || article.title,
@@ -66,6 +67,7 @@ export default async function ArticlePage({ params }: Props) {
   if (!data) notFound();
   const { page, offers, isOwner, article } = data;
   const lang = page.language;
+  const { base, abs } = await pageLinks(page, { sub: `/articles/${article.slug}`, isOwner });
 
   const h = await headers();
   if (!isOwner && article.status === "PUBLISHED" && isCountableRequest(h)) {
@@ -87,7 +89,7 @@ export default async function ArticlePage({ params }: Props) {
   const summary = articleSummary(article);
   const published = article.publishedAt ?? article.createdAt;
   const updatedLater = article.updatedAt.getTime() - published.getTime() > 24 * 3600 * 1000;
-  const url = `${SITE_URL}/${page.slug}/articles/${article.slug}`;
+  const url = abs(`/articles/${article.slug}`);
 
   // 🔍 بيانات منظّمة: مقال + مسار التنقل
   const jsonLd = [
@@ -99,8 +101,8 @@ export default async function ArticlePage({ params }: Props) {
       image: article.coverImage ? [article.coverImage.startsWith("/") ? SITE_URL + article.coverImage : article.coverImage] : undefined,
       datePublished: published.toISOString(),
       dateModified: article.updatedAt.toISOString(),
-      author: { "@type": "Person", name: page.title, url: `${SITE_URL}/${page.slug}` },
-      publisher: { "@type": "Organization", name: page.title, url: `${SITE_URL}/${page.slug}` },
+      author: { "@type": "Person", name: page.title, url: abs() },
+      publisher: { "@type": "Organization", name: page.title, url: abs() },
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
       articleSection: article.category ?? undefined,
       inLanguage: lang,
@@ -110,8 +112,8 @@ export default async function ArticlePage({ params }: Props) {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: page.title, item: `${SITE_URL}/${page.slug}` },
-        { "@type": "ListItem", position: 2, name: publicT(lang, "articles"), item: `${SITE_URL}/${page.slug}/articles` },
+        { "@type": "ListItem", position: 1, name: page.title, item: abs() },
+        { "@type": "ListItem", position: 2, name: publicT(lang, "articles"), item: abs("/articles") },
         { "@type": "ListItem", position: 3, name: article.title, item: url },
       ],
     },
@@ -123,7 +125,7 @@ export default async function ArticlePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <LandingNavbar
         mode="link"
-        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: lang }}
+        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: lang, base }}
         categories={Array.from(new Set(offers.map((o) => o.category).filter((c): c is string => !!c)))}
       />
 
@@ -131,9 +133,9 @@ export default async function ArticlePage({ params }: Props) {
         {/* 🧭 مسار التنقل */}
         <nav aria-label="Breadcrumb" className="text-sm text-[var(--lp-muted)]">
           <ol className="flex flex-wrap items-center gap-1.5">
-            <li><Link href={`/${page.slug}`} className="hover:text-[var(--lp-text)]">{page.title}</Link></li>
+            <li><Link href={base || "/"} className="hover:text-[var(--lp-text)]">{page.title}</Link></li>
             <li aria-hidden><ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" /></li>
-            <li><Link href={`/${page.slug}/articles`} className="hover:text-[var(--lp-text)]">{publicT(lang, "articles")}</Link></li>
+            <li><Link href={`${base}/articles`} className="hover:text-[var(--lp-text)]">{publicT(lang, "articles")}</Link></li>
             <li aria-hidden><ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" /></li>
             <li className="max-w-[16rem] truncate text-[var(--lp-text)]" aria-current="page">{article.title}</li>
           </ol>
@@ -148,7 +150,7 @@ export default async function ArticlePage({ params }: Props) {
             <h1 className="mt-3 font-serif text-3xl font-semibold leading-[1.15] sm:text-5xl">{article.title}</h1>
             {article.excerpt && <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--lp-muted)] sm:text-xl">{article.excerpt}</p>}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[var(--lp-muted)]">
-              <Link href={`/${page.slug}`} className="flex items-center gap-2 font-medium text-[var(--lp-text)] hover:text-[var(--lp-accent-ink)]">
+              <Link href={base || "/"} className="flex items-center gap-2 font-medium text-[var(--lp-text)] hover:text-[var(--lp-accent-ink)]">
                 {page.avatarUrl ? (
                   <img src={page.avatarUrl} alt="" className="h-7 w-7 rounded-full object-cover" />
                 ) : (
@@ -193,7 +195,7 @@ export default async function ArticlePage({ params }: Props) {
                 </details>
               )}
 
-              <ArticleBody blocks={blocks} offers={offersBySlug} pageSlug={page.slug} lang={lang} withAds />
+              <ArticleBody blocks={blocks} offers={offersBySlug} base={base} lang={lang} withAds />
 
               {updatedLater && (
                 <p className="mt-10 text-sm text-[var(--lp-muted)]">
@@ -215,7 +217,7 @@ export default async function ArticlePage({ params }: Props) {
                 <div className="min-w-0">
                   <p className="font-serif text-lg font-semibold">{page.title}</p>
                   {(page.tagline || page.bio) && <p className="mt-1 line-clamp-3 text-sm leading-relaxed text-[var(--lp-muted)]">{page.tagline || page.bio}</p>}
-                  <Link href={`/${page.slug}`} className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[var(--lp-accent-ink)] hover:underline">
+                  <Link href={base || "/"} className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[var(--lp-accent-ink)] hover:underline">
                     {publicT(lang, "backTo", { name: page.title })}
                   </Link>
                 </div>
@@ -245,7 +247,7 @@ export default async function ArticlePage({ params }: Props) {
             <h2 id="more-articles" className="mb-6 font-serif text-2xl font-semibold">{publicT(lang, "moreArticles")}</h2>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {more.map((a) => (
-                <ArticleCard key={a.slug} article={a} pageSlug={page.slug} lang={lang} />
+                <ArticleCard key={a.slug} article={a} base={base} lang={lang} />
               ))}
             </div>
           </section>

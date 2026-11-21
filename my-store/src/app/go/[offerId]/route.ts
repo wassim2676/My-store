@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { pageAbsoluteUrl } from "@/lib/page-urls";
 import { bumpDailyStat } from "@/lib/marketer";
 import { classifyVisitor, cleanAffiliateUrl, isCountryAllowed, parseAudience, visitorCountry } from "@/lib/traffic";
 import { bestTextOn, pageDir, parseDesign, publicT, resolveTokens } from "@/lib/landing";
@@ -21,18 +22,18 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       affiliateUrl: true,
       status: true,
       landingPageId: true,
-      landingPage: { select: { slug: true, title: true, language: true, theme: true, accentColor: true, design: true, audience: true } },
+      landingPage: { select: { slug: true, customDomain: true, customDomainVerifiedAt: true, title: true, language: true, theme: true, accentColor: true, design: true, audience: true } },
     },
   });
 
   if (!offer || offer.status !== "PUBLISHED") {
-    return NextResponse.redirect(new URL(offer ? `/${offer.landingPage.slug}` : "/", request.url));
+    return NextResponse.redirect(offer ? pageAbsoluteUrl(offer.landingPage) : new URL("/", request.url));
   }
 
   const page = offer.landingPage;
   const audience = parseAudience(page.audience);
   const kind = classifyVisitor(request.headers);
-  const reviewUrl = new URL(`/${page.slug}/${offer.slug}`, request.url).toString();
+  const reviewUrl = pageAbsoluteUrl(page, `/${offer.slug}`);
 
   // 1) 🤖 الروبوتات وزواحف المنصات: لا نكشف رابط الأفلييت ولا نسجّل نقرة
   if (kind !== "human" && audience.botProtection) {
@@ -44,7 +45,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (kind === "human" && !isCountryAllowed(audience, visitorCountry(request.headers))) {
     track(() => bumpDailyStat(offer.landingPageId, "geoBlocked"));
     if (audience.blockAction === "redirect" && audience.redirectUrl) return redirect(audience.redirectUrl);
-    return regionPage(page, new URL(`/${page.slug}`, request.url).toString());
+    return regionPage(page, pageAbsoluteUrl(page));
   }
 
   // 3) ✅ زائر حقيقي مستهدف

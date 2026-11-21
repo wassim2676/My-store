@@ -41,13 +41,13 @@ const T = ({ text }: { text: string }) => <Inline nodes={parseInline(text)} />;
 export default function ArticleBody({
   blocks,
   offers,
-  pageSlug,
+  base,
   lang,
   withAds = false,
 }: {
   blocks: Block[];
   offers: Record<string, OfferCardData>;
-  pageSlug: string;
+  base: string;
   lang: string;
   /** أماكن الإعلانات داخل المحتوى (لا تظهر إلا بعد تفعيل AdSense) */
   withAds?: boolean;
@@ -103,7 +103,7 @@ export default function ArticleBody({
             const o = offers[b.slug];
             node = o ? (
               <div className="not-prose my-10 mx-auto max-w-sm">
-                <OfferCard offer={o} pageSlug={pageSlug} lang={lang} />
+                <OfferCard offer={o} base={base} lang={lang} />
               </div>
             ) : null;
             break;

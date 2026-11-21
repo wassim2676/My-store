@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const account = await prisma.user.findUnique({ where: { id: ctx.userId }, select: { email: true, emailVerified: true } });
   return (
     <DashboardShell
-      page={{ slug: ctx.landingPage.slug, title: ctx.landingPage.title, isPublished: ctx.landingPage.isPublished }}
+      page={{ slug: ctx.landingPage.slug, title: ctx.landingPage.title, isPublished: ctx.landingPage.isPublished, liveDomain: ctx.landingPage.customDomainVerifiedAt ? ctx.landingPage.customDomain : null }}
       user={{ name: [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || "", email: user.email ?? "", role: user.role }}
       unverifiedEmail={account && !account.emailVerified ? account.email : null}
     >

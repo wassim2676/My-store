@@ -314,7 +314,8 @@
       "admin": "Admin panel",
       "logout": "Log out",
       "audience": "Audience",
-      "articles": "Articles"
+      "articles": "Articles",
+      "domain": "Custom domain"
     },
     "common": {
       "copy": "Copy",
@@ -829,6 +830,69 @@
         "unauthorized": "Your session expired. Please log in again.",
         "not_found": "This article no longer exists.",
         "generic": "Something went wrong. Please try again."
+      }
+    },
+    "domain": {
+      "title": "Custom domain",
+      "subtitle": "Use your own domain (like mydeals.com) for your page instead of the Primeshelf link.",
+      "notEnabled": "Custom domains are not available yet. We're finishing the setup — check back soon.",
+      "connectTitle": "Connect your domain",
+      "connectText": "Enter a domain you own. You can use the main domain (mydeals.com) or a subdomain (shop.mydeals.com).",
+      "connect": "Connect",
+      "inputHint": "Enter only the domain — without https:// or any path.",
+      "needDomain": "Don't have a domain yet? Buy one from any provider (Namecheap, GoDaddy, Cloudflare, Hostinger…), then come back here. A free SSL certificate (https) is included.",
+      "how": {
+        "s1": "Enter your domain",
+        "s1Text": "Type the domain you bought and click Connect.",
+        "s2": "Add the DNS records",
+        "s2Text": "Copy the records we show into the DNS settings at your domain provider.",
+        "s3": "Your page goes live",
+        "s3Text": "We check automatically. Once ready, your page opens on your domain with https."
+      },
+      "yourDomain": "Your domain",
+      "visit": "Open site",
+      "check": "Check now",
+      "autoCheck": "We re-check automatically every few seconds while this page is open.",
+      "activeText": "Your domain is connected and secured with https. Visitors to your old Primeshelf link are sent to your domain automatically.",
+      "state": {
+        "loading": "Checking…",
+        "active": "Connected",
+        "dns": "Waiting for DNS records",
+        "verify": "Ownership verification needed",
+        "missing": "Not found — click Check now"
+      },
+      "records": {
+        "title": "Add these records at your domain provider",
+        "titleDone": "DNS records",
+        "text": "Open the DNS settings of your domain (often called “DNS”, “Advanced DNS” or “Manage DNS”) and add the records below exactly as shown. Click any value to copy it.",
+        "verifyText": "This domain was used on another platform before. Add the TXT record to prove it's yours, plus the other records to point it to your page.",
+        "type": "Type",
+        "host": "Host / Name",
+        "value": "Value / Points to",
+        "status": "Status",
+        "optional": "Recommended",
+        "pending": "Waiting"
+      },
+      "tips": {
+        "remove": "Delete any other A or CNAME record with the same Host (e.g. parking pages or an old store like Shopify) — otherwise the domain won't work reliably.",
+        "cloudflare": "Using Cloudflare? Set the record's proxy status to “DNS only” (grey cloud).",
+        "wait": "Changes usually take a few minutes, but can take up to 24–48 hours depending on your provider.",
+        "www": "The second record makes the www version open your page too (it redirects to your main domain)."
+      },
+      "removeTitle": "Disconnect domain",
+      "removeText": "Your page will go back to its Primeshelf link. You can connect a domain again anytime.",
+      "remove": "Disconnect",
+      "confirmRemove": "Yes, disconnect",
+      "cancel": "Cancel",
+      "errors": {
+        "invalid_domain": "This doesn't look like a valid domain. Example: mydeals.com",
+        "same_domain": "This domain is already connected to your page.",
+        "taken": "This domain is already connected to another page.",
+        "in_use": "This domain is already used on another site. Remove it there first, then try again.",
+        "not_enabled": "Custom domains are not available yet.",
+        "provider_error": "We couldn't reach the domain service. Please try again in a moment.",
+        "unauthorized": "Your session expired. Please log in again.",
+        "network": "Connection problem. Check your internet and try again."
       }
     }
   },

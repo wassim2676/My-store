@@ -2,8 +2,8 @@
 // يمكن تغيير الاسم من متغير البيئة NEXT_PUBLIC_SITE_NAME دون تعديل الكود
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Primeshelf";
 
-/** النطاق الرسمي للمنصة */
-export const PRODUCTION_URL = "https://primeshelf.store";
+/** النطاق الرسمي للمنصة (Vercel يحوّل primeshelf.store إلى www، فنستعمل www مباشرة في كل الروابط والصور) */
+export const PRODUCTION_URL = "https://www.primeshelf.store";
 
 // الرابط الأساسي للموقع (البيانات المنظّمة، خريطة الموقع، روابط الإيميلات):
 // متغير صريح ← النطاق الرسمي في إنتاج Vercel ← NEXTAUTH_URL ← localhost

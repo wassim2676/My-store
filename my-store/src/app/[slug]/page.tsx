@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getPublicLandingPage } from "@/lib/public-page";
+import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
 import { bumpDailyStat, isCountableRequest } from "@/lib/marketer";
 import { parseDesign, parseSocials } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: page.seoTitle || page.title,
     description,
-    alternates: { canonical: `/${page.slug}` },
+    alternates: { canonical: pageAbsoluteUrl(page) },
     robots: page.isPublished ? undefined : { index: false, follow: false },
     openGraph: { title: page.seoTitle || page.title, description, images: image ? [image] : undefined, type: "website" },
     twitter: { card: "summary_large_image", title: page.seoTitle || page.title, description, images: image ? [image] : undefined },
@@ -37,6 +38,8 @@ export default async function LandingPageView({ params, searchParams }: Props) {
   if (!data) notFound();
 
   const { page, offers, isOwner } = data;
+  const qs = new URLSearchParams(Object.entries(sp).filter((e): e is [string, string] => typeof e[1] === "string")).toString();
+  const { base } = await pageLinks(page, { sub: qs ? `/?${qs}` : "", isOwner });
   const articles = (await publishedArticles(page.id, 3)).map(articleSummary);
 
   // 📊 زيارة (لا تُحتسب زيارات المالك أو الروبوتات)
@@ -65,6 +68,7 @@ export default async function LandingPageView({ params, searchParams }: Props) {
           avatarUrl: page.avatarUrl,
           coverUrl: page.coverUrl,
           language: page.language,
+          base,
         }}
         offers={offers}
         socials={parseSocials(page.socialLinks)}
@@ -72,7 +76,7 @@ export default async function LandingPageView({ params, searchParams }: Props) {
         initialQuery={typeof sp.q === "string" ? sp.q.slice(0, 100) : ""}
         initialCategory={typeof sp.c === "string" ? sp.c.slice(0, 80) : null}
       />
-      <LatestArticles articles={articles} pageSlug={page.slug} lang={page.language} />
+      <LatestArticles articles={articles} base={base} lang={page.language} />
     </LandingShell>
   );
 }

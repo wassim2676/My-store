@@ -6,11 +6,11 @@ import { useTranslations } from "next-intl";
 import { useSiteOrigin } from "@/components/shared/useSiteHost";
 
 /** زر نسخ الرابط الكامل لصفحة الهبوط أو العرض */
-export default function CopyLink({ path, compact = false }: { path: string; compact?: boolean }) {
+export default function CopyLink({ path, url: fixedUrl, compact = false }: { path: string; /** رابط كامل بديل (الدومين الخاص) */ url?: string; compact?: boolean }) {
   const t = useTranslations("dash");
   const origin = useSiteOrigin();
   const [copied, setCopied] = useState(false);
-  const url = `${origin}${path}`;
+  const url = fixedUrl ?? `${origin}${path}`;
 
   const copy = async () => {
     try {

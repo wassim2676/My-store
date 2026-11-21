@@ -382,7 +382,7 @@ export default function ArticleForm({ article, page, offers }: { article?: Seria
                   )}
                   <div className="mt-8">
                     {blocks.length ? (
-                      <ArticleBody blocks={blocks} offers={offersBySlug} pageSlug={page.slug} lang={page.language} />
+                      <ArticleBody blocks={blocks} offers={offersBySlug} base={`/${page.slug}`} lang={page.language} />
                     ) : (
                       <p className="text-center text-[var(--lp-muted)]">{t("emptyPreview")}</p>
                     )}

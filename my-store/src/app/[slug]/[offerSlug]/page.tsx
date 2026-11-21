@@ -6,6 +6,7 @@ import { after } from "next/server";
 import { ArrowLeft, Check, Minus, Clock, Sparkles, PlayCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getPublicLandingPage } from "@/lib/public-page";
+import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
 import { bumpDailyStat, isCountableRequest } from "@/lib/marketer";
 import { discountPercent, formatPrice, publicT, resolveStore, toEmbedUrl } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${offer.title} — ${page.title}`,
     description: offer.shortReview.slice(0, 170),
-    alternates: { canonical: `/${page.slug}/${offer.slug}` },
+    alternates: { canonical: pageAbsoluteUrl(page, `/${offer.slug}`) },
     robots: offer.status === "PUBLISHED" && page.isPublished ? undefined : { index: false, follow: false },
     openGraph: { title: offer.title, description: offer.shortReview.slice(0, 200), images: offer.images.slice(0, 1), type: "article" },
     twitter: { card: "summary_large_image", title: offer.title, description: offer.shortReview.slice(0, 200), images: offer.images.slice(0, 1) },
@@ -50,6 +51,8 @@ export default async function OfferPage({ params }: Props) {
   const { page, offer, offers, isOwner } = data;
   const lang = page.language;
   const store = resolveStore(offer.brand, offer.storeName, offer.storeLogo);
+  const links = await pageLinks(page, { sub: `/${offer.slug}`, isOwner });
+  const base = links.base;
 
   const h = await headers();
   if (!isOwner && isCountableRequest(h)) {
@@ -92,7 +95,7 @@ export default async function OfferPage({ params }: Props) {
         }
       : {}),
     ...(offer.price != null
-      ? { offers: { "@type": "Offer", price: offer.price, priceCurrency: offer.currency, url: `/${page.slug}/${offer.slug}` } }
+      ? { offers: { "@type": "Offer", price: offer.price, priceCurrency: offer.currency, url: links.abs(`/${offer.slug}`) } }
       : {}),
   };
 
@@ -102,13 +105,13 @@ export default async function OfferPage({ params }: Props) {
 
       <LandingNavbar
         mode="link"
-        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: page.language }}
+        page={{ slug: page.slug, title: page.title, avatarUrl: page.avatarUrl, language: page.language, base }}
         categories={Array.from(new Set(offers.map((o) => o.category).filter((c): c is string => !!c)))}
       />
 
       <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
-          <Link href={`/${page.slug}`} className="inline-flex items-center gap-2 text-sm text-[var(--lp-muted)] hover:text-[var(--lp-text)]">
+          <Link href={base || "/"} className="inline-flex items-center gap-2 text-sm text-[var(--lp-muted)] hover:text-[var(--lp-text)]">
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
             {publicT(lang, "backTo", { name: page.title })}
           </Link>
@@ -302,7 +305,7 @@ export default async function OfferPage({ params }: Props) {
             <SectionTitle>{publicT(lang, "moreFrom", { name: page.title })}</SectionTitle>
             <div className="grid grid-cols-1 gap-5 min-[480px]:grid-cols-2 lg:grid-cols-4">
               {more.map((o) => (
-                <OfferCard key={o.id} offer={o} pageSlug={page.slug} lang={lang} />
+                <OfferCard key={o.id} offer={o} base={base} lang={lang} />
               ))}
             </div>
           </section>

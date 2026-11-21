@@ -408,7 +408,7 @@ export default function OfferForm({
             <h3 className="mb-3 text-sm font-semibold">{t("form.preview")}</h3>
             <div data-lp style={themeStyle(page.theme, page.accentColor, pageDesign)} dir={pageDir(page.language)} className={`rounded-2xl p-4 pointer-events-none`}>
               <ClientFonts fonts={[pageDesign.font, pageDesign.bodyFont]} />
-              <OfferCard offer={preview} pageSlug={page.slug} lang={page.language} />
+              <OfferCard offer={preview} base={`/${page.slug}`} lang={page.language} />
             </div>
           </div>
         </aside>

@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { publicT } from "@/lib/landing";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 // ==================== 🦶 تذييل صفحة الهبوط (مشترك بين الصفحة العامة ومعاينة لوحة التحكم) ====================
 export default function LandingFooter({
@@ -29,9 +28,9 @@ export default function LandingFooter({
         )}
         <p className="text-xs text-[var(--lp-muted)]">
           © {new Date().getFullYear()} {title} · {publicT(lang, "poweredBy")}{" "}
-          <Link href="/" className="font-semibold text-[var(--lp-text)] hover:text-[var(--lp-accent-ink)]">
+          <a href={SITE_URL} className="font-semibold text-[var(--lp-text)] hover:text-[var(--lp-accent-ink)]">
             {SITE_NAME}
-          </Link>
+          </a>
         </p>
       </div>
     </footer>

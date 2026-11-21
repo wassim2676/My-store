@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
-  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper,
+  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import CopyLink from "./CopyLink";
@@ -19,7 +19,7 @@ export default function DashboardShell({
   unverifiedEmail,
   children,
 }: {
-  page: { slug: string; title: string; isPublished: boolean };
+  page: { slug: string; title: string; isPublished: boolean; liveDomain?: string | null };
   user: { name: string; email: string; role: string };
   unverifiedEmail?: string | null;
   children: React.ReactNode;
@@ -35,6 +35,7 @@ export default function DashboardShell({
     { href: "/dashboard/articles", label: t("nav.articles"), icon: Newspaper, exact: false },
     { href: "/dashboard/page-settings", label: t("nav.design"), icon: Palette, exact: true },
     { href: "/dashboard/audience", label: t("nav.audience"), icon: GlobeLock, exact: true },
+    { href: "/dashboard/domain", label: t("nav.domain"), icon: Globe, exact: true },
     { href: "/dashboard/account", label: t("nav.account"), icon: UserCog, exact: true },
   ];
 
@@ -78,7 +79,7 @@ export default function DashboardShell({
               <ExternalLink className="h-3.5 w-3.5" />
               {t("nav.view")}
             </a>
-            <CopyLink path={`/${page.slug}`} compact />
+            <CopyLink path={`/${page.slug}`} url={page.liveDomain ? `https://${page.liveDomain}` : undefined} compact />
           </div>
         </div>
 

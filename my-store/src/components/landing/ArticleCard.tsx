@@ -7,10 +7,10 @@ import type { ArticleSummary } from "@/lib/articles-server";
 const fmtDate = (iso: string, lang: string) => new Intl.DateTimeFormat(lang, { dateStyle: "medium" }).format(new Date(iso));
 
 // ==================== 📰 بطاقة مقال (قائمة المقالات + أحدث المقالات في صفحة المسوّق) ====================
-export default function ArticleCard({ article, pageSlug, lang }: { article: ArticleSummary; pageSlug: string; lang: string }) {
+export default function ArticleCard({ article, base, lang }: { article: ArticleSummary; base: string; lang: string }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-[var(--lp-radius-lg)] border border-[var(--lp-border)] bg-[var(--lp-surface)] transition hover:-translate-y-0.5 hover:border-[var(--lp-border-strong)]">
-      <Link href={`/${pageSlug}/articles/${article.slug}`} className="block aspect-[16/9] overflow-hidden bg-[var(--lp-surface2)]" tabIndex={-1} aria-hidden>
+      <Link href={`${base}/articles/${article.slug}`} className="block aspect-[16/9] overflow-hidden bg-[var(--lp-surface2)]" tabIndex={-1} aria-hidden>
         {article.coverImage ? (
           <img src={article.coverImage} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
         ) : (
@@ -24,7 +24,7 @@ export default function ArticleCard({ article, pageSlug, lang }: { article: Arti
           <span className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--lp-accent-ink)]">{article.category}</span>
         )}
         <h3 className="font-serif text-lg font-semibold leading-snug">
-          <Link href={`/${pageSlug}/articles/${article.slug}`} className="hover:text-[var(--lp-accent-ink)]">
+          <Link href={`${base}/articles/${article.slug}`} className="hover:text-[var(--lp-accent-ink)]">
             {article.title}
           </Link>
         </h3>
@@ -45,20 +45,20 @@ export default function ArticleCard({ article, pageSlug, lang }: { article: Arti
 }
 
 /** قسم "أحدث المقالات" أسفل واجهة صفحة المسوّق */
-export function LatestArticles({ articles, pageSlug, lang }: { articles: ArticleSummary[]; pageSlug: string; lang: string }) {
+export function LatestArticles({ articles, base, lang }: { articles: ArticleSummary[]; base: string; lang: string }) {
   if (!articles.length) return null;
   return (
     <section className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8" aria-labelledby="latest-articles">
       <div className="mb-6 flex items-end justify-between gap-4">
         <h2 id="latest-articles" className="font-serif text-2xl font-semibold sm:text-3xl">{publicT(lang, "latestArticles")}</h2>
-        <Link href={`/${pageSlug}/articles`} className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[var(--lp-accent-ink)] hover:underline">
+        <Link href={`${base}/articles`} className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[var(--lp-accent-ink)] hover:underline">
           {publicT(lang, "allArticles")}
           <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" />
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {articles.map((a) => (
-          <ArticleCard key={a.slug} article={a} pageSlug={pageSlug} lang={lang} />
+          <ArticleCard key={a.slug} article={a} base={base} lang={lang} />
         ))}
       </div>
     </section>

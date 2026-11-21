@@ -74,7 +74,7 @@ export default async function DashboardOverview({ searchParams }: { searchParams
 
       <div className="space-y-2">
         <p className="text-xs uppercase tracking-wider text-white/40">{t("overview.yourLink")}</p>
-        <CopyLink path={`/${page.slug}`} />
+        <CopyLink path={`/${page.slug}`} url={page.customDomain && page.customDomainVerifiedAt ? `https://${page.customDomain}` : undefined} />
       </div>
 
       {showChecklist && (
