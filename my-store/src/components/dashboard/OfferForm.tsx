@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- معاينة صور خارجية يضيفها المسوّق */
 
+import { announcePending } from "@/lib/pending-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -145,6 +146,12 @@ export default function OfferForm({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(apiError(res.status, data.error));
+      if (data.pending) {
+        // 👥 عضو فريق: التغيير ينتظر موافقة صاحب الصفحة
+        announcePending();
+        router.push("/dashboard/offers");
+        return;
+      }
       if (isEdit) {
         setF((s) => ({ ...s, status, slug: data.data.slug }));
         setSaved(true);

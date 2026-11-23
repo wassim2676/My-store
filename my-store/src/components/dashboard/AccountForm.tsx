@@ -17,7 +17,7 @@ type Profile = { firstName: string; lastName: string; email: string };
  * و"إلغاء" يعيدها كما كانت. حماية من تغيير حرف بالخطأ.
  * تغيير البريد (معرّف الدخول) يتطلب كلمة المرور الحالية.
  */
-export default function AccountForm({ initial }: { initial: Profile }) {
+export default function AccountForm({ initial, credentialsLocked = false }: { initial: Profile; /** 👥 حساب عضو فريق: الإيميل وكلمة السر لا يُغيَّران */ credentialsLocked?: boolean }) {
   const t = useTranslations("dash");
   const locale = useLocale();
   const router = useRouter();
@@ -172,7 +172,8 @@ export default function AccountForm({ initial }: { initial: Profile }) {
             </div>
             <label className="block space-y-1.5">
               <span className="text-sm text-white/70">{t("account.email")}</span>
-              <input required type="email" dir="ltr" maxLength={255} value={draft.email} onChange={(e) => setDraft({ ...draft, email: e.target.value })} className={field} />
+              <input required type="email" dir="ltr" maxLength={255} value={draft.email} disabled={credentialsLocked} onChange={(e) => setDraft({ ...draft, email: e.target.value })} className={`${field} disabled:cursor-not-allowed disabled:opacity-50`} />
+              {credentialsLocked && <span className="block text-xs text-white/40">{t("account.teamLocked")}</span>}
             </label>
             {emailChanged && (
               <div className="space-y-2 rounded-xl border border-amber-400/25 bg-amber-400/[0.05] p-4">
@@ -232,6 +233,7 @@ export default function AccountForm({ initial }: { initial: Profile }) {
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-semibold">{t("account.password")}</h2>
           {!pwOpen &&
+            !credentialsLocked &&
             editBtn(() => {
               setMsg(null);
               setPwOpen(true);
@@ -242,6 +244,7 @@ export default function AccountForm({ initial }: { initial: Profile }) {
           <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
             <KeyRound className="h-4 w-4 text-white/40" />
             <span className="font-mono tracking-[0.3em] text-white/50">••••••••</span>
+            {credentialsLocked && <span className="ms-auto text-xs text-white/40">{t("account.teamLocked")}</span>}
           </div>
         ) : (
           <>

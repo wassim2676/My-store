@@ -1,5 +1,6 @@
 "use client";
 
+import { announcePending } from "@/lib/pending-client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -97,6 +98,11 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(apiError(res.status, data.error));
+      if (data.pending) {
+        announcePending();
+        setDirty(false);
+        return;
+      }
       setSavedSlug(data.data.slug);
       setSavedTitle(data.data.title);
       setEditTitle(false);

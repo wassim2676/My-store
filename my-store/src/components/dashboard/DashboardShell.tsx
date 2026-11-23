@@ -2,31 +2,55 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
-  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe, Share2,
+  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe, Share2, Users, ChevronsUpDown,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import CopyLink from "./CopyLink";
 import VerifyEmailBanner from "./VerifyEmailBanner";
 import Logo from "@/components/shared/Logo";
+import NotificationBell from "@/components/notifications/NotificationBell";
+import PendingToast from "./PendingToast";
+
+export type ShellTeam = {
+  /** صاحب الصفحة النشطة (وليس عضو فريق فيها) */
+  isOwner: boolean;
+  /** طلبات تنتظر موافقته (لصاحب الصفحة) أو طلباته المعلّقة (للعضو) */
+  pending: number;
+  activePageId: string;
+  /** كل الصفحات التي يستطيع العمل عليها (صفحته + فرقه) — للتبديل بينها */
+  pages: { id: string; title: string; own: boolean }[];
+};
 
 export default function DashboardShell({
   page,
   user,
   unverifiedEmail,
+  team,
   children,
 }: {
   page: { slug: string; title: string; isPublished: boolean; liveDomain?: string | null };
   user: { name: string; email: string; role: string };
   unverifiedEmail?: string | null;
+  team?: ShellTeam;
   children: React.ReactNode;
 }) {
   const t = useTranslations("dash");
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const isMember = !!team && !team.isOwner;
+
+  // 🔀 التبديل بين صفحتي وصفحات الفرق
+  const switchPage = async (pageId: string) => {
+    if (!team || pageId === team.activePageId) return;
+    await fetch("/api/team/switch", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pageId }) });
+    router.push("/dashboard");
+    router.refresh();
+  };
 
   const nav = [
     { href: "/dashboard", label: t("nav.overview"), icon: LayoutDashboard, exact: true },
@@ -37,6 +61,7 @@ export default function DashboardShell({
     { href: "/dashboard/audience", label: t("nav.audience"), icon: GlobeLock, exact: true },
     { href: "/dashboard/share", label: t("nav.share"), icon: Share2, exact: true },
     { href: "/dashboard/domain", label: t("nav.domain"), icon: Globe, exact: true },
+    { href: "/dashboard/team", label: t("nav.team"), icon: Users, exact: true, badge: team?.pending ?? 0 },
     { href: "/dashboard/account", label: t("nav.account"), icon: UserCog, exact: true },
   ];
 
@@ -64,7 +89,16 @@ export default function DashboardShell({
         </div>
 
         <div className="mx-4 mt-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
-          <p className="text-[11px] uppercase tracking-wider text-white/40">{t("nav.yourPage")}</p>
+          <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-white/40">
+            {isMember ? (
+              <>
+                <Users className="h-3 w-3 text-violet-300" />
+                {t("nav.teamPage")}
+              </>
+            ) : (
+              t("nav.yourPage")
+            )}
+          </p>
           <p className="mt-1 truncate font-semibold">{page.title}</p>
           <div className="mt-1 flex items-center gap-1.5 text-xs">
             <span className={`h-1.5 w-1.5 rounded-full ${page.isPublished ? "bg-emerald-400" : "bg-amber-400"}`} />
@@ -82,6 +116,23 @@ export default function DashboardShell({
             </a>
             <CopyLink path={`/${page.slug}`} url={page.liveDomain ? `https://${page.liveDomain}` : undefined} compact />
           </div>
+          {team && team.pages.length > 1 && (
+            <label className="relative mt-3 flex items-center">
+              <ChevronsUpDown className="pointer-events-none absolute end-2.5 h-3.5 w-3.5 text-white/40" />
+              <select
+                value={team.activePageId}
+                onChange={(e) => switchPage(e.target.value)}
+                aria-label={t("nav.switchPage")}
+                className="w-full cursor-pointer appearance-none rounded-lg border border-white/10 bg-black/30 px-3 py-2 pe-8 text-xs text-white/80 outline-none focus:border-amber-400/50"
+              >
+                {team.pages.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.own ? `★ ${p.title}` : `👥 ${p.title}`}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
 
         <nav className="flex-1 space-y-1 p-4">
@@ -97,7 +148,10 @@ export default function DashboardShell({
               }`}
             >
               <item.icon className="h-[18px] w-[18px]" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {"badge" in item && !!item.badge && (
+                <span className="rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold leading-none text-black">{item.badge > 99 ? "99+" : item.badge}</span>
+              )}
             </Link>
           ))}
           {isAdmin && (
@@ -145,12 +199,20 @@ export default function DashboardShell({
                 <span className="hidden min-[400px]:inline">{t("nav.admin")}</span>
               </Link>
             )}
+            <NotificationBell />
             <LanguageSwitcher variant="dark" placement="topbar" />
           </div>
         </header>
         <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 [&_.grid>*]:min-w-0">
           {unverifiedEmail && <VerifyEmailBanner email={unverifiedEmail} />}
+          {isMember && team.pending > 0 && (
+            <Link href="/dashboard/team" className="mb-5 flex items-center gap-2 rounded-xl border border-amber-400/20 bg-amber-400/[0.05] px-4 py-2.5 text-xs text-amber-100/80 hover:bg-amber-400/[0.08]">
+              <Users className="h-3.5 w-3.5 text-amber-300" />
+              {t("team.memberPendingBanner", { count: team.pending })}
+            </Link>
+          )}
           {children}
+          <PendingToast />
         </main>
       </div>
     </div>

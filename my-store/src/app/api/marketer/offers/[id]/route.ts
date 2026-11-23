@@ -1,3 +1,4 @@
+import { withApproval } from "@/lib/team";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -36,7 +37,7 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
 }
 
 // ==================== 🟡 PATCH: تحديث العرض ====================
-export async function PATCH(request: NextRequest, { params }: Ctx) {
+async function updateOffer(request: NextRequest, { params }: Ctx) {
   const { id } = await params;
   const res = await loadOwnedOffer(id);
   if (res.error) return res.error;
@@ -71,7 +72,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
 }
 
 // ==================== 🔴 DELETE: حذف العرض ====================
-export async function DELETE(_req: NextRequest, { params }: Ctx) {
+async function deleteOffer(_req: NextRequest, { params }: Ctx) {
   const { id } = await params;
   const res = await loadOwnedOffer(id);
   if (res.error) return res.error;
@@ -79,3 +80,10 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   revalidatePath(`/${res.page.slug}`, "layout");
   return NextResponse.json({ success: true });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const PATCH = withApproval("offer.update", updateOffer, (b) => {
+  const p = typeof b.title === "string" ? offerSchema.safeParse(b) : quickSchema.safeParse(b);
+  return p.success ? null : p.error.issues[0].message;
+});
+export const DELETE = withApproval("offer.delete", deleteOffer);

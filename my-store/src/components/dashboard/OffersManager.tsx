@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- صور العروض روابط خارجية */
 
+import { announcePending } from "@/lib/pending-client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -56,6 +57,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
       });
       const data = await res.json();
       if (!res.ok) throw new Error(apiError(res.status, data.error));
+      if (data.pending) announcePending(); // 👥 ينتظر موافقة صاحب الصفحة
       return data;
     } catch (e) {
       setError(e instanceof Error ? e.message : t("common.error"));
@@ -81,7 +83,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
     const before = offers;
     setOffers((list) => list.filter((o) => o.id !== id));
     const data = await call(id, { method: "DELETE" });
-    if (!data) setOffers(before);
+    if (!data || data.pending) setOffers(before);
   };
 
   const duplicate = async (id: string) => {
@@ -103,6 +105,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
   const saveOrder = async () => {
     const data = await call("order", { method: "POST", url: "/api/marketer/offers/reorder", body: JSON.stringify({ ids: offers.map((o) => o.id) }) });
     if (data) setOrderDirty(false);
+    if (data?.pending) router.refresh();
   };
 
   const statusPill = (s: string) =>

@@ -280,6 +280,39 @@
         "sentShort": "Envoyé",
         "cooldown": "Veuillez patienter {s} secondes avant de redemander un lien.",
         "error": "Impossible d'envoyer l'e-mail. Réessayez dans un instant."
+      },
+      "invite": {
+        "title": "Rejoindre « {page} »",
+        "body": "{name} vous invite à aider à gérer « {page} » sur Primeshelf.",
+        "modeApproval": "Vos modifications seront examinées par le propriétaire avant publication.",
+        "modeDirect": "Vos modifications seront publiées immédiatement.",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "password": "Créez un mot de passe (8 caractères min.)",
+        "confirm": "Confirmez le mot de passe",
+        "createAndJoin": "Créer le compte et rejoindre",
+        "join": "Rejoindre l'équipe",
+        "login": "Se connecter pour accepter",
+        "loginFirst": "Vous avez déjà un compte avec {email}. Connectez-vous pour accepter cette invitation.",
+        "wrongAccount": "Vous êtes connecté en tant que {current}, mais cette invitation est pour {email}.",
+        "switchAccount": "Se connecter avec le compte invité",
+        "invalidTitle": "Invitation non valide",
+        "invalidBody": "Ce lien d'invitation est invalide ou a déjà été utilisé.",
+        "expiredTitle": "Invitation expirée",
+        "expiredBody": "Demandez à {name} de vous envoyer une nouvelle invitation.",
+        "home": "Aller à l'accueil",
+        "errors": {
+          "generic": "Une erreur est survenue. Réessayez.",
+          "weak_password": "Le mot de passe doit contenir au moins 8 caractères.",
+          "mismatch": "Les mots de passe ne correspondent pas.",
+          "invalid_token": "Cette invitation n'est plus valide.",
+          "expired": "Cette invitation a expiré.",
+          "login_required": "Connectez-vous d'abord.",
+          "wrong_account": "Vous êtes connecté avec un autre compte.",
+          "missing_fields": "Indiquez votre nom et votre mot de passe.",
+          "self": "Vous ne pouvez pas rejoindre votre propre page comme membre.",
+          "account_disabled": "Ce compte est désactivé."
+        }
       }
     }
   },
@@ -325,7 +358,10 @@
       "audience": "Audience",
       "articles": "Articles",
       "domain": "Domaine personnalisé",
-      "share": "Partage & pixels"
+      "share": "Partage & pixels",
+      "team": "Équipe",
+      "teamPage": "Page d'équipe",
+      "switchPage": "Changer de page"
     },
     "common": {
       "copy": "Copier",
@@ -638,7 +674,8 @@
         "invalid": "Vérifiez vos informations et réessayez.",
         "unauthorized": "Votre session a expiré. Reconnectez-vous.",
         "server": "Une erreur est survenue. Réessayez."
-      }
+      },
+      "teamLocked": "Géré par le propriétaire de l'équipe"
     },
     "media": {
       "dropTitle": "Glissez-déposez vos images ici, collez-les (Ctrl+V), ou",
@@ -937,7 +974,8 @@
         "hint": "Collez le code ou la balise <meta> complète telle que fournie — nous gardons uniquement le code et ajoutons la balise à votre page automatiquement.",
         "invalid": "L'un des codes n'est pas valide. Collez le code ou la balise <meta> complète fournie par la plateforme.",
         "error": "Enregistrement impossible. Réessayez."
-      }
+      },
+      "ownerOnly": "Seul le propriétaire de la page peut connecter ou déconnecter un domaine personnalisé."
     },
     "share": {
       "title": "Partage & pixels",
@@ -988,6 +1026,201 @@
           "click": "un visiteur clique sur un bouton d'achat"
         },
         "hint": "Vous pouvez coller le code complet du pixel — nous extrayons l'ID automatiquement. Laissez un champ vide pour retirer ce pixel."
+      }
+    },
+    "team": {
+      "title": "Équipe",
+      "subtitle": "Invitez des personnes à gérer votre page et validez leurs modifications.",
+      "memberSubtitle": "Vous aidez à gérer cette page.",
+      "seats": "{used} / {max} membres",
+      "memberPendingBanner": "{count, plural, one {# modification attend} other {# modifications attendent}} la validation du propriétaire",
+      "pendingTitle": "{count, plural, one {# modification à valider} other {# modifications à valider}}",
+      "pendingText": "Rien n'est publié avant votre validation.",
+      "approveAll": "Tout valider",
+      "confirmApproveAll": "Valider les {count} modifications ?",
+      "approve": "Valider",
+      "reject": "Refuser",
+      "notePlaceholder": "Note (facultatif)",
+      "changesCount": "{count, plural, one {# champ} other {# champs}}",
+      "field": "Champ",
+      "before": "Avant",
+      "after": "Après",
+      "approvedOk": "Modification validée et appliquée.",
+      "rejectedOk": "Modification refusée. Le membre a été prévenu.",
+      "inviteTitle": "Inviter un membre",
+      "inviteText": "Il recevra un e-mail avec un lien pour créer son mot de passe et rejoindre votre page.",
+      "emailPlaceholder": "email@exemple.com",
+      "namePlaceholder": "Nom (facultatif)",
+      "send": "Envoyer l'invitation",
+      "invited": "Invitation envoyée à {email}.",
+      "resent": "Invitation renvoyée.",
+      "approvalLabel": "Les modifications nécessitent ma validation",
+      "approvalHint": "Recommandé. Chaque modification vous est d'abord envoyée — vous la validez ou la refusez. Modifiable à tout moment pour chaque membre.",
+      "can": "Les membres peuvent ajouter et modifier des offres et des articles, changer le design, l'audience, les pixels et les balises de vérification.",
+      "cannot": "Les membres ne peuvent pas changer l'e-mail ou le mot de passe du compte, gérer l'équipe, ni connecter/déconnecter le domaine personnalisé.",
+      "membersTitle": "Membres",
+      "noMembers": "Aucun membre pour l'instant. Invitez quelqu'un ci-dessus.",
+      "status": {
+        "active": "Actif",
+        "invited": "Invité",
+        "expired": "Invitation expirée",
+        "suspended": "Suspendu"
+      },
+      "lastActive": "Actif {when}",
+      "neverActive": "Pas encore actif",
+      "expires": "Expire {when}",
+      "approvedCount": "{count, plural, =0 {Aucune modification validée} one {# modification validée} other {# modifications validées}}",
+      "needsApproval": "Validation requise",
+      "trusted": "Publie directement",
+      "resend": "Renvoyer l'invitation",
+      "suspend": "Suspendre l'accès",
+      "reactivate": "Réactiver",
+      "emailMember": "Envoyer un e-mail",
+      "remove": "Retirer de l'équipe",
+      "revoke": "Annuler l'invitation",
+      "confirmRemove": "Retirer {name} de votre équipe ? Ses modifications en attente seront annulées.",
+      "historyTitle": "Activité récente",
+      "reqStatus": {
+        "pending": "En attente",
+        "applying": "En cours",
+        "approved": "Validée",
+        "rejected": "Refusée",
+        "failed": "Échec",
+        "cancelled": "Annulée"
+      },
+      "memberOf": "Vous êtes membre de « {page} »",
+      "ownedBy": "Propriétaire : {name}",
+      "leave": "Quitter l'équipe",
+      "confirmLeave": "Quitter l'équipe « {page} » ? Vous perdrez l'accès à cette page.",
+      "modeApproval": "Vos modifications sont envoyées au propriétaire pour validation avant publication.",
+      "modeDirect": "Vous êtes un membre de confiance — vos modifications sont publiées immédiatement.",
+      "myRequests": "Mes modifications",
+      "noRequests": "Vous n'avez encore fait aucune modification.",
+      "cancelRequest": "Annuler",
+      "toast": {
+        "title": "Envoyé pour validation",
+        "body": "Le propriétaire va examiner votre modification. Vous serez notifié quand elle sera validée ou refusée.",
+        "view": "Voir mes modifications"
+      },
+      "errors": {
+        "generic": "Une erreur est survenue. Réessayez.",
+        "invalid_email": "Saisissez une adresse e-mail valide.",
+        "self": "Vous ne pouvez pas vous inviter vous-même.",
+        "already_member": "Cette personne fait déjà partie de votre équipe.",
+        "limit": "Nombre maximal de membres atteint.",
+        "owner_only": "Seul le propriétaire de la page peut faire cela.",
+        "email_failed": "L'invitation a été créée mais l'e-mail n'a pas pu être envoyé. Essayez « Renvoyer l'invitation ».",
+        "apply_failed": "Impossible d'appliquer cette modification : {detail}",
+        "not_found": "Introuvable.",
+        "already_reviewed": "Cette modification a déjà été traitée."
+      },
+      "kinds": {
+        "offer": {
+          "create": "Ajouter l'offre « {label} »",
+          "update": "Modifier l'offre « {label} »",
+          "delete": "Supprimer l'offre « {label} »",
+          "reorder": "Réorganiser les offres"
+        },
+        "article": {
+          "create": "Ajouter l'article « {label} »",
+          "update": "Modifier l'article « {label} »",
+          "delete": "Supprimer l'article « {label} »"
+        },
+        "page": {
+          "update": "Modifier le design et les réglages de la page"
+        },
+        "audience": {
+          "update": "Modifier l'audience et la protection des liens"
+        },
+        "integrations": {
+          "update": "Modifier les pixels / la vérification du domaine"
+        }
+      },
+      "fields": {
+        "title": "Titre",
+        "slug": "Lien",
+        "status": "Statut",
+        "isFeatured": "Mise en avant",
+        "price": "Prix",
+        "compareAt": "Ancien prix",
+        "currency": "Devise",
+        "affiliateUrl": "Lien d'affiliation",
+        "shortReview": "Avis court",
+        "badge": "Badge",
+        "category": "Catégorie",
+        "rating": "Note",
+        "images": "Images",
+        "tagline": "Accroche",
+        "bio": "Bio",
+        "avatarUrl": "Photo de profil",
+        "coverUrl": "Couverture",
+        "language": "Langue",
+        "theme": "Thème",
+        "accentColor": "Couleur d'accent",
+        "isPublished": "Publiée",
+        "seoTitle": "Titre SEO",
+        "seoDescription": "Description SEO",
+        "showDisclosure": "Mention",
+        "excerpt": "Extrait",
+        "coverImage": "Image de couverture",
+        "content": "Contenu",
+        "duplicateOf": "Copie de",
+        "order": "Offres",
+        "verify": "Balises de vérification",
+        "pixels": "Pixels",
+        "geoMode": "Pays",
+        "countries": "Liste des pays",
+        "blockAction": "Visiteurs bloqués",
+        "botProtection": "Protection anti-bots",
+        "design": "Design",
+        "socialLinks": "Réseaux sociaux"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAll": "Tout marquer comme lu",
+      "viewAll": "Voir toutes les notifications",
+      "empty": "Aucune notification pour l'instant. Clics, paliers et équipe apparaîtront ici.",
+      "back": "Tableau de bord",
+      "today": "Aujourd'hui",
+      "yesterday": "Hier",
+      "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}",
+      "allCaughtUp": "Vous êtes à jour.",
+      "loadMore": "Charger plus",
+      "filters": {
+        "all": "Toutes",
+        "unread": "Non lues",
+        "performance": "Performance",
+        "team": "Équipe"
+      },
+      "types": {
+        "clicks": {
+          "first": "Premier clic sur « {offer} » 🎉",
+          "title": "{count} clics sur « {offer} »",
+          "body": "Les visiteurs vont vers la boutique depuis cette offre. Continuez à la partager."
+        },
+        "views": {
+          "title": "Votre page a atteint {count} visites",
+          "body": "Votre audience grandit — partagez vos meilleures offres pour garder l'élan."
+        },
+        "daily": {
+          "title": "Hier : {views} visites · {clicks} clics",
+          "ctr": "CTR {ctr} %",
+          "source": "Source principale : {source}",
+          "direct": "Direct",
+          "up": "Visites ▲ {pct} %",
+          "down": "Visites ▼ {pct} %",
+          "blocked": "{count} visites de bots/bloquées filtrées"
+        },
+        "team": {
+          "joined": "{name} a rejoint votre équipe",
+          "joinedBody": "Il peut maintenant vous aider à gérer votre page.",
+          "request": "{name} attend votre validation",
+          "approved": "Votre modification a été validée",
+          "rejected": "Votre modification a été refusée",
+          "failed": "Votre modification validée n'a pas pu être appliquée",
+          "removed": "Vous avez été retiré de l'équipe « {page} »"
+        }
       }
     }
   },

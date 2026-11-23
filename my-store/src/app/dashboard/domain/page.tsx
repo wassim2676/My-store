@@ -17,6 +17,7 @@ export default async function DomainPage() {
         initialDomain={page.customDomain}
         initialActive={!!page.customDomainVerifiedAt}
         platformUrl={`${SITE_URL}/${page.slug}`}
+        canManage={ctx!.isOwner}
       />
       <VerificationTags initial={parseIntegrations(page.integrations).verify} liveUrl={live} />
     </>

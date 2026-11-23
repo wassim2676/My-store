@@ -1,4 +1,5 @@
-import { NextRequest, after } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
+import { isTeamOnlyAccount } from "@/lib/team";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
@@ -23,6 +24,8 @@ export async function PUT(request: NextRequest) {
     // 1️⃣ التحقق من الجلسة
     const session = await getAuthSession();
     if (!session) return errorResponse("غير مصرح", 401);
+    // 👥 حساب عضو فريق: لا يغيّر كلمة سره بنفسه
+    if (await isTeamOnlyAccount(session.user.id)) return NextResponse.json({ success: false, error: "member_locked" }, { status: 403 });
 
     const body = await request.json();
     

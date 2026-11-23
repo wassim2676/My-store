@@ -1,3 +1,4 @@
+import { withApproval } from "@/lib/team";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -27,7 +28,7 @@ export async function GET() {
 }
 
 // ==================== 🟢 POST: إضافة عرض جديد (أو نسخ عرض موجود عبر duplicateOf) ====================
-export async function POST(request: NextRequest) {
+async function createOffer(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   if (!ctx.landingPage)
@@ -80,3 +81,10 @@ export async function POST(request: NextRequest) {
   revalidatePath(`/${page.slug}`, "layout");
   return NextResponse.json({ success: true, data: serializeOffer(offer) }, { status: 201 });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const POST = withApproval("offer.create", createOffer, (b) => {
+  if (typeof b.duplicateOf === "string") return null;
+  const p = offerSchema.safeParse(b);
+  return p.success ? null : p.error.issues[0].message;
+});

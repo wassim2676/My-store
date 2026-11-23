@@ -3,12 +3,13 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getMarketerSession } from "@/lib/marketer";
 import { cleanPixelId, cleanVerifyToken, parseIntegrations, VERIFY_KEYS, type Integrations, type Pixels } from "@/lib/integrations";
+import { withApproval } from "@/lib/team";
 
 // ==================== 🔌 PATCH /api/marketer/integrations: وسوم التحقق و/أو البكسلات ====================
 // كل قسم اختياري: { verify?: {...} } أو { pixels?: {...} } — القسم غير المرسَل يبقى كما هو.
 const bad = (error: string, field?: string) => NextResponse.json({ success: false, error, field }, { status: 400 });
 
-export async function PATCH(request: NextRequest) {
+async function updateIntegrations(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx) return NextResponse.json({ success: false, error: "unauthorized" }, { status: 401 });
   if (!ctx.landingPage) return NextResponse.json({ success: false, error: "no_page" }, { status: 404 });
@@ -41,3 +42,6 @@ export async function PATCH(request: NextRequest) {
   revalidatePath("/dashboard", "layout");
   return NextResponse.json({ success: true, data: next });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const PATCH = withApproval("integrations.update", updateIntegrations);

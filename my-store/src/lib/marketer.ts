@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import type { Offer, Brand, LandingPage } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -22,12 +23,43 @@ import {
 
 // ==================== 🔐 جلسة المسوّق ====================
 // cache: الـ layout والصفحة داخل نفس الطلب يشتركان في نتيجة واحدة (استعلام واحد بدل اثنين)
+// 👥 الصفحة النشطة: صفحته الخاصة، أو صفحة فريق هو عضو فيه (يُختار عبر كوكي ps_page عند وجود أكثر من واحدة).
+//    member != null ⇒ يعمل على صفحة غيره كعضو فريق (انظر src/lib/team.ts للصلاحيات والموافقات)
+export const ACTIVE_PAGE_COOKIE = "ps_page";
+
 export const getMarketerSession = cache(async () => {
   const session = await auth();
   if (!session?.user?.id) return null;
-  const landingPage = await prisma.landingPage.findUnique({ where: { userId: session.user.id } });
-  return { session, userId: session.user.id, landingPage };
+  const userId = session.user.id;
+  const [own, memberships, jar] = await Promise.all([
+    prisma.landingPage.findUnique({ where: { userId } }),
+    prisma.teamMember
+      .findMany({
+        where: { userId, status: "active", landingPage: { user: { isActive: true } } },
+        include: { landingPage: true },
+        orderBy: { acceptedAt: "asc" },
+      })
+      .catch(() => []), // قبل إنشاء جدول TeamMember في القاعدة
+    cookies(),
+  ]);
+
+  const wanted = jar.get(ACTIVE_PAGE_COOKIE)?.value;
+  const chosen = memberships.find((m) => m.landingPageId === wanted) ?? (own ? null : memberships[0]) ?? null;
+  const landingPage = chosen ? chosen.landingPage : own;
+  const member = chosen ? { id: chosen.id, requireApproval: chosen.requireApproval, ownerId: chosen.landingPage.userId } : null;
+
+  return {
+    session,
+    userId,
+    landingPage,
+    /** صاحب الصفحة النشطة (وليس عضو فريق فيها) */
+    isOwner: !!landingPage && !member,
+    member,
+    ownPage: own ? { id: own.id, slug: own.slug, title: own.title } : null,
+    teams: memberships.map((m) => ({ id: m.landingPageId, slug: m.landingPage.slug, title: m.landingPage.title })),
+  };
 });
+export type MarketerContext = NonNullable<Awaited<ReturnType<typeof getMarketerSession>>>;
 
 // ==================== ✅ مخططات التحقق ====================
 /** يضيف https:// تلقائياً إن نسيه المستخدم (مثل www.instagram.com/me) */

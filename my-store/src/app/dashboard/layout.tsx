@@ -22,12 +22,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   const user = ctx.session.user;
-  const account = await prisma.user.findUnique({ where: { id: ctx.userId }, select: { email: true, emailVerified: true } });
+  const pageId = ctx.landingPage.id;
+  const [account, pending] = await Promise.all([
+    prisma.user.findUnique({ where: { id: ctx.userId }, select: { email: true, emailVerified: true } }),
+    // 👥 صاحب الصفحة: طلبات تنتظر موافقته · العضو: طلباته المعلّقة
+    prisma.changeRequest
+      .count({ where: { landingPageId: pageId, status: "pending", ...(ctx.isOwner ? {} : { authorId: ctx.userId }) } })
+      .catch(() => 0),
+  ]);
+  const pages = [
+    ...(ctx.ownPage ? [{ id: ctx.ownPage.id, title: ctx.ownPage.title, own: true }] : []),
+    ...ctx.teams.map((p) => ({ id: p.id, title: p.title, own: false })),
+  ];
   return (
     <DashboardShell
       page={{ slug: ctx.landingPage.slug, title: ctx.landingPage.title, isPublished: ctx.landingPage.isPublished, liveDomain: ctx.landingPage.customDomainVerifiedAt ? ctx.landingPage.customDomain : null }}
       user={{ name: [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || "", email: user.email ?? "", role: user.role }}
       unverifiedEmail={account && !account.emailVerified ? account.email : null}
+      team={{ isOwner: ctx.isOwner, pending, activePageId: pageId, pages }}
     >
       {children}
     </DashboardShell>

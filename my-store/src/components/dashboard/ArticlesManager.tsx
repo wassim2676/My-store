@@ -1,6 +1,7 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element -- صور المقالات من الرفع الداخلي أو روابط خارجية */
+import { announcePending } from "@/lib/pending-client";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,6 +40,11 @@ export default function ArticlesManager({ initial, pageSlug }: { initial: Serial
     try {
       const res = await fetch(`/api/marketer/articles/${a.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
       if (!res.ok) throw new Error();
+      if (res.status === 202) {
+        announcePending();
+        setArticles((list) => list.map((x) => (x.id === a.id ? a : x)));
+        return;
+      }
       startTransition(() => router.refresh());
     } catch {
       setArticles((list) => list.map((x) => (x.id === a.id ? a : x)));
@@ -55,6 +61,10 @@ export default function ArticlesManager({ initial, pageSlug }: { initial: Serial
     try {
       const res = await fetch(`/api/marketer/articles/${a.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
+      if (res.status === 202) {
+        announcePending();
+        return;
+      }
       setArticles((list) => list.filter((x) => x.id !== a.id));
       startTransition(() => router.refresh());
     } catch {

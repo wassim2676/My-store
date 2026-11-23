@@ -317,3 +317,41 @@ export function emailChangedEmail(locale: EmailLocale, o: { name: string; newEma
     text: plain(t.hi(o.name), "", c.body(o.newEmail), "", c.warn, CONTACT_EMAIL, "", t.team),
   };
 }
+
+// ==================== 👥 فرق العمل (بالإنجليزية دائماً مثل بقية إيميلات المنصة) ====================
+export function teamInviteEmail(o: { inviter: string; pageTitle: string; url: string; days: number; approval: boolean }): Rendered {
+  const subject = `${o.inviter} invited you to manage “${o.pageTitle}” on ${SITE_NAME}`;
+  const body = `${o.inviter} has invited you to join the team behind “${o.pageTitle}” on ${SITE_NAME}. You'll be able to add and edit offers, articles and the page design from the dashboard.`;
+  const how = o.approval
+    ? "Your changes will be sent to the page owner for approval before they go live."
+    : "Your changes will go live right away.";
+  return {
+    subject,
+    html: layout("en", `Join the “${o.pageTitle}” team on ${SITE_NAME}.`, [
+      h1("You've been invited to a team"),
+      p(T.en.hi("")),
+      p(body),
+      notice(how),
+      button(o.url, "Accept invitation"),
+      fallbackLink("en", o.url),
+      small(`This invitation expires in ${o.days} days. If you weren't expecting it, you can ignore this email.`),
+    ]),
+    text: plain(T.en.hi(""), "", body, how, "", `Accept invitation: ${o.url}`, "", `This invitation expires in ${o.days} days.`, "", T.en.team),
+  };
+}
+
+export function changeRequestEmail(o: { name: string; author: string; action: string; url: string }): Rendered {
+  const body = `${o.author} made a change to your page that is waiting for your approval:`;
+  return {
+    subject: `${o.author} is waiting for your approval`,
+    html: layout("en", `${o.action} — review and approve or reject.`, [
+      h1("A change is waiting for your approval"),
+      p(T.en.hi(o.name)),
+      p(body),
+      notice(o.action),
+      button(o.url, "Review change"),
+      small("Nothing goes live until you approve it."),
+    ]),
+    text: plain(T.en.hi(o.name), "", body, o.action, "", `Review change: ${o.url}`, "", T.en.team),
+  };
+}

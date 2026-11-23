@@ -3,10 +3,11 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getMarketerSession } from "@/lib/marketer";
 import { audienceSchema, parseAudience } from "@/lib/traffic";
+import { withApproval } from "@/lib/team";
 
 // ==================== 🛡️ PATCH /api/marketer/audience: إعدادات الجمهور وحماية الروابط ====================
 // الأخطاء تُعاد كرموز (error: "invalid_url" ...) وتترجمها الواجهة حسب لغة المستخدم.
-export async function PATCH(request: NextRequest) {
+async function updateAudience(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx) return NextResponse.json({ success: false, error: "unauthorized" }, { status: 401 });
   if (!ctx.landingPage) return NextResponse.json({ success: false, error: "no_page" }, { status: 404 });
@@ -28,3 +29,6 @@ export async function PATCH(request: NextRequest) {
   revalidatePath("/dashboard/audience");
   return NextResponse.json({ success: true, data: audience });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const PATCH = withApproval("audience.update", updateAudience, (b) => (audienceSchema.safeParse(b).success ? null : "invalid"));

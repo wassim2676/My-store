@@ -3,11 +3,12 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getMarketerSession } from "@/lib/marketer";
+import { withApproval } from "@/lib/team";
 
 const schema = z.object({ ids: z.array(z.string()).min(1).max(500) });
 
 // ==================== 🔀 POST: إعادة ترتيب العروض على صفحة الهبوط ====================
-export async function POST(request: NextRequest) {
+async function reorderOffers(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx?.landingPage) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 
@@ -24,3 +25,6 @@ export async function POST(request: NextRequest) {
   revalidatePath(`/${ctx.landingPage.slug}`, "layout");
   return NextResponse.json({ success: true });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const POST = withApproval("offer.reorder", reorderOffers, (b) => (schema.safeParse(b).success ? null : "invalid"));

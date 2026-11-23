@@ -6,6 +6,7 @@ import { getMarketerSession } from "@/lib/marketer";
 import { toSlug } from "@/lib/landing";
 import { articleSchema } from "@/lib/articles";
 import { serializeArticle, uniqueArticleSlug } from "@/lib/articles-server";
+import { withApproval } from "@/lib/team";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -27,7 +28,7 @@ const refresh = (pageSlug: string, articleSlug: string) => {
 };
 
 // ==================== 🟡 PATCH: تعديل المقال (أو تبديل الحالة فقط) ====================
-export async function PATCH(request: NextRequest, { params }: Ctx) {
+async function updateArticle(request: NextRequest, { params }: Ctx) {
   const { id } = await params;
   const res = await loadOwned(id);
   if (res.error) return res.error;
@@ -72,7 +73,7 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
 }
 
 // ==================== 🔴 DELETE ====================
-export async function DELETE(_req: NextRequest, { params }: Ctx) {
+async function deleteArticle(_req: NextRequest, { params }: Ctx) {
   const { id } = await params;
   const res = await loadOwned(id);
   if (res.error) return res.error;
@@ -80,3 +81,11 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   refresh(res.page.slug, res.article.slug);
   return NextResponse.json({ success: true });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const PATCH = withApproval("article.update", updateArticle, (b) => {
+  if (quickSchema.safeParse(b).success) return null;
+  const p = articleSchema.safeParse(b);
+  return p.success ? null : p.error.issues[0].message;
+});
+export const DELETE = withApproval("article.delete", deleteArticle);

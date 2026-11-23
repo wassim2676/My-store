@@ -1,5 +1,6 @@
 "use client";
 
+import { announcePending } from "@/lib/pending-client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -149,6 +150,12 @@ export default function ArticleForm({ article, page, offers }: { article?: Seria
       if (!res.ok || !data.success) {
         const code = typeof data.error === "string" ? data.error : "";
         throw new Error(t.has(`errors.${code}`) ? t(`errors.${code}`) : t("errors.generic"));
+      }
+      if (data.pending) {
+        announcePending();
+        setDirty(false);
+        router.push("/dashboard/articles");
+        return;
       }
       setStatus(nextStatus);
       setDirty(false);

@@ -109,6 +109,10 @@ model User {
   landingPage LandingPage?
   media       Media[]
 
+  // 👥 عضوية فرق صفحات مسوّقين آخرين + 🔔 الإشعارات
+  teamMemberships TeamMember[]   @relation("TeamMemberUser")
+  notifications   Notification[]
+
   // NextAuth relations
   accounts Account[]
   sessions Session[]
@@ -649,6 +653,8 @@ model LandingPage {
   articles    Article[]
   dailyStats  LandingPageDailyStat[]
   sourceStats LandingPageSourceStat[]
+  teamMembers    TeamMember[]
+  changeRequests ChangeRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -728,6 +734,75 @@ model LandingPageDailyStat {
   geoBlocked    Int         @default(0) // زوار من دول مستبعدة لم يصلوا لرابط الأفلييت
 
   @@unique([landingPageId, date])
+}
+
+// 👥 عضو فريق صفحة مسوّق — يُدعى بالإيميل، ويعمل على صفحة صاحبها (انظر src/lib/team.ts)
+model TeamMember {
+  id              String      @id @default(cuid())
+  landingPage     LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  landingPageId   String
+  user            User?       @relation("TeamMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  userId          String?
+  email           String      @db.VarChar(255)
+  name            String?     @db.VarChar(80)
+  status          String      @default("pending") @db.VarChar(12) // pending | active | suspended
+  requireApproval Boolean     @default(true) // تغييراته تنتظر موافقة صاحب الصفحة
+  inviteToken     String?     @unique @db.VarChar(64) // بصمة SHA-256 لرابط الدعوة
+  inviteExpires   DateTime?
+  invitedById     String
+  acceptedAt      DateTime?
+  lastActiveAt    DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  changeRequests ChangeRequest[]
+
+  @@unique([landingPageId, email])
+  @@index([userId])
+}
+
+// 📝 تغيير قام به عضو فريق وينتظر موافقة صاحب الصفحة — يُعاد تنفيذ الطلب الأصلي عند الموافقة
+model ChangeRequest {
+  id            String      @id @default(cuid())
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  landingPageId String
+  member        TeamMember? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  memberId      String?
+  authorId      String
+  authorName    String      @db.VarChar(120)
+  kind          String      @db.VarChar(40) // offer.create | offer.update | offer.delete | page.update ...
+  method        String      @db.VarChar(8)
+  path          String      @db.VarChar(300)
+  params        Json?
+  body          Json?
+  summary       String      @db.VarChar(300)
+  targetId      String?     @db.VarChar(40)
+  before        Json? // لقطة قبل التعديل (للمقارنة)
+  status        String      @default("pending") @db.VarChar(12) // pending | approved | rejected | failed | cancelled
+  reviewNote    String?     @db.VarChar(500)
+  reviewedById  String?
+  reviewedAt    DateTime?
+  error         String?     @db.VarChar(300)
+  createdAt     DateTime    @default(now())
+
+  @@index([landingPageId, status, createdAt])
+  @@index([authorId, createdAt])
+}
+
+// 🔔 إشعار للمستخدم — النص يُبنى من type + data بلغة واجهته (انظر src/lib/notifications.ts)
+model Notification {
+  id        String    @id @default(cuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      String    @db.VarChar(40)
+  data      Json?
+  link      String?   @db.VarChar(300)
+  dedupeKey String?   @db.VarChar(120) // يمنع تكرار نفس الإشعار (مثل ملخص نفس اليوم)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, dedupeKey])
+  @@index([userId, createdAt])
 }
 
 // 📣 الزيارات والنقرات حسب المصدر (instagram, tiktok, facebook, whatsapp, google, direct...) — انظر src/lib/sources.ts

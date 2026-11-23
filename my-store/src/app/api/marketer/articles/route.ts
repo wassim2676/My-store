@@ -5,6 +5,7 @@ import { getMarketerSession } from "@/lib/marketer";
 import { toSlug } from "@/lib/landing";
 import { articleSchema } from "@/lib/articles";
 import { serializeArticle, uniqueArticleSlug } from "@/lib/articles-server";
+import { withApproval } from "@/lib/team";
 
 const MAX_ARTICLES = 1000;
 
@@ -19,7 +20,7 @@ export async function GET() {
 
 // ==================== 🟢 POST: مقال جديد ====================
 // الأخطاء رموز (invalid / limit / no_page) تترجمها الواجهة
-export async function POST(request: NextRequest) {
+async function createArticle(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx) return NextResponse.json({ success: false, error: "unauthorized" }, { status: 401 });
   if (!ctx.landingPage) return NextResponse.json({ success: false, error: "no_page" }, { status: 400 });
@@ -51,3 +52,9 @@ export async function POST(request: NextRequest) {
   revalidatePath(`/${page.slug}/articles`);
   return NextResponse.json({ success: true, data: serializeArticle(article) }, { status: 201 });
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const POST = withApproval("article.create", createArticle, (b) => {
+  const p = articleSchema.safeParse(b);
+  return p.success ? null : p.error.issues[0].message;
+});

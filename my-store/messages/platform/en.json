@@ -280,6 +280,39 @@
         "sentShort": "Sent",
         "cooldown": "Please wait {s} seconds before requesting another link.",
         "error": "We couldn't send the email. Please try again in a moment."
+      },
+      "invite": {
+        "title": "Join “{page}”",
+        "body": "{name} invited you to help manage “{page}” on Primeshelf.",
+        "modeApproval": "Your changes will be reviewed by the page owner before they go live.",
+        "modeDirect": "Your changes will go live right away.",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "password": "Create a password (8+ characters)",
+        "confirm": "Confirm password",
+        "createAndJoin": "Create account & join",
+        "join": "Join the team",
+        "login": "Log in to accept",
+        "loginFirst": "You already have an account with {email}. Log in to accept this invitation.",
+        "wrongAccount": "You're logged in as {current}, but this invitation is for {email}.",
+        "switchAccount": "Log in with the invited account",
+        "invalidTitle": "Invitation not valid",
+        "invalidBody": "This invitation link is invalid or was already used.",
+        "expiredTitle": "Invitation expired",
+        "expiredBody": "Ask {name} to send you a new invitation.",
+        "home": "Go to homepage",
+        "errors": {
+          "generic": "Something went wrong. Please try again.",
+          "weak_password": "Password must be at least 8 characters.",
+          "mismatch": "Passwords don't match.",
+          "invalid_token": "This invitation is no longer valid.",
+          "expired": "This invitation has expired.",
+          "login_required": "Please log in first.",
+          "wrong_account": "You're logged in with a different account.",
+          "missing_fields": "Fill in your name and password.",
+          "self": "You can't join your own page as a member.",
+          "account_disabled": "This account is disabled."
+        }
       }
     }
   },
@@ -325,7 +358,10 @@
       "audience": "Audience",
       "articles": "Articles",
       "domain": "Custom domain",
-      "share": "Share & pixels"
+      "share": "Share & pixels",
+      "team": "Team",
+      "teamPage": "Team page",
+      "switchPage": "Switch page"
     },
     "common": {
       "copy": "Copy",
@@ -638,7 +674,8 @@
         "invalid": "Please check your information and try again.",
         "unauthorized": "Your session expired. Please log in again.",
         "server": "Something went wrong. Please try again."
-      }
+      },
+      "teamLocked": "Managed by your team owner"
     },
     "media": {
       "dropTitle": "Drag & drop images here, paste them (Ctrl+V), or",
@@ -937,7 +974,8 @@
         "hint": "Paste the code or the full <meta> tag exactly as the platform gives it — we keep only the code and add the tag to your page automatically.",
         "invalid": "One of the codes is not valid. Paste the code or the full <meta> tag as given by the platform.",
         "error": "Couldn't save. Please try again."
-      }
+      },
+      "ownerOnly": "Only the page owner can connect or disconnect a custom domain."
     },
     "share": {
       "title": "Share & pixels",
@@ -988,6 +1026,201 @@
           "click": "a visitor clicks a buy button"
         },
         "hint": "You can paste the full pixel code — we extract the ID automatically. Leave a field empty to remove that pixel."
+      }
+    },
+    "team": {
+      "title": "Team",
+      "subtitle": "Invite people to help you manage your page, and approve what they change.",
+      "memberSubtitle": "You're helping manage this page.",
+      "seats": "{used} / {max} members",
+      "memberPendingBanner": "{count, plural, one {# change is} other {# changes are}} waiting for the owner's approval",
+      "pendingTitle": "{count, plural, one {# change waiting for your approval} other {# changes waiting for your approval}}",
+      "pendingText": "Nothing goes live until you approve it.",
+      "approveAll": "Approve all",
+      "confirmApproveAll": "Approve all {count} changes?",
+      "approve": "Approve",
+      "reject": "Reject",
+      "notePlaceholder": "Note (optional)",
+      "changesCount": "{count, plural, one {# field} other {# fields}}",
+      "field": "Field",
+      "before": "Before",
+      "after": "After",
+      "approvedOk": "Change approved and applied.",
+      "rejectedOk": "Change rejected. The member has been notified.",
+      "inviteTitle": "Invite a team member",
+      "inviteText": "They'll get an email with a link to create their password and join your page.",
+      "emailPlaceholder": "email@example.com",
+      "namePlaceholder": "Name (optional)",
+      "send": "Send invite",
+      "invited": "Invitation sent to {email}.",
+      "resent": "Invitation sent again.",
+      "approvalLabel": "Changes need my approval",
+      "approvalHint": "Recommended. Every change is sent to you first — you approve or reject it. You can change this for each member anytime.",
+      "can": "Members can add and edit offers and articles, change the page design, audience, pixels and verification tags.",
+      "cannot": "Members can't change the account email or password, manage the team, or connect/disconnect the custom domain.",
+      "membersTitle": "Members",
+      "noMembers": "No team members yet. Invite someone above.",
+      "status": {
+        "active": "Active",
+        "invited": "Invited",
+        "expired": "Invite expired",
+        "suspended": "Suspended"
+      },
+      "lastActive": "Active {when}",
+      "neverActive": "Not active yet",
+      "expires": "Expires {when}",
+      "approvedCount": "{count, plural, =0 {No approved changes} one {# approved change} other {# approved changes}}",
+      "needsApproval": "Needs approval",
+      "trusted": "Publishes directly",
+      "resend": "Resend invite",
+      "suspend": "Suspend access",
+      "reactivate": "Reactivate",
+      "emailMember": "Send email",
+      "remove": "Remove from team",
+      "revoke": "Cancel invitation",
+      "confirmRemove": "Remove {name} from your team? Their pending changes will be cancelled.",
+      "historyTitle": "Recent activity",
+      "reqStatus": {
+        "pending": "Pending",
+        "applying": "Applying",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      },
+      "memberOf": "You're a member of “{page}”",
+      "ownedBy": "Owner: {name}",
+      "leave": "Leave team",
+      "confirmLeave": "Leave the “{page}” team? You'll lose access to this page.",
+      "modeApproval": "Your changes are sent to the page owner for approval before they go live.",
+      "modeDirect": "You're a trusted member — your changes go live right away.",
+      "myRequests": "My changes",
+      "noRequests": "You haven't made any changes yet.",
+      "cancelRequest": "Cancel",
+      "toast": {
+        "title": "Sent for approval",
+        "body": "The page owner will review your change. You'll get a notification when it's approved or rejected.",
+        "view": "View my changes"
+      },
+      "errors": {
+        "generic": "Something went wrong. Please try again.",
+        "invalid_email": "Enter a valid email address.",
+        "self": "You can't invite yourself.",
+        "already_member": "This person is already on your team.",
+        "limit": "You've reached the maximum number of team members.",
+        "owner_only": "Only the page owner can do this.",
+        "email_failed": "The invite was created, but the email couldn't be sent. Try “Resend invite”.",
+        "apply_failed": "Couldn't apply this change: {detail}",
+        "not_found": "Not found.",
+        "already_reviewed": "This change was already reviewed."
+      },
+      "kinds": {
+        "offer": {
+          "create": "Add offer “{label}”",
+          "update": "Edit offer “{label}”",
+          "delete": "Delete offer “{label}”",
+          "reorder": "Reorder offers"
+        },
+        "article": {
+          "create": "Add article “{label}”",
+          "update": "Edit article “{label}”",
+          "delete": "Delete article “{label}”"
+        },
+        "page": {
+          "update": "Edit page design & settings"
+        },
+        "audience": {
+          "update": "Edit audience & link protection"
+        },
+        "integrations": {
+          "update": "Edit pixels / domain verification"
+        }
+      },
+      "fields": {
+        "title": "Title",
+        "slug": "Link",
+        "status": "Status",
+        "isFeatured": "Featured",
+        "price": "Price",
+        "compareAt": "Old price",
+        "currency": "Currency",
+        "affiliateUrl": "Affiliate link",
+        "shortReview": "Short review",
+        "badge": "Badge",
+        "category": "Category",
+        "rating": "Rating",
+        "images": "Images",
+        "tagline": "Tagline",
+        "bio": "Bio",
+        "avatarUrl": "Profile photo",
+        "coverUrl": "Cover",
+        "language": "Language",
+        "theme": "Theme",
+        "accentColor": "Accent color",
+        "isPublished": "Published",
+        "seoTitle": "SEO title",
+        "seoDescription": "SEO description",
+        "showDisclosure": "Disclosure",
+        "excerpt": "Excerpt",
+        "coverImage": "Cover image",
+        "content": "Content",
+        "duplicateOf": "Copy of",
+        "order": "Offers",
+        "verify": "Verification tags",
+        "pixels": "Pixels",
+        "geoMode": "Countries",
+        "countries": "Country list",
+        "blockAction": "Blocked visitors",
+        "botProtection": "Bot protection",
+        "design": "Design",
+        "socialLinks": "Social links"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAll": "Mark all as read",
+      "viewAll": "View all notifications",
+      "empty": "No notifications yet. We'll let you know about clicks, milestones and your team here.",
+      "back": "Dashboard",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}",
+      "allCaughtUp": "You're all caught up.",
+      "loadMore": "Load more",
+      "filters": {
+        "all": "All",
+        "unread": "Unread",
+        "performance": "Performance",
+        "team": "Team"
+      },
+      "types": {
+        "clicks": {
+          "first": "First click on “{offer}” 🎉",
+          "title": "{count} clicks on “{offer}”",
+          "body": "Visitors are going to the store from this offer. Keep sharing it."
+        },
+        "views": {
+          "title": "Your page reached {count} visits",
+          "body": "Your audience is growing — share your best offers to keep the momentum."
+        },
+        "daily": {
+          "title": "Yesterday: {views} visits · {clicks} clicks",
+          "ctr": "CTR {ctr}%",
+          "source": "Top source: {source}",
+          "direct": "Direct",
+          "up": "Visits ▲ {pct}%",
+          "down": "Visits ▼ {pct}%",
+          "blocked": "{count} bots/blocked visits filtered"
+        },
+        "team": {
+          "joined": "{name} joined your team",
+          "joinedBody": "They can now help manage your page.",
+          "request": "{name} is waiting for your approval",
+          "approved": "Your change was approved",
+          "rejected": "Your change was rejected",
+          "failed": "Your approved change couldn't be applied",
+          "removed": "You were removed from the “{page}” team"
+        }
       }
     }
   },

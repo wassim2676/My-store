@@ -5,6 +5,7 @@ import { bumpDailyStat, bumpSourceStat } from "@/lib/marketer";
 import { classifyVisitor, cleanAffiliateUrl, isCountryAllowed, isLinkPreviewBot, parseAudience, visitorCountry } from "@/lib/traffic";
 import { resolveSource, SOURCE_COOKIE } from "@/lib/sources";
 import { requestHost } from "@/lib/domains";
+import { offerClickMilestone } from "@/lib/notifications";
 import { bestTextOn, pageDir, parseDesign, publicT, resolveTokens } from "@/lib/landing";
 
 // ==================== ↗️ GET /go/{offerId}: البوابة الوحيدة لرابط الأفلييت ====================
@@ -22,10 +23,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     select: {
       id: true,
       slug: true,
+      title: true,
       affiliateUrl: true,
       status: true,
       landingPageId: true,
-      landingPage: { select: { slug: true, customDomain: true, customDomainVerifiedAt: true, title: true, language: true, theme: true, accentColor: true, design: true, audience: true } },
+      landingPage: { select: { userId: true, slug: true, customDomain: true, customDomainVerifiedAt: true, title: true, language: true, theme: true, accentColor: true, design: true, audience: true } },
     },
   });
 
@@ -61,13 +63,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   // 3) ✅ زائر حقيقي مستهدف
   if (kind === "human") {
     const source = resolveSource(request.headers, { host: requestHost(request.headers), cookie: request.cookies.get(SOURCE_COOKIE)?.value });
-    track(() =>
-      Promise.all([
-        prisma.offer.update({ where: { id: offer.id }, data: { clicks: { increment: 1 } } }),
+    track(async () => {
+      const [updated] = await Promise.all([
+        prisma.offer.update({ where: { id: offer.id }, data: { clicks: { increment: 1 } }, select: { clicks: true } }),
         bumpDailyStat(offer.landingPageId, "clicks"),
         bumpSourceStat(offer.landingPageId, source, "clicks"),
-      ]),
-    );
+      ]);
+      // 🔔 أول نقرة، 10، 50، 100... على هذا العرض
+      await offerClickMilestone({ ownerId: page.userId, offerId: offer.id, offerTitle: offer.title, clicks: updated.clicks });
+    });
   }
   const res = redirect(offer.affiliateUrl);
   res.headers.set("Referrer-Policy", "no-referrer-when-downgrade");

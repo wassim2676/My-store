@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getMarketerSession } from "@/lib/marketer";
 import { normalizeDomainInput } from "@/lib/domains";
 import { forgetDomain } from "@/lib/domain-lookup";
+import { ownerOnly } from "@/lib/team";
 import { addDomain, domainStatus, domainsEnabled, removeDomain, type DomainStatus } from "@/lib/vercel-domains";
 
 // ==================== 🌐 /api/marketer/domain: ربط دومين خاص بصفحة المسوّق ====================
@@ -17,7 +18,7 @@ async function context() {
   if (!ctx) return { error: fail("unauthorized", 401) };
   if (!ctx.landingPage) return { error: fail("no_page", 404) };
   if (!domainsEnabled()) return { error: fail("not_enabled", 503) };
-  return { page: ctx.landingPage };
+  return { page: ctx.landingPage, isOwner: ctx.isOwner };
 }
 
 function refresh(slug: string) {
@@ -57,6 +58,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const c = await context();
   if (c.error) return c.error;
+  if (!c.isOwner) return ownerOnly(); // الدومين الخاص لصاحب الصفحة وحده
   const { page } = c;
 
   const body = await request.json().catch(() => ({}));
@@ -98,6 +100,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE() {
   const c = await context();
   if (c.error) return c.error;
+  if (!c.isOwner) return ownerOnly();
   const { page } = c;
   if (!page.customDomain) return NextResponse.json({ success: true, data: null });
 

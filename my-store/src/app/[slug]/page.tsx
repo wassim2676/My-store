@@ -8,6 +8,7 @@ import { pageAbsoluteUrl, pageLinks } from "@/lib/page-urls";
 import { bumpDailyStat, bumpSourceStat, isCountableRequest } from "@/lib/marketer";
 import { visitSource } from "@/lib/sources-server";
 import { verificationMetadata } from "@/lib/integrations";
+import { pageViewMilestone } from "@/lib/notifications";
 import { parseDesign, parseSocials } from "@/lib/landing";
 import LandingShell from "@/components/landing/LandingShell";
 import Storefront from "@/components/landing/Storefront";
@@ -50,11 +51,12 @@ export default async function LandingPageView({ params, searchParams }: Props) {
     const source = await visitSource(sp.utm_source);
     after(async () => {
       try {
-        await Promise.all([
-          prisma.landingPage.update({ where: { id: page.id }, data: { views: { increment: 1 } } }),
+        const [updated] = await Promise.all([
+          prisma.landingPage.update({ where: { id: page.id }, data: { views: { increment: 1 } }, select: { views: true } }),
           bumpDailyStat(page.id, "views"),
           bumpSourceStat(page.id, source, "views"),
         ]);
+        await pageViewMilestone({ ownerId: page.userId, pageId: page.id, views: updated.views });
       } catch (err) {
         console.error("[LANDING_VIEW_TRACK_ERROR]", err);
       }

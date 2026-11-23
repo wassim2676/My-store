@@ -1,5 +1,6 @@
 "use client";
 
+import { announcePending } from "@/lib/pending-client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Activity, AlertTriangle, Check, ExternalLink, Loader2, Save } from "lucide-react";
@@ -33,6 +34,11 @@ export default function PixelsForm({ initial }: { initial: Pixels }) {
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.success) {
         setError({ field: json.field, text: json.error === "invalid_pixel" ? t("invalid") : t("error") });
+        return;
+      }
+      if (json.pending) {
+        announcePending();
+        setValues({ meta: saved.meta ?? "", tiktok: saved.tiktok ?? "" });
         return;
       }
       const p = json.data.pixels as Pixels;

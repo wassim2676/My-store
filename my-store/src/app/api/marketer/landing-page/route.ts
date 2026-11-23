@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getPrismaErrorCode } from "@/lib/api-utils";
 import { getMarketerSession, landingPageSchema, serializeLandingPage } from "@/lib/marketer";
+import { withApproval } from "@/lib/team";
 
 function cleanSocials(input: Record<string, string | undefined> | null | undefined) {
   const out: Record<string, string> = {};
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
 }
 
 // ==================== 🟡 PATCH: تحديث إعدادات صفحة الهبوط ====================
-export async function PATCH(request: NextRequest) {
+async function updatePage(request: NextRequest) {
   const ctx = await getMarketerSession();
   if (!ctx) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   if (!ctx.landingPage) return NextResponse.json({ success: false, error: "لا توجد صفحة هبوط" }, { status: 404 });
@@ -79,3 +80,9 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ success: false, error: "فشل حفظ الإعدادات" }, { status: 500 });
   }
 }
+
+// 🚦 أعضاء الفريق: يمر عبر موافقة صاحب الصفحة
+export const PATCH = withApproval("page.update", updatePage, (b) => {
+  const p = landingPageSchema.safeParse(b);
+  return p.success ? null : p.error.issues[0].message;
+});

@@ -3,6 +3,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { getAuthSession } from "@/lib/api-utils";
+import { isTeamOnlyAccount } from "@/lib/team";
 import { requestEmailLocale, sendEmailChangedNotice, sendVerification } from "@/lib/email/account";
 
 // ==================== ✉️ PUT /api/users/email: تغيير البريد الإلكتروني ====================
@@ -16,6 +17,8 @@ const schema = z.object({
 export async function PUT(request: NextRequest) {
   const session = await getAuthSession();
   if (!session) return NextResponse.json({ success: false, error: "unauthorized" }, { status: 401 });
+  // 👥 حساب عضو فريق: لا يغيّر إيميله بنفسه
+  if (await isTeamOnlyAccount(session.user.id)) return NextResponse.json({ success: false, error: "member_locked" }, { status: 403 });
 
   const parsed = schema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {

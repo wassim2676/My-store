@@ -59,7 +59,7 @@ const platformGuard = auth((req: AuthenticatedRequest) => {
 });
 
 // مسارات المنصة التي لا معنى لها على دومين المسوّق: نرسلها لموقع المنصة
-const PLATFORM_ONLY = ["/dashboard", "/admin", "/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/onboarding"];
+const PLATFORM_ONLY = ["/dashboard", "/admin", "/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/onboarding", "/invite", "/notifications"];
 // مسارات مشتركة تعمل كما هي على أي دومين
 const PASS_THROUGH = ["/api", "/go", "/_next", "/brand"];
 

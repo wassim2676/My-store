@@ -1,5 +1,6 @@
 "use client";
 
+import { announcePending } from "@/lib/pending-client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { AlertTriangle, BadgeCheck, Check, ExternalLink, Loader2, Save } from "lucide-react";
@@ -38,6 +39,11 @@ export default function VerificationTags({ initial, liveUrl }: { initial: Partia
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.success) {
         setError({ field: json.field, text: json.error === "invalid_token" ? t("invalid") : t("error") });
+        return;
+      }
+      if (json.pending) {
+        announcePending();
+        setValues(Object.fromEntries(VERIFY_KEYS.map((k) => [k, saved[k] ?? ""])) as Record<VerifyKey, string>);
         return;
       }
       const v = json.data.verify as Partial<Record<VerifyKey, string>>;

@@ -1,5 +1,6 @@
 "use client";
 
+import { announcePending } from "@/lib/pending-client";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -87,6 +88,11 @@ export default function AudienceForm({
       if (!res.ok || !json.success) {
         const code = typeof json.error === "string" ? json.error : "invalid";
         setError(t.has(`errors.${code}`) ? t(`errors.${code}`) : t("errors.invalid"));
+        return;
+      }
+      if (json.pending) {
+        announcePending();
+        setDirty(false);
         return;
       }
       setA(json.data);

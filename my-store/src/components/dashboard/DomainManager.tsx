@@ -14,7 +14,10 @@ export default function DomainManager({
   initialDomain,
   initialActive,
   platformUrl,
+  canManage = true,
 }: {
+  /** 👥 عضو فريق: يرى الحالة فقط (الربط والفصل لصاحب الصفحة) */
+  canManage?: boolean;
   enabled: boolean;
   initialDomain: string | null;
   initialActive: boolean;
@@ -160,7 +163,12 @@ export default function DomainManager({
             </div>
           )}
 
-          {!status ? (
+          {!status && !canManage ? (
+            <div className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#0A0D12] p-5 text-sm text-white/60">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+              {t("ownerOnly")}
+            </div>
+          ) : !status ? (
             /* ➕ ربط دومين */
             <section className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0A0D12]">
               <div className="p-5 sm:p-8">
@@ -260,7 +268,7 @@ export default function DomainManager({
                       {t("visit")}
                     </a>
                   )}
-                  {confirmRemove ? (
+                  {!canManage ? null : confirmRemove ? (
                     <>
                       <button type="button" onClick={() => setConfirmRemove(false)} className="rounded-lg border border-white/10 px-4 py-2 text-sm hover:bg-white/5 cursor-pointer">
                         {t("cancel")}

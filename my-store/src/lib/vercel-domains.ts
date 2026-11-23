@@ -117,14 +117,17 @@ async function config(name: string) {
   return r.ok ? r.data : null;
 }
 
+// 🌍 عناوين Vercel التي ثبت وصولها من كل الشبكات التي اختبرناها.
+// عناوين أخرى يقترحها Vercel (مثل 64.29.17.x و216.198.79.65) لا تصل إليها بعض الشبكات (منها مزوّدون في المغرب)،
+// وCNAME إلى vercel-dns يُرجع عنوانين أحدهما من تلك ← انقطاع متقطع (ERR_CONNECTION_TIMED_OUT).
+// لذلك نطلب سجل A إلى عنوان واحد مضمون حتى للنطاقات الفرعية (www, shop...) — وVercel يعتبره إعداداً صحيحاً.
+const RELIABLE_IPS = ["216.198.79.1", "76.76.21.21"];
+
 function recordFor(name: string, apexName: string, cfg: DomainConfig | null): Omit<DnsRecord, "ok"> {
   const host = dnsHostLabel(name, apexName);
-  if (name === apexName) {
-    const ip = cfg?.recommendedIPv4?.sort((a, b) => a.rank - b.rank)[0]?.value?.[0] ?? "76.76.21.21";
-    return { type: "A", host, value: ip };
-  }
-  const cname = cfg?.recommendedCNAME?.sort((a, b) => a.rank - b.rank)[0]?.value ?? "cname.vercel-dns.com";
-  return { type: "CNAME", host, value: cname.replace(/\.$/, "") };
+  const recommended = (cfg?.recommendedIPv4 ?? []).sort((a, b) => a.rank - b.rank).flatMap((r) => r.value ?? []);
+  const ip = recommended.find((v) => RELIABLE_IPS.includes(v)) ?? RELIABLE_IPS[0];
+  return { type: "A", host, value: ip };
 }
 
 /** الحالة الحالية للدومين + السجلات التي يجب إضافتها عند مزوّد الدومين */
