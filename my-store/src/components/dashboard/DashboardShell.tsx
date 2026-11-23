@@ -75,7 +75,7 @@ export default function DashboardShell({
       {open && <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setOpen(false)} />}
 
       <aside
-        className={`fixed lg:sticky top-0 start-0 z-50 h-screen w-72 shrink-0 border-e border-white/[0.06] bg-[#0A0D13] flex flex-col transition-transform duration-300 ${
+        className={`fixed lg:sticky top-0 start-0 z-50 h-dvh w-72 shrink-0 border-e border-white/[0.06] bg-[#0A0D13] flex flex-col transition-transform duration-300 ${
           open ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full lg:translate-x-0!"
         }`}
       >
@@ -88,7 +88,7 @@ export default function DashboardShell({
           </button>
         </div>
 
-        <div className="mx-4 mt-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+        <div className="mx-4 mt-5 shrink-0 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
           <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-white/40">
             {isMember ? (
               <>
@@ -135,7 +135,7 @@ export default function DashboardShell({
           )}
         </div>
 
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain p-4 [scrollbar-gutter:stable]">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -162,7 +162,7 @@ export default function DashboardShell({
           )}
         </nav>
 
-        <div className="border-t border-white/[0.06] p-4">
+        <div className="shrink-0 border-t border-white/[0.06] p-4">
           <div className="mb-3 px-2">
             <p className="truncate text-sm font-medium">{user.name}</p>
             <p className="truncate text-xs text-white/40">{user.email}</p>
