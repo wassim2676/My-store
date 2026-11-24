@@ -1,7 +1,8 @@
-import StaticPage, { contentMetadata } from "@/components/site/StaticPage";
+import { contentMetadata } from "@/components/site/StaticPage";
+import LegalPage from "@/components/site/LegalPage";
 
 export const generateMetadata = () => contentMetadata("cookies");
 
 export default function Page() {
-  return <StaticPage pageKey="cookies" />;
+  return <LegalPage docKey="cookies" />;
 }

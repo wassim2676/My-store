@@ -231,7 +231,10 @@
       "final": {
         "title": "Claim your link before someone else does",
         "subtitle": "It takes one minute. Free to start."
-      }
+      },
+      "previewCta": "See what your page looks like",
+      "previewEyebrow": "Your page",
+      "previewTitle": "A boutique storefront for every pick you recommend"
     },
     "auth": {
       "verify": {
@@ -374,7 +377,9 @@
         "invalid": "Some information is invalid. Please check the fields and try again.",
         "conflict": "This name or link is already taken. Choose another one.",
         "unauthorized": "Your session expired. Please log in again."
-      }
+      },
+      "search": "Search…",
+      "noResults": "No results"
     },
     "slug": {
       "checking": "Checking…",
@@ -1026,7 +1031,9 @@
           "click": "a visitor clicks a buy button"
         },
         "hint": "You can paste the full pixel code — we extract the ID automatically. Leave a field empty to remove that pixel."
-      }
+      },
+      "search": "Search…",
+      "noResults": "No results"
     },
     "team": {
       "title": "Team",
@@ -1306,7 +1313,7 @@
     "terms": {
       "title": "Terms of use",
       "eyebrow": "Legal",
-      "intro": "By using the platform you agree to these terms.",
+      "intro": "The rules for using Primeshelf: your account, your content, affiliate programs and our responsibilities.",
       "sections": [
         {
           "h": "Your account",
@@ -1333,7 +1340,7 @@
     "privacy": {
       "title": "Privacy policy",
       "eyebrow": "Legal",
-      "intro": "We respect your privacy and protect your personal data.",
+      "intro": "What information we collect, why we collect it, who we share it with and the rights you have.",
       "sections": [
         {
           "h": "Data we keep",
@@ -1356,7 +1363,7 @@
     "cookies": {
       "title": "Cookie policy",
       "eyebrow": "Legal",
-      "intro": "We use as few cookies as possible.",
+      "intro": "The cookies Primeshelf uses, why we use them and how you can control them.",
       "sections": [
         {
           "h": "Essential cookies",
@@ -1379,7 +1386,7 @@
     "disclosure": {
       "title": "Affiliate disclosure",
       "eyebrow": "Legal",
-      "intro": "How affiliate links work on pages hosted here.",
+      "intro": "How affiliate links on marketers' pages work and what that means for you.",
       "sections": [
         {
           "h": "Marketer pages contain affiliate links",
@@ -1402,7 +1409,7 @@
     "acceptableUse": {
       "title": "Acceptable use",
       "eyebrow": "Legal",
-      "intro": "Rules that keep the platform trusted by visitors and stores.",
+      "intro": "What is and isn't allowed on Primeshelf, so the platform stays honest and safe for everyone.",
       "sections": [
         {
           "h": "Be honest",
@@ -1487,6 +1494,12 @@
       "by": "By",
       "back": "Blog",
       "read": "Read article"
+    },
+    "legal": {
+      "toc": "On this page",
+      "related": "Other policies",
+      "effective": "Effective date",
+      "englishNotice": ""
     }
   },
   "adm": {

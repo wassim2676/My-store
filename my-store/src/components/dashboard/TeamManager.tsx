@@ -270,8 +270,8 @@ export default function TeamManager({ members: initialMembers, pending: initialP
         </div>
       </section>
 
-      {/* 👤 الأعضاء */}
-      <section className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0A0D12]">
+      {/* 👤 الأعضاء (بدون overflow-hidden حتى لا تُقصّ قائمة الإجراءات) */}
+      <section className="rounded-xl border border-white/[0.08] bg-[#0A0D12]">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4 sm:px-6">
           <h2 className="font-semibold">{t("membersTitle")}</h2>
           <Users className="h-4 w-4 text-white/35" />
@@ -280,7 +280,7 @@ export default function TeamManager({ members: initialMembers, pending: initialP
           <p className="px-6 py-12 text-center text-sm text-white/45">{t("noMembers")}</p>
         ) : (
           <div className="divide-y divide-white/[0.05]">
-            {members.map((m) => (
+            {members.map((m, idx) => (
               <div key={m.id} className="flex flex-col gap-3 px-5 py-4 sm:px-6 lg:flex-row lg:items-center">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <Avatar name={m.name || m.email} />
@@ -307,7 +307,7 @@ export default function TeamManager({ members: initialMembers, pending: initialP
                     {busy === m.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
                   </button>
                   {menu === m.id && (
-                    <div className="absolute end-0 top-full z-20 mt-1 w-52 overflow-hidden rounded-lg border border-white/10 bg-[#0F131B] py-1 text-sm shadow-xl">
+                    <div className={`absolute end-0 z-30 w-52 overflow-hidden rounded-lg border border-white/10 bg-[#11151D] py-1 text-sm shadow-[0_24px_60px_-12px_rgba(0,0,0,0.85)] ${idx >= members.length - 2 && members.length > 2 ? "bottom-full mb-1" : "top-full mt-1"}`}>
                       {m.status === "pending" && (
                         <MenuItem icon={RotateCw} onClick={() => patchMember(m.id, { resend: true })}>{t("resend")}</MenuItem>
                       )}

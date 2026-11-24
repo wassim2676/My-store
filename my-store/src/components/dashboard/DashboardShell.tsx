@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import {
-  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe, Share2, Users, ChevronsUpDown,
+  LayoutDashboard, Package, PlusCircle, Palette, UserCog, LogOut, Menu, X, ExternalLink, ShieldCheck, GlobeLock, Newspaper, Globe, Share2, Users,
 } from "lucide-react";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import CopyLink from "./CopyLink";
@@ -14,6 +14,7 @@ import VerifyEmailBanner from "./VerifyEmailBanner";
 import Logo from "@/components/shared/Logo";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import PendingToast from "./PendingToast";
+import Select from "@/components/shared/Select";
 
 export type ShellTeam = {
   /** صاحب الصفحة النشطة (وليس عضو فريق فيها) */
@@ -117,21 +118,17 @@ export default function DashboardShell({
             <CopyLink path={`/${page.slug}`} url={page.liveDomain ? `https://${page.liveDomain}` : undefined} compact />
           </div>
           {team && team.pages.length > 1 && (
-            <label className="relative mt-3 flex items-center">
-              <ChevronsUpDown className="pointer-events-none absolute end-2.5 h-3.5 w-3.5 text-white/40" />
-              <select
-                value={team.activePageId}
-                onChange={(e) => switchPage(e.target.value)}
-                aria-label={t("nav.switchPage")}
-                className="w-full cursor-pointer appearance-none rounded-lg border border-white/10 bg-black/30 px-3 py-2 pe-8 text-xs text-white/80 outline-none focus:border-amber-400/50"
-              >
-                {team.pages.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.own ? `★ ${p.title}` : `👥 ${p.title}`}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Select
+              className="mt-3"
+              size="sm"
+              value={team.activePageId}
+              onChange={switchPage}
+              ariaLabel={t("nav.switchPage")}
+              groups={[
+                { label: t("nav.yourPage"), options: team.pages.filter((p) => p.own).map((p) => ({ value: p.id, label: p.title })) },
+                { label: t("nav.teamPage"), options: team.pages.filter((p) => !p.own).map((p) => ({ value: p.id, label: p.title })) },
+              ].filter((g) => g.options.length)}
+            />
           )}
         </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, BookOpen, ChevronDown, CircleHelp, LifeBuoy, Menu, Newspaper, X } from "lucide-react";
@@ -18,13 +18,24 @@ function subscribeScroll(cb: () => void) {
   window.addEventListener("scroll", cb, { passive: true });
   return () => window.removeEventListener("scroll", cb);
 }
-const useScrolled = () =>
-  useSyncExternalStore(subscribeScroll, () => window.scrollY > 8, () => false);
+const useScrolled = () => useSyncExternalStore(subscribeScroll, () => window.scrollY > 24, () => false);
 
-export default function NavbarClient({ siteName, loggedIn, labels: l }: { siteName: string; loggedIn: boolean; labels: NavLabels }) {
+// ==================== 🧭 شريط التنقل: شريط كامل العرض (الشعار والروابط يساراً، الدخول والتسجيل يميناً) ====================
+// overlay: فوق فيديو الصفحة الرئيسية — شفاف في الأعلى ويصبح داكناً مع التمرير
+export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = false }: { siteName: string; loggedIn: boolean; labels: NavLabels; overlay?: boolean }) {
   const pathname = usePathname();
   const scrolled = useScrolled();
   const [open, setOpen] = useState(false);
+
+  // منع تمرير الصفحة خلف قائمة الجوال
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   const main = [
     { href: "/#features", label: l.features },
@@ -39,143 +50,137 @@ export default function NavbarClient({ siteName, loggedIn, labels: l }: { siteNa
   ];
   const isActive = (href: string) => !href.includes("#") && (pathname === href || pathname.startsWith(href + "/"));
   const resActive = resources.some((r) => isActive(r.href));
-  const solid = scrolled || open;
+  const transparent = overlay && !scrolled && !open;
 
   const linkCls = (active: boolean) =>
-    `relative inline-flex h-8 items-center rounded-full px-3.5 text-[13px] font-medium transition-colors ${active ? "bg-white/[0.08] text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"}`;
+    `inline-flex h-16 items-center gap-1 px-3 text-[14px] font-medium transition-colors ${active ? "text-amber-300" : "text-white/85 hover:text-amber-300"}`;
 
   return (
-    // 🧭 شريط عائم رفيع: كبسولة زجاجية تطفو فوق المحتوى، تزداد عتمتها مع التمرير
-    <header className="sticky top-0 z-50 px-3 pt-3 text-white sm:px-4">
-      <div
-        className={`mx-auto max-w-6xl rounded-[26px] border transition-[background-color,border-color,box-shadow] duration-300 ${
-          solid
-            ? "border-white/[0.09] bg-[#0A0C11]/80 shadow-[0_12px_40px_-16px_rgba(0,0,0,0.85)] backdrop-blur-2xl backdrop-saturate-150"
-            : "border-white/[0.06] bg-white/[0.03] backdrop-blur-xl"
-        }`}
-      >
-        <div className="flex h-[52px] items-center gap-3 ps-3 pe-1.5">
-          {/* الشعار */}
-          <Link href="/" className="flex shrink-0 items-center" aria-label={siteName} onClick={() => setOpen(false)}>
-            <Logo className="h-8" priority />
-          </Link>
+    <header
+      className={`${overlay ? "fixed" : "sticky"} inset-x-0 top-0 z-50 w-full text-white transition-[background-color,border-color,backdrop-filter] duration-300 ${
+        transparent
+          ? "border-b border-transparent bg-gradient-to-b from-black/55 to-transparent"
+          : "border-b border-white/[0.07] bg-[#0B0E11]/95 backdrop-blur-xl"
+      }`}
+    >
+      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center gap-2 px-4 sm:px-6 lg:px-8">
+        {/* الشعار */}
+        <Link href="/" className="me-4 flex shrink-0 items-center" aria-label={siteName} onClick={() => setOpen(false)}>
+          <Logo className="h-8" priority />
+        </Link>
 
-          {/* روابط سطح المكتب — في الوسط، ممتدة بلا إطار داخلي سميك */}
-          <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
-            {main.map((m) => (
-              <Link key={m.href} href={m.href} className={linkCls(isActive(m.href))}>
-                {m.label}
-              </Link>
-            ))}
+        {/* روابط سطح المكتب: بجانب الشعار */}
+        <nav className="hidden items-center lg:flex">
+          {main.map((m) => (
+            <Link key={m.href} href={m.href} className={linkCls(isActive(m.href))}>
+              {m.label}
+            </Link>
+          ))}
 
-            {/* قائمة الموارد المنسدلة (تعمل بالمرور والتركيز بدون JS) */}
-            <div className="group relative">
-              <button type="button" className={`${linkCls(resActive)} gap-1 cursor-pointer`} aria-haspopup="true">
-                {l.resources}
-                <ChevronDown className="h-3.5 w-3.5 opacity-70 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
-              </button>
-              <div className="invisible absolute left-1/2 top-full z-50 w-[540px] -translate-x-1/2 translate-y-1 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                <div className="grid grid-cols-2 gap-1 rounded-2xl border border-white/[0.08] bg-[#0C0F15]/95 p-1.5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-2xl">
-                  {resources.map(({ href, label, desc, icon: Icon }) => (
-                    <Link key={href} href={href} className="group/item flex gap-3 rounded-xl p-3 transition-colors hover:bg-white/[0.05]">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-amber-300 transition-colors group-hover/item:border-amber-400/30 group-hover/item:bg-amber-400/10">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span>
-                        <span className="block text-[13.5px] font-semibold text-white">{label}</span>
-                        <span className="mt-0.5 block text-xs leading-snug text-white/50">{desc}</span>
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </nav>
-
-          {/* الإجراءات */}
-          <div className="ms-auto flex shrink-0 items-center gap-1 lg:ms-0">
-            <div className="hidden sm:block">
-              <LanguageSwitcher variant="dark" placement="navbar" />
-            </div>
-            {loggedIn ? (
-              <Link href="/dashboard" className="group/cta hidden h-[38px] items-center gap-1.5 rounded-full bg-white px-4 text-[13px] font-semibold text-black transition hover:bg-amber-100 sm:inline-flex">
-                {l.dashboard}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/cta:translate-x-0.5 rtl:rotate-180 rtl:group-hover/cta:-translate-x-0.5" />
-              </Link>
-            ) : (
-              <>
-                <Link href="/login" className="hidden h-8 items-center rounded-full px-3 text-[13px] font-medium text-white/70 transition hover:text-white sm:inline-flex">
-                  {l.login}
-                </Link>
-                <Link href="/register" className="group/cta hidden h-[38px] items-center gap-1.5 rounded-full bg-white px-4 text-[13px] font-semibold text-black transition hover:bg-amber-100 sm:inline-flex">
-                  {l.start}
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/cta:translate-x-0.5 rtl:rotate-180 rtl:group-hover/cta:-translate-x-0.5" />
-                </Link>
-              </>
-            )}
-            <button
-              type="button"
-              onClick={() => setOpen((v) => !v)}
-              className="flex h-[38px] w-[38px] items-center justify-center rounded-full text-white/80 transition hover:bg-white/[0.07] lg:hidden cursor-pointer"
-              aria-label={l.menu}
-              aria-expanded={open}
-            >
-              {open ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
+          {/* الموارد: قائمة منسدلة بالمرور والتركيز (بدون JS) */}
+          <div className="group relative">
+            <button type="button" className={`${linkCls(resActive)} cursor-pointer`} aria-haspopup="true">
+              {l.resources}
+              <ChevronDown className="h-3.5 w-3.5 opacity-70 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
             </button>
-          </div>
-        </div>
-
-        {/* قائمة الجوال: تمتد داخل نفس الكبسولة */}
-        {open && (
-          <div className="max-h-[calc(100dvh-5.5rem)] overflow-y-auto border-t border-white/[0.06] lg:hidden">
-            <div className="space-y-5 p-3">
-              <div className="grid gap-0.5">
-                {main.map((m) => (
-                  <Link key={m.href} href={m.href} onClick={() => setOpen(false)} className="flex items-center justify-between rounded-xl px-3 py-2.5 text-[15px] font-medium text-white/85 transition-colors hover:bg-white/[0.05]">
-                    {m.label}
-                    <ArrowRight className="h-4 w-4 text-white/25 rtl:rotate-180" />
+            <div className="invisible absolute start-0 top-full z-50 w-[520px] translate-y-1 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+              <div className="grid grid-cols-2 gap-1 rounded-xl border border-white/[0.08] bg-[#1E2329] p-2 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.85)]">
+                {resources.map(({ href, label, desc, icon: Icon }) => (
+                  <Link key={href} href={href} className="group/item flex gap-3 rounded-lg p-3 transition-colors hover:bg-white/[0.06]">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-amber-300 transition-colors group-hover/item:bg-amber-400/15">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span>
+                      <span className="block text-[14px] font-semibold text-white">{label}</span>
+                      <span className="mt-0.5 block text-xs leading-snug text-white/50">{desc}</span>
+                    </span>
                   </Link>
                 ))}
               </div>
-              <div>
-                <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">{l.resources}</p>
-                <div className="grid gap-0.5 sm:grid-cols-2">
-                  {resources.map(({ href, label, desc, icon: Icon }) => (
-                    <Link key={href} href={href} onClick={() => setOpen(false)} className="flex gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/[0.05]">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-amber-300">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span>
-                        <span className="block text-sm font-semibold">{label}</span>
-                        <span className="block text-xs text-white/50">{desc}</span>
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              <LanguageSwitcher variant="segmented" />
-              <div className="flex items-center gap-3 border-t border-white/[0.06] pt-3">
-                <div className="flex flex-1 gap-2 [&>a]:flex-1 [&>a]:text-center">
-                  {loggedIn ? (
-                    <Link href="/dashboard" onClick={() => setOpen(false)} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
-                      {l.dashboard}
-                    </Link>
-                  ) : (
-                    <>
-                      <Link href="/login" onClick={() => setOpen(false)} className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium">
-                        {l.login}
-                      </Link>
-                      <Link href="/register" onClick={() => setOpen(false)} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
-                        {l.start}
-                      </Link>
-                    </>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
-        )}
+        </nav>
+
+        {/* الإجراءات */}
+        <div className="ms-auto flex shrink-0 items-center gap-2">
+          <div className="hidden sm:block">
+            <LanguageSwitcher variant="dark" placement="navbar" />
+          </div>
+          {loggedIn ? (
+            <Link href="/dashboard" className="hidden h-9 items-center gap-1.5 rounded-md bg-amber-400 px-4 text-[14px] font-semibold text-black transition hover:bg-amber-300 sm:inline-flex">
+              {l.dashboard}
+              <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="hidden h-9 items-center rounded-md bg-white/[0.1] px-4 text-[14px] font-medium text-white transition hover:bg-white/[0.16] sm:inline-flex">
+                {l.login}
+              </Link>
+              <Link href="/register" className="hidden h-9 items-center rounded-md bg-amber-400 px-4 text-[14px] font-semibold text-black transition hover:bg-amber-300 sm:inline-flex">
+                {l.start}
+              </Link>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-10 w-10 items-center justify-center rounded-md text-white/85 transition hover:bg-white/[0.08] lg:hidden cursor-pointer"
+            aria-label={l.menu}
+            aria-expanded={open}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
+
+      {/* قائمة الجوال: ملء الشاشة تحت الشريط */}
+      {open && (
+        <div className="h-[calc(100dvh-4rem)] overflow-y-auto border-t border-white/[0.07] bg-[#0B0E11] lg:hidden">
+          <div className="space-y-6 px-4 py-5 sm:px-6">
+            {!loggedIn && (
+              <div className="grid grid-cols-2 gap-2">
+                <Link href="/login" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center rounded-md bg-white/[0.1] text-[15px] font-medium">
+                  {l.login}
+                </Link>
+                <Link href="/register" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center rounded-md bg-amber-400 text-[15px] font-semibold text-black">
+                  {l.start}
+                </Link>
+              </div>
+            )}
+            {loggedIn && (
+              <Link href="/dashboard" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center gap-1.5 rounded-md bg-amber-400 text-[15px] font-semibold text-black">
+                {l.dashboard}
+                <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+              </Link>
+            )}
+            <div className="grid">
+              {main.map((m) => (
+                <Link key={m.href} href={m.href} onClick={() => setOpen(false)} className="flex items-center justify-between border-b border-white/[0.06] py-3.5 text-[16px] font-medium text-white/90">
+                  {m.label}
+                  <ArrowRight className="h-4 w-4 text-white/25 rtl:rotate-180" />
+                </Link>
+              ))}
+            </div>
+            <div>
+              <p className="pb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">{l.resources}</p>
+              <div className="grid gap-1 sm:grid-cols-2">
+                {resources.map(({ href, label, desc, icon: Icon }) => (
+                  <Link key={href} href={href} onClick={() => setOpen(false)} className="flex gap-3 rounded-lg p-2.5 transition-colors hover:bg-white/[0.05]">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-amber-300">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-semibold">{label}</span>
+                      <span className="block text-xs text-white/50">{desc}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <LanguageSwitcher variant="segmented" />
+          </div>
+        </div>
+      )}
     </header>
   );
 }

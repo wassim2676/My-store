@@ -3,6 +3,7 @@
 
 import { announcePending } from "@/lib/pending-client";
 import { useState } from "react";
+import Select from "@/components/shared/Select";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { localizedApiError } from "@/lib/api-error";
@@ -341,9 +342,7 @@ export default function OfferForm({
                 <input type="number" step="0.01" min="0" value={f.compareAt} onChange={(e) => set("compareAt", e.target.value)} className={field} />
               </Label>
               <Label text={t("form.currency")}>
-                <select value={f.currency} onChange={(e) => set("currency", e.target.value)} className={field + " bg-[#0E1118]"}>
-                  {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <Select value={f.currency} onChange={(v) => set("currency", v)} options={CURRENCIES.map((c) => ({ value: c, label: c }))} searchPlaceholder={t("common.search")} emptyText={t("common.noResults")} />
               </Label>
               <Label text={t("form.dealEnds")}>
                 <input type="date" value={f.dealEndsAt} onChange={(e) => set("dealEndsAt", e.target.value)} className={field + " [color-scheme:dark]"} />

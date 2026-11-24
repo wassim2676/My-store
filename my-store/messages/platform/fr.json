@@ -231,7 +231,10 @@
       "final": {
         "title": "Réservez votre lien avant les autres",
         "subtitle": "Une minute suffit. Gratuit pour commencer."
-      }
+      },
+      "previewCta": "Voir à quoi ressemble votre page",
+      "previewEyebrow": "Votre page",
+      "previewTitle": "Une vitrine boutique pour chaque produit que vous recommandez"
     },
     "auth": {
       "verify": {
@@ -374,7 +377,9 @@
         "invalid": "Certaines informations sont invalides. Vérifiez les champs et réessayez.",
         "conflict": "Ce nom ou ce lien est déjà pris. Choisissez-en un autre.",
         "unauthorized": "Votre session a expiré. Reconnectez-vous."
-      }
+      },
+      "search": "Rechercher…",
+      "noResults": "Aucun résultat"
     },
     "slug": {
       "checking": "Vérification…",
@@ -1026,7 +1031,9 @@
           "click": "un visiteur clique sur un bouton d'achat"
         },
         "hint": "Vous pouvez coller le code complet du pixel — nous extrayons l'ID automatiquement. Laissez un champ vide pour retirer ce pixel."
-      }
+      },
+      "search": "Rechercher…",
+      "noResults": "Aucun résultat"
     },
     "team": {
       "title": "Équipe",
@@ -1306,7 +1313,7 @@
     "terms": {
       "title": "Conditions d’utilisation",
       "eyebrow": "Légal",
-      "intro": "En utilisant la plateforme, vous acceptez ces conditions.",
+      "intro": "Les règles d'utilisation de Primeshelf : votre compte, votre contenu, les programmes d'affiliation et nos responsabilités.",
       "sections": [
         {
           "h": "Votre compte",
@@ -1333,7 +1340,7 @@
     "privacy": {
       "title": "Politique de confidentialité",
       "eyebrow": "Légal",
-      "intro": "Nous respectons votre vie privée et protégeons vos données personnelles.",
+      "intro": "Quelles informations nous collectons, pourquoi, avec qui nous les partageons et quels sont vos droits.",
       "sections": [
         {
           "h": "Données conservées",
@@ -1356,7 +1363,7 @@
     "cookies": {
       "title": "Politique de cookies",
       "eyebrow": "Légal",
-      "intro": "Nous utilisons le moins de cookies possible.",
+      "intro": "Les cookies utilisés par Primeshelf, pourquoi nous les utilisons et comment les contrôler.",
       "sections": [
         {
           "h": "Cookies essentiels",
@@ -1379,7 +1386,7 @@
     "disclosure": {
       "title": "Divulgation d’affiliation",
       "eyebrow": "Légal",
-      "intro": "Comment fonctionnent les liens d’affiliation sur les pages hébergées ici.",
+      "intro": "Comment fonctionnent les liens d'affiliation sur les pages des marketeurs et ce que cela signifie pour vous.",
       "sections": [
         {
           "h": "Les pages contiennent des liens d’affiliation",
@@ -1402,7 +1409,7 @@
     "acceptableUse": {
       "title": "Utilisation acceptable",
       "eyebrow": "Légal",
-      "intro": "Des règles qui préservent la confiance des visiteurs et des boutiques.",
+      "intro": "Ce qui est autorisé ou non sur Primeshelf, pour une plateforme honnête et sûre pour tous.",
       "sections": [
         {
           "h": "Soyez honnête",
@@ -1487,6 +1494,12 @@
       "by": "Par",
       "back": "Blog",
       "read": "Lire l’article"
+    },
+    "legal": {
+      "toc": "Sur cette page",
+      "related": "Autres politiques",
+      "effective": "Date d'effet",
+      "englishNotice": "Ce document est publié en anglais, qui est la version juridiquement contraignante. Vous pouvez utiliser la traduction automatique de votre navigateur pour le lire en français."
     }
   },
   "adm": {

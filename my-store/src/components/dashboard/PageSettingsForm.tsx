@@ -14,6 +14,7 @@ import Storefront from "@/components/landing/Storefront";
 import ClientFonts from "@/components/landing/ClientFonts";
 import LandingFooter from "@/components/landing/LandingFooter";
 import FontPicker from "./FontPicker";
+import Select from "@/components/shared/Select";
 import { RecommendedBadge } from "@/components/shared/InfoTip";
 import {
   BG_STYLES, BUTTON_STYLES, NAV_STYLES, CARD_IMAGE_STYLES, DEFAULT_DESIGN, GRID_COLUMNS, PAGE_LANGUAGES, PRESET_THEMES,
@@ -327,13 +328,7 @@ export default function PageSettingsForm({ initial, sampleOffers }: { initial: S
               </div>
             </div>
             <L text={t("design.language")} hint={t("design.languageHint")}>
-              <select value={f.language} onChange={(e) => set("language", e.target.value)} className={field + " bg-[#0E1118]"}>
-                {PAGE_LANGUAGES.map((l) => (
-                  <option key={l} value={l}>
-                    {t(`design.languages.${l}`)}
-                  </option>
-                ))}
-              </select>
+              <Select value={f.language} onChange={(v) => set("language", v)} options={PAGE_LANGUAGES.map((l) => ({ value: l, label: t(`design.languages.${l}`) }))} />
             </L>
           </Card>
 

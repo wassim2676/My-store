@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import QRCode from "qrcode";
+import Select from "@/components/shared/Select";
 import { AlertTriangle, Check, Copy, Download, ExternalLink, Link2, QrCode, RefreshCw, Send, Share2 } from "lucide-react";
 
 // ==================== 📤 عدة المشاركة: معاينة الرابط + روابط جاهزة لكل منصة + QR ====================
@@ -66,28 +67,20 @@ export default function ShareKit({ baseUrl, ogBase, targets }: { baseUrl: string
       {/* 🔗 الرابط المختار */}
       <section className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0A0D12]">
         <div className="flex flex-col gap-4 p-5 sm:p-6 lg:flex-row lg:items-end">
-          <label className="block min-w-0 lg:w-80">
+          <div className="block min-w-0 lg:w-80">
             <span className="text-[11px] font-medium uppercase tracking-wider text-white/40">{t("whatToShare")}</span>
-            <select
+            <Select
+              className="mt-2"
               value={key}
-              onChange={(e) => setKey(e.target.value)}
-              className="mt-2 w-full cursor-pointer rounded-lg border border-white/10 bg-black/40 px-3.5 py-2.5 text-sm outline-none focus:border-amber-400/60"
-            >
-              {(["page", "offer", "article"] as const).map((g) => {
-                const items = targets.filter((x) => x.group === g);
-                if (!items.length) return null;
-                return (
-                  <optgroup key={g} label={t(`groups.${g}`)}>
-                    {items.map((x) => (
-                      <option key={x.key} value={x.key}>
-                        {x.label}
-                      </option>
-                    ))}
-                  </optgroup>
-                );
-              })}
-            </select>
-          </label>
+              onChange={setKey}
+              ariaLabel={t("whatToShare")}
+              searchPlaceholder={t("search")}
+              emptyText={t("noResults")}
+              groups={(["page", "offer", "article"] as const)
+                .map((g) => ({ label: t(`groups.${g}`), options: targets.filter((x) => x.group === g).map((x) => ({ value: x.key, label: x.label })) }))
+                .filter((g) => g.options.length)}
+            />
+          </div>
           <div className="min-w-0 flex-1">
             <span className="text-[11px] font-medium uppercase tracking-wider text-white/40">{t("yourLink")}</span>
             <div className="mt-2 flex min-w-0 items-stretch overflow-hidden rounded-lg border border-white/10 bg-black/40" dir="ltr">

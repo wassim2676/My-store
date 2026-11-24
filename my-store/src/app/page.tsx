@@ -8,6 +8,7 @@ import SiteNavbar from "@/components/site/SiteNavbar";
 import SiteFooter from "@/components/site/SiteFooter";
 import ClaimLink from "@/components/site/ClaimLink";
 import TourCarousel from "@/components/site/TourCarousel";
+import HeroVideo from "@/components/site/HeroVideo";
 import BrandCycleButton from "@/components/site/BrandCycleButton";
 import BrandLogo from "@/components/shop/BrandLogo";
 import { WHITE_LOGO } from "@/components/shop/logo-classes";
@@ -61,22 +62,33 @@ export default async function Home() {
 
   return (
     <div data-ui="dark" className="min-h-screen overflow-x-hidden bg-[#07090D] text-white antialiased">
-      <SiteNavbar />
+      <SiteNavbar overlay />
 
       {/* عناصر الشبكات تتقلّص لعرض الشاشة (الشريط الأفقي للبطاقات كان يمطّ العمود خارج الهاتف) */}
       <main className="[&_.grid>*]:min-w-0">
-        {/* 🌟 Hero */}
-        <section className="relative">
-          <div className="pointer-events-none absolute -top-48 left-1/2 h-[700px] w-[1100px] max-w-[170vw] -translate-x-1/2 rounded-full bg-amber-500/[0.12] blur-[140px]" />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_70%_55%_at_50%_20%,black,transparent)]" />
-          <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-16 text-center sm:pt-24">
-            <h1 className="mx-auto max-w-4xl bg-gradient-to-b from-white via-white to-white/60 bg-clip-text font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-transparent sm:text-6xl lg:text-7xl">
-              {t("hero.title")}
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/60">{t("hero.subtitle")}</p>
-            <div className="mt-10">
-              <ClaimLink cta={t("hero.cta")} placeholder={t("hero.placeholder")} />
-              <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/50">
+        {/* 🌟 Hero: فيديو بعرض الشاشة (مثل Shopify) وفوقه الرسالة والإجراء */}
+        <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden">
+          <HeroVideo
+            clips={[
+              { src: "/hero/hero-8869.mp4", poster: "/hero/hero-8869.jpg" },
+              { src: "/hero/hero-50422.mp4", poster: "/hero/hero-50422.jpg" },
+              { src: "/hero/hero-9060.mp4", poster: "/hero/hero-9060.jpg" },
+            ]}
+          />
+          <div className="relative mx-auto w-full max-w-[1440px] px-4 pb-24 pt-32 sm:px-6 lg:px-8">
+            <div className="max-w-2xl text-start">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/30 px-3.5 py-1.5 text-xs font-medium text-white/85 backdrop-blur">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                {t("hero.badge")}
+              </span>
+              <h1 className="mt-6 font-serif text-[2.6rem] font-semibold leading-[1.04] tracking-tight text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)] sm:text-6xl lg:text-7xl">
+                {t("hero.title")}
+              </h1>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">{t("hero.subtitle")}</p>
+              <div className="mt-9">
+                <ClaimLink cta={t("hero.cta")} placeholder={t("hero.placeholder")} />
+              </div>
+              <ul className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-white/70">
                 {trust.map((item) => (
                   <li key={item} className="flex items-center gap-1.5">
                     <Check className="h-3.5 w-3.5 text-amber-300" />
@@ -84,10 +96,21 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
+              <a href="#preview" className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white">
+                {t("home.previewCta")}
+                <ChevronDown className="h-4 w-4" />
+              </a>
             </div>
+          </div>
+        </section>
 
+        {/* 🖥️ شكل صفحتك: معاينة حقيقية لصفحة مسوّق */}
+        <section id="preview" className="relative scroll-mt-20">
+          <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 text-center sm:pt-16">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-300/90">{t("home.previewEyebrow")}</p>
+            <h2 className="mx-auto mt-3 max-w-3xl font-serif text-3xl font-semibold tracking-tight sm:text-5xl">{t("home.previewTitle")}</h2>
             {/* 🖥️ معاينة صفحة هبوط داخل إطار متصفح (نفس ترتيب الصفحة الحقيقية: شريط الهوية والبحث ← الفلاتر ← النبذة ← البطاقات) */}
-            <div className="relative mx-auto mt-16 max-w-6xl">
+            <div className="relative mx-auto mt-12 max-w-6xl">
               <div className="pointer-events-none absolute -inset-x-10 -bottom-10 top-20 rounded-[3rem] bg-amber-500/[0.08] blur-3xl" />
               <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0B0E14] text-start shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)]">
                 {/* شريط المتصفح */}
