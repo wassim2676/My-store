@@ -13,6 +13,8 @@ import BrandCycleButton from "@/components/site/BrandCycleButton";
 import BrandLogo from "@/components/shop/BrandLogo";
 import { WHITE_LOGO } from "@/components/shop/logo-classes";
 import { getActiveBrands } from "@/lib/brands";
+import { JsonLd } from "@/components/blog/ArticleCard";
+import { SITE_NAME, SITE_URL, CONTACT_EMAIL } from "@/lib/site";
 
 
 // ✅ توثيق دومين المنصة نفسه لدى Google Search Console وMeta Business (رموز من متغيرات البيئة).
@@ -20,8 +22,9 @@ import { getActiveBrands } from "@/lib/brands";
 export function generateMetadata(): Metadata {
   const google = process.env.GOOGLE_SITE_VERIFICATION?.trim();
   const meta = process.env.FACEBOOK_DOMAIN_VERIFICATION?.trim();
-  if (!google && !meta) return {};
-  return { verification: { ...(google ? { google } : {}), ...(meta ? { other: { "facebook-domain-verification": meta } } : {}) } };
+  const base: Metadata = { alternates: { canonical: "/" } };
+  if (!google && !meta) return base;
+  return { ...base, verification: { ...(google ? { google } : {}), ...(meta ? { other: { "facebook-domain-verification": meta } } : {}) } };
 }
 
 // ==================== 🏠 الصفحة الرئيسية للمنصة (للمسوّقين بالعمولة) ====================
@@ -63,6 +66,34 @@ export default async function Home() {
   return (
     <div data-ui="dark" className="min-h-screen overflow-x-hidden bg-[#07090D] text-white antialiased">
       <SiteNavbar overlay />
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: SITE_URL,
+            logo: `${SITE_URL}/brand/primeshelf-logo-email.png`,
+            email: CONTACT_EMAIL,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: SITE_NAME,
+            url: SITE_URL,
+            publisher: { "@type": "Organization", name: SITE_NAME },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: SITE_NAME,
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            url: SITE_URL,
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          },
+        ]}
+      />
 
       {/* عناصر الشبكات تتقلّص لعرض الشاشة (الشريط الأفقي للبطاقات كان يمطّ العمود خارج الهاتف) */}
       <main className="[&_.grid>*]:min-w-0">

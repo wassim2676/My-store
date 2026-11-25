@@ -1,0 +1,150 @@
+import type { Network, NetworkSlug } from "./types";
+
+// ==================== 🏬 شبكات الأفلييت (صفحة مركزية لكل شبكة) ====================
+export const NETWORKS: Network[] = [
+  {
+    slug: "amazon",
+    name: "Amazon",
+    program: "Amazon Associates",
+    color: "#FF9900",
+    ink: "#111111",
+    hubTitle: "Amazon Associates guides for affiliate marketers",
+    hubDescription: "Join, grow and protect your Amazon Associates account: commission rates, cookie rules, product research, social promotion and compliance.",
+    hubIntro: [
+      "Amazon Associates is the affiliate program most marketers start with, and for good reason: almost every visitor already has an Amazon account, trusts the checkout and buys more than the one item you recommended. That trust is what turns a simple review into a reliable stream of commissions.",
+      "The program is also strict. Approval depends on real sales in your first 180 days, links must follow precise rules, and prices or images copied from Amazon can get an account closed. These guides walk you through every stage, from your first application to the habits of marketers who earn from Amazon month after month.",
+    ],
+  },
+  {
+    slug: "walmart",
+    name: "Walmart",
+    program: "Walmart Creator & Affiliates",
+    color: "#0071CE",
+    ink: "#FFFFFF",
+    hubTitle: "Walmart affiliate program guides",
+    hubDescription: "How the Walmart affiliate program works on Impact, what it pays, which categories convert and how to promote Walmart deals the right way.",
+    hubIntro: [
+      "Walmart has quietly become one of the most useful programs for marketers whose audience cares about price. Everyday low prices, grocery and household essentials, and a strong pickup and delivery network mean visitors often convert faster than on premium stores.",
+      "The program runs through Impact, with its own rules on coupons, paid search and how links are shared. These guides explain how to get approved, what to promote, and how to build pages that make Walmart offers easy to trust.",
+    ],
+  },
+  {
+    slug: "target",
+    name: "Target",
+    program: "Target Partners",
+    color: "#CC0000",
+    ink: "#FFFFFF",
+    hubTitle: "Target Partners affiliate guides",
+    hubDescription: "Everything about Target Partners: approval, commission tiers by category, the best Target products to feature and how to promote them on social.",
+    hubIntro: [
+      "Target sits in a sweet spot between budget and premium. Its home, beauty, baby and seasonal collections are visually strong, which makes them perfect for creators who sell through style rather than discounts.",
+      "Target Partners pays different rates by category and is selective about the sites it approves. The guides below show how to prepare an application, plan content around Target's seasonal calendar and keep your links compliant.",
+    ],
+  },
+  {
+    slug: "ebay",
+    name: "eBay",
+    program: "eBay Partner Network",
+    color: "#E53238",
+    ink: "#FFFFFF",
+    hubTitle: "eBay Partner Network guides",
+    hubDescription: "Earn with the eBay Partner Network: how commissions work, what sells on eBay, refurbished and collectible niches, and promotion strategies that convert.",
+    hubIntro: [
+      "eBay is not just auctions. Refurbished electronics, collectibles, sneakers, auto parts and hard-to-find items make it a destination for buyers who already know exactly what they want — and those buyers convert well.",
+      "The eBay Partner Network rewards marketers who understand its unique inventory. These guides cover approval, commission mechanics, the niches where eBay beats every other store, and how to build content around listings that change constantly.",
+    ],
+  },
+  {
+    slug: "best-buy",
+    name: "Best Buy",
+    program: "Best Buy Affiliate Program",
+    color: "#0046BE",
+    ink: "#FFE000",
+    hubTitle: "Best Buy affiliate guides for tech marketers",
+    hubDescription: "Promote Best Buy as an affiliate: how the program works, which electronics categories convert, deal seasons and how to write tech reviews that sell.",
+    hubIntro: [
+      "Best Buy is where many shoppers go when a purchase feels important: a new laptop, a TV, a camera, a gaming console. They want expert advice, price matching and easy returns, which makes Best Buy an excellent destination for tech-focused marketers.",
+      "Electronics commissions are lower than fashion or beauty, but order values are high and buyers research carefully. These guides show how to win that research phase with comparisons, deal timing and honest reviews.",
+    ],
+  },
+  {
+    slug: "aliexpress",
+    name: "AliExpress",
+    program: "AliExpress Portals",
+    color: "#E62E04",
+    ink: "#FFFFFF",
+    hubTitle: "AliExpress affiliate (Portals) guides",
+    hubDescription: "Make money with AliExpress Portals: commissions, cookie windows, the best AliExpress products for affiliates and how to promote them to a global audience.",
+    hubIntro: [
+      "AliExpress gives affiliates something most programs can't: a truly global audience and products at prices that make impulse purchases easy. Gadgets, accessories, hobby supplies and home finds can convert in dozens of countries from one page.",
+      "Shipping times, product quality and buyer expectations are different from domestic stores, so trust is everything. These guides explain how AliExpress Portals works and how to recommend products responsibly.",
+    ],
+  },
+  {
+    slug: "etsy",
+    name: "Etsy",
+    program: "Etsy Affiliate Program",
+    color: "#F1641E",
+    ink: "#FFFFFF",
+    hubTitle: "Etsy affiliate program guides",
+    hubDescription: "Promote handmade and vintage finds with the Etsy affiliate program: approval, commissions, gift-guide strategy and how to curate Etsy shops your audience loves.",
+    hubIntro: [
+      "Etsy shoppers are looking for something personal: a handmade gift, a vintage piece, a custom print with a name on it. Curation is the product, and that is exactly what a good affiliate page provides.",
+      "The Etsy affiliate program rewards creators with a clear style and an engaged audience. These guides show how to apply, which categories perform, and how to build gift guides that keep earning every holiday season.",
+    ],
+  },
+  {
+    slug: "home-depot",
+    name: "Home Depot",
+    program: "The Home Depot Affiliate Program",
+    color: "#F96302",
+    ink: "#FFFFFF",
+    hubTitle: "Home Depot affiliate guides for home & DIY creators",
+    hubDescription: "Earn from home improvement with The Home Depot affiliate program: commissions, top DIY categories, project-based content and seasonal promotion tips.",
+    hubIntro: [
+      "Home improvement shoppers plan projects, compare tools and buy many items at once. A single bathroom refresh can mean paint, fixtures, tools and supplies in the same cart — which makes project-based content especially valuable for affiliates.",
+      "The Home Depot program fits creators in DIY, renovation, gardening and smart-home niches. These guides cover approval, short cookie windows, and how to turn tutorials into pages that sell.",
+    ],
+  },
+  {
+    slug: "temu",
+    name: "Temu",
+    program: "Temu Affiliate Program",
+    color: "#FB7701",
+    ink: "#FFFFFF",
+    hubTitle: "Temu affiliate program guides",
+    hubDescription: "How the Temu affiliate program works, how its commissions and new-user rewards compare, what to promote and how to protect your audience's trust.",
+    hubIntro: [
+      "Temu grew faster than almost any shopping app, built on very low prices and aggressive promotions. For affiliates, that creates opportunities with price-sensitive audiences — and responsibilities, because expectations about quality and delivery must be set honestly.",
+      "These guides explain how the Temu affiliate program works, how to choose products that won't disappoint, and how to promote them on social without overpromising.",
+    ],
+  },
+  {
+    slug: "sephora",
+    name: "Sephora",
+    program: "Sephora Affiliate Program",
+    color: "#111111",
+    ink: "#FFFFFF",
+    hubTitle: "Sephora affiliate guides for beauty creators",
+    hubDescription: "Grow as a Sephora affiliate: program basics, commissions, the beauty categories that convert, tutorial-led content and FTC-compliant disclosures.",
+    hubIntro: [
+      "Beauty is one of the most affiliate-friendly categories online. Shoppers rely on swatches, routines and honest reviews before they buy, and Sephora's range of prestige and clean brands makes it a natural destination for beauty creators.",
+      "These guides cover how to join the Sephora affiliate program, which products and formats perform, and how to build routines and comparisons that convert without crossing compliance lines.",
+    ],
+  },
+  {
+    slug: "wayfair",
+    name: "Wayfair",
+    program: "Wayfair Affiliate Program",
+    color: "#7F187F",
+    ink: "#FFFFFF",
+    hubTitle: "Wayfair affiliate guides for home & interior creators",
+    hubDescription: "Earn with the Wayfair affiliate program: commissions, high-ticket furniture categories, room-based content and seasonal sale strategies.",
+    hubIntro: [
+      "Furniture and decor purchases are big, considered and visual. Shoppers save inspiration for weeks, compare dozens of options and want to see how pieces look together — the perfect setting for curated affiliate pages.",
+      "Wayfair's huge catalog and frequent sales make it a strong partner for interior, home and lifestyle creators. These guides show how to apply, what to promote and how to design room-based content that earns on high order values.",
+    ],
+  },
+];
+
+export const NETWORK_BY_SLUG = Object.fromEntries(NETWORKS.map((n) => [n.slug, n])) as Record<NetworkSlug, Network>;

@@ -8,7 +8,7 @@ import { getActiveBrands } from "@/lib/brands";
 
 export async function generateMetadata() {
   const t = await getTranslations("pages.storesPage");
-  return { title: t("title"), description: t("intro") };
+  return { title: t("title"), description: t("intro"), alternates: { canonical: "/stores" } };
 }
 
 // ==================== 🏬 المتاجر المدعومة (من جدول Brand + شعارات public/brands) ====================

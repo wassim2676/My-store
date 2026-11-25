@@ -12,9 +12,15 @@ type Section = { h: string; p: string };
 const LEGAL = new Set<ContentPageKey>(["terms", "privacy", "cookies", "disclosure", "acceptableUse"]);
 
 /** عنوان الصفحة للمتصفح ومحركات البحث، بلغة الزائر */
+/** المسار الرسمي لكل صفحة (للـ canonical وخريطة الموقع) */
+export const CONTENT_PATHS: Record<ContentPageKey, string> = {
+  about: "/about", faq: "/faq", help: "/help", terms: "/terms", privacy: "/privacy", cookies: "/cookies",
+  disclosure: "/affiliate-disclosure", acceptableUse: "/acceptable-use", contact: "/contact", guide: "/guide",
+};
+
 export async function contentMetadata(key: ContentPageKey): Promise<Metadata> {
   const t = await getTranslations(`pages.${key}`);
-  return { title: t("title"), description: t("intro") };
+  return { title: t("title"), description: t("intro"), alternates: { canonical: CONTENT_PATHS[key] }, openGraph: { title: t("title"), description: t("intro"), url: CONTENT_PATHS[key] } };
 }
 
 /** رأس موحّد للصفحات الداخلية */
