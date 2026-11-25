@@ -10,7 +10,7 @@ export default async function SiteNavbar({ overlay = false }: { overlay?: boolea
 
   const keys = [
     "features", "how", "stores", "resources", "blog", "guide", "help", "faq",
-    "blogDesc", "guideDesc", "helpDesc", "faqDesc", "dashboard", "login", "start", "menu",
+    "blogDesc", "guideDesc", "helpDesc", "faqDesc", "dashboard", "login", "start", "menu", "language",
   ] as const;
   const labels = Object.fromEntries(keys.map((k) => [k, t(k)])) as NavLabels;
 

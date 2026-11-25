@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- صور العروض روابط خارجية */
 
 import { announcePending } from "@/lib/pending-client";
+import FloatingPanel from "@/components/shared/FloatingPanel";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [menu, setMenu] = useState<string | null>(null);
+  const [menuEl, setMenuEl] = useState<HTMLElement | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [orderDirty, setOrderDirty] = useState(false);
   const [error, setError] = useState("");
@@ -222,13 +224,19 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
                     <PenLine className="h-4 w-4" />
                   </Link>
                   <div className="relative">
-                    <button onClick={() => setMenu(menu === o.id ? null : o.id)} className="rounded-lg p-2 text-white/45 hover:bg-white/5 hover:text-white cursor-pointer" aria-label="more">
+                    <button
+                      onClick={(e) => {
+                        const el = e.currentTarget;
+                        setMenu(menu === o.id ? null : o.id);
+                        setMenuEl(menu === o.id ? null : el);
+                      }}
+                      className="rounded-lg p-2 text-white/45 hover:bg-white/5 hover:text-white cursor-pointer"
+                      aria-label="more"
+                    >
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
                     {menu === o.id && (
-                      <>
-                        <div className="fixed inset-0 z-10" onClick={() => setMenu(null)} />
-                        <div className="absolute end-0 top-full z-20 mt-1 w-52 overflow-hidden rounded-xl border border-white/10 bg-[#11151D] py-1 text-sm shadow-2xl">
+                      <FloatingPanel anchor={menuEl} onClose={() => setMenu(null)} width={220}>
                           <a href={`/${pageSlug}/${o.slug}`} target="_blank" rel="noopener" className="flex items-center gap-2.5 px-3.5 py-2 hover:bg-white/5">
                             <ExternalLink className="h-4 w-4 text-white/45" />{t("offers.actions.view")}
                           </a>
@@ -255,8 +263,7 @@ export default function OffersManager({ initialOffers, pageSlug }: { initialOffe
                           <button onClick={() => remove(o.id)} className="flex w-full items-center gap-2.5 px-3.5 py-2 text-rose-300 hover:bg-rose-500/10 cursor-pointer">
                             <Trash2 className="h-4 w-4" />{t("offers.actions.delete")}
                           </button>
-                        </div>
-                      </>
+                      </FloatingPanel>
                     )}
                   </div>
                 </div>

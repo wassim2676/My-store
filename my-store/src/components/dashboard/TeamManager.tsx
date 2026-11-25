@@ -7,6 +7,7 @@ import {
   AlertTriangle, Check, CheckCheck, ChevronDown, Clock, Loader2, Mail, MoreHorizontal, PauseCircle, PlayCircle, RotateCw, Send, ShieldCheck, Trash2, UserPlus, Users, X,
 } from "lucide-react";
 import { Toggle } from "./OfferForm";
+import FloatingPanel from "@/components/shared/FloatingPanel";
 import { useTimeAgo } from "@/components/notifications/useNotificationText";
 
 // ==================== 👥 إدارة الفريق (صاحب الصفحة) ====================
@@ -70,6 +71,7 @@ export default function TeamManager({ members: initialMembers, pending: initialP
   const [open, setOpen] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [menu, setMenu] = useState<string | null>(null);
+  const [menuEl, setMenuEl] = useState<HTMLElement | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
   const err = (code: unknown) => setNotice({ tone: "err", text: t.has(`errors.${String(code)}`) ? t(`errors.${String(code)}`) : t("errors.generic") });
@@ -280,7 +282,7 @@ export default function TeamManager({ members: initialMembers, pending: initialP
           <p className="px-6 py-12 text-center text-sm text-white/45">{t("noMembers")}</p>
         ) : (
           <div className="divide-y divide-white/[0.05]">
-            {members.map((m, idx) => (
+            {members.map((m) => (
               <div key={m.id} className="flex flex-col gap-3 px-5 py-4 sm:px-6 lg:flex-row lg:items-center">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <Avatar name={m.name || m.email} />
@@ -303,11 +305,18 @@ export default function TeamManager({ members: initialMembers, pending: initialP
                   )}
                 </div>
                 <div className="relative self-end lg:self-auto">
-                  <button type="button" onClick={() => setMenu(menu === m.id ? null : m.id)} disabled={busy === m.id} className="rounded-lg p-2 text-white/50 hover:bg-white/5 hover:text-white cursor-pointer" aria-label="actions">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      const el = e.currentTarget;
+                      setMenu(menu === m.id ? null : m.id);
+                      setMenuEl(menu === m.id ? null : el);
+                    }}
+                    disabled={busy === m.id} className="rounded-lg p-2 text-white/50 hover:bg-white/5 hover:text-white cursor-pointer" aria-label="actions">
                     {busy === m.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
                   </button>
                   {menu === m.id && (
-                    <div className={`absolute end-0 z-30 w-52 overflow-hidden rounded-lg border border-white/10 bg-[#11151D] py-1 text-sm shadow-[0_24px_60px_-12px_rgba(0,0,0,0.85)] ${idx >= members.length - 2 && members.length > 2 ? "bottom-full mb-1" : "top-full mt-1"}`}>
+                    <FloatingPanel anchor={menuEl} onClose={() => setMenu(null)} width={220}>
                       {m.status === "pending" && (
                         <MenuItem icon={RotateCw} onClick={() => patchMember(m.id, { resend: true })}>{t("resend")}</MenuItem>
                       )}
@@ -318,7 +327,7 @@ export default function TeamManager({ members: initialMembers, pending: initialP
                         {t("emailMember")}
                       </a>
                       <MenuItem icon={Trash2} danger onClick={() => removeMember(m)}>{m.status === "pending" ? t("revoke") : t("remove")}</MenuItem>
-                    </div>
+                    </FloatingPanel>
                   )}
                 </div>
               </div>

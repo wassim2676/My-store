@@ -16,7 +16,8 @@
       "guideDesc": "Launch your first page step by step",
       "helpDesc": "Answers about the dashboard and offers",
       "faqDesc": "The questions marketers ask most",
-      "menu": "Menu"
+      "menu": "Menu",
+      "language": "Language"
     },
     "footer": {
       "about": "About",
@@ -111,7 +112,12 @@
       "s3": {
         "title": "Share & earn",
         "desc": "Put your link in your bio, videos and posts. Track every click from your dashboard."
-      }
+      },
+      "subtitle": "No code, no design skills, no waiting. Most marketers publish their first offers in under ten minutes.",
+      "cta": "Create my page",
+      "v1": "Available — it's yours",
+      "v2": "store detected automatically",
+      "v3": "clicks this week"
     },
     "cta": {
       "title": "Your boutique of picks is one minute away",
@@ -208,7 +214,8 @@
         "buyOn": "Buy on {store}",
         "anyStore": "Or any store you want",
         "prev": "Previous",
-        "next": "Next"
+        "next": "Next",
+        "subtitle": "Every part of your page is designed to move a visitor from curiosity to a confident click — and to show you exactly what worked."
       },
       "compare": {
         "title": "Why not a simple link page?",
@@ -222,19 +229,42 @@
           "Clicks tracked per offer",
           "Affiliate disclosure built in",
           "Coupons, prices and deal timers"
-        ]
+        ],
+        "buy": "Buy on {store}"
       },
       "faq": {
         "title": "Questions, answered",
-        "more": "See all questions"
+        "more": "See all questions",
+        "subtitle": "Everything you need to know about pages, affiliate links, tracking and getting paid.",
+        "contact": "Contact us"
       },
       "final": {
         "title": "Claim your link before someone else does",
         "subtitle": "It takes one minute. Free to start."
       },
-      "previewCta": "See what your page looks like",
-      "previewEyebrow": "Your page",
-      "previewTitle": "A boutique storefront for every pick you recommend"
+      "designs": {
+        "title": "Storefronts that feel like a brand, not a template",
+        "subtitle": "Pick a look, add your colors and fonts, and every offer instantly becomes a polished product card your audience trusts.",
+        "cta": "See what your page looks like",
+        "cards": [
+          {
+            "name": "Midnight Gold",
+            "desc": "Dark, cinematic and premium — made for tech and luxury picks."
+          },
+          {
+            "name": "Ivory",
+            "desc": "Light and editorial, like a fashion or home magazine."
+          },
+          {
+            "name": "Emerald",
+            "desc": "Fresh and confident — great for wellness and outdoor gear."
+          },
+          {
+            "name": "Bordeaux",
+            "desc": "Bold and warm, built for beauty and lifestyle creators."
+          }
+        ]
+      }
     },
     "auth": {
       "verify": {

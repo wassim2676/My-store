@@ -16,7 +16,8 @@
       "guideDesc": "Lancez votre première page pas à pas",
       "helpDesc": "Réponses sur le tableau de bord et les offres",
       "faqDesc": "Les questions les plus fréquentes",
-      "menu": "Menu"
+      "menu": "Menu",
+      "language": "Langue"
     },
     "footer": {
       "about": "À propos",
@@ -111,7 +112,12 @@
       "s3": {
         "title": "Partagez et gagnez",
         "desc": "Mettez votre lien dans votre bio et vos vidéos. Suivez chaque clic depuis votre tableau de bord."
-      }
+      },
+      "subtitle": "Sans code, sans compétences en design, sans attente. La plupart des marketeurs publient leurs premières offres en moins de dix minutes.",
+      "cta": "Créer ma page",
+      "v1": "Disponible — il est à vous",
+      "v2": "boutique détectée automatiquement",
+      "v3": "clics cette semaine"
     },
     "cta": {
       "title": "Votre boutique de sélections en une minute",
@@ -208,7 +214,8 @@
         "buyOn": "Acheter sur {store}",
         "anyStore": "Ou n’importe quelle boutique",
         "prev": "Précédent",
-        "next": "Suivant"
+        "next": "Suivant",
+        "subtitle": "Chaque élément de votre page fait passer le visiteur de la curiosité à un clic en confiance — et vous montre exactement ce qui a fonctionné."
       },
       "compare": {
         "title": "Pourquoi pas une simple page de liens ?",
@@ -222,19 +229,42 @@
           "Clics suivis par offre",
           "Divulgation d’affiliation intégrée",
           "Codes promo, prix et minuteurs"
-        ]
+        ],
+        "buy": "Acheter sur {store}"
       },
       "faq": {
         "title": "Vos questions",
-        "more": "Toutes les questions"
+        "more": "Toutes les questions",
+        "subtitle": "Tout ce qu'il faut savoir sur les pages, les liens d'affiliation, le suivi et les paiements.",
+        "contact": "Nous contacter"
       },
       "final": {
         "title": "Réservez votre lien avant les autres",
         "subtitle": "Une minute suffit. Gratuit pour commencer."
       },
-      "previewCta": "Voir à quoi ressemble votre page",
-      "previewEyebrow": "Votre page",
-      "previewTitle": "Une vitrine boutique pour chaque produit que vous recommandez"
+      "designs": {
+        "title": "Des vitrines qui ressemblent à une marque, pas à un modèle",
+        "subtitle": "Choisissez un style, ajoutez vos couleurs et polices : chaque offre devient instantanément une fiche produit soignée qui inspire confiance.",
+        "cta": "Voir à quoi ressemble votre page",
+        "cards": [
+          {
+            "name": "Midnight Gold",
+            "desc": "Sombre, cinématique et premium — idéal pour la tech et le luxe."
+          },
+          {
+            "name": "Ivory",
+            "desc": "Clair et éditorial, comme un magazine mode ou déco."
+          },
+          {
+            "name": "Emerald",
+            "desc": "Frais et assuré — parfait pour le bien-être et l'outdoor."
+          },
+          {
+            "name": "Bordeaux",
+            "desc": "Audacieux et chaleureux, pensé pour la beauté et le lifestyle."
+          }
+        ]
+      }
     },
     "auth": {
       "verify": {

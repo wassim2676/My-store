@@ -9,7 +9,7 @@ import Logo from "@/components/shared/Logo";
 
 export type NavLabels = Record<
   | "features" | "how" | "stores" | "resources" | "blog" | "guide" | "help" | "faq"
-  | "blogDesc" | "guideDesc" | "helpDesc" | "faqDesc" | "dashboard" | "login" | "start" | "menu",
+  | "blogDesc" | "guideDesc" | "helpDesc" | "faqDesc" | "dashboard" | "login" | "start" | "menu" | "language",
   string
 >;
 
@@ -107,16 +107,16 @@ export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = 
             <LanguageSwitcher variant="dark" placement="navbar" />
           </div>
           {loggedIn ? (
-            <Link href="/dashboard" className="hidden h-9 items-center gap-1.5 rounded-md bg-amber-400 px-4 text-[14px] font-semibold text-black transition hover:bg-amber-300 sm:inline-flex">
+            <Link href="/dashboard" className="hidden h-9 items-center gap-1.5 rounded-full bg-amber-400 px-4 text-[14px] font-semibold text-black transition hover:bg-amber-300 sm:inline-flex">
               {l.dashboard}
               <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
             </Link>
           ) : (
             <>
-              <Link href="/login" className="hidden h-9 items-center rounded-md bg-white/[0.1] px-4 text-[14px] font-medium text-white transition hover:bg-white/[0.16] sm:inline-flex">
+              <Link href="/login" className="hidden h-9 items-center rounded-full bg-white/[0.1] px-4 text-[14px] font-medium text-white transition hover:bg-white/[0.16] sm:inline-flex">
                 {l.login}
               </Link>
-              <Link href="/register" className="hidden h-9 items-center rounded-md bg-amber-400 px-4 text-[14px] font-semibold text-black transition hover:bg-amber-300 sm:inline-flex">
+              <Link href="/register" className="hidden h-9 items-center rounded-full bg-amber-400 px-4 text-[14px] font-semibold text-black transition hover:bg-amber-300 sm:inline-flex">
                 {l.start}
               </Link>
             </>
@@ -124,7 +124,7 @@ export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = 
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-md text-white/85 transition hover:bg-white/[0.08] lg:hidden cursor-pointer"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-white/85 transition hover:bg-white/[0.08] lg:hidden cursor-pointer"
             aria-label={l.menu}
             aria-expanded={open}
           >
@@ -139,16 +139,16 @@ export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = 
           <div className="space-y-6 px-4 py-5 sm:px-6">
             {!loggedIn && (
               <div className="grid grid-cols-2 gap-2">
-                <Link href="/login" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center rounded-md bg-white/[0.1] text-[15px] font-medium">
+                <Link href="/login" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center rounded-full bg-white/[0.1] text-[15px] font-medium">
                   {l.login}
                 </Link>
-                <Link href="/register" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center rounded-md bg-amber-400 text-[15px] font-semibold text-black">
+                <Link href="/register" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center rounded-full bg-amber-400 text-[15px] font-semibold text-black">
                   {l.start}
                 </Link>
               </div>
             )}
             {loggedIn && (
-              <Link href="/dashboard" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center gap-1.5 rounded-md bg-amber-400 text-[15px] font-semibold text-black">
+              <Link href="/dashboard" onClick={() => setOpen(false)} className="flex h-11 items-center justify-center gap-1.5 rounded-full bg-amber-400 text-[15px] font-semibold text-black">
                 {l.dashboard}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Link>
@@ -177,7 +177,7 @@ export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = 
                 ))}
               </div>
             </div>
-            <LanguageSwitcher variant="segmented" />
+            <LanguageSwitcher variant="row" label={l.language} />
           </div>
         </div>
       )}

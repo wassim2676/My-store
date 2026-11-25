@@ -13,7 +13,7 @@ export const localeInfo: Record<
   Locale,
   { label: string; nativeLabel: string; dir: "rtl" | "ltr"; flag: string }
 > = {
-  ar: { label: "Arabic", nativeLabel: "Arabic", dir: "rtl", flag: "🇲🇦" },
+  ar: { label: "Arabic", nativeLabel: "العربية", dir: "rtl", flag: "🇲🇦" },
   en: { label: "English", nativeLabel: "English", dir: "ltr", flag: "🇬🇧" },
   fr: { label: "French", nativeLabel: "Français", dir: "ltr", flag: "🇫🇷" },
 };
