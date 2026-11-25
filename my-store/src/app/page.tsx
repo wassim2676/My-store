@@ -381,11 +381,12 @@ export default async function Home() {
 
         {/* 🚀 دعوة أخيرة: لقطة سينمائية بعرض الإطار + رسالة وإجراء */}
         <section id="start" className="scroll-mt-20 px-4 pb-24 sm:px-6 lg:px-8">
-          <div className="relative mx-auto min-h-[460px] max-w-[1440px] overflow-hidden rounded-[2.25rem] border border-white/[0.08]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/hero/hero-9060.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,9,13,0.96)_0%,rgba(7,9,13,0.85)_45%,rgba(7,9,13,0.35)_100%)] rtl:bg-[linear-gradient(270deg,rgba(7,9,13,0.96)_0%,rgba(7,9,13,0.85)_45%,rgba(7,9,13,0.35)_100%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_0%_100%,rgba(232,161,28,0.22),transparent_70%)]" />
+          <div className="relative mx-auto min-h-[420px] max-w-[1440px] overflow-hidden rounded-[2.25rem] border border-white/[0.08] bg-gradient-to-br from-[#11141B] via-[#0B0E14] to-[#0A0C11]">
+            {/* خلفية أنيقة بدون صورة: شبكة خطوط خافتة تتلاشى + توهّج ذهبي ناعم + خط علوي لامع */}
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_70%_at_70%_40%,black,transparent)]" />
+            <div className="pointer-events-none absolute -top-40 end-[-10%] h-[520px] w-[620px] rounded-full bg-amber-500/[0.16] blur-[120px]" />
+            <div className="pointer-events-none absolute -bottom-48 start-[-8%] h-[420px] w-[520px] rounded-full bg-amber-300/[0.07] blur-[120px]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
             <div className="relative grid h-full items-center gap-10 p-8 sm:p-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:p-16">
               <div className="max-w-xl">
                 <h2 className="font-serif text-4xl font-semibold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">{t("cta.title")}</h2>
@@ -404,7 +405,7 @@ export default async function Home() {
               </div>
               <div className="hidden justify-self-end lg:block" aria-hidden>
                 <div className="w-72 space-y-3">
-                  <div className="rounded-2xl border border-white/10 bg-black/45 p-5 backdrop-blur-md">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] backdrop-blur-md">
                     <p className="text-xs text-white/55">{t("home.tour.clicks")}</p>
                     <p className="mt-1 text-3xl font-semibold tabular-nums">1,284</p>
                     <div className="mt-3 flex h-10 items-end gap-1" dir="ltr">
@@ -413,7 +414,7 @@ export default async function Home() {
                       ))}
                     </div>
                   </div>
-                  <div className="ms-10 rounded-2xl border border-white/10 bg-black/45 p-5 backdrop-blur-md">
+                  <div className="ms-10 rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] backdrop-blur-md">
                     <p className="text-xs text-white/55">{t("home.tour.ctr")}</p>
                     <p className="mt-1 text-3xl font-semibold tabular-nums text-amber-300">9.6%</p>
                   </div>
@@ -523,7 +524,7 @@ function DesignCard({
         </div>
         {/* البطاقات */}
         <div className="grid grid-cols-2 gap-2.5 px-4 pb-4">
-          {products.slice(0, 4).map((p, i) => (
+          {products.slice(0, 2).map((p, i) => (
             <div key={i} className="overflow-hidden rounded-xl" style={{ background: c.surface, border: `1px solid ${c.dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}` }}>
               <div className="relative m-1 aspect-square rounded-lg bg-gradient-to-br from-white to-neutral-200">
                 <div className="absolute inset-4 rounded-lg bg-gradient-to-br from-neutral-300/70 to-neutral-100" />

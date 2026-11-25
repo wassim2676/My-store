@@ -6,6 +6,7 @@ import { ArrowRight, CalendarDays, ChevronDown, ChevronRight, Clock, ListOrdered
 import { prisma } from "@/lib/prisma";
 import { PageFrame } from "@/components/site/StaticPage";
 import Markdown, { parseMarkdown, tocOf } from "@/components/blog/Markdown";
+import TocNav from "@/components/blog/TocNav";
 import ArticleCard, { coverUrl, formatDate, JsonLd, readableAccent } from "@/components/blog/ArticleCard";
 import { ARTICLES, NETWORK_BY_SLUG, getArticle, readingTime, relatedArticles } from "@/content/blog";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
@@ -74,6 +75,7 @@ export default async function BlogArticlePage({ params }: Props) {
   const accent = readableAccent(net.color);
   const blocks = parseMarkdown(a.body);
   const toc = tocOf(blocks);
+  const guide = a.faq.length ? [...toc, { id: "faq", text: "Frequently asked questions" }] : toc;
   const { minutes, words } = readingTime(a);
   const related = relatedArticles(a, 6);
   const url = `${SITE_URL}/blog/${a.slug}`;
@@ -121,8 +123,19 @@ export default async function BlogArticlePage({ params }: Props) {
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[1000px] max-w-[170vw] -translate-x-1/2 rounded-full blur-[130px]" style={{ background: `${net.color}1f` }} />
 
         {/* ==================== 🎯 الرأس ==================== */}
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 lg:grid-cols-[minmax(0,1fr)_260px]">
-        <header className="mx-auto w-full max-w-3xl pt-10 sm:pt-14">
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-x-14 px-4 sm:px-6 lg:grid-cols-[230px_minmax(0,1fr)] lg:px-8">
+          {/* 🧭 الدليل الجانبي — بدون إطار، ثابت أثناء التمرير، يُبرز القسم الحالي */}
+          {guide.length > 2 && (
+            <aside className="hidden lg:row-span-2 lg:block">
+              <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pb-8 pt-14 [scrollbar-width:thin]">
+                <Link href={`/blog/network/${net.slug}`} className="mb-7 flex items-center gap-2.5 text-[13px] font-medium text-white/55 transition hover:text-white">
+                  <span className="h-2 w-2 rounded-full" style={{ background: accent }} /> {net.program}
+                </Link>
+                <TocNav items={guide} accent={accent} />
+              </div>
+            </aside>
+          )}
+        <header className={`w-full max-w-[780px] pt-10 sm:pt-14 ${guide.length > 2 ? "lg:col-start-2" : "lg:col-span-2 lg:mx-auto"}`}>
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm text-white/45">
             <Link href="/blog" className="transition hover:text-white">Blog</Link>
             <ChevronRight className="h-3.5 w-3.5" />
@@ -154,19 +167,17 @@ export default async function BlogArticlePage({ params }: Props) {
             <img src={coverUrl(a.slug)} alt={a.title} width={1200} height={630} fetchPriority="high" className="aspect-[1200/630] w-full object-cover" />
           </figure>
         </header>
-        </div>
 
-        {/* ==================== 📄 المحتوى + الفهرس ==================== */}
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_260px]">
-          <div className="mx-auto w-full max-w-3xl">
-            {toc.length > 2 && (
-              <details className="group mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 lg:hidden [&_summary::-webkit-details-marker]:hidden">
+        {/* ==================== 📄 المحتوى ==================== */}
+          <div className={`w-full max-w-[780px] py-12 sm:py-16 ${guide.length > 2 ? "lg:col-start-2" : "lg:col-span-2 lg:mx-auto"}`}>
+            {guide.length > 2 && (
+              <details className="group mb-10 border-y border-white/[0.08] py-4 lg:hidden [&_summary::-webkit-details-marker]:hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold">
                   <span className="inline-flex items-center gap-2"><ListOrdered className="h-4 w-4" style={{ color: accent }} /> In this guide</span>
                   <ChevronDown className="h-4 w-4 text-white/40 transition-transform group-open:rotate-180" />
                 </summary>
-                <ol className="mt-4 space-y-2 text-sm">
-                  {toc.map((h) => <li key={h.id}><a href={`#${h.id}`} className="text-white/60 hover:text-white">{h.text}</a></li>)}
+                <ol className="mt-4 space-y-2.5 border-l border-white/[0.08] text-sm">
+                  {guide.map((h) => <li key={h.id}><a href={`#${h.id}`} className="-ml-px block border-l-2 border-transparent pl-4 text-white/60 hover:text-white">{h.text}</a></li>)}
                 </ol>
               </details>
             )}
@@ -213,20 +224,6 @@ export default async function BlogArticlePage({ params }: Props) {
             </p>
           </div>
 
-          {/* فهرس جانبي ثابت (شاشات كبيرة) */}
-          {toc.length > 2 && (
-            <aside className="hidden lg:block">
-              <div className="sticky top-28 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
-                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-white/50"><ListOrdered className="h-4 w-4" style={{ color: accent }} /> In this guide</p>
-                <ol className="mt-4 space-y-2.5 border-l border-white/[0.08] text-[13px] leading-snug">
-                  {toc.map((h) => (
-                    <li key={h.id}><a href={`#${h.id}`} className="-ml-px block border-l border-transparent pl-3 text-white/55 transition hover:border-white/50 hover:text-white">{h.text}</a></li>
-                  ))}
-                  {a.faq.length > 0 && <li><a href="#faq" className="-ml-px block border-l border-transparent pl-3 text-white/55 transition hover:border-white/50 hover:text-white">FAQ</a></li>}
-                </ol>
-              </div>
-            </aside>
-          )}
         </div>
       </article>
 

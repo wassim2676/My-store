@@ -17,12 +17,14 @@ import { EXTRA_HOME_BEAUTY } from "./extra-home-beauty";
 import { DEEP_A } from "./deep-a";
 import { DEEP_B } from "./deep-b";
 import { DEEP_C } from "./deep-c";
+import { DEEP_D } from "./deep-d";
+import { DEEP_E } from "./deep-e";
 
 export * from "./types";
 export { NETWORKS, NETWORK_BY_SLUG };
 
 const EXTRA: Record<string, string> = {};
-for (const src of [EXTRA_RETAIL, EXTRA_MARKETPLACES, EXTRA_HOME_BEAUTY, DEEP_A, DEEP_B, DEEP_C]) {
+for (const src of [EXTRA_RETAIL, EXTRA_MARKETPLACES, EXTRA_HOME_BEAUTY, DEEP_A, DEEP_B, DEEP_C, DEEP_D, DEEP_E]) {
   for (const [k, v] of Object.entries(src)) EXTRA[k] = EXTRA[k] ? `${EXTRA[k]}\n\n${v}` : v;
 }
 

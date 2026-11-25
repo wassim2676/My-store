@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- أغلفة المقالات القديمة روابط خارجية */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, BookOpen, Layers, Sparkles } from "lucide-react";
+import { ArrowUpRight, BookOpen, Layers } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { PageFrame } from "@/components/site/StaticPage";
 import ArticleCard, { JsonLd, readableAccent } from "@/components/blog/ArticleCard";
@@ -59,10 +59,7 @@ export default async function BlogPage() {
       <header className="relative overflow-hidden border-b border-white/[0.06]">
         <div className="pointer-events-none absolute -top-48 left-1/2 h-[520px] w-[1100px] max-w-[180vw] -translate-x-1/2 rounded-full bg-amber-500/[0.10] blur-[130px]" />
         <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 text-center sm:pt-20">
-          <p className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/[0.06] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-300">
-            <Sparkles className="h-3.5 w-3.5" /> Affiliate Academy
-          </p>
-          <h1 className="mt-5 font-serif text-4xl font-semibold tracking-tight sm:text-6xl">
+          <h1 className="font-serif text-4xl font-semibold tracking-tight sm:text-6xl">
             Grow your affiliate income, <span className="text-amber-300">one network at a time</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/55">
