@@ -127,12 +127,7 @@ export default async function BlogArticlePage({ params }: Props) {
           {/* 🧭 الدليل الجانبي — بدون إطار، ثابت أثناء التمرير، يُبرز القسم الحالي */}
           {guide.length > 2 && (
             <aside className="hidden lg:row-span-2 lg:block">
-              <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pb-8 pt-14 [scrollbar-width:thin]">
-                <Link href={`/blog/network/${net.slug}`} className="mb-7 flex items-center gap-2.5 text-[13px] font-medium text-white/55 transition hover:text-white">
-                  <span className="h-2 w-2 rounded-full" style={{ background: accent }} /> {net.program}
-                </Link>
-                <TocNav items={guide} accent={accent} />
-              </div>
+              <TocNav items={guide} accent={accent} />
             </aside>
           )}
         <header className={`w-full max-w-[780px] pt-10 sm:pt-14 ${guide.length > 2 ? "lg:col-start-2" : "lg:col-span-2 lg:mx-auto"}`}>
