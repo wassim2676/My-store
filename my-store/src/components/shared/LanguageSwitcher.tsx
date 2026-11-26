@@ -4,7 +4,10 @@ import { useState, useRef, useEffect, useTransition } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Globe, ChevronDown, Check } from "lucide-react";
-import { locales, localeInfo, type Locale } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
+
+/** اسم اللغة كما يظهر في المبدّل (العربية تُكتب "Arabic" بطلب صاحب المنصة) */
+const NAME: Record<Locale, string> = { en: "English", fr: "Français", ar: "Arabic" };
 
 /**
  * مكوّن تبديل اللغة — يعمل في كل صفحات الموقع بدون أي إعادة تحميل كاملة للصفحة
@@ -74,7 +77,7 @@ export default function LanguageSwitcher({
             {label}
           </span>
           <span className="flex items-center gap-2 text-[15px] font-normal text-white/55">
-            {localeInfo[currentLocale].nativeLabel}
+            {NAME[currentLocale]}
             <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
           </span>
         </button>
@@ -92,10 +95,7 @@ export default function LanguageSwitcher({
                   onClick={() => changeLocale(locale)}
                   className={`flex w-full items-center justify-between gap-3 border-b border-white/[0.05] px-4 py-3.5 text-start last:border-b-0 transition-colors cursor-pointer disabled:opacity-60 ${on ? "bg-white/[0.04]" : "hover:bg-white/[0.03]"}`}
                 >
-                  <span className="flex flex-col">
-                    <span className={`text-[15px] ${on ? "font-semibold text-white" : "text-white/80"}`}>{localeInfo[locale].nativeLabel}</span>
-                    <span className="text-xs text-white/40">{localeInfo[locale].label}</span>
-                  </span>
+                  <span className={`text-[15px] ${on ? "font-semibold text-white" : "text-white/80"}`}>{NAME[locale]}</span>
                   {on && <Check className="h-4 w-4 text-amber-300" />}
                 </button>
               );
@@ -125,7 +125,7 @@ export default function LanguageSwitcher({
               }`}
             >
               {on && <Check className="h-3.5 w-3.5" />}
-              {localeInfo[locale].nativeLabel}
+              {NAME[locale]}
             </button>
           );
         })}
@@ -134,13 +134,19 @@ export default function LanguageSwitcher({
   }
 
   return (
-    <div className="relative" ref={ref}>
+    <div className={placement === "navbar" ? "relative flex h-16 items-center" : "relative"} ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         disabled={isPending}
-        className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 ${
-          variant === "compact"
+        className={`flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 ${
+          placement === "navbar"
+            ? `h-9 rounded-full border px-3.5 text-white ${open ? "border-white/25 bg-white/[0.16]" : "border-white/[0.08] bg-white/[0.1] hover:bg-white/[0.16]"}`
+            : "rounded-lg px-2.5 py-1.5 "
+        }${
+          placement === "navbar"
+            ? ""
+            : variant === "compact"
             ? "text-gray-700 hover:bg-gray-100"
             : variant === "dark"
               ? "text-white/70 hover:bg-white/[0.06] hover:text-white"
@@ -149,16 +155,18 @@ export default function LanguageSwitcher({
         aria-label="Language"
       >
         <Globe className="w-4 h-4" />
-        <span className="hidden sm:inline">{localeInfo[currentLocale].nativeLabel}</span>
+        <span className="hidden sm:inline">{NAME[currentLocale]}</span>
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
         <div
           className={`absolute end-0 z-50 w-52 overflow-hidden animate-[lp-pop_140ms_ease-out] ${
-            dropUp ? "bottom-full mb-2" : placement === "navbar" ? "top-full mt-3" : placement === "topbar" ? "top-full mt-[22px]" : "top-full mt-2"
+            dropUp ? "bottom-full mb-2" : placement === "navbar" ? "top-full mt-px" : placement === "topbar" ? "top-full mt-[22px]" : "top-full mt-2"
           } ${
-            variant === "dark"
+            placement === "navbar"
+              ? "rounded-b-xl border border-t-0 border-white/[0.08] bg-[#1E2329] p-1.5 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.85)]"
+              : variant === "dark"
               ? "rounded-2xl border border-white/[0.08] bg-[#0C0F15]/95 p-1.5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-2xl"
               : "rounded-xl bg-white py-1.5 shadow-xl ring-1 ring-black/5"
           }`}
@@ -169,10 +177,7 @@ export default function LanguageSwitcher({
               onClick={() => changeLocale(locale)}
               className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-sm transition-colors cursor-pointer ${variant === "dark" ? "rounded-xl text-white/80 hover:bg-white/[0.06] hover:text-white" : "text-gray-700 hover:bg-gray-50"}`}
             >
-              <span className="flex flex-col items-start">
-                <span>{localeInfo[locale].nativeLabel}</span>
-                <span className={`text-[11px] ${variant === "dark" ? "text-white/35" : "text-gray-400"}`}>{localeInfo[locale].label}</span>
-              </span>
+              <span className={locale === currentLocale ? "font-semibold" : ""}>{NAME[locale]}</span>
               {locale === currentLocale && <Check className={`w-4 h-4 ${variant === "dark" ? "text-amber-300" : "text-orange-500"}`} />}
             </button>
           ))}

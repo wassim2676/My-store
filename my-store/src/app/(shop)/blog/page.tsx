@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ArrowUpRight, BookOpen, Layers } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { PageFrame } from "@/components/site/StaticPage";
-import ArticleCard, { JsonLd, readableAccent } from "@/components/blog/ArticleCard";
+import ArticleCard, { JsonLd, readableAccent, toCard } from "@/components/blog/ArticleCard";
+import BlogBrowser from "@/components/blog/BlogBrowser";
 import { ARTICLES, NETWORKS, articlesByNetwork } from "@/content/blog";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -58,7 +59,7 @@ export default async function BlogPage() {
       {/* ==================== 🎯 الرأس ==================== */}
       <header className="relative overflow-hidden border-b border-white/[0.06]">
         <div className="pointer-events-none absolute -top-48 left-1/2 h-[520px] w-[1100px] max-w-[180vw] -translate-x-1/2 rounded-full bg-amber-500/[0.10] blur-[130px]" />
-        <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 text-center sm:pt-20">
+        <div className="relative mx-auto max-w-4xl px-4 pb-14 pt-16 text-center sm:pt-20">
           <h1 className="font-serif text-4xl font-semibold tracking-tight sm:text-6xl">
             Grow your affiliate income, <span className="text-amber-300">one network at a time</span>
           </h1>
@@ -71,26 +72,13 @@ export default async function BlogPage() {
           </div>
         </div>
 
-        {/* شرائح الشبكات */}
-        <nav aria-label="Affiliate networks" className="relative mx-auto max-w-6xl px-4 pb-10">
-          <ul className="flex flex-wrap justify-center gap-2.5">
-            {NETWORKS.map((n) => (
-              <li key={n.slug}>
-                <Link
-                  href={`/blog/network/${n.slug}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/[0.09] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/25 hover:bg-white/[0.07] hover:text-white"
-                >
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: readableAccent(n.color) }} />
-                  {n.name}
-                  <span className="text-xs text-white/35">{articlesByNetwork(n.slug).length}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:py-16">
+      <BlogBrowser
+        cards={ARTICLES.map(toCard)}
+        networks={NETWORKS.map((n) => ({ slug: n.slug, name: n.name, dot: readableAccent(n.color), count: articlesByNetwork(n.slug).length }))}
+      >
+      <div className="mx-auto max-w-6xl px-4 pb-14 pt-10 sm:pb-16">
         {/* ==================== ⭐ الأحدث ==================== */}
         <section aria-labelledby="latest">
           <h2 id="latest" className="sr-only">Latest guides</h2>
@@ -143,6 +131,7 @@ export default async function BlogPage() {
           );
         })}
       </div>
+      </BlogBrowser>
     </PageFrame>
   );
 }
