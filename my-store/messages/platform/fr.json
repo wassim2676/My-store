@@ -1280,7 +1280,95 @@
           "h": "Vos commissions restent les vôtres",
           "p": "Les visiteurs sont envoyés directement vers votre lien d’affiliation. Nous ne remplaçons jamais votre tag de suivi et ne prenons aucune part de vos commissions."
         }
-      ]
+      ],
+      "hero": {
+        "eyebrow": "À propos de Primeshelf",
+        "title": "La base des affiliés qui vendent grâce à la confiance",
+        "text": "Primeshelf transforme une liste de liens affiliés en une vitrine premium à votre nom : rapide, élégante, honnête et mesurable. Nous gérons la technique pour que vous puissiez vous consacrer à ce qui rapporte vraiment : trouver d'excellents produits et en parler avec sincérité.",
+        "primary": "Créer ma page",
+        "secondary": "Découvrir nos guides"
+      },
+      "stats": [
+        {
+          "v": "11",
+          "l": "grandes boutiques prises en charge"
+        },
+        {
+          "v": "3",
+          "l": "langues, dont l'arabe de droite à gauche"
+        },
+        {
+          "v": "0 %",
+          "l": "de vos commissions prélevé"
+        },
+        {
+          "v": "55+",
+          "l": "guides d'affiliation approfondis"
+        }
+      ],
+      "story": {
+        "eyebrow": "Notre histoire",
+        "title": "Conçu pour les personnes derrière les recommandations",
+        "p": [
+          "Les meilleurs affiliés sont des curateurs. Ils testent, comparent et rédigent les avis honnêtes qui aident à décider. Pourtant, la plupart devaient se contenter de simples listes de liens, identiques à celles de tout le monde et qui n'apprenaient rien aux visiteurs.",
+          "Nous avons créé Primeshelf pour donner à ce travail la scène qu'il mérite : une vitrine qui ressemble à une marque, des pages produit avec de vrais avis, des collections, des mentions d'affiliation intégrées et des statistiques qui montrent quelles recommandations convainquent réellement. Vos liens mènent directement aux boutiques, et chaque commission vous revient."
+        ]
+      },
+      "principles": {
+        "eyebrow": "Nos principes",
+        "title": "Ce qui nous guide",
+        "items": [
+          {
+            "h": "Vos commissions restent les vôtres",
+            "p": "Les visiteurs vont directement vers votre lien affilié. Nous ne remplaçons jamais votre identifiant et ne prenons aucune part de vos gains."
+          },
+          {
+            "h": "L'honnêteté convertit",
+            "p": "Des avis avec de vrais points forts et faibles, des mentions claires et des prix exacts créent la confiance qui transforme les visiteurs en acheteurs."
+          },
+          {
+            "h": "La vitesse est une fonctionnalité",
+            "p": "Les pages s'affichent en un instant sur tous les téléphones, car chaque seconde d'attente coûte des clics."
+          },
+          {
+            "h": "Le soin du détail",
+            "p": "Typographie, espacements et thèmes sont pensés avec l'exigence d'une marque premium : votre page ne ressemble jamais à un modèle."
+          },
+          {
+            "h": "Pensé pour chaque langue",
+            "p": "Anglais, français et arabe avec une vraie mise en page de droite à gauche, pour parler à votre audience dans sa langue."
+          },
+          {
+            "h": "Confidentialité par défaut",
+            "p": "Nous ne collectons que le nécessaire pour faire fonctionner et mesurer votre page, et nous ne vendons jamais vos données ni celles de vos visiteurs."
+          }
+        ]
+      },
+      "care": {
+        "eyebrow": "Ce que nous gérons",
+        "title": "Tout ce qui se passe en coulisses, pour que vous restiez concentré sur les produits",
+        "items": [
+          "Thèmes premium et design pensé mobile",
+          "Détection automatique de la boutique et boutons d'achat à ses couleurs",
+          "Pages produit avec avis, caractéristiques, points forts et faibles",
+          "Collections, coups de cœur et articles",
+          "Statistiques de clics, de vues et de sources de trafic",
+          "Référencement et aperçus de partage sur les réseaux",
+          "Mention d'affiliation intégrée",
+          "Domaines personnalisés, accès d'équipe et pixels de suivi"
+        ]
+      },
+      "stores": {
+        "eyebrow": "Boutiques prises en charge",
+        "title": "Conçu pour les boutiques en qui votre audience a déjà confiance",
+        "link": "Voir toutes les boutiques"
+      },
+      "cta": {
+        "title": "Votre vitrine est à une minute",
+        "text": "Créez votre page gratuitement, ajoutez vos premières offres et partagez un seul lien à la hauteur de vos recommandations.",
+        "button": "Commencer gratuitement",
+        "secondary": "Nous contacter"
+      }
     },
     "faq": {
       "title": "Questions fréquentes",
@@ -1311,7 +1399,133 @@
           "h": "Quelles langues sont prises en charge ?",
           "p": "Votre page peut être en anglais, en arabe ou en français, avec une mise en page de droite à gauche complète pour l’arabe."
         }
-      ]
+      ],
+      "searchPlaceholder": "Rechercher : commission, domaine, mention…",
+      "browse": "Parcourir les thèmes",
+      "results": "{count} résultats",
+      "noResults": "Aucune question ne correspond à votre recherche. Essayez un autre mot ou contactez-nous.",
+      "groups": [
+        {
+          "id": "getting-started",
+          "title": "Premiers pas",
+          "items": [
+            {
+              "q": "Qu'est-ce que Primeshelf ?",
+              "a": "Primeshelf est une plateforme pour les affiliés. Vous créez une page premium à votre nom qui présente vos offres Amazon, Walmart, Target et d'autres grandes boutiques. Chaque produit a sa propre page d'avis et un bouton d'achat qui envoie les visiteurs vers votre lien affilié."
+            },
+            {
+              "q": "Est-ce gratuit pour commencer ?",
+              "a": "Oui. Vous pouvez créer votre page, ajouter des offres et partager votre lien gratuitement. Il vous suffit de vos propres liens affiliés issus des programmes que vous avez rejoints."
+            },
+            {
+              "q": "Comment obtenir le lien de ma page ?",
+              "a": "À l'inscription, vous choisissez le nom et le lien de votre page, par exemple primeshelf.store/votre-nom. Vous pourrez le modifier ensuite depuis Design de la page dans votre tableau de bord."
+            },
+            {
+              "q": "Quelles boutiques puis-je promouvoir ?",
+              "a": "Amazon, Walmart, Target, eBay, Best Buy, AliExpress, Etsy, The Home Depot, Temu, Sephora et Wayfair sont reconnues automatiquement avec leurs logos et couleurs. Vous pouvez aussi ajouter des liens d'autres boutiques."
+            }
+          ]
+        },
+        {
+          "id": "design",
+          "title": "Pages et design",
+          "items": [
+            {
+              "q": "Puis-je personnaliser l'apparence de ma page ?",
+              "a": "Oui. Choisissez un thème, une couleur d'accent, des polices, un avatar, une image de couverture et vos réseaux sociaux depuis Design de la page. Chaque offre devient automatiquement une fiche produit soignée assortie à votre style."
+            },
+            {
+              "q": "Puis-je utiliser mon propre domaine ?",
+              "a": "Oui. Connectez un domaine que vous possédez, quel que soit le fournisseur, depuis la section Domaine de votre tableau de bord. Nous vous indiquons les enregistrements DNS exacts et vérifions la connexion automatiquement."
+            },
+            {
+              "q": "Quelles langues sont disponibles ?",
+              "a": "Votre page peut être en anglais, en français ou en arabe, avec une mise en page complète de droite à gauche pour l'arabe."
+            },
+            {
+              "q": "Puis-je publier des articles et des avis ?",
+              "a": "Oui. Chaque offre a sa page d'avis avec points clés, caractéristiques, points forts, points faibles et verdict, et vous pouvez publier des articles complets pour être visible sur les moteurs de recherche et guider vos visiteurs."
+            }
+          ]
+        },
+        {
+          "id": "earnings",
+          "title": "Gains et statistiques",
+          "items": [
+            {
+              "q": "Primeshelf prend-il une part de ma commission ?",
+              "a": "Non. Les visiteurs vont directement vers le lien affilié que vous avez ajouté, et la boutique vous verse votre commission selon son propre programme. Nous ne remplaçons jamais votre identifiant."
+            },
+            {
+              "q": "Comment les clics sont-ils suivis ?",
+              "a": "Chaque bouton d'achat passe par une redirection rapide qui compte le clic puis envoie le visiteur vers votre lien affilié. Votre tableau de bord affiche les vues, les clics et le taux de clic de chaque offre."
+            },
+            {
+              "q": "Puis-je voir d'où vient mon trafic ?",
+              "a": "Oui. Les statistiques détaillent visites et clics par source (Instagram, TikTok, Facebook, YouTube, moteurs de recherche…) pour savoir quels canaux convertissent vraiment."
+            },
+            {
+              "q": "Puis-je ajouter des pixels Meta ou TikTok ?",
+              "a": "Oui. Ajoutez vos identifiants Meta Pixel et TikTok Pixel dans le tableau de bord pour mesurer vos campagnes et créer des audiences."
+            }
+          ]
+        },
+        {
+          "id": "compliance",
+          "title": "Confiance et conformité",
+          "items": [
+            {
+              "q": "Ai-je besoin d'une mention d'affiliation ?",
+              "a": "Des programmes comme Amazon Associates et la FTC l'exigent : une mention apparaît donc par défaut sur votre page. Vous pouvez adapter sa formulation."
+            },
+            {
+              "q": "Ma page respecte-t-elle les règles des programmes ?",
+              "a": "Les pages sont conçues autour des exigences courantes : liens affiliés directs, mentions visibles et aucune redirection cachée. Vous restez responsable de vos contenus, prix et affirmations : vérifiez toujours les conditions actuelles de chaque programme."
+            },
+            {
+              "q": "Quels contenus sont interdits ?",
+              "a": "Les affirmations trompeuses, les contrefaçons, les produits illégaux et tout contenu contraire à notre Politique d'utilisation acceptable sont interdits. Les pages qui enfreignent les règles peuvent être dépubliées."
+            },
+            {
+              "q": "Comment gérez-vous mes données ?",
+              "a": "Nous ne collectons que le nécessaire pour faire fonctionner votre page et mesurer ses performances. Nous ne vendons jamais de données personnelles. Consultez notre Politique de confidentialité pour plus de détails."
+            }
+          ]
+        },
+        {
+          "id": "account",
+          "title": "Compte et équipes",
+          "items": [
+            {
+              "q": "Puis-je travailler en équipe ?",
+              "a": "Oui. Invitez des membres pour vous aider à gérer votre page. Leurs modifications peuvent nécessiter votre approbation avant publication, et vous êtes notifié de chaque demande."
+            },
+            {
+              "q": "J'ai oublié mon mot de passe, que faire ?",
+              "a": "Utilisez « Mot de passe oublié » sur la page de connexion. Nous vous enverrons un lien sécurisé pour en choisir un nouveau."
+            },
+            {
+              "q": "Puis-je changer le lien de ma page plus tard ?",
+              "a": "Oui, depuis Design de la page dans votre tableau de bord. Pensez à mettre à jour le lien partout où vous l'avez déjà partagé."
+            },
+            {
+              "q": "Comment contacter le support ?",
+              "a": "Écrivez-nous depuis la page Contact ou par e-mail. Nous répondons généralement sous un jour ouvré."
+            }
+          ]
+        }
+      ],
+      "still": {
+        "title": "Vous avez encore une question ?",
+        "text": "Notre équipe vous aide volontiers, de la configuration à la stratégie.",
+        "contact": "Nous contacter",
+        "contactDesc": "Réponse généralement sous un jour ouvré",
+        "help": "Centre d'aide",
+        "helpDesc": "Des réponses pas à pas pour votre tableau de bord",
+        "guides": "Guides d'affiliation",
+        "guidesDesc": "Plus de 55 guides pour chaque grand réseau"
+      }
     },
     "help": {
       "title": "Centre d’aide",
@@ -1475,7 +1689,70 @@
           "h": "Signaler une page",
           "p": "Si une page enfreint nos règles, envoyez-nous son lien et nous l’examinerons."
         }
-      ]
+      ],
+      "hero": {
+        "eyebrow": "Contact",
+        "title": "Parlons-en. Nous sommes là pour vous aider à grandir.",
+        "text": "Une question sur votre page, une idée de partenariat ou un avis sur le produit : envoyez-nous un message, une vraie personne de notre équipe vous répondra."
+      },
+      "promise": [
+        "Réponse généralement sous un jour ouvré",
+        "Écrivez-nous en français, en anglais ou en arabe",
+        "Chaque message est lu par notre équipe"
+      ],
+      "form": {
+        "title": "Envoyez-nous un message",
+        "name": "Votre nom",
+        "email": "Adresse e-mail",
+        "topic": "Sujet",
+        "topics": {
+          "support": "Compte et assistance",
+          "partnership": "Partenariats",
+          "report": "Signaler une page",
+          "feedback": "Avis sur le produit",
+          "other": "Autre chose"
+        },
+        "message": "Comment pouvons-nous vous aider ?",
+        "messagePh": "Décrivez brièvement votre besoin. S'il s'agit de votre page, indiquez son lien.",
+        "send": "Envoyer le message",
+        "sending": "Envoi…",
+        "success": "Merci ! Votre message a bien été envoyé. Nous vous répondrons très vite par e-mail.",
+        "error": "Impossible d'envoyer votre message. Réessayez ou écrivez-nous directement par e-mail.",
+        "invalid": "Indiquez votre nom, un e-mail valide et un message d'au moins 10 caractères.",
+        "privacy": "Vos informations servent uniquement à répondre à votre message."
+      },
+      "channels": {
+        "eyebrow": "Autres moyens de nous joindre",
+        "items": [
+          {
+            "key": "support",
+            "h": "Assistance",
+            "p": "Aide pour votre compte, tableau de bord, domaine ou offres.",
+            "cta": "Écrire au support"
+          },
+          {
+            "key": "partnership",
+            "h": "Partenariats",
+            "p": "Marques, agences et créateurs qui souhaitent travailler avec nous.",
+            "cta": "Démarrer la conversation"
+          },
+          {
+            "key": "report",
+            "h": "Signaler une page",
+            "p": "Une page enfreint nos règles ? Envoyez-nous son lien, nous l'examinerons.",
+            "cta": "Signaler une page"
+          }
+        ]
+      },
+      "quick": {
+        "title": "Trouvez une réponse plus vite",
+        "faq": "Questions fréquentes",
+        "faqDesc": "Commissions, domaines, mentions et plus",
+        "help": "Centre d'aide",
+        "helpDesc": "Aide pas à pas pour votre tableau de bord",
+        "guides": "Guides d'affiliation",
+        "guidesDesc": "Stratégies pour chaque grand réseau"
+      }
     },
     "guide": {
       "title": "Guide de l’affiliation",

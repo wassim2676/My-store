@@ -8,6 +8,8 @@ export type OutgoingEmail = {
   text: string;
   /** وسم يظهر في لوحة Resend لتصنيف الإيميلات (verify, welcome, reset ...) */
   tag: string;
+  /** عنوان الرد (افتراضياً بريد التواصل) — نموذج التواصل يضع بريد الزائر */
+  replyTo?: string;
 };
 
 export async function sendEmail(mail: OutgoingEmail): Promise<boolean> {
@@ -23,7 +25,7 @@ export async function sendEmail(mail: OutgoingEmail): Promise<boolean> {
       body: JSON.stringify({
         from: EMAIL_FROM,
         to: [mail.to],
-        reply_to: CONTACT_EMAIL,
+        reply_to: mail.replyTo ?? CONTACT_EMAIL,
         subject: mail.subject,
         html: mail.html,
         text: mail.text,

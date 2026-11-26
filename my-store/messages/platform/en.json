@@ -1280,7 +1280,95 @@
           "h": "Your commissions stay yours",
           "p": "Visitors are sent straight to your own affiliate link. We never replace your tracking tag and we never take a share of your commissions."
         }
-      ]
+      ],
+      "hero": {
+        "eyebrow": "About Primeshelf",
+        "title": "The home base for affiliate marketers who sell through trust",
+        "text": "Primeshelf turns a list of affiliate links into a premium storefront with your name on it: fast, beautiful, honest and measurable. We handle the technology so you can do what actually earns: finding great products and telling people the truth about them.",
+        "primary": "Create your page",
+        "secondary": "Explore our guides"
+      },
+      "stats": [
+        {
+          "v": "11",
+          "l": "major stores supported"
+        },
+        {
+          "v": "3",
+          "l": "languages, with full right-to-left Arabic"
+        },
+        {
+          "v": "0%",
+          "l": "of your commissions taken"
+        },
+        {
+          "v": "55+",
+          "l": "in-depth affiliate guides"
+        }
+      ],
+      "story": {
+        "eyebrow": "Our story",
+        "title": "Built for the people behind the recommendations",
+        "p": [
+          "Great affiliate marketers are curators. They test products, compare options and write the honest notes that help someone decide. Yet most of them were stuck with plain link lists that looked the same as everyone else's and told visitors nothing.",
+          "We built Primeshelf to give that work the stage it deserves: a storefront that feels like a brand, product pages with real reviews, collections, built-in disclosures and analytics that show which recommendations actually move people. Your links go straight to the stores, and every commission stays yours."
+        ]
+      },
+      "principles": {
+        "eyebrow": "Principles",
+        "title": "What we stand for",
+        "items": [
+          {
+            "h": "Your commissions stay yours",
+            "p": "Visitors go straight to your own affiliate link. We never replace your tracking tag or take a share of what you earn."
+          },
+          {
+            "h": "Honesty converts",
+            "p": "Reviews with real pros and cons, clear disclosures and accurate prices build the trust that turns visitors into buyers."
+          },
+          {
+            "h": "Speed is a feature",
+            "p": "Pages are optimised to load in a blink on any phone, because every second of waiting costs clicks."
+          },
+          {
+            "h": "Craft in every pixel",
+            "p": "Typography, spacing and themes are designed with the care of a premium brand, so your page never looks like a template."
+          },
+          {
+            "h": "Built for every language",
+            "p": "English, French and Arabic with true right-to-left layouts, so you can speak to your audience in their own words."
+          },
+          {
+            "h": "Privacy by default",
+            "p": "We collect only what's needed to run your page and measure it, and we never sell your data or your visitors' data."
+          }
+        ]
+      },
+      "care": {
+        "eyebrow": "What we handle",
+        "title": "Everything behind the scenes, so you can focus on products",
+        "items": [
+          "Premium themes and mobile-first design",
+          "Automatic store detection and branded buy buttons",
+          "Product pages with reviews, specs, pros and cons",
+          "Collections, featured picks and articles",
+          "Clicks, views and traffic-source analytics",
+          "Search engine optimisation and social share previews",
+          "Built-in affiliate disclosure",
+          "Custom domains, team access and tracking pixels"
+        ]
+      },
+      "stores": {
+        "eyebrow": "Supported stores",
+        "title": "Built for the stores your audience already trusts",
+        "link": "See all supported stores"
+      },
+      "cta": {
+        "title": "Your storefront is one minute away",
+        "text": "Create your page for free, add your first offers and share one link that does your recommendations justice.",
+        "button": "Get started free",
+        "secondary": "Talk to us"
+      }
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -1311,7 +1399,133 @@
           "h": "Which languages are supported?",
           "p": "Your page can be in English, Arabic or French, with full right-to-left layout for Arabic."
         }
-      ]
+      ],
+      "searchPlaceholder": "Search questions, e.g. commission, domain, disclosure…",
+      "browse": "Browse topics",
+      "results": "{count} results",
+      "noResults": "No questions match your search. Try another word or contact us.",
+      "groups": [
+        {
+          "id": "getting-started",
+          "title": "Getting started",
+          "items": [
+            {
+              "q": "What is Primeshelf?",
+              "a": "Primeshelf is a platform for affiliate marketers. You create a premium landing page with your name that showcases your offers from Amazon, Walmart, Target and other major stores. Each product gets its own review page and a buy button that sends visitors to your affiliate link."
+            },
+            {
+              "q": "Is it free to start?",
+              "a": "Yes. You can create your page, add offers and share your link for free. You only need your own affiliate links from the programs you have joined."
+            },
+            {
+              "q": "How do I get my page link?",
+              "a": "When you sign up you choose your page name and link, for example primeshelf.store/your-name. You can change it later from Page design in your dashboard."
+            },
+            {
+              "q": "Which stores can I promote?",
+              "a": "Amazon, Walmart, Target, eBay, Best Buy, AliExpress, Etsy, The Home Depot, Temu, Sephora and Wayfair are recognised automatically with their logos and colours. You can also add links from other stores."
+            }
+          ]
+        },
+        {
+          "id": "design",
+          "title": "Pages & design",
+          "items": [
+            {
+              "q": "Can I customise how my page looks?",
+              "a": "Yes. Choose a theme, accent colour, fonts, avatar, cover image and social links from Page design. Every offer automatically becomes a polished product card that matches your style."
+            },
+            {
+              "q": "Can I use my own domain?",
+              "a": "Yes. Connect a domain you own from any provider in the Domain section of your dashboard. We show you the exact DNS records to add and verify the connection automatically."
+            },
+            {
+              "q": "Which languages are supported?",
+              "a": "Your page can be in English, French or Arabic, with a full right-to-left layout for Arabic."
+            },
+            {
+              "q": "Can I publish articles and reviews?",
+              "a": "Yes. Each offer has its own review page with highlights, specifications, pros, cons and a verdict, and you can publish full articles on your page to rank in search and guide your visitors."
+            }
+          ]
+        },
+        {
+          "id": "earnings",
+          "title": "Earnings & analytics",
+          "items": [
+            {
+              "q": "Does Primeshelf take part of my commission?",
+              "a": "No. Visitors go directly to the affiliate link you added, and the store pays your commission under its own program. We never replace your tracking tag."
+            },
+            {
+              "q": "How are clicks tracked?",
+              "a": "Every buy button passes through a fast redirect that counts the click and sends the visitor to your affiliate link. Your dashboard shows views, clicks and click-through rate for each offer."
+            },
+            {
+              "q": "Can I see where my traffic comes from?",
+              "a": "Yes. Analytics break down visits and clicks by source, such as Instagram, TikTok, Facebook, YouTube or search, so you know which channels actually convert."
+            },
+            {
+              "q": "Can I add Meta or TikTok pixels?",
+              "a": "Yes. Add your own Meta Pixel and TikTok Pixel IDs in the dashboard to measure your campaigns and build audiences."
+            }
+          ]
+        },
+        {
+          "id": "compliance",
+          "title": "Trust & compliance",
+          "items": [
+            {
+              "q": "Do I need an affiliate disclosure?",
+              "a": "Programs such as Amazon Associates and the FTC require one, so a disclosure appears by default on your page. You can edit its wording to match your voice."
+            },
+            {
+              "q": "Will my page follow affiliate program rules?",
+              "a": "Pages are designed around common program requirements: direct affiliate links, visible disclosures and no hidden redirects. You remain responsible for your content, prices and claims, so always check each program's current terms."
+            },
+            {
+              "q": "What content is not allowed?",
+              "a": "Misleading claims, counterfeit products, illegal items and content that breaks our Acceptable Use Policy are not allowed. Pages that break the rules can be unpublished."
+            },
+            {
+              "q": "How do you handle my data?",
+              "a": "We collect only what's needed to run your page and measure its performance. We never sell personal data. Read our Privacy Policy for the details."
+            }
+          ]
+        },
+        {
+          "id": "account",
+          "title": "Account & teams",
+          "items": [
+            {
+              "q": "Can I work with a team?",
+              "a": "Yes. Invite team members to help manage your page. Their changes can require your approval before going live, and you'll be notified of every request."
+            },
+            {
+              "q": "I forgot my password. What should I do?",
+              "a": "Use \"Forgot password\" on the login page. We'll email you a secure link to choose a new password."
+            },
+            {
+              "q": "Can I change my page link later?",
+              "a": "Yes, from Page design in your dashboard. Remember to update the link anywhere you've already shared it."
+            },
+            {
+              "q": "How do I contact support?",
+              "a": "Write to us from the Contact page or by email. We usually reply within one business day."
+            }
+          ]
+        }
+      ],
+      "still": {
+        "title": "Still have a question?",
+        "text": "Our team is happy to help with anything from setup to strategy.",
+        "contact": "Contact us",
+        "contactDesc": "We usually reply within one business day",
+        "help": "Help center",
+        "helpDesc": "Step-by-step answers for your dashboard",
+        "guides": "Affiliate guides",
+        "guidesDesc": "55+ in-depth guides for every major network"
+      }
     },
     "help": {
       "title": "Help center",
@@ -1475,7 +1689,70 @@
           "h": "Report a page",
           "p": "If you find a page that breaks our rules, send us its link and we will review it."
         }
-      ]
+      ],
+      "hero": {
+        "eyebrow": "Contact",
+        "title": "Let's talk. We're here to help you grow.",
+        "text": "Questions about your page, partnership ideas or feedback on the product: send us a message and a real person on our team will get back to you."
+      },
+      "promise": [
+        "Usually within one business day",
+        "Write to us in English, French or Arabic",
+        "Every message is read by our team"
+      ],
+      "form": {
+        "title": "Send us a message",
+        "name": "Your name",
+        "email": "Email address",
+        "topic": "Topic",
+        "topics": {
+          "support": "Account & support",
+          "partnership": "Partnerships",
+          "report": "Report a page",
+          "feedback": "Product feedback",
+          "other": "Something else"
+        },
+        "message": "How can we help?",
+        "messagePh": "Tell us a little about what you need. If it's about your page, include its link.",
+        "send": "Send message",
+        "sending": "Sending…",
+        "success": "Thank you! Your message has been sent. We'll reply to your email soon.",
+        "error": "We couldn't send your message. Please try again or email us directly.",
+        "invalid": "Please fill in your name, a valid email and a message of at least 10 characters.",
+        "privacy": "We'll only use your details to answer your message."
+      },
+      "channels": {
+        "eyebrow": "Other ways to reach us",
+        "items": [
+          {
+            "key": "support",
+            "h": "Customer support",
+            "p": "Help with your account, dashboard, domain or offers.",
+            "cta": "Email support"
+          },
+          {
+            "key": "partnership",
+            "h": "Partnerships",
+            "p": "Brands, agencies and creators who want to work with us.",
+            "cta": "Start a conversation"
+          },
+          {
+            "key": "report",
+            "h": "Report a page",
+            "p": "Found a page that breaks our rules? Send us its link and we'll review it.",
+            "cta": "Report a page"
+          }
+        ]
+      },
+      "quick": {
+        "title": "Find answers faster",
+        "faq": "Frequently asked questions",
+        "faqDesc": "Commissions, domains, disclosures and more",
+        "help": "Help center",
+        "helpDesc": "Step-by-step help for your dashboard",
+        "guides": "Affiliate guides",
+        "guidesDesc": "Strategy for every major network"
+      }
     },
     "guide": {
       "title": "Affiliate marketing guide",
