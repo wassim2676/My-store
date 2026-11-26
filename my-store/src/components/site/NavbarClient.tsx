@@ -83,8 +83,8 @@ export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = 
               {l.resources}
               <ChevronDown className="h-3.5 w-3.5 opacity-70 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" />
             </button>
-            <div className="invisible absolute start-0 top-full z-50 pt-px w-[520px] opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-              <div className="grid grid-cols-2 gap-1 rounded-b-xl border border-t-0 border-white/[0.08] bg-[#1E2329] p-2 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.85)]">
+            <div className="invisible absolute start-0 top-full z-50 pt-2 w-[520px] opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+              <div className="grid grid-cols-2 gap-1 rounded-2xl border border-white/[0.09] bg-[#161A21] p-2 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.85)]">
                 {resources.map(({ href, label, desc, icon: Icon }) => (
                   <Link key={href} href={href} className="group/item flex gap-3 rounded-lg p-3 transition-colors hover:bg-white/[0.06]">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-amber-300 transition-colors group-hover/item:bg-amber-400/15">

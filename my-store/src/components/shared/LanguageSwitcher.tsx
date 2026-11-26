@@ -31,6 +31,8 @@ export default function LanguageSwitcher({
   placement?: "inline" | "navbar" | "topbar";
 }) {
   const currentLocale = useLocale() as Locale;
+  /** داخل شريط علوي (الموقع أو لوحة التحكم): زر صلب وقائمة تنزل تحت خط الشريط */
+  const bar = placement === "navbar" || placement === "topbar";
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -134,17 +136,17 @@ export default function LanguageSwitcher({
   }
 
   return (
-    <div className={placement === "navbar" ? "relative flex h-16 items-center" : "relative"} ref={ref}>
+    <div className={bar ? "relative flex h-16 items-center" : "relative"} ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         disabled={isPending}
         className={`flex items-center gap-1.5 text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 ${
-          placement === "navbar"
+          bar
             ? `h-9 rounded-full border px-3.5 text-white ${open ? "border-white/25 bg-white/[0.16]" : "border-white/[0.08] bg-white/[0.1] hover:bg-white/[0.16]"}`
             : "rounded-lg px-2.5 py-1.5 "
         }${
-          placement === "navbar"
+          bar
             ? ""
             : variant === "compact"
             ? "text-gray-700 hover:bg-gray-100"
@@ -162,12 +164,12 @@ export default function LanguageSwitcher({
       {open && (
         <div
           className={`absolute end-0 z-50 w-52 overflow-hidden animate-[lp-pop_140ms_ease-out] ${
-            dropUp ? "bottom-full mb-2" : placement === "navbar" ? "top-full mt-px" : placement === "topbar" ? "top-full mt-[22px]" : "top-full mt-2"
+            dropUp ? "bottom-full mb-2" : bar ? "top-full mt-2" : "top-full mt-2"
           } ${
-            placement === "navbar"
-              ? "rounded-b-xl border border-t-0 border-white/[0.08] bg-[#1E2329] p-1.5 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.85)]"
+            bar
+              ? "rounded-2xl border border-white/[0.09] bg-[#161A21] p-1.5 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.9)]"
               : variant === "dark"
-              ? "rounded-2xl border border-white/[0.08] bg-[#0C0F15]/95 p-1.5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-2xl"
+              ? "rounded-2xl border border-white/[0.08] bg-[#161A21] p-1.5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)]"
               : "rounded-xl bg-white py-1.5 shadow-xl ring-1 ring-black/5"
           }`}
         >
