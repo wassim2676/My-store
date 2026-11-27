@@ -1752,7 +1752,9 @@
         "helpDesc": "Aide pas à pas pour votre tableau de bord",
         "guides": "Guides d'affiliation",
         "guidesDesc": "Stratégies pour chaque grand réseau"
-      }
+      },
+      "direct": "Nous joindre directement",
+      "directText": "Choisissez le canal qui vous convient. Chaque message parvient à notre équipe."
     },
     "guide": {
       "title": "Guide de l’affiliation",

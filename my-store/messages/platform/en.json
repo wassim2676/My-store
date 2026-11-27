@@ -1752,7 +1752,9 @@
         "helpDesc": "Step-by-step help for your dashboard",
         "guides": "Affiliate guides",
         "guidesDesc": "Strategy for every major network"
-      }
+      },
+      "direct": "Reach us directly",
+      "directText": "Pick the channel that fits. Every message reaches our team."
     },
     "guide": {
       "title": "Affiliate marketing guide",
