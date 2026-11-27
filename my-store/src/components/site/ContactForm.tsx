@@ -83,7 +83,7 @@ export default function ContactForm({ labels, defaultTopic = "support" }: { labe
         <button
           type="submit"
           disabled={state === "sending"}
-          className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-amber-400 px-5 text-sm font-semibold text-black transition hover:bg-amber-300 disabled:opacity-60"
+          className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full bg-amber-400 px-6 text-sm font-semibold text-black transition hover:bg-amber-300 disabled:opacity-60"
         >
           {state === "sending" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 rtl:-scale-x-100" />}
           {state === "sending" ? labels.sending : labels.send}

@@ -5,7 +5,7 @@ import SiteNavbar from "./SiteNavbar";
 import SiteFooter from "./SiteFooter";
 
 export type ContentPageKey =
-  | "about" | "faq" | "help" | "terms" | "privacy" | "cookies" | "disclosure" | "acceptableUse" | "contact" | "guide";
+  | "about" | "features" | "faq" | "help" | "terms" | "privacy" | "cookies" | "disclosure" | "acceptableUse" | "contact" | "guide";
 
 type Section = { h: string; p: string };
 
@@ -14,7 +14,7 @@ const LEGAL = new Set<ContentPageKey>(["terms", "privacy", "cookies", "disclosur
 /** عنوان الصفحة للمتصفح ومحركات البحث، بلغة الزائر */
 /** المسار الرسمي لكل صفحة (للـ canonical وخريطة الموقع) */
 export const CONTENT_PATHS: Record<ContentPageKey, string> = {
-  about: "/about", faq: "/faq", help: "/help", terms: "/terms", privacy: "/privacy", cookies: "/cookies",
+  about: "/about", features: "/features", faq: "/faq", help: "/help", terms: "/terms", privacy: "/privacy", cookies: "/cookies",
   disclosure: "/affiliate-disclosure", acceptableUse: "/acceptable-use", contact: "/contact", guide: "/guide",
 };
 

@@ -1266,7 +1266,114 @@
     "about": {
       "title": "À propos",
       "eyebrow": "Entreprise",
-      "intro": "Nous créons des pages d’atterrissage élégantes pour les affiliés professionnels.",
+      "intro": "Nous construisons la maison de l'affiliation moderne.",
+      "hero": {
+        "eyebrow": "À propos de Primeshelf",
+        "title": "Nous construisons la maison de l'affiliation moderne",
+        "text": "Primeshelf existe pour offrir aux créateurs et affiliés indépendants la même finition, la même rapidité et la même confiance que les plus grandes marques, sans développeur, sans designer et sans gros budget.",
+        "primary": "Découvrir les fonctionnalités",
+        "secondary": "Nous contacter"
+      },
+      "mission": {
+        "h": "Notre mission",
+        "p": "Aider chaque affilié à gagner davantage en recommandant avec honnêteté. Nous construisons la vitrine, les statistiques et les outils de conformité pour qu'il se concentre sur l'essentiel : trouver d'excellents produits et en parler avec sincérité."
+      },
+      "vision": {
+        "h": "Notre vision",
+        "p": "Un web où les recommandations de produits sont claires, belles et dignes de confiance, où chacun sait qui recommande quoi et pourquoi, et où les créateurs sont récompensés pour leur utilité réelle."
+      },
+      "goals": {
+        "eyebrow": "Ce vers quoi nous avançons",
+        "title": "Nos objectifs",
+        "items": [
+          {
+            "h": "Rendre le premium simple",
+            "p": "Une vitrine digne d'une marque doit prendre quelques minutes, pas des semaines de design et de développement."
+          },
+          {
+            "h": "Récompenser l'honnêteté",
+            "p": "Des avis avec de vrais points forts et faibles, des mentions claires et des prix exacts doivent être le chemin le plus simple."
+          },
+          {
+            "h": "Ouvrir les boutiques du monde",
+            "p": "Prendre en charge les boutiques en qui les audiences ont confiance, dans leurs langues, y compris l'arabe de droite à gauche."
+          },
+          {
+            "h": "Partager ce qui marche",
+            "p": "Publier des guides gratuits et approfondis pour que chaque affilié apprenne les stratégies qui font vraiment progresser ses revenus."
+          }
+        ]
+      },
+      "team": {
+        "eyebrow": "L'équipe",
+        "title": "Les personnes derrière Primeshelf",
+        "text": "Une équipe réduite et concentrée de développeurs, designers et affiliés attachés à la qualité et à l'honnêteté.",
+        "join": "Rejoindre l'équipe",
+        "joinText": "Nous aimons rencontrer des personnes talentueuses qui partagent nos valeurs.",
+        "joinCta": "Nous écrire",
+        "roles": {
+          "founder": {
+            "title": "Fondateur & CEO",
+            "desc": "Fixe la vision et travaille directement avec les affiliés pour façonner le produit."
+          },
+          "product": {
+            "title": "Produit & Ingénierie",
+            "desc": "Construit une plateforme rapide et fiable et les outils utilisés chaque jour."
+          },
+          "design": {
+            "title": "Design & Marque",
+            "desc": "Conçoit les thèmes, les vitrines et les détails qui rendent chaque page premium."
+          },
+          "partnerships": {
+            "title": "Partenariats",
+            "desc": "Travaille avec les boutiques, réseaux et agences pour ouvrir de nouvelles opportunités."
+          },
+          "content": {
+            "title": "Contenu & Formation",
+            "desc": "Rédige les guides qui aident les affiliés à progresser sur chaque grand réseau."
+          },
+          "support": {
+            "title": "Succès client",
+            "desc": "Répond à chaque message et aide les affiliés à tirer le meilleur de leur page."
+          }
+        }
+      },
+      "values": {
+        "eyebrow": "Notre façon de travailler",
+        "title": "Les valeurs qui nous engagent",
+        "items": [
+          {
+            "h": "Les utilisateurs d'abord",
+            "p": "Chaque décision part de ce qui aide les affiliés et leurs audiences."
+          },
+          {
+            "h": "Transparence",
+            "p": "Nous expliquons clairement comment fonctionne la plateforme, ce que nous collectons et ce que nous ne faisons jamais."
+          },
+          {
+            "h": "Exigence",
+            "p": "Nous soignons chaque détail, de la typographie à la vitesse, car la qualité crée la confiance."
+          },
+          {
+            "h": "Responsabilité",
+            "p": "Nous assumons notre travail et corrigeons les problèmes rapidement et ouvertement."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Construisons ensemble l'avenir de l'affiliation",
+        "text": "Créez votre page gratuitement ou dites-nous ce que vous aimeriez voir ensuite.",
+        "button": "Commencer gratuitement",
+        "secondary": "Nous contacter"
+      },
+      "story": {
+        "eyebrow": "Notre histoire",
+        "title": "Conçu pour les personnes derrière les recommandations",
+        "p": [
+          "Les meilleurs affiliés sont des curateurs. Ils testent, comparent et rédigent les avis honnêtes qui aident à décider. Pourtant, la plupart devaient se contenter de simples listes de liens, identiques à celles de tout le monde et qui n'apprenaient rien aux visiteurs.",
+          "Nous avons créé Primeshelf pour donner à ce travail la scène qu'il mérite : une vitrine qui ressemble à une marque, des pages produit avec de vrais avis, des collections, des mentions d'affiliation intégrées et des statistiques qui montrent quelles recommandations convainquent réellement. Vos liens mènent directement aux boutiques, et chaque commission vous revient."
+        ]
+      },
       "sections": [
         {
           "h": "Notre mission",
@@ -1281,94 +1388,7 @@
           "p": "Les visiteurs sont envoyés directement vers votre lien d’affiliation. Nous ne remplaçons jamais votre tag de suivi et ne prenons aucune part de vos commissions."
         }
       ],
-      "hero": {
-        "eyebrow": "À propos de Primeshelf",
-        "title": "La base des affiliés qui vendent grâce à la confiance",
-        "text": "Primeshelf transforme une liste de liens affiliés en une vitrine premium à votre nom : rapide, élégante, honnête et mesurable. Nous gérons la technique pour que vous puissiez vous consacrer à ce qui rapporte vraiment : trouver d'excellents produits et en parler avec sincérité.",
-        "primary": "Créer ma page",
-        "secondary": "Découvrir nos guides"
-      },
-      "stats": [
-        {
-          "v": "11",
-          "l": "grandes boutiques prises en charge"
-        },
-        {
-          "v": "3",
-          "l": "langues, dont l'arabe de droite à gauche"
-        },
-        {
-          "v": "0 %",
-          "l": "de vos commissions prélevé"
-        },
-        {
-          "v": "55+",
-          "l": "guides d'affiliation approfondis"
-        }
-      ],
-      "story": {
-        "eyebrow": "Notre histoire",
-        "title": "Conçu pour les personnes derrière les recommandations",
-        "p": [
-          "Les meilleurs affiliés sont des curateurs. Ils testent, comparent et rédigent les avis honnêtes qui aident à décider. Pourtant, la plupart devaient se contenter de simples listes de liens, identiques à celles de tout le monde et qui n'apprenaient rien aux visiteurs.",
-          "Nous avons créé Primeshelf pour donner à ce travail la scène qu'il mérite : une vitrine qui ressemble à une marque, des pages produit avec de vrais avis, des collections, des mentions d'affiliation intégrées et des statistiques qui montrent quelles recommandations convainquent réellement. Vos liens mènent directement aux boutiques, et chaque commission vous revient."
-        ]
-      },
-      "principles": {
-        "eyebrow": "Nos principes",
-        "title": "Ce qui nous guide",
-        "items": [
-          {
-            "h": "Vos commissions restent les vôtres",
-            "p": "Les visiteurs vont directement vers votre lien affilié. Nous ne remplaçons jamais votre identifiant et ne prenons aucune part de vos gains."
-          },
-          {
-            "h": "L'honnêteté convertit",
-            "p": "Des avis avec de vrais points forts et faibles, des mentions claires et des prix exacts créent la confiance qui transforme les visiteurs en acheteurs."
-          },
-          {
-            "h": "La vitesse est une fonctionnalité",
-            "p": "Les pages s'affichent en un instant sur tous les téléphones, car chaque seconde d'attente coûte des clics."
-          },
-          {
-            "h": "Le soin du détail",
-            "p": "Typographie, espacements et thèmes sont pensés avec l'exigence d'une marque premium : votre page ne ressemble jamais à un modèle."
-          },
-          {
-            "h": "Pensé pour chaque langue",
-            "p": "Anglais, français et arabe avec une vraie mise en page de droite à gauche, pour parler à votre audience dans sa langue."
-          },
-          {
-            "h": "Confidentialité par défaut",
-            "p": "Nous ne collectons que le nécessaire pour faire fonctionner et mesurer votre page, et nous ne vendons jamais vos données ni celles de vos visiteurs."
-          }
-        ]
-      },
-      "care": {
-        "eyebrow": "Ce que nous gérons",
-        "title": "Tout ce qui se passe en coulisses, pour que vous restiez concentré sur les produits",
-        "items": [
-          "Thèmes premium et design pensé mobile",
-          "Détection automatique de la boutique et boutons d'achat à ses couleurs",
-          "Pages produit avec avis, caractéristiques, points forts et faibles",
-          "Collections, coups de cœur et articles",
-          "Statistiques de clics, de vues et de sources de trafic",
-          "Référencement et aperçus de partage sur les réseaux",
-          "Mention d'affiliation intégrée",
-          "Domaines personnalisés, accès d'équipe et pixels de suivi"
-        ]
-      },
-      "stores": {
-        "eyebrow": "Boutiques prises en charge",
-        "title": "Conçu pour les boutiques en qui votre audience a déjà confiance",
-        "link": "Voir toutes les boutiques"
-      },
-      "cta": {
-        "title": "Votre vitrine est à une minute",
-        "text": "Créez votre page gratuitement, ajoutez vos premières offres et partagez un seul lien à la hauteur de vos recommandations.",
-        "button": "Commencer gratuitement",
-        "secondary": "Nous contacter"
-      }
+      "motto": "Recommandez honnêtement. Gagnez sereinement."
     },
     "faq": {
       "title": "Questions fréquentes",
@@ -1809,6 +1829,92 @@
       "related": "Autres politiques",
       "effective": "Date d'effet",
       "englishNotice": "Ce document est publié en anglais, qui est la version juridiquement contraignante. Vous pouvez utiliser la traduction automatique de votre navigateur pour le lire en français."
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "eyebrow": "Produit",
+      "intro": "Tout ce qu'il faut pour transformer vos liens affiliés en une vitrine premium qui convertit.",
+      "hero": {
+        "eyebrow": "Fonctionnalités",
+        "title": "La base des affiliés qui vendent grâce à la confiance",
+        "text": "Primeshelf transforme une liste de liens affiliés en une vitrine premium à votre nom : rapide, élégante, honnête et mesurable. Nous gérons la technique pour que vous puissiez vous consacrer à ce qui rapporte vraiment : trouver d'excellents produits et en parler avec sincérité.",
+        "primary": "Créer ma page",
+        "secondary": "Découvrir nos guides"
+      },
+      "stats": [
+        {
+          "v": "11",
+          "l": "grandes boutiques prises en charge"
+        },
+        {
+          "v": "3",
+          "l": "langues, dont l'arabe de droite à gauche"
+        },
+        {
+          "v": "0 %",
+          "l": "de vos commissions prélevé"
+        },
+        {
+          "v": "55+",
+          "l": "guides d'affiliation approfondis"
+        }
+      ],
+      "principles": {
+        "eyebrow": "Nos principes",
+        "title": "Ce qui nous guide",
+        "items": [
+          {
+            "h": "Vos commissions restent les vôtres",
+            "p": "Les visiteurs vont directement vers votre lien affilié. Nous ne remplaçons jamais votre identifiant et ne prenons aucune part de vos gains."
+          },
+          {
+            "h": "L'honnêteté convertit",
+            "p": "Des avis avec de vrais points forts et faibles, des mentions claires et des prix exacts créent la confiance qui transforme les visiteurs en acheteurs."
+          },
+          {
+            "h": "La vitesse est une fonctionnalité",
+            "p": "Les pages s'affichent en un instant sur tous les téléphones, car chaque seconde d'attente coûte des clics."
+          },
+          {
+            "h": "Le soin du détail",
+            "p": "Typographie, espacements et thèmes sont pensés avec l'exigence d'une marque premium : votre page ne ressemble jamais à un modèle."
+          },
+          {
+            "h": "Pensé pour chaque langue",
+            "p": "Anglais, français et arabe avec une vraie mise en page de droite à gauche, pour parler à votre audience dans sa langue."
+          },
+          {
+            "h": "Confidentialité par défaut",
+            "p": "Nous ne collectons que le nécessaire pour faire fonctionner et mesurer votre page, et nous ne vendons jamais vos données ni celles de vos visiteurs."
+          }
+        ]
+      },
+      "care": {
+        "eyebrow": "Ce que nous gérons",
+        "title": "Tout ce qui se passe en coulisses, pour que vous restiez concentré sur les produits",
+        "items": [
+          "Thèmes premium et design pensé mobile",
+          "Détection automatique de la boutique et boutons d'achat à ses couleurs",
+          "Pages produit avec avis, caractéristiques, points forts et faibles",
+          "Collections, coups de cœur et articles",
+          "Statistiques de clics, de vues et de sources de trafic",
+          "Référencement et aperçus de partage sur les réseaux",
+          "Mention d'affiliation intégrée",
+          "Domaines personnalisés, accès d'équipe et pixels de suivi"
+        ]
+      },
+      "stores": {
+        "eyebrow": "Boutiques prises en charge",
+        "title": "Conçu pour les boutiques en qui votre audience a déjà confiance",
+        "link": "Voir toutes les boutiques"
+      },
+      "cta": {
+        "title": "Votre vitrine est à une minute",
+        "text": "Créez votre page gratuitement, ajoutez vos premières offres et partagez un seul lien à la hauteur de vos recommandations.",
+        "button": "Commencer gratuitement",
+        "secondary": "Nous contacter"
+      },
+      "sections": []
     }
   },
   "adm": {

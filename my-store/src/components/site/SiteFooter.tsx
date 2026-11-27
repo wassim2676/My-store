@@ -14,7 +14,7 @@ export default async function SiteFooter() {
     {
       title: f("product"),
       links: [
-        { href: "/#features", label: f("features") },
+        { href: "/features", label: f("features") },
         { href: "/#how", label: f("how") },
         { href: "/stores", label: f("stores") },
         { href: "/register", label: f("getStarted") },

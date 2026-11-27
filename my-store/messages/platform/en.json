@@ -1266,7 +1266,114 @@
     "about": {
       "title": "About us",
       "eyebrow": "Company",
-      "intro": "We build elegant landing pages for professional affiliate marketers.",
+      "intro": "We're building the home of modern affiliate marketing.",
+      "hero": {
+        "eyebrow": "About Primeshelf",
+        "title": "We're building the home of modern affiliate marketing",
+        "text": "Primeshelf exists to give independent creators and marketers the same polish, speed and trust that the world's best brands enjoy, without needing a developer, a designer or a big budget.",
+        "primary": "Explore features",
+        "secondary": "Contact us"
+      },
+      "mission": {
+        "h": "Our mission",
+        "p": "Help every affiliate marketer earn more by recommending honestly. We build the storefront, the analytics and the compliance tools so they can focus on finding great products and telling the truth about them."
+      },
+      "vision": {
+        "h": "Our vision",
+        "p": "A web where product recommendations are clear, beautiful and trustworthy, where shoppers know exactly who is recommending what and why, and where creators are rewarded for being genuinely useful."
+      },
+      "goals": {
+        "eyebrow": "What we're working toward",
+        "title": "Our goals",
+        "items": [
+          {
+            "h": "Make premium simple",
+            "p": "A storefront that looks like a brand should take minutes, not weeks of design and development."
+          },
+          {
+            "h": "Reward honesty",
+            "p": "Reviews with real pros and cons, clear disclosures and accurate prices should be the easiest path, not the hardest."
+          },
+          {
+            "h": "Open the world's stores",
+            "p": "Support the stores audiences already trust, in the languages they speak, including full right-to-left Arabic."
+          },
+          {
+            "h": "Teach what works",
+            "p": "Publish free, in-depth guides so every marketer can learn the strategies that actually grow affiliate income."
+          }
+        ]
+      },
+      "team": {
+        "eyebrow": "The team",
+        "title": "The people behind Primeshelf",
+        "text": "A small, focused team of builders, designers and affiliate marketers who care about craft and honesty.",
+        "join": "Join the team",
+        "joinText": "We're always happy to meet talented people who share our values.",
+        "joinCta": "Get in touch",
+        "roles": {
+          "founder": {
+            "title": "Founder & CEO",
+            "desc": "Sets the vision and works directly with marketers to shape the product."
+          },
+          "product": {
+            "title": "Product & Engineering",
+            "desc": "Builds a fast, reliable platform and the tools marketers use every day."
+          },
+          "design": {
+            "title": "Design & Brand",
+            "desc": "Crafts the themes, storefronts and details that make every page feel premium."
+          },
+          "partnerships": {
+            "title": "Partnerships",
+            "desc": "Works with stores, networks and agencies to open new opportunities."
+          },
+          "content": {
+            "title": "Content & Education",
+            "desc": "Writes the guides that help marketers grow on every major network."
+          },
+          "support": {
+            "title": "Customer success",
+            "desc": "Answers every message and helps marketers get the most from their pages."
+          }
+        }
+      },
+      "values": {
+        "eyebrow": "How we work",
+        "title": "Values we hold ourselves to",
+        "items": [
+          {
+            "h": "Users first",
+            "p": "Every decision starts with what helps marketers and their audiences."
+          },
+          {
+            "h": "Transparency",
+            "p": "We say clearly how the platform works, what we collect and what we never do."
+          },
+          {
+            "h": "Craft",
+            "p": "We sweat the details, from typography to page speed, because quality builds trust."
+          },
+          {
+            "h": "Ownership",
+            "p": "We take responsibility for our work and fix problems quickly and openly."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Let's build the future of affiliate marketing together",
+        "text": "Create your page for free or tell us what you'd like to see next.",
+        "button": "Get started free",
+        "secondary": "Contact us"
+      },
+      "story": {
+        "eyebrow": "Our story",
+        "title": "Built for the people behind the recommendations",
+        "p": [
+          "Great affiliate marketers are curators. They test products, compare options and write the honest notes that help someone decide. Yet most of them were stuck with plain link lists that looked the same as everyone else's and told visitors nothing.",
+          "We built Primeshelf to give that work the stage it deserves: a storefront that feels like a brand, product pages with real reviews, collections, built-in disclosures and analytics that show which recommendations actually move people. Your links go straight to the stores, and every commission stays yours."
+        ]
+      },
       "sections": [
         {
           "h": "Our mission",
@@ -1281,94 +1388,7 @@
           "p": "Visitors are sent straight to your own affiliate link. We never replace your tracking tag and we never take a share of your commissions."
         }
       ],
-      "hero": {
-        "eyebrow": "About Primeshelf",
-        "title": "The home base for affiliate marketers who sell through trust",
-        "text": "Primeshelf turns a list of affiliate links into a premium storefront with your name on it: fast, beautiful, honest and measurable. We handle the technology so you can do what actually earns: finding great products and telling people the truth about them.",
-        "primary": "Create your page",
-        "secondary": "Explore our guides"
-      },
-      "stats": [
-        {
-          "v": "11",
-          "l": "major stores supported"
-        },
-        {
-          "v": "3",
-          "l": "languages, with full right-to-left Arabic"
-        },
-        {
-          "v": "0%",
-          "l": "of your commissions taken"
-        },
-        {
-          "v": "55+",
-          "l": "in-depth affiliate guides"
-        }
-      ],
-      "story": {
-        "eyebrow": "Our story",
-        "title": "Built for the people behind the recommendations",
-        "p": [
-          "Great affiliate marketers are curators. They test products, compare options and write the honest notes that help someone decide. Yet most of them were stuck with plain link lists that looked the same as everyone else's and told visitors nothing.",
-          "We built Primeshelf to give that work the stage it deserves: a storefront that feels like a brand, product pages with real reviews, collections, built-in disclosures and analytics that show which recommendations actually move people. Your links go straight to the stores, and every commission stays yours."
-        ]
-      },
-      "principles": {
-        "eyebrow": "Principles",
-        "title": "What we stand for",
-        "items": [
-          {
-            "h": "Your commissions stay yours",
-            "p": "Visitors go straight to your own affiliate link. We never replace your tracking tag or take a share of what you earn."
-          },
-          {
-            "h": "Honesty converts",
-            "p": "Reviews with real pros and cons, clear disclosures and accurate prices build the trust that turns visitors into buyers."
-          },
-          {
-            "h": "Speed is a feature",
-            "p": "Pages are optimised to load in a blink on any phone, because every second of waiting costs clicks."
-          },
-          {
-            "h": "Craft in every pixel",
-            "p": "Typography, spacing and themes are designed with the care of a premium brand, so your page never looks like a template."
-          },
-          {
-            "h": "Built for every language",
-            "p": "English, French and Arabic with true right-to-left layouts, so you can speak to your audience in their own words."
-          },
-          {
-            "h": "Privacy by default",
-            "p": "We collect only what's needed to run your page and measure it, and we never sell your data or your visitors' data."
-          }
-        ]
-      },
-      "care": {
-        "eyebrow": "What we handle",
-        "title": "Everything behind the scenes, so you can focus on products",
-        "items": [
-          "Premium themes and mobile-first design",
-          "Automatic store detection and branded buy buttons",
-          "Product pages with reviews, specs, pros and cons",
-          "Collections, featured picks and articles",
-          "Clicks, views and traffic-source analytics",
-          "Search engine optimisation and social share previews",
-          "Built-in affiliate disclosure",
-          "Custom domains, team access and tracking pixels"
-        ]
-      },
-      "stores": {
-        "eyebrow": "Supported stores",
-        "title": "Built for the stores your audience already trusts",
-        "link": "See all supported stores"
-      },
-      "cta": {
-        "title": "Your storefront is one minute away",
-        "text": "Create your page for free, add your first offers and share one link that does your recommendations justice.",
-        "button": "Get started free",
-        "secondary": "Talk to us"
-      }
+      "motto": "Recommend honestly. Earn confidently."
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -1809,6 +1829,92 @@
       "related": "Other policies",
       "effective": "Effective date",
       "englishNotice": ""
+    },
+    "features": {
+      "title": "Features",
+      "eyebrow": "Product",
+      "intro": "Everything you need to turn affiliate links into a premium storefront that converts.",
+      "hero": {
+        "eyebrow": "Features",
+        "title": "The home base for affiliate marketers who sell through trust",
+        "text": "Primeshelf turns a list of affiliate links into a premium storefront with your name on it: fast, beautiful, honest and measurable. We handle the technology so you can do what actually earns: finding great products and telling people the truth about them.",
+        "primary": "Create your page",
+        "secondary": "Explore our guides"
+      },
+      "stats": [
+        {
+          "v": "11",
+          "l": "major stores supported"
+        },
+        {
+          "v": "3",
+          "l": "languages, with full right-to-left Arabic"
+        },
+        {
+          "v": "0%",
+          "l": "of your commissions taken"
+        },
+        {
+          "v": "55+",
+          "l": "in-depth affiliate guides"
+        }
+      ],
+      "principles": {
+        "eyebrow": "Principles",
+        "title": "What we stand for",
+        "items": [
+          {
+            "h": "Your commissions stay yours",
+            "p": "Visitors go straight to your own affiliate link. We never replace your tracking tag or take a share of what you earn."
+          },
+          {
+            "h": "Honesty converts",
+            "p": "Reviews with real pros and cons, clear disclosures and accurate prices build the trust that turns visitors into buyers."
+          },
+          {
+            "h": "Speed is a feature",
+            "p": "Pages are optimised to load in a blink on any phone, because every second of waiting costs clicks."
+          },
+          {
+            "h": "Craft in every pixel",
+            "p": "Typography, spacing and themes are designed with the care of a premium brand, so your page never looks like a template."
+          },
+          {
+            "h": "Built for every language",
+            "p": "English, French and Arabic with true right-to-left layouts, so you can speak to your audience in their own words."
+          },
+          {
+            "h": "Privacy by default",
+            "p": "We collect only what's needed to run your page and measure it, and we never sell your data or your visitors' data."
+          }
+        ]
+      },
+      "care": {
+        "eyebrow": "What we handle",
+        "title": "Everything behind the scenes, so you can focus on products",
+        "items": [
+          "Premium themes and mobile-first design",
+          "Automatic store detection and branded buy buttons",
+          "Product pages with reviews, specs, pros and cons",
+          "Collections, featured picks and articles",
+          "Clicks, views and traffic-source analytics",
+          "Search engine optimisation and social share previews",
+          "Built-in affiliate disclosure",
+          "Custom domains, team access and tracking pixels"
+        ]
+      },
+      "stores": {
+        "eyebrow": "Supported stores",
+        "title": "Built for the stores your audience already trusts",
+        "link": "See all supported stores"
+      },
+      "cta": {
+        "title": "Your storefront is one minute away",
+        "text": "Create your page for free, add your first offers and share one link that does your recommendations justice.",
+        "button": "Get started free",
+        "secondary": "Talk to us"
+      },
+      "sections": []
     }
   },
   "adm": {

@@ -7,7 +7,7 @@ import { ARTICLES, NETWORKS } from "@/content/blog";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const core = ["", "/blog", "/stores", "/guide", "/help", "/faq", "/about", "/contact"].map((p) => ({
+  const core = ["", "/features", "/blog", "/stores", "/guide", "/help", "/faq", "/about", "/contact"].map((p) => ({
     url: `${SITE_URL}${p}`,
     changeFrequency: "weekly" as const,
     priority: p === "" ? 1 : p === "/blog" ? 0.9 : 0.6,

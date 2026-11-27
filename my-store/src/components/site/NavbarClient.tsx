@@ -38,7 +38,7 @@ export default function NavbarClient({ siteName, loggedIn, labels: l, overlay = 
   }, [open]);
 
   const main = [
-    { href: "/#features", label: l.features },
+    { href: "/features", label: l.features },
     { href: "/#how", label: l.how },
     { href: "/stores", label: l.stores },
   ];
